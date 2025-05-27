@@ -9,7 +9,7 @@ fuser -k 9091/tcp 2>/dev/null || echo "No process running on port 9091"
 pkill -f 'webpack.*serve' 2>/dev/null || echo "No webpack process found"
 
 echo "Starting webpack development server..."
-cd /var/www/Musici && npm run watch &
+cd /var/www/Lalumo && npm run watch &
 
 # Wait a moment and then provide a link
 sleep 2

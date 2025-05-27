@@ -41,7 +41,7 @@ All files are then in the /dist folder
 
 # Online Deployment
 
-The application is deployed at: https://musici.z11.de/
+The application is deployed at: https://lalumo.z11.de/
 
 To update the online version, follow these steps from the project's root directory:
 
@@ -53,7 +53,7 @@ npm run build
 ls -la dist/
 
 # 3. Upload to the server (make sure you're in the project root directory)
-rsync -avz --no-perms --no-owner --no-group --delete dist/ root@vm06.eclabs:/var/kunden/webs/ruben/www/musici.z11.de/
+rsync -avz --no-perms --no-owner --no-group --delete dist/ root@vm06.eclabs:/var/kunden/webs/ruben/www/lalumo.z11.de/
 
 # 4. Resume development (optional)
 npm run watch

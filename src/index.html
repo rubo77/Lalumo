@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Musici</title>
+  <title>Lalumo</title>
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <!-- Scripts and styles will be injected by webpack -->
 </head>
@@ -14,9 +14,9 @@
     <!-- Username Prompt Modal -->
     <div class="modal-overlay" x-show="showUsernamePrompt" x-transition>
       <div class="modal-content" @click.outside="setUsername()">
-        <h3>Welcome to Musici!</h3>
+        <h3>Welcome to Lalumo!</h3>
         <div class="mascot-welcome">
-          <img src="/images/mascot.svg" alt="Musici Mascot" class="mascot" />
+          <img src="/images/mascot.svg" alt="Lalumo Mascot" class="mascot" />
           <p>Let's create a special name just for you!</p>
         </div>
         <button class="primary-button" @click="setUsername()">Generate Random Name</button>
@@ -117,42 +117,53 @@
     <section x-show="active === 'pitches'" x-transition>
       <div x-data="pitches" x-init="init()">
         <div class="mascot-container">
-          <img src="/images/mascot.svg" alt="Musici Mascot" class="mascot" @click="showMascotMessage('Hi there! I\'m your music friend. Click on the activities to learn about music!')" />
+          <img src="/images/mascot.svg" alt="Lalumo Mascot" class="mascot" @click="showContextMessage()" />
           <div class="speech-bubble" x-show="mascotMessage" x-text="mascotMessage" x-transition></div>
         </div>
         
         <!-- Listening Mode -->
         <div x-show="mode === 'listen'" class="pitch-activity">
           <h3>Listen to different melodies!</h3>
-          <p>Click on each picture to hear what that melody sounds like:</p>
           
           <div class="pitch-grid">
-            <div class="pitch-card" @click="playSequence('up')" :class="{ active: currentAnimation === 'up' }">
+            <div class="pitch-card" :class="{ 'active': currentAnimation === 'up' }">
               <div class="pitch-icon up">
                 <img src="/images/rocket.png" alt="Rocket going up" />
               </div>
               <p>Going Up</p>
+              <button class="play-button" @click="playSequence('up')">
+                <span>Play</span> 🔊
+              </button>
             </div>
             
-            <div class="pitch-card" @click="playSequence('down')" :class="{ active: currentAnimation === 'down' }">
+            <div class="pitch-card" :class="{ 'active': currentAnimation === 'down' }">
               <div class="pitch-icon down">
                 <img src="/images/slide.png" alt="Slide going down" />
               </div>
               <p>Going Down</p>
+              <button class="play-button" @click="playSequence('down')">
+                <span>Play</span> 🔊
+              </button>
             </div>
             
-            <div class="pitch-card" @click="playSequence('wave')" :class="{ active: currentAnimation === 'wave' }">
+            <div class="pitch-card" :class="{ 'active': currentAnimation === 'wave' }">
               <div class="pitch-icon wave">
                 <img src="/images/waves.png" alt="Wave pattern" />
               </div>
               <p>Wavy Pattern</p>
+              <button class="play-button" @click="playSequence('wave')">
+                <span>Play</span> 🔊
+              </button>
             </div>
             
-            <div class="pitch-card" @click="playSequence('jump')" :class="{ active: currentAnimation === 'jump' }">
+            <div class="pitch-card" :class="{ 'active': currentAnimation === 'jump' }">
               <div class="pitch-icon jump">
                 <img src="/images/frog.png" alt="Jumping frog" />
               </div>
               <p>Jumping Notes</p>
+              <button class="play-button" @click="playSequence('jump')">
+                <span>Play</span> 🔊
+              </button>
             </div>
           </div>
         </div>
@@ -160,7 +171,6 @@
         <!-- Matching Mode -->
         <div x-show="mode === 'match'" class="pitch-activity">
           <h3>Match the sound to the picture!</h3>
-          <p>Listen to the melody and tap the matching picture:</p>
           
           <button class="play-button" @click="setupMatchingMode()">
             <span>Play Melody</span> 🔊
@@ -169,28 +179,28 @@
           <div class="pitch-grid">
             <div class="pitch-card" @click="checkMatch('up')">
               <div class="pitch-icon up">
-                <img src="/images/rocket.svg" alt="Rocket going up" />
+                <img src="/images/rocket.png" alt="Rocket going up" />
               </div>
               <p>Going Up</p>
             </div>
             
             <div class="pitch-card" @click="checkMatch('down')">
               <div class="pitch-icon down">
-                <img src="/images/slide.svg" alt="Slide going down" />
+                <img src="/images/slide.png" alt="Slide going down" />
               </div>
               <p>Going Down</p>
             </div>
             
             <div class="pitch-card" @click="checkMatch('wave')">
               <div class="pitch-icon wave">
-                <img src="/images/wave.svg" alt="Wave pattern" />
+                <img src="/images/waves.png" alt="Wave pattern" />
               </div>
               <p>Wavy Pattern</p>
             </div>
             
             <div class="pitch-card" @click="checkMatch('jump')">
               <div class="pitch-icon jump">
-                <img src="/images/frog.svg" alt="Jumping frog" />
+                <img src="/images/frog.png" alt="Jumping frog" />
               </div>
               <p>Jumping Notes</p>
             </div>
@@ -202,7 +212,6 @@
         <!-- Drawing Mode -->
         <div x-show="mode === 'draw'" class="pitch-activity">
           <h3>Draw a melody!</h3>
-          <p>Draw a line with your finger or mouse. The app will play your melody!</p>
           
           <div class="drawing-container">
             <canvas class="drawing-canvas" width="400" height="200"
@@ -226,7 +235,6 @@
         <!-- Guessing Mode -->
         <div x-show="mode === 'guess'" class="pitch-activity">
           <h3>What comes next?</h3>
-          <p>Listen to the start of a melody, then guess if the next note goes up or down!</p>
           
           <button class="play-button" @click="setupGuessingMode()">
             <span>Play Melody</span> 🔊
@@ -247,7 +255,6 @@
         <!-- Memory Mode -->
         <div x-show="mode === 'memory'" class="pitch-activity">
           <h3>Remember the melody!</h3>
-          <p>Listen to the melody, then tap the colored buttons in the same order!</p>
           
           <button class="play-button" @click="playMemorySequence()">
             <span>Play Melody Again</span> 🔊
@@ -315,7 +322,7 @@
     <section x-show="active === 'impressum' && (window.innerWidth >= 1024 || !menuOpen)" x-transition>
       <h2>Impressum</h2>
       <div class="legal-content">
-        <p>Musici App - Musik lernen für Kinder</p>
+        <p>Lalumo App - Musik lernen für Kinder</p>
         <p>Verantwortlich für den Inhalt:</p>
         <p>[Name]<br>
         [Adresse]<br>
@@ -327,7 +334,7 @@
     <section x-show="active === 'datenschutz' && (window.innerWidth >= 1024 || !menuOpen)" x-transition>
       <h2>Datenschutz</h2>
       <div class="legal-content">
-        <p>Datenschutzerklärung für die Musici App</p>
+        <p>Datenschutzerklärung für die Lalumo App</p>
         <p>Wir nehmen den Schutz Ihrer persönlichen Daten sehr ernst. Alle Daten werden lokal auf Ihrem Gerät gespeichert und nicht an Server übertragen.</p>
         <h3>Lokale Speicherung</h3>
         <p>Die App speichert Folgendes lokal auf Ihrem Gerät:</p>
@@ -343,7 +350,7 @@
       <h2>Credits</h2>
       <div class="legal-content">
         <h3>App-Entwicklung</h3>
-        <p>Musici Team</p>
+        <p>Lalumo Team</p>
         
         <h3>Grafiken & Illustrationen</h3>
         <p>SVG-Grafiken von [Quelle]</p>
@@ -369,6 +376,15 @@
           <div class="profile-details">
             <p class="profile-name" x-text="username"></p>
             <button class="secondary-button" @click="setUsername()">Generate New Name</button>
+          </div>
+        </div>
+        
+        <h3>Language Preference</h3>
+        <div class="language-section">
+          <p>Select your preferred language:</p>
+          <div class="language-options">
+            <button class="language-button" :class="{ 'active': preferredLanguage === 'english' }" @click="setLanguage('english')">English</button>
+            <button class="language-button" :class="{ 'active': preferredLanguage === 'german' }" @click="setLanguage('german')">Deutsch</button>
           </div>
         </div>
         

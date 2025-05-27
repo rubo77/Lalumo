@@ -1,32 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://musici.z11.de/</loc>
+    <loc>https://lalumo.z11.de/</loc>
     <lastmod>2025-05-27</lastmod>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
   </url>
-  <!-- The Musici app is a single-page application, but we can list logical sections here -->
+  <!-- The Lalumo app is a single-page application, but we can list logical sections here -->
   <url>
-    <loc>https://musici.z11.de/#pitches</loc>
+    <loc>https://lalumo.z11.de/#pitches</loc>
     <lastmod>2025-05-27</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://musici.z11.de/#impressum</loc>
+    <loc>https://lalumo.z11.de/#impressum</loc>
     <lastmod>2025-05-27</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
   <url>
-    <loc>https://musici.z11.de/#datenschutz</loc>
+    <loc>https://lalumo.z11.de/#datenschutz</loc>
     <lastmod>2025-05-27</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
   <url>
-    <loc>https://musici.z11.de/#credits</loc>
+    <loc>https://lalumo.z11.de/#credits</loc>
     <lastmod>2025-05-27</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>

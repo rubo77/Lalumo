@@ -13,6 +13,7 @@ export function app() {
     oscillators: {},
     exportedData: null,
     importData: '',
+    preferredLanguage: 'english',
     
     init() {
       // We'll initialize audio only on first user interaction
@@ -41,7 +42,7 @@ export function app() {
       }
       
       // Set up event listener for playing notes from other components
-      window.addEventListener('musici:playnote', (event) => {
+      window.addEventListener('lalumo:playnote', (event) => {
         if (event.detail && event.detail.note) {
           // Try to unlock audio first in case this is the first interaction
           this.unlockAudio();
@@ -58,14 +59,33 @@ export function app() {
      */
     loadUserData() {
       try {
-        const savedUsername = localStorage.getItem('musici_username');
+        // Load username from localStorage
+        const savedUsername = localStorage.getItem('lalumo_username');
         if (savedUsername) {
           this.username = savedUsername;
           console.log('Progress loaded for user:', this.username);
         }
+        
+        // Load language preference from localStorage
+        const savedLanguage = localStorage.getItem('lalumo_language');
+        if (savedLanguage) {
+          this.preferredLanguage = savedLanguage;
+        } else {
+          // Default to English if not set
+          localStorage.setItem('lalumo_language', 'english');
+        }
       } catch (e) {
         console.log('Error loading user data', e);
       }
+    },
+    
+    /**
+     * Set the preferred language and save to localStorage
+     */
+    setLanguage(language) {
+      this.preferredLanguage = language;
+      localStorage.setItem('lalumo_language', language);
+      console.log('Language set to:', language);
     },
     
     /**
@@ -91,7 +111,7 @@ export function app() {
       }
       
       try {
-        localStorage.setItem('musici_username', this.username);
+        localStorage.setItem('lalumo_username', this.username);
         console.log('Username saved:', this.username);
       } catch (e) {
         console.log('Error saving username', e);
@@ -109,7 +129,7 @@ export function app() {
         const progressData = {
           username: this.username,
           lastSaved: new Date().toISOString(),
-          pitchProgress: localStorage.getItem('musici_progress') || {},
+          pitchProgress: localStorage.getItem('lalumo_progress') || {},
           lastActivity: this.active
         };
         
@@ -173,11 +193,11 @@ export function app() {
         
         // Restore the username
         this.username = progressData.username;
-        localStorage.setItem('musici_username', this.username);
+        localStorage.setItem('lalumo_username', this.username);
         
         // Restore pitch progress
         if (progressData.pitchProgress) {
-          localStorage.setItem('musici_progress', progressData.pitchProgress);
+          localStorage.setItem('lalumo_progress', progressData.pitchProgress);
         }
         
         // Restore last activity
@@ -290,7 +310,7 @@ export function app() {
      */
     showMascotMessage(message) {
       // Dispatch event to the mascot component
-      window.dispatchEvent(new CustomEvent('musici:mascot-message', {
+      window.dispatchEvent(new CustomEvent('lalumo:mascot-message', {
         detail: { message }
       }));
     },

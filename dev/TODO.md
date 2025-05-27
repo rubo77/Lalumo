@@ -18,7 +18,6 @@ First finish pitches and melodies completely:
 
 
 - Add Child-Friendly Guidance
-    - Add spoken instructions (text-to-speech) - no reading required
     - Implement recurring character guides throughout chapters
 
 

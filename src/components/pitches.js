@@ -43,7 +43,7 @@ export function pitches() {
       
       // Try to load saved progress from localStorage
       try {
-        const savedProgress = localStorage.getItem('musici_progress');
+        const savedProgress = localStorage.getItem('lalumo_progress');
         if (savedProgress) {
           this.progress = JSON.parse(savedProgress);
         }
@@ -65,9 +65,9 @@ export function pitches() {
         this.$store.pitchMode = 'listen';
       }
       
-      // Show welcome message with the mascot
+      // Show welcome message with the mascot based on language preference
       setTimeout(() => {
-        this.showMascotMessage('Welcome to Pitches & Melodies! Click on the pictures to hear different melodies.');
+        this.showContextMessage();
       }, 1000);
     },
     
@@ -133,6 +133,40 @@ export function pitches() {
     },
     
     /**
+     * Show a mascot message that's context-aware based on current activity
+     */
+    showContextMessage() {
+      let message = '';
+      const language = localStorage.getItem('lalumo_language') || 'english';
+      
+      // Provide context-specific instructions based on current mode
+      if (this.mode === 'listen') {
+        message = language === 'german' ? 
+          'Klicke auf jedes Bild, um zu hören, wie diese Melodie klingt!' : 
+          'Click on each picture to hear what that melody sounds like!';
+      } else if (this.mode === 'match') {
+        message = language === 'german' ? 
+          'Höre dir die Melodie an und tippe auf das passende Bild!' : 
+          'Listen to the melody and tap the matching picture!';
+      } else if (this.mode === 'draw') {
+        message = language === 'german' ? 
+          'Zeichne eine Linie mit deinem Finger oder der Maus, um eine Melodie zu erstellen!' : 
+          'Draw a line with your finger or mouse to create a melody!';
+      } else if (this.mode === 'guess') {
+        message = language === 'german' ? 
+          'Höre dir die Melodie an und rate, ob der nächste Ton höher oder tiefer ist!' : 
+          'Listen to the melody and guess if the next note goes up or down!';
+      } else if (this.mode === 'memory') {
+        message = language === 'german' ? 
+          'Höre dir die Melodie an und tippe dann auf die farbigen Knöpfe in der gleichen Reihenfolge!' : 
+          'Listen to the melody, then tap the colored buttons in the same order!';
+      }
+      
+      // Show the message using the existing function
+      this.showMascotMessage(message);
+    },
+    
+    /**
      * Show a mascot message and speak it if text-to-speech is available
      */
     showMascotMessage(message) {
@@ -161,7 +195,7 @@ export function pitches() {
       const totalProgress = Object.values(this.progress).reduce((sum, val) => sum + val, 0) / 5;
       
       // Store progress in localStorage for persistence
-      localStorage.setItem('musici_progress', JSON.stringify(this.progress));
+      localStorage.setItem('lalumo_progress', JSON.stringify(this.progress));
     },
     
     /**
@@ -303,7 +337,7 @@ export function pitches() {
         
         // Try to play it through the app component
         try {
-          window.dispatchEvent(new CustomEvent('musici:playnote', { 
+          window.dispatchEvent(new CustomEvent('lalumo:playnote', { 
             detail: { note: `pitch_${note.toLowerCase()}` }
           }));
         } catch (err) {
@@ -352,7 +386,7 @@ export function pitches() {
         'Not quite. Let\'s try again!';
       
       // Play feedback sound using the event system instead of direct method call
-      window.dispatchEvent(new CustomEvent('musici:playnote', { 
+      window.dispatchEvent(new CustomEvent('lalumo:playnote', { 
         detail: { note: isCorrect ? 'success' : 'try_again' }
       }));
       
@@ -448,7 +482,7 @@ export function pitches() {
         if (index >= notes.length) return;
         
         // Play current note
-        window.dispatchEvent(new CustomEvent('musici:playnote', { 
+        window.dispatchEvent(new CustomEvent('lalumo:playnote', { 
           detail: { note: `pitch_${notes[index].toLowerCase()}` }
         }));
         
@@ -488,7 +522,7 @@ export function pitches() {
         if (index >= notes.length) return;
         
         // Play current note
-        window.dispatchEvent(new CustomEvent('musici:playnote', { 
+        window.dispatchEvent(new CustomEvent('lalumo:playnote', { 
           detail: { note: `pitch_${notes[index].toLowerCase()}` }
         }));
         
@@ -525,7 +559,7 @@ export function pitches() {
         if (index >= notes.length) return;
         
         // Play current note
-        window.dispatchEvent(new CustomEvent('musici:playnote', { 
+        window.dispatchEvent(new CustomEvent('lalumo:playnote', { 
           detail: { note: `pitch_${notes[index].toLowerCase()}` }
         }));
         
@@ -594,7 +628,7 @@ export function pitches() {
         if (index >= notes.length) return;
         
         // Play current note
-        window.dispatchEvent(new CustomEvent('musici:playnote', { 
+        window.dispatchEvent(new CustomEvent('lalumo:playnote', { 
           detail: { note: `pitch_${notes[index].toLowerCase()}` }
         }));
         
@@ -614,7 +648,7 @@ export function pitches() {
       this.userSequence.push(note);
       
       // Play the note using event
-      window.dispatchEvent(new CustomEvent('musici:playnote', { 
+      window.dispatchEvent(new CustomEvent('lalumo:playnote', { 
         detail: { note: `pitch_${note.toLowerCase()}` }
       }));
       
@@ -643,7 +677,7 @@ export function pitches() {
         'Let\'s try again. Listen carefully!';
       
       // Play feedback sound using the event system
-      window.dispatchEvent(new CustomEvent('musici:playnote', { 
+      window.dispatchEvent(new CustomEvent('lalumo:playnote', { 
         detail: { note: isCorrect ? 'success' : 'try_again' }
       }));
       

@@ -1,0 +1,27 @@
+/* Language preference section */
+.language-section {
+  margin: 20px 0;
+}
+
+.language-options {
+  display: flex;
+  gap: 15px;
+  margin-top: 10px;
+}
+
+.language-button {
+  padding: 10px 20px;
+  border-radius: 8px;
+  background-color: #f0f0f0;
+  border: 2px solid transparent;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.language-button.active {
+  background-color: #e1f5fe;
+  border-color: #29b6f6;
+  color: #0277bd;
+}
