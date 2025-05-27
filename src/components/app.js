@@ -50,6 +50,14 @@ export function app() {
         }
       });
       
+      // Set up event listener for stopping all sounds
+      window.addEventListener('lalumo:stopallsounds', () => {
+        // We don't need to do anything with the audio context
+        // The individual oscillators will be stopped in playTone
+        // Just log that we received the stop request
+        console.log('Received request to stop sounds');
+      });
+      
       // Special iOS audio check on page load
       this.checkIOSAudio();
     },
@@ -359,9 +367,28 @@ export function app() {
       if (!this.audioContext) return;
       
       try {
+        // If we have active oscillators, store them so we can access them later
+        if (this.activeOscillators) {
+          // Stop all currently playing oscillators immediately to avoid audio conflicts
+          this.activeOscillators.forEach(osc => {
+            try {
+              osc.stop();
+              osc.disconnect();
+            } catch (e) {
+              // Ignore errors from already stopped oscillators
+            }
+          });
+        }
+        
+        // Create a new array to track active oscillators
+        this.activeOscillators = [];
+        
         // Create oscillator
         const oscillator = this.audioContext.createOscillator();
         const gainNode = this.audioContext.createGain();
+        
+        // Add to active oscillators list
+        this.activeOscillators.push(oscillator);
         
         // Set properties
         oscillator.type = 'sine';
@@ -384,6 +411,14 @@ export function app() {
         oscillator.onended = () => {
           oscillator.disconnect();
           gainNode.disconnect();
+          
+          // Remove from active oscillators list
+          if (this.activeOscillators) {
+            const index = this.activeOscillators.indexOf(oscillator);
+            if (index !== -1) {
+              this.activeOscillators.splice(index, 1);
+            }
+          }
         };
       } catch (error) {
         console.error('Error playing tone:', error);

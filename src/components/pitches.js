@@ -343,8 +343,10 @@ export function pitches() {
      * Play a specific melodic sequence
      */
     playSequence(type) {
-      // Only one animation at a time
-      if (this.isPlaying) return;
+      // If already playing, stop the current sound first
+      if (this.isPlaying) {
+        this.stopCurrentSound();
+      }
       
       this.currentAnimation = type;
       this.isPlaying = true;
@@ -385,8 +387,8 @@ export function pitches() {
           console.error('Error playing note:', err);
         }
         
-        // Schedule the next note
-        setTimeout(() => playNote(noteIndex + 1), 600);
+        // Schedule the next note and store the timeout ID
+        this.soundTimeoutId = setTimeout(() => playNote(noteIndex + 1), 600);
       };
       
       // Start playing the sequence
@@ -395,11 +397,15 @@ export function pitches() {
       
       // Reset animation and playing state after sequence completes
       // Use the sequence length to calculate total duration
-      setTimeout(() => {
+      const resetTimeoutId = setTimeout(() => {
         this.isPlaying = false;
         this.currentAnimation = null;
+        this.soundTimeoutId = null;
         console.log('Ready for next melody');
       }, noteArray.length * 600 + 300);
+      
+      // Store this timeout ID as well so it can be cleared if needed
+      this.resetTimeoutId = resetTimeoutId;
     },
     
     /**
@@ -443,6 +449,32 @@ export function pitches() {
           this.setupMatchingMode();
         }
       }, 2000);
+    },
+    
+    /**
+     * Stop any currently playing sound
+     */
+    stopCurrentSound() {
+      // Clear any scheduled note playback
+      window.dispatchEvent(new CustomEvent('lalumo:stopallsounds', {}));
+      
+      // Reset animation and playing state
+      this.isPlaying = false;
+      this.currentAnimation = null;
+      
+      // Cancel any scheduled timeouts for animations or sounds
+      if (this.soundTimeoutId) {
+        clearTimeout(this.soundTimeoutId);
+        this.soundTimeoutId = null;
+      }
+      
+      // Also clear the reset timeout
+      if (this.resetTimeoutId) {
+        clearTimeout(this.resetTimeoutId);
+        this.resetTimeoutId = null;
+      }
+      
+      console.log('Stopped current sound');
     },
     
     /**
