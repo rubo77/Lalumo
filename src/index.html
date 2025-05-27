@@ -9,10 +9,6 @@
 <body>
 
   <main x-data="app()" x-init="init()" @click="initAudio()" class="container">
-    <!-- Audio initialization message -->
-    <div x-show="!isInitialized" class="audio-init-message">
-      <p>Click or tap anywhere to enable sounds! 🔊</p>
-    </div>
 
     <!-- Hamburger Menu -->
     <div class="hamburger-container" :class="{ 'menu-open': menuOpen }">
