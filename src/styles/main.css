@@ -471,7 +471,7 @@ body {
   max-height: 100vh;
   background-color: white;
   box-shadow: 3px 0 10px rgba(0, 0, 0, 0.1);
-  padding: 5rem 1.5rem 6rem; /* Extra padding at bottom to ensure last items are visible */
+  padding: 5rem 1.5rem 300px; /* Massively increased padding to force scrollability */
   margin-right: 10px; /* Add margin to the right */
   overflow-y: scroll !important; /* Force scrolling to always be available */
   overflow-x: hidden;
@@ -517,17 +517,40 @@ body {
 .hamburger-container {
   max-height: 100vh;
   position: relative;
+  overflow: visible; /* Ensure container doesn't clip content */
 }
 
+/* Ensure scrolling container properly shows all content */
 .hamburger-container.menu-open .menu-content {
-  max-height: 100vh;
+  max-height: 100vh; 
   overflow-y: auto;
-  padding-bottom: 100px; /* Extra padding to ensure full scrolling */
+  /* Already have increased padding in .menu-content */
 }
 
 .menu-settings, .menu-legal {
   margin-top: 10px;
   width: 100%;
+  padding-bottom: 10px;
+  min-height: fit-content;
+}
+
+/* Make bottom buttons more prominent and ensure they're visible */
+.menu-legal {
+  margin-bottom: 100px; /* Force extra space after legal section */
+}
+
+.menu-legal button {
+  margin-bottom: 10px;
+  padding: 15px;
+  border-radius: 8px;
+  /* Make buttons stand out more */
+  background-color: #f0f0f0;
+  font-weight: 500;
+  font-size: 1.1em;
+}
+
+.menu-legal button:last-child {
+  margin-bottom: 150px; /* Force extra space after last button */
 }
 
 .legal-content {
@@ -558,7 +581,7 @@ body {
 
 .menu-open .hamburger-button {
   left: auto;
-  right: 10px;
+  right: 30px; /* Moved 20px more to the left */
   max-width: calc(300px - 1.5rem);
 }
 
@@ -571,7 +594,7 @@ body {
 @media (min-width: 1024px) {
   /* Container layout modifications */
   .container {
-    padding-left: 320px; /* Space for the menu plus some margin */
+    padding-left: 325px; /* Increased space for the menu plus margin */
     box-sizing: border-box;
     width: 100%;
     max-width: 100%;

@@ -20,13 +20,11 @@ First finish pitches and melodies completely:
 - Add Child-Friendly Guidance
     - Add spoken instructions (text-to-speech) - no reading required
     - Implement recurring character guides throughout chapters
-    - Create visual progress tracking ("growing sound garden")
+
 
 - Wie sichere ich die Spieler Fortschritte? 
-    - Usernamen generieren beim ersten Besuch
-    - Local storage 
     - Backup auf Server
-    - Spielstand und alles als String exportieren - Savegame 
+
 
 - Create unique visual spaces for each chapter
 
