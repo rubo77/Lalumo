@@ -50,15 +50,6 @@
       <div x-data="pitches" x-init="init()">
         <h2>Pitches and Melodies</h2>
         
-        <!-- Mode selection tabs -->
-        <div class="mode-tabs">
-          <button @click="setMode('listen')" :class="{ active: mode === 'listen' }">Listen to Melodies</button>
-          <button @click="setMode('match')" :class="{ active: mode === 'match' }">Match Sounds</button>
-          <button @click="setMode('draw')" :class="{ active: mode === 'draw' }">Draw a Melody</button>
-          <button @click="setMode('guess')" :class="{ active: mode === 'guess' }">Guess Next Note</button>
-          <button @click="setMode('memory')" :class="{ active: mode === 'memory' }">Memory Game</button>
-        </div>
-        
         <!-- Listening Mode -->
         <div x-show="mode === 'listen'" class="pitch-activity">
           <h3>Listen to different melodies!</h3>

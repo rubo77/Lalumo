@@ -76,13 +76,79 @@ export function pitches() {
      * Setup for the listening mode
      */
     setupListeningMode() {
-      // Define melodic sequences for different movements
+      // Define available notes for patterns across 3 octaves
+      this.availableNotes = [
+        // C3 - B3 (Lower octave)
+        'C3', 'D3', 'E3', 'F3', 'G3', 'A3', 'B3',
+        // C4 - B4 (Middle octave)
+        'C4', 'D4', 'E4', 'F4', 'G4', 'A4', 'B4',
+        // C5 - C6 (Upper octave)
+        'C5', 'D5', 'E5', 'F5', 'G5', 'A5', 'B5', 'C6'
+      ];
+      
+      // Define standard patterns
       this.melodies = {
         up: ['C4', 'D4', 'E4', 'F4', 'G4'],
-        down: ['G4', 'F4', 'E4', 'D4', 'C4'],
-        wave: ['C4', 'E4', 'D4', 'F4', 'E4'],
-        jump: ['C4', 'G4', 'E4', 'A4', 'F4']
+        down: ['G4', 'F4', 'E4', 'D4', 'C4']
       };
+      
+      // The wavy and jump patterns will be generated on-demand when the buttons are clicked
+    },
+    
+    /**
+     * Generate a wavy pattern with only two alternating notes
+     * @returns {Array} The generated pattern
+     */
+    generateWavyPattern() {
+      // Pick a random starting note from the available range (avoid the highest notes)
+      const randomStartIndex = Math.floor(Math.random() * (this.availableNotes.length - 5));
+      const firstNote = this.availableNotes[randomStartIndex];
+      
+      // For the second note, pick one that's 1-3 steps away (up or down)
+      let interval = Math.floor(Math.random() * 3) + 1; // 1-3 steps
+      
+      // Randomly decide if we go up or down for the second note
+      if (Math.random() > 0.5) {
+        interval = -interval;  // Go down instead of up
+      }
+      
+      // Ensure we stay within bounds
+      const secondNoteIndex = Math.max(0, Math.min(this.availableNotes.length - 1, randomStartIndex + interval));
+      const secondNote = this.availableNotes[secondNoteIndex];
+      
+      // Create the pattern by alternating between the two notes (5 notes total)
+      return [firstNote, secondNote, firstNote, secondNote, firstNote];
+    },
+    
+    /**
+     * Generate a random jumpy pattern with unpredictable jumps
+     * @returns {Array} The generated pattern
+     */
+    generateJumpyPattern() {
+      const pattern = [];
+      let lastIndex = -1;
+      
+      // Create 5 random jumpy notes
+      for (let i = 0; i < 5; i++) {
+        let newIndex;
+        
+        // Make sure we don't get the same note twice in a row and ensure a big jump
+        do {
+          newIndex = Math.floor(Math.random() * this.availableNotes.length);
+          
+          // If not the first note, ensure it's at least 3 steps away from the previous note for bigger jumps
+          if (lastIndex !== -1 && Math.abs(newIndex - lastIndex) < 3) {
+            continue;
+          }
+          
+          break;
+        } while (true);
+        
+        pattern.push(this.availableNotes[newIndex]);
+        lastIndex = newIndex;
+      }
+      
+      return pattern;
     },
     
     /**
@@ -90,10 +156,19 @@ export function pitches() {
      * @param {string} type - Type of sequence (up, down, wave, jump)
      */
     playSequence(type) {
-      if (!this.melodies || !this.melodies[type]) return;
-      
       this.currentAnimation = type;
-      this.currentSequence = this.melodies[type];
+      
+      // Generate new patterns for wavy and jumpy on-demand
+      // This ensures a new random pattern each time the button is pressed
+      if (type === 'wave') {
+        this.currentSequence = this.generateWavyPattern();
+      } else if (type === 'jump') {
+        this.currentSequence = this.generateJumpyPattern();
+      } else if (this.melodies && this.melodies[type]) {
+        this.currentSequence = this.melodies[type];
+      } else {
+        return; // Invalid type
+      }
       
       // Play each note in sequence with proper timing
       const noteArray = [...this.currentSequence]; // Create a copy to be safe
