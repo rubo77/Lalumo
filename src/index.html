@@ -51,7 +51,6 @@
         <!-- Activities Section (shows only when Pitches chapter is active) -->
         <template x-if="active === 'pitches'">
           <div class="menu-activities">
-            <h3>Activities</h3>
             <button 
               @click="$dispatch('set-pitch-mode', 'listen'); window.innerWidth < 1024 ? menuOpen = false : null"
               x-data="{ isActive: false }"
@@ -91,17 +90,11 @@
         <!-- Settings Section -->
         <div class="menu-settings">
           
-          <div class="user-profile" x-show="username">
-            <div class="user-avatar">
+          <button @click="$data.active = 'settings'; window.innerWidth < 1024 ? menuOpen = false : null" :class="{ 'active': active === 'settings' }" class="settings-button" x-show="username">
+            <div class="user-avatar" x-show="username">
               <span x-text="username ? username.charAt(0) : '?'"></span>
             </div>
-            <div class="user-name">
-              <span x-text="username"></span>
-            </div>
-          </div>
-          
-          <button @click="$data.active = 'settings'; window.innerWidth < 1024 ? menuOpen = false : null" :class="{ 'active': active === 'settings' }">
-            <span>Player Settings</span>
+            <span class="settings-label">Player Settings</span>
           </button>
         </div>
         
@@ -136,28 +129,28 @@
           <div class="pitch-grid">
             <div class="pitch-card" @click="playSequence('up')" :class="{ active: currentAnimation === 'up' }">
               <div class="pitch-icon up">
-                <img src="/images/rocket.svg" alt="Rocket going up" />
+                <img src="/images/rocket.png" alt="Rocket going up" />
               </div>
               <p>Going Up</p>
             </div>
             
             <div class="pitch-card" @click="playSequence('down')" :class="{ active: currentAnimation === 'down' }">
               <div class="pitch-icon down">
-                <img src="/images/slide.svg" alt="Slide going down" />
+                <img src="/images/slide.png" alt="Slide going down" />
               </div>
               <p>Going Down</p>
             </div>
             
             <div class="pitch-card" @click="playSequence('wave')" :class="{ active: currentAnimation === 'wave' }">
               <div class="pitch-icon wave">
-                <img src="/images/wave.svg" alt="Wave pattern" />
+                <img src="/images/waves.png" alt="Wave pattern" />
               </div>
               <p>Wavy Pattern</p>
             </div>
             
             <div class="pitch-card" @click="playSequence('jump')" :class="{ active: currentAnimation === 'jump' }">
               <div class="pitch-icon jump">
-                <img src="/images/frog.svg" alt="Jumping frog" />
+                <img src="/images/frog.png" alt="Jumping frog" />
               </div>
               <p>Jumping Notes</p>
             </div>
@@ -319,7 +312,7 @@
     </section>
     
     <!-- Legal: Impressum -->
-    <section x-show="active === 'impressum'" x-transition>
+    <section x-show="active === 'impressum' && (window.innerWidth >= 1024 || !menuOpen)" x-transition>
       <h2>Impressum</h2>
       <div class="legal-content">
         <p>Musici App - Musik lernen für Kinder</p>
@@ -331,7 +324,7 @@
     </section>
     
     <!-- Legal: Datenschutz -->
-    <section x-show="active === 'datenschutz'" x-transition>
+    <section x-show="active === 'datenschutz' && (window.innerWidth >= 1024 || !menuOpen)" x-transition>
       <h2>Datenschutz</h2>
       <div class="legal-content">
         <p>Datenschutzerklärung für die Musici App</p>
@@ -346,7 +339,7 @@
     </section>
     
     <!-- Legal: Credits -->
-    <section x-show="active === 'credits'" x-transition>
+    <section x-show="active === 'credits' && (window.innerWidth >= 1024 || !menuOpen)" x-transition>
       <h2>Credits</h2>
       <div class="legal-content">
         <h3>App-Entwicklung</h3>
@@ -365,7 +358,7 @@
     </section>
     
     <!-- Settings Page -->
-    <section x-show="active === 'settings'" x-transition class="settings-page">
+    <section x-show="active === 'settings' && (window.innerWidth >= 1024 || !menuOpen)" x-transition class="settings-page">
       <h2>Player Settings</h2>
       <div x-show="username" class="settings-section">
         <h3>Your Profile</h3>
