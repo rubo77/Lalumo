@@ -1,0 +1,15 @@
+#! /bin/bash
+
+# 1. Build the project
+npm run build
+
+# 2. Create images directory in dist if it doesn't exist
+mkdir -p dist/images
+
+# 3. Copy images from public directory to dist
+cp -r public/images/* dist/images/
+
+# 4. Upload to the server (both built files and images)
+rsync -avz --no-perms --no-owner --no-group --delete dist/ root@vm06.eclabs:/var/kunden/webs/ruben/www/musici.z11.de/
+
+echo "Deployment complete! All files including images have been uploaded."
