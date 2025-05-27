@@ -486,15 +486,14 @@ export function pitches() {
      * Setup for the memory mode
      */
     setupMemoryMode() {
-      // Generate a simple sequence for memory exercise using our expanded note range
-      // We'll use primarily the middle octave for easier memorization
-      const middleOctaveNotes = this.availableNotes.filter(note => note.includes('4'));
+      // Use the specific C, D, E, F, G notes for the memory game
+      const fixedNotes = ['C4', 'D4', 'E4', 'F4', 'G4'];
       this.currentSequence = [];
       
       // Generate a random sequence of 3-5 notes
-      const length = Math.floor(Math.random() * 3) + 3;
+      const length = Math.floor(Math.random() * 3) + 3; // 3 to 5 notes
       for (let i = 0; i < length; i++) {
-        this.currentSequence.push(middleOctaveNotes[Math.floor(Math.random() * middleOctaveNotes.length)]);
+        this.currentSequence.push(fixedNotes[Math.floor(Math.random() * fixedNotes.length)]);
       }
       
       this.userSequence = [];
@@ -560,8 +559,10 @@ export function pitches() {
         'Amazing memory! You got it right!' : 
         'Let\'s try again. Listen carefully!';
       
-      // Play feedback sound
-      this.$root.playSound(isCorrect ? 'success' : 'try_again');
+      // Play feedback sound using the event system
+      window.dispatchEvent(new CustomEvent('musici:playnote', { 
+        detail: { note: isCorrect ? 'success' : 'try_again' }
+      }));
       
       // Reset after feedback
       setTimeout(() => {

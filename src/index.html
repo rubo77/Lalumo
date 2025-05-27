@@ -208,11 +208,11 @@
           </button>
           
           <div class="memory-grid">
-            <button class="memory-button c4" @click="addToSequence('C4')">DO</button>
-            <button class="memory-button d4" @click="addToSequence('D4')">RE</button>
-            <button class="memory-button e4" @click="addToSequence('E4')">MI</button>
-            <button class="memory-button f4" @click="addToSequence('F4')">FA</button>
-            <button class="memory-button g4" @click="addToSequence('G4')">SOL</button>
+            <button class="memory-button c4" @click="addToSequence('C4')">C</button>
+            <button class="memory-button d4" @click="addToSequence('D4')">D</button>
+            <button class="memory-button e4" @click="addToSequence('E4')">E</button>
+            <button class="memory-button f4" @click="addToSequence('F4')">F</button>
+            <button class="memory-button g4" @click="addToSequence('G4')">G</button>
           </div>
           
           <div class="sequence-progress">
@@ -220,7 +220,7 @@
               <div class="progress-dot active"></div>
             </template>
             
-            <template x-for="(_, index) in Array(currentSequence.length - userSequence.length)" :key="index">
+            <template x-for="(_, index) in Array(Math.max(0, currentSequence.length - userSequence.length))" :key="index">
               <div class="progress-dot"></div>
             </template>
           </div>
