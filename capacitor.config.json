@@ -1,0 +1,18 @@
+{
+  "appId": "com.lalumo.app",
+  "appName": "Lalumo",
+  "webDir": "dist",
+  "bundledWebRuntime": false,
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 2000,
+      "backgroundColor": "#eec98f",
+      "androidSplashResourceName": "splash",
+      "showSpinner": true,
+      "spinnerColor": "#FF8C2A"
+    }
+  },
+  "server": {
+    "androidScheme": "https"
+  }
+}

@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Lalumo</string>
+    <string name="title_activity_main">Lalumo</string>
+    <string name="package_name">com.lalumo.app</string>
+    <string name="custom_url_scheme">com.lalumo.app</string>
+</resources>

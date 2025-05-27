@@ -35,4 +35,3 @@ First finish pitches and melodies completely:
 
 # most important
 - the player settings should not be overlapped by the menu
-- Implement Capacitor as a bridge to Android and iOS
