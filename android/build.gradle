@@ -22,6 +22,27 @@ allprojects {
         google()
         mavenCentral()
     }
+    
+    // Explizite Java-Toolchain-Konfiguration für alle Projekte
+    plugins.withType(JavaBasePlugin).configureEach {
+        java {
+            toolchain {
+                languageVersion = JavaLanguageVersion.of(21)
+            }
+        }
+    }
+    
+    // Anwenden der Java 21-Konfiguration auf alle Unterprojekte
+    afterEvaluate {
+        if (project.hasProperty('android')) {
+            android {
+                compileOptions {
+                    sourceCompatibility JavaVersion.VERSION_21
+                    targetCompatibility JavaVersion.VERSION_21
+                }
+            }
+        }
+    }
 }
 
 task clean(type: Delete) {
