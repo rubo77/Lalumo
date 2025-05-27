@@ -49,6 +49,12 @@ cp -r public/* dist/
 echo "Syncing with Capacitor..."
 npx cap sync
 
+# Ensure images are copied to Android assets
+echo "Copying images to Android assets..."
+mkdir -p android/app/src/main/assets/public/images
+cp -r public/images/* android/app/src/main/assets/public/images/
+echo "Images copied successfully"
+
 # Platform-specific commands
 if [ "$1" == "android" ]; then
   echo "Opening Android project in Android Studio..."

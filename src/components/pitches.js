@@ -40,9 +40,16 @@ export function pitches() {
      * Initialize the component
      */
     init() {
-      // Set up text-to-speech if available
-      this.speechSynthesis = window.speechSynthesis;
-      this.ttsAvailable = !!this.speechSynthesis;
+      // Set up text-to-speech if available - with better debugging
+      this.speechSynthesis = null;
+      this.ttsAvailable = false;
+      this.usingNativeAndroidTTS = false;  // Flag für native Android TTS
+      
+      // Überprüfe zuerst, ob die native Android TTS-Brücke verfügbar ist
+      this.checkAndroidNativeTTS();
+      
+      // Fallback: Verzögerte Initialisierung der Web-Sprachsynthese für bessere Kompatibilität
+      this.initSpeechSynthesis();
       
       // Try to load saved progress from localStorage
       try {
@@ -208,23 +215,169 @@ export function pitches() {
     },
     
     /**
+     * Initialisiert die Sprachsynthese mit verbesserten Fallback-Mechanismen
+     * für bessere Kompatibilität mit verschiedenen Browsern und WebViews
+     */
+    initSpeechSynthesis() {
+      console.log('Initializing speech synthesis...');
+      
+      // Erste Prüfung mit sofortiger Initialisierung
+      if (window.speechSynthesis) {
+        console.log('Speech synthesis API found, initializing...');
+        this.speechSynthesis = window.speechSynthesis;
+        this.ttsAvailable = true;
+        
+        // Test mit einer stillen Sprachausgabe
+        try {
+          const testUtterance = new SpeechSynthesisUtterance('');
+          testUtterance.volume = 0; // Silent test
+          testUtterance.onend = () => console.log('Silent test utterance completed successfully');
+          testUtterance.onerror = (err) => console.error('Test utterance failed:', err);
+          this.speechSynthesis.speak(testUtterance);
+          console.log('Initial speech test started');
+        } catch (error) {
+          console.error('Speech synthesis test failed:', error);
+        }
+      } else {
+        console.log('Speech synthesis API not found on initial check');
+      }
+      
+      // Verzögerte Initialisierung für Browser, die die API erst später laden
+      setTimeout(() => {
+        if (!this.ttsAvailable && window.speechSynthesis) {
+          console.log('Speech synthesis API found on delayed check, initializing...');
+          this.speechSynthesis = window.speechSynthesis;
+          this.ttsAvailable = true;
+          
+          // Test mit einer stillen Sprachausgabe
+          try {
+            const testUtterance = new SpeechSynthesisUtterance('');
+            testUtterance.volume = 0;
+            this.speechSynthesis.speak(testUtterance);
+            console.log('Delayed speech test started');
+          } catch (error) {
+            console.error('Delayed speech test failed:', error);
+          }
+        }
+      }, 2000);
+      
+      // Finale Prüfung nach längerer Verzögerung
+      setTimeout(() => {
+        if (!this.ttsAvailable && window.speechSynthesis) {
+          console.log('Speech synthesis API found on final check, initializing...');
+          this.speechSynthesis = window.speechSynthesis;
+          this.ttsAvailable = true;
+        }
+        
+        if (this.ttsAvailable) {
+          console.log('Speech synthesis is now available');
+        } else {
+          console.log('Speech synthesis is not available after multiple attempts');
+        }
+      }, 5000);
+    },
+    
+    /**
+     * Check if the native Android TTS bridge is available
+     */
+    checkAndroidNativeTTS() {
+      console.log('Checking for native Android TTS bridge');
+      
+      // Setup callback for Android TTS ready event
+      window.androidTTSReady = (isReady) => {
+        console.log('Native Android TTS ready callback received:', isReady);
+        this.usingNativeAndroidTTS = !!isReady;
+        this.ttsAvailable = !!isReady;
+        
+        if (isReady) {
+          console.log('Native Android TTS is ready to use');
+        }
+      };
+      
+      // Setup callback for Android TTS results
+      window.androidTTSCallback = (result) => {
+        console.log('Android TTS speech result:', result);
+      };
+      
+      // Check if the native Android TTS bridge is available
+      if (window.AndroidTTS) {
+        console.log('Native Android TTS bridge detected');
+        
+        try {
+          // Get TTS status for diagnostics
+          if (typeof window.AndroidTTS.getTTSStatus === 'function') {
+            const status = window.AndroidTTS.getTTSStatus();
+            console.log('Android TTS Status:', status);
+          }
+          
+          // Check if TTS is available through the bridge
+          if (typeof window.AndroidTTS.isTTSAvailable === 'function') {
+            const ttsAvailable = window.AndroidTTS.isTTSAvailable();
+            console.log('Android TTS available:', ttsAvailable);
+            this.usingNativeAndroidTTS = ttsAvailable;
+            this.ttsAvailable = ttsAvailable;
+          }
+        } catch (error) {
+          console.error('Error checking Android TTS availability:', error);
+        }
+      } else {
+        console.log('Native Android TTS bridge not detected');
+      }
+    },
+    
+    /**
      * Show a mascot message and speak it if text-to-speech is available
      */
     showMascotMessage(message) {
       this.mascotMessage = message;
+      console.log('Showing mascot message:', message, 'TTS available:', this.ttsAvailable, 'Using native TTS:', this.usingNativeAndroidTTS);
+      
+      // Check if we can use the native Android TTS bridge
+      if (this.usingNativeAndroidTTS && window.AndroidTTS) {
+        try {
+          console.log('Using native Android TTS bridge to speak:', message);
+          window.AndroidTTS.speak(message);
+        } catch (error) {
+          console.error('Error using native Android TTS:', error);
+          this.tryWebSpeechAPI(message);
+        }
+      } else {
+        // Fallback to Web Speech API
+        this.tryWebSpeechAPI(message);
+      }
+    },
+    
+    /**
+     * Try to use Web Speech API for speech synthesis
+     */
+    tryWebSpeechAPI(message) {
+      console.log('Trying Web Speech API fallback');
       
       // Use text-to-speech if available
-      if (this.ttsAvailable) {
-        // Cancel any ongoing speech
-        this.speechSynthesis.cancel();
-        
-        // Create a new utterance
-        const utterance = new SpeechSynthesisUtterance(message);
-        utterance.rate = 0.9; // Slightly slower for children
-        utterance.pitch = 1.2; // Slightly higher pitch for friendly sound
-        
-        // Speak the message
-        this.speechSynthesis.speak(utterance);
+      if (this.ttsAvailable && this.speechSynthesis) {
+        try {
+          // Cancel any ongoing speech
+          this.speechSynthesis.cancel();
+          
+          // Create a new utterance
+          const utterance = new SpeechSynthesisUtterance(message);
+          utterance.rate = 0.9; // Slightly slower for children
+          utterance.pitch = 1.2; // Slightly higher pitch for friendly sound
+          
+          // Detailed logging for better diagnostics
+          utterance.onstart = () => console.log('Speech started for:', message);
+          utterance.onend = () => console.log('Speech ended for:', message);
+          utterance.onerror = (event) => console.error('Speech error:', event);
+          
+          // Speak the message
+          console.log('Speaking message with Web Speech API');
+          this.speechSynthesis.speak(utterance);
+        } catch (error) {
+          console.error('Error using speech synthesis:', error);
+          console.log('Speech failed completely');
+        }
+      } else {
+        console.log('Cannot speak message, no TTS method available');
       }
     },
     

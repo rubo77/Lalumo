@@ -8,11 +8,11 @@ First finish pitches and melodies completely:
     - Add friendly character animations
     - Ensure rewarding visual feedback for all interactions
 
-- each activity must be reacheable via a hash-anchor-link. and all chapters and activities should be included in the sitemap
-
 - das mascot soll immer beim öffnen einer activity den text vorlesen
 
 - Rules aus concept.md generieren
+
+- each activity must be reachable via a hash-anchor-link. and all chapters and activities should be included in the sitemap
 
 - Add Child-Friendly Guidance
     - Implement recurring character guides throughout chapters
@@ -29,13 +29,14 @@ First finish pitches and melodies completely:
     - Create adaptive exercise scenarios
     - Develop test cases for different child interactions
 
-- Hamburger Menü mit Kinder-Sicherung
+- Hamburger Menü mit Kinder-Sicherung: man kann das menu sperren mit einem schloss symbol, dann kann das kind nichts anderes mehr auswählen. um zu entsperren muss man 3s lange auf das schloss drücken
 
 - Cookie Banner
 
 # most important
 - the player settings should not be overlapped by the menu
+- die up and down melodien dürfen nicht zu hoch bzw zu tief anfangen
+
 
 - android app:
- - soll im fullscreen mode starten ohne statusbar oben und unten
- - 
+ - soll laufen
