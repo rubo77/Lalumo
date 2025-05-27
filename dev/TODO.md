@@ -35,3 +35,7 @@ First finish pitches and melodies completely:
 
 # most important
 - the player settings should not be overlapped by the menu
+
+- android app:
+ - soll im fullscreen mode starten ohne statusbar oben und unten
+ - 

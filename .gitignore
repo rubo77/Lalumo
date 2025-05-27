@@ -1,2 +1,34 @@
+# Allgemeine Dateien
 node_modules
 /dist/
+.DS_Store
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# Editor-Verzeichnisse und Dateien
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# Capacitor und iOS spezifisch
+/ios/App/App/public/
+/ios/App/Pods/
+/ios/DerivedData/
+/ios/App/App/Plugins/
+/ios/App/App/capacitor.config.json
+
+# Android spezifisch
+/android/app/src/main/assets/public/
+/android/.gradle/
+/android/app/release/
+/android/app/src/main/assets/capacitor.config.json
+/android/app/build/
+/android/build/
+/android/captures/
+/android/local.properties
