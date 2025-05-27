@@ -128,44 +128,28 @@
           <h3>Listen to different melodies!</h3>
           
           <div class="pitch-grid">
-            <div class="pitch-card" :class="{ 'active': currentAnimation === 'up' }">
+            <div class="pitch-card" :class="{ 'active': currentAnimation === 'up' }" @click="playSequence('up')" @mousedown="startLongPress('up')" @mouseup="cancelLongPress()" @mouseleave="cancelLongPress()">
               <div class="pitch-icon up">
                 <img src="/images/rocket.png" alt="Rocket going up" />
               </div>
-              <p>Going Up</p>
-              <button class="play-button" @click="playSequence('up')">
-                <span>Play</span> 🔊
-              </button>
             </div>
             
-            <div class="pitch-card" :class="{ 'active': currentAnimation === 'down' }">
+            <div class="pitch-card" :class="{ 'active': currentAnimation === 'down' }" @click="playSequence('down')" @mousedown="startLongPress('down')" @mouseup="cancelLongPress()" @mouseleave="cancelLongPress()">
               <div class="pitch-icon down">
                 <img src="/images/slide.png" alt="Slide going down" />
               </div>
-              <p>Going Down</p>
-              <button class="play-button" @click="playSequence('down')">
-                <span>Play</span> 🔊
-              </button>
             </div>
             
-            <div class="pitch-card" :class="{ 'active': currentAnimation === 'wave' }">
+            <div class="pitch-card" :class="{ 'active': currentAnimation === 'wave' }" @click="playSequence('wave')" @mousedown="startLongPress('wave')" @mouseup="cancelLongPress()" @mouseleave="cancelLongPress()">
               <div class="pitch-icon wave">
                 <img src="/images/waves.png" alt="Wave pattern" />
               </div>
-              <p>Wavy Pattern</p>
-              <button class="play-button" @click="playSequence('wave')">
-                <span>Play</span> 🔊
-              </button>
             </div>
             
-            <div class="pitch-card" :class="{ 'active': currentAnimation === 'jump' }">
+            <div class="pitch-card" :class="{ 'active': currentAnimation === 'jump' }" @click="playSequence('jump')" @mousedown="startLongPress('jump')" @mouseup="cancelLongPress()" @mouseleave="cancelLongPress()">
               <div class="pitch-icon jump">
                 <img src="/images/frog.png" alt="Jumping frog" />
               </div>
-              <p>Jumping Notes</p>
-              <button class="play-button" @click="playSequence('jump')">
-                <span>Play</span> 🔊
-              </button>
             </div>
           </div>
         </div>
@@ -179,32 +163,28 @@
           </button>
           
           <div class="pitch-grid">
-            <div class="pitch-card" @click="checkMatch('up')">
+            <div class="pitch-card" @click="checkMatch('up')" @mousedown="startLongPress('up')" @mouseup="cancelLongPress()" @mouseleave="cancelLongPress()">
               <div class="pitch-icon up">
                 <img src="/images/rocket.png" alt="Rocket going up" />
               </div>
-              <p>Going Up</p>
             </div>
             
-            <div class="pitch-card" @click="checkMatch('down')">
+            <div class="pitch-card" @click="checkMatch('down')" @mousedown="startLongPress('down')" @mouseup="cancelLongPress()" @mouseleave="cancelLongPress()">
               <div class="pitch-icon down">
                 <img src="/images/slide.png" alt="Slide going down" />
               </div>
-              <p>Going Down</p>
             </div>
             
-            <div class="pitch-card" @click="checkMatch('wave')">
+            <div class="pitch-card" @click="checkMatch('wave')" @mousedown="startLongPress('wave')" @mouseup="cancelLongPress()" @mouseleave="cancelLongPress()">
               <div class="pitch-icon wave">
                 <img src="/images/waves.png" alt="Wave pattern" />
               </div>
-              <p>Wavy Pattern</p>
             </div>
             
-            <div class="pitch-card" @click="checkMatch('jump')">
+            <div class="pitch-card" @click="checkMatch('jump')" @mousedown="startLongPress('jump')" @mouseup="cancelLongPress()" @mouseleave="cancelLongPress()">
               <div class="pitch-icon jump">
                 <img src="/images/frog.png" alt="Jumping frog" />
               </div>
-              <p>Jumping Notes</p>
             </div>
           </div>
           

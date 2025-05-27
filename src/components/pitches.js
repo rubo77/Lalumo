@@ -16,6 +16,8 @@ export function pitches() {
     showFeedback: false,
     mascotMessage: '',
     currentHighlightedNote: null, // For highlighting piano keys during playback
+    longPressTimer: null,
+    longPressThreshold: 800, // milliseconds for long press
     // Available notes for melodies
     availableNotes: [
       // C3 - B3 (Lower octave)
@@ -83,6 +85,45 @@ export function pitches() {
       this.isPlaying = false;
       
       console.log('MODSWITCH: State reset completed');
+    },
+    
+    /**
+     * Start a long press timer for showing help text
+     * @param {string} pattern - The pattern being long-pressed
+     */
+    startLongPress(pattern) {
+      this.cancelLongPress(); // Clear any existing timer
+      
+      this.longPressTimer = setTimeout(() => {
+        // Get the appropriate help text based on pattern and language
+        const language = localStorage.getItem('lalumo_language') || 'en';
+        const helpTexts = {
+          up: { en: 'Going Up', de: 'Hoch' },
+          down: { en: 'Going Down', de: 'Runter' },
+          wave: { en: 'Wavy Pattern', de: 'Wellenform' },
+          jump: { en: 'Jumping Notes', de: 'Springende Noten' }
+        };
+        
+        const helpText = helpTexts[pattern][language];
+        this.mascotMessage = helpText;
+        
+        // Also read out the help text using TTS
+        if (window.speechSynthesis) {
+          const speech = new SpeechSynthesisUtterance(helpText);
+          speech.lang = language === 'de' ? 'de-DE' : 'en-US';
+          window.speechSynthesis.speak(speech);
+        }
+      }, this.longPressThreshold);
+    },
+    
+    /**
+     * Cancel the long press timer
+     */
+    cancelLongPress() {
+      if (this.longPressTimer) {
+        clearTimeout(this.longPressTimer);
+        this.longPressTimer = null;
+      }
     },
     
     /**
