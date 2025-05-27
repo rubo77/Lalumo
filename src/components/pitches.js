@@ -98,22 +98,21 @@ export function pitches() {
         window.Alpine.store('pitchMode', newMode);
       }
       
-      // Setup the new mode
+      // Setup the new mode without playing any sounds
       if (newMode === 'listen') {
-        this.showMascotMessage('Click on each picture to hear what that melody sounds like!');
+        // For listen mode, just show instructions
       } else if (newMode === 'match') {
-        this.setupMatchingMode();
-        this.showMascotMessage('Listen to the melody and tap the matching picture!');
+        this.setupMatchingMode(false); // Setup without playing sound
       } else if (newMode === 'draw') {
-        this.setupDrawingMode();
-        this.showMascotMessage('Draw a line with your finger or mouse to create a melody!');
+        this.setupDrawingMode(); // Drawing doesn't play sound by default
       } else if (newMode === 'guess') {
-        this.setupGuessingMode();
-        this.showMascotMessage('Listen to the melody and guess if the next note goes up or down!');
+        this.setupGuessingMode(false); // Setup without playing sound
       } else if (newMode === 'memory') {
-        this.setupMemoryMode();
-        this.showMascotMessage('Listen to the melody, then tap the colored buttons in the same order!');
+        this.setupMemoryMode(false); // Setup without playing sound
       }
+      
+      // Always show the mascot message for the current mode
+      this.showContextMessage(); // Use our context-aware message function
       
       // Update progress tracking
       this.updateProgressGarden();
@@ -364,13 +363,17 @@ export function pitches() {
     /**
      * Setup for the matching mode
      */
-    setupMatchingMode() {
+    setupMatchingMode(playSound = false) {
       // Prepare a random sequence and image choices
       const types = ['up', 'down', 'wave', 'jump'];
       const randomType = types[Math.floor(Math.random() * types.length)];
       
       this.correctAnswer = randomType;
-      this.playSequence(randomType);
+      
+      // Only play the sound if explicitly requested
+      if (playSound) {
+        this.playSequence(randomType);
+      }
     },
     
     /**
@@ -497,7 +500,7 @@ export function pitches() {
     /**
      * Setup for the guessing mode
      */
-    setupGuessingMode() {
+    setupGuessingMode(playSound = false) {
       // Define possible sequence types and their expected next note direction
       const options = [
         { type: 'up', next: 'up', generator: this.generateUpPattern.bind(this) },
@@ -530,8 +533,10 @@ export function pitches() {
         setTimeout(() => playPartial(notes, index + 1), 600);
       };
       
-      // Start playing
-      playPartial(this.currentSequence);
+      // Only play sound if explicitly requested
+      if (playSound) {
+        playPartial(this.currentSequence);
+      }
     },
     
     /**
@@ -602,7 +607,7 @@ export function pitches() {
     /**
      * Setup for the memory mode
      */
-    setupMemoryMode() {
+    setupMemoryMode(playSound = false) {
       // Use the specific C, D, E, F, G notes for the memory game
       const fixedNotes = ['C4', 'D4', 'E4', 'F4', 'G4'];
       this.currentSequence = [];
@@ -615,8 +620,10 @@ export function pitches() {
       
       this.userSequence = [];
       
-      // Play the sequence for the user to remember
-      this.playMemorySequence();
+      // Play the sequence only if explicitly requested
+      if (playSound) {
+        this.playMemorySequence();
+      }
     },
     
     /**

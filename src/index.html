@@ -172,7 +172,7 @@
         <div x-show="mode === 'match'" class="pitch-activity">
           <h3>Match the sound to the picture!</h3>
           
-          <button class="play-button" @click="setupMatchingMode()">
+          <button class="play-button" @click="setupMatchingMode(true)">
             <span>Play Melody</span> 🔊
           </button>
           
@@ -236,7 +236,7 @@
         <div x-show="mode === 'guess'" class="pitch-activity">
           <h3>What comes next?</h3>
           
-          <button class="play-button" @click="setupGuessingMode()">
+          <button class="play-button" @click="setupGuessingMode(true)">
             <span>Play Melody</span> 🔊
           </button>
           
@@ -256,8 +256,8 @@
         <div x-show="mode === 'memory'" class="pitch-activity">
           <h3>Remember the melody!</h3>
           
-          <button class="play-button" @click="playMemorySequence()">
-            <span>Play Melody Again</span> 🔊
+          <button class="play-button" @click="setupMemoryMode(true)">
+            <span>Play Melody</span> 🔊
           </button>
           
           <div class="memory-grid">
