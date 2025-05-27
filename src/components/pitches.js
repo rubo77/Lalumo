@@ -429,6 +429,9 @@ export function pitches() {
      * @param {string} selected - User's selection
      */
     checkMatch(selected) {
+      // First stop any currently playing melody
+      this.stopCurrentSound();
+      
       const isCorrect = selected === this.correctAnswer;
       
       this.showFeedback = true;
