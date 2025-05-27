@@ -22,6 +22,13 @@ export function pitches() {
       console.log('Pitches component initialized');
       // Start with listening mode by default
       this.setMode('listen');
+      
+      // Listen for mode change events from hamburger menu
+      window.addEventListener('set-pitch-mode', (event) => {
+        if (event.detail) {
+          this.setMode(event.detail);
+        }
+      });
     },
     
     /**
