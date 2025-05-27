@@ -268,8 +268,10 @@ export function pitches() {
         'Great job! That\'s correct!' : 
         'Not quite. Let\'s try again!';
       
-      // Play feedback sound
-      this.$root.playSound(isCorrect ? 'success' : 'try_again');
+      // Play feedback sound using the event system instead of direct method call
+      window.dispatchEvent(new CustomEvent('musici:playnote', { 
+        detail: { note: isCorrect ? 'success' : 'try_again' }
+      }));
       
       // Reset after feedback
       setTimeout(() => {
