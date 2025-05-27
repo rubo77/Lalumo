@@ -13,6 +13,11 @@ First finish pitches and melodies completely:
 
 - each activity must be reacheable via a hash-anchor-link. and all chapters and activities should be included in the sitemap
 
+- the player settings should not be overlapped by the menu
+
+- das mascot soll immer beim öffnen einer activity den text vorlesen
+
+- @index.html#L129-137 remove the text "going up" and make the whole div clickable. onlong-press it should show the help text "going up" or in german "hoch". ebenso für alle vier divs
 
 - Rules aus concept.md generieren
 

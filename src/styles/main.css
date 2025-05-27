@@ -242,15 +242,25 @@
   display: flex;
   align-items: center;
   margin-bottom: 1.5rem;
+  background-color: #eec98f;
+  border-radius: 1.5rem;
+  padding: 1rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.mascot-wrapper {
+  animation: bob 3s infinite alternate ease-in-out;
+  margin-right: 1rem;
 }
 
 .mascot {
-  width: 80px;
-  height: 80px;
-  animation: bob 3s infinite alternate ease-in-out;
+  width: 100px;
+  height: auto; /* Let height adjust to maintain aspect ratio */
   cursor: pointer;
   position: relative;
   z-index: 10;
+  display: block;
+  border-radius: 1rem;
 }
 
 @keyframes bob {
@@ -263,28 +273,17 @@
 }
 
 .speech-bubble {
-  background-color: white;
-  border-radius: 1rem;
-  padding: 0.8rem 1.2rem;
-  margin-left: 1rem;
-  position: relative;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  max-width: calc(100% - 120px);
-  font-size: 1rem;
+  flex: 1;
+  font-size: 1.1rem;
   animation: fade-in 0.5s ease-out;
+  color: #333;
+  font-weight: 500;
+  padding-right: 1rem;
 }
 
+/* Remove the speech bubble triangle since it's in the same container */
 .speech-bubble::before {
-  content: '';
-  position: absolute;
-  left: -10px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 0;
-  height: 0;
-  border-top: 10px solid transparent;
-  border-bottom: 10px solid transparent;
-  border-right: 10px solid white;
+  display: none;
 }
 
 @keyframes fade-in {

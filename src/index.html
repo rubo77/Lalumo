@@ -16,7 +16,7 @@
       <div class="modal-content" @click.outside="setUsername()">
         <h3>Welcome to Lalumo!</h3>
         <div class="mascot-welcome">
-          <img src="/images/mascot.svg" alt="Lalumo Mascot" class="mascot" />
+          <img src="/images/mascot.png" alt="Lalumo Mascot" class="mascot" />
           <p>Let's create a special name just for you!</p>
         </div>
         <button class="primary-button" @click="setUsername()">Generate Random Name</button>
@@ -116,8 +116,10 @@
     <!-- Chapter: Pitches -->
     <section x-show="active === 'pitches'" x-transition>
       <div x-data="pitches" x-init="init()">
-        <div class="mascot-container">
-          <img src="/images/mascot.svg" alt="Lalumo Mascot" class="mascot" @click="showContextMessage()" />
+        <div class="mascot-container" @click="showContextMessage()">
+          <div class="mascot-wrapper">
+            <img src="/images/mascot.png" alt="Lalumo Mascot" class="mascot" />
+          </div>
           <div class="speech-bubble" x-show="mascotMessage" x-text="mascotMessage" x-transition></div>
         </div>
         
