@@ -15,6 +15,7 @@ export function pitches() {
     feedback: '',
     showFeedback: false,
     mascotMessage: '',
+    currentHighlightedNote: null, // For highlighting piano keys during playback
     // Available notes for melodies
     availableNotes: [
       // C3 - B3 (Lower octave)
@@ -632,7 +633,16 @@ export function pitches() {
     playMemorySequence() {
       // Play memory sequence with timing
       const playMemory = (notes, index = 0) => {
-        if (index >= notes.length) return;
+        if (index >= notes.length) {
+          // Reset highlighting when done
+          setTimeout(() => {
+            this.currentHighlightedNote = null;
+          }, 300);
+          return;
+        }
+        
+        // Highlight current note
+        this.currentHighlightedNote = notes[index];
         
         // Play current note
         window.dispatchEvent(new CustomEvent('lalumo:playnote', { 
@@ -640,7 +650,7 @@ export function pitches() {
         }));
         
         // Schedule next note
-        setTimeout(() => playMemory(notes, index + 1), 700);
+        setTimeout(() => playMemory(notes, index + 1), 600);
       };
       
       // Start playing
@@ -648,16 +658,24 @@ export function pitches() {
     },
     
     /**
-     * Add a note to the user's sequence attempt
-     * @param {string} note - Note selected by user
+     * Add a note to the user's sequence
+     * @param {string} note - The note to add
      */
     addToSequence(note) {
+      // Highlight the key when pressed
+      this.currentHighlightedNote = note;
+      
       this.userSequence.push(note);
       
       // Play the note using event
       window.dispatchEvent(new CustomEvent('lalumo:playnote', { 
         detail: { note: `pitch_${note.toLowerCase()}` }
       }));
+      
+      // Remove highlighting after a short delay
+      setTimeout(() => {
+        this.currentHighlightedNote = null;
+      }, 300);
       
       // Check if the sequence is complete
       if (this.userSequence.length === this.currentSequence.length) {
