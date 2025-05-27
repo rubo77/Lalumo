@@ -381,15 +381,22 @@ export function pitches() {
      * Setup for the guessing mode
      */
     setupGuessingMode() {
+      // Define possible sequence types and their expected next note direction
       const options = [
-        { type: 'up', next: 'up' },
-        { type: 'down', next: 'down' },
-        { type: 'wave', next: 'up' },
-        { type: 'jump', next: 'down' }
+        { type: 'up', next: 'up', generator: this.generateUpPattern.bind(this) },
+        { type: 'down', next: 'down', generator: this.generateDownPattern.bind(this) },
+        { type: 'wave', next: 'up', generator: this.generateWavyPattern.bind(this) },
+        { type: 'jump', next: 'down', generator: this.generateJumpyPattern.bind(this) }
       ];
       
+      // Select a random pattern type
       const selected = options[Math.floor(Math.random() * options.length)];
-      this.currentSequence = this.melodies[selected.type].slice(0, 3); // First 3 notes only
+      
+      // Generate a sequence for the selected pattern type
+      const fullSequence = selected.generator();
+      
+      // Only use the first 3 notes for the guessing game
+      this.currentSequence = fullSequence.slice(0, 3);
       this.correctAnswer = selected.next;
       this.choices = ['up', 'down'];
       
@@ -459,9 +466,9 @@ export function pitches() {
      * @returns {string} - Higher note
      */
     getHigherNote(note) {
-      const notes = ['C4', 'D4', 'E4', 'F4', 'G4', 'A4', 'B4', 'C5'];
-      const index = notes.indexOf(note);
-      return index < notes.length - 1 ? notes[index + 1] : notes[notes.length - 1];
+      const index = this.availableNotes.indexOf(note);
+      if (index === -1) return this.availableNotes[Math.floor(this.availableNotes.length / 2)]; // Return middle note if not found
+      return index < this.availableNotes.length - 1 ? this.availableNotes[index + 1] : this.availableNotes[this.availableNotes.length - 1];
     },
     
     /**
@@ -470,23 +477,24 @@ export function pitches() {
      * @returns {string} - Lower note
      */
     getLowerNote(note) {
-      const notes = ['C4', 'D4', 'E4', 'F4', 'G4', 'A4', 'B4', 'C5'];
-      const index = notes.indexOf(note);
-      return index > 0 ? notes[index - 1] : notes[0];
+      const index = this.availableNotes.indexOf(note);
+      if (index === -1) return this.availableNotes[Math.floor(this.availableNotes.length / 2)]; // Return middle note if not found
+      return index > 0 ? this.availableNotes[index - 1] : this.availableNotes[0];
     },
     
     /**
      * Setup for the memory mode
      */
     setupMemoryMode() {
-      // Generate a simple sequence for memory exercise
-      const notes = ['C4', 'D4', 'E4', 'F4', 'G4'];
+      // Generate a simple sequence for memory exercise using our expanded note range
+      // We'll use primarily the middle octave for easier memorization
+      const middleOctaveNotes = this.availableNotes.filter(note => note.includes('4'));
       this.currentSequence = [];
       
       // Generate a random sequence of 3-5 notes
       const length = Math.floor(Math.random() * 3) + 3;
       for (let i = 0; i < length; i++) {
-        this.currentSequence.push(notes[Math.floor(Math.random() * notes.length)]);
+        this.currentSequence.push(middleOctaveNotes[Math.floor(Math.random() * middleOctaveNotes.length)]);
       }
       
       this.userSequence = [];

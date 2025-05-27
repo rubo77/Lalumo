@@ -26,7 +26,7 @@ Tones going up, down, waves, jumps: Children recognize tone movements and assign
 - the wavy patterm may only use two  altering notes ..
 - each time you press the button again it should start at a new random start note. 
 - the available notes should be 3 octaves
-- the up and down melodies should start a t a random note
+- the up and down melodies should start at a random note
 
 - **Listening to Pitch Movements:**
   Children listen to short melodic sequences where tones move upwards, downwards, in waves, or make jumps. Each movement is represented visually (e.g., a rocket for up, a slide for down, waves for undulating patterns, a frog or spring for jumps).
