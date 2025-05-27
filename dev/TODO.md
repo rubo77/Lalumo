@@ -11,10 +11,7 @@ First finish pitches and melodies completely:
     - Ensure rewarding visual feedback for all interactions
 
 
-- ergänze im hamburger menu:
-    - Impressum
-    - Datenschutz
-    - Credits
+- each activity must be reacheable via a hash-anchor-link. and all chapters and activities should be included in the sitemap
 
 
 - Rules aus concept.md generieren

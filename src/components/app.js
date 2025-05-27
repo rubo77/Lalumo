@@ -11,13 +11,20 @@ export function app() {
     isAudioEnabled: false,
     audioContext: null,
     oscillators: {},
+    exportedData: null,
+    importData: '',
     
     init() {
       // We'll initialize audio only on first user interaction
       this.isAudioEnabled = false;
       
-      // Set up event listener for audio initialization
-      window.addEventListener('click', () => this.initAudio(), { once: true });
+      // Set up multiple event listeners for iOS audio unlocking
+      ['touchstart', 'touchend', 'mousedown', 'keydown'].forEach(eventType => {
+        document.documentElement.addEventListener(eventType, this.unlockAudio.bind(this), true);
+      });
+      
+      // Additional global handler for any user interaction
+      document.addEventListener('click', () => this.unlockAudio(), false);
       
       // Initialize Alpine.js store for state sharing
       window.Alpine.store('pitchMode', 'listen');
@@ -36,9 +43,14 @@ export function app() {
       // Set up event listener for playing notes from other components
       window.addEventListener('musici:playnote', (event) => {
         if (event.detail && event.detail.note) {
+          // Try to unlock audio first in case this is the first interaction
+          this.unlockAudio();
           this.playSound(event.detail.note);
         }
       });
+      
+      // Special iOS audio check on page load
+      this.checkIOSAudio();
     },
     
     /**
@@ -105,7 +117,10 @@ export function app() {
         const jsonString = JSON.stringify(progressData);
         const encoded = btoa(jsonString);
         
-        // Return the save code
+        // Set the exportedData property for display in the UI
+        this.exportedData = encoded;
+        
+        console.log('Progress exported successfully');
         return encoded;
       } catch (e) {
         console.log('Error exporting progress', e);
@@ -114,12 +129,40 @@ export function app() {
     },
     
     /**
+     * Copy the exported progress code to the clipboard
+     */
+    copyToClipboard() {
+      if (!this.exportedData) return;
+      
+      try {
+        // Create a temporary textarea element to copy from
+        const textarea = document.createElement('textarea');
+        textarea.value = this.exportedData;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+        
+        // Show feedback
+        console.log('Progress code copied to clipboard!');
+        alert('Progress code copied to clipboard!');
+      } catch (e) {
+        console.error('Failed to copy to clipboard:', e);
+      }
+    },
+    
+    /**
      * Import progress from a save game string
      */
-    importProgress(saveCode) {
+    importProgress() {
+      if (!this.importData || this.importData.trim() === '') {
+        alert('Please enter a progress code first!');
+        return;
+      }
+      
       try {
         // Decode and parse the save code
-        const jsonString = atob(saveCode);
+        const jsonString = atob(this.importData);
         const progressData = JSON.parse(jsonString);
         
         // Validate the data
@@ -151,20 +194,53 @@ export function app() {
     },
     
     /**
-     * Initialize Web Audio API - simpler than Tone.js
+     * Unlock audio on iOS devices
+     * This addresses the iOS requirement for user interaction to enable audio
      */
-    initAudio() {
+    unlockAudio() {
+      console.log('Attempting to unlock audio...');
+      
       if (this.isAudioEnabled) return;
       
       try {
-        // Create audio context
+        // Create audio context if it doesn't exist
         const AudioContext = window.AudioContext || window.webkitAudioContext;
-        this.audioContext = new AudioContext();
+        if (!this.audioContext) {
+          this.audioContext = new AudioContext();
+        }
+        
+        // iOS specific: resume the audio context
+        if (this.audioContext.state === 'suspended') {
+          this.audioContext.resume();
+        }
+        
+        // Create and play a silent buffer to unlock audio
+        const buffer = this.audioContext.createBuffer(1, 1, 22050);
+        const source = this.audioContext.createBufferSource();
+        source.buffer = buffer;
+        source.connect(this.audioContext.destination);
+        source.start(0);
+        
+        // Mark audio as enabled
         this.isAudioEnabled = true;
-        console.log('Audio context started successfully');
+        console.log('Audio unlocked successfully, context state:', this.audioContext.state);
+        
+        // Remove the event listeners once audio is unlocked
+        ['touchstart', 'touchend', 'mousedown', 'keydown'].forEach(eventType => {
+          document.documentElement.removeEventListener(eventType, this.unlockAudio.bind(this), true);
+        });
+        
       } catch (error) {
-        console.error('Failed to initialize audio:', error);
+        console.error('Failed to unlock audio:', error);
       }
+    },
+    
+    /**
+     * Initialize Web Audio API - simpler than Tone.js
+     */
+    initAudio() {
+      // Now just call the unlock function since it handles everything
+      this.unlockAudio();
     },
     
     /**
@@ -172,8 +248,19 @@ export function app() {
      */
     playSound(sound) {
       if (!this.isAudioEnabled) {
-        this.initAudio();
-        if (!this.isAudioEnabled) return; // Still not enabled
+        this.unlockAudio();
+        if (!this.isAudioEnabled) {
+          console.log('AUDIOTROUBLE: Still cannot enable audio. User may need to interact with the page first');
+          // Try to get user attention with a visible message
+          this.showMascotMessage('Tap anywhere on the screen to enable sound!');
+          return;
+        }
+      }
+      
+      // iOS Safari requires resuming AudioContext on each user interaction
+      if (this.audioContext && this.audioContext.state === 'suspended') {
+        console.log('AUDIOTROUBLE: Resuming suspended audio context');
+        this.audioContext.resume();
       }
       
       try {
@@ -194,6 +281,54 @@ export function app() {
         }
       } catch (error) {
         console.error('Error playing sound:', error);
+      }
+    },
+    
+    /**
+     * Show a message from the mascot character
+     * @param {string} message - The message to show
+     */
+    showMascotMessage(message) {
+      // Dispatch event to the mascot component
+      window.dispatchEvent(new CustomEvent('musici:mascot-message', {
+        detail: { message }
+      }));
+    },
+    
+    /**
+     * Check for iOS device and add special handling
+     */
+    checkIOSAudio() {
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+      
+      if (isIOS) {
+        console.log('AUDIOTROUBLE: iOS device detected, adding special audio handling');
+        
+        // Show a message after a short delay to get user to tap the screen
+        setTimeout(() => {
+          if (!this.isAudioEnabled) {
+            this.showMascotMessage('Tap anywhere to enable sound! 🔊');
+          }
+        }, 2000);
+        
+        // Add a visible audio unlock button for iOS
+        const audioUnlockDiv = document.createElement('div');
+        audioUnlockDiv.style.position = 'fixed';
+        audioUnlockDiv.style.bottom = '20px';
+        audioUnlockDiv.style.right = '20px';
+        audioUnlockDiv.style.backgroundColor = '#6c5ce7';
+        audioUnlockDiv.style.color = 'white';
+        audioUnlockDiv.style.padding = '10px 15px';
+        audioUnlockDiv.style.borderRadius = '50px';
+        audioUnlockDiv.style.boxShadow = '0 2px 10px rgba(0,0,0,0.2)';
+        audioUnlockDiv.style.zIndex = '9999';
+        audioUnlockDiv.style.display = this.isAudioEnabled ? 'none' : 'block';
+        audioUnlockDiv.textContent = '🔊 Enable Sound';
+        audioUnlockDiv.addEventListener('click', () => {
+          this.unlockAudio();
+          audioUnlockDiv.style.display = 'none';
+        });
+        document.body.appendChild(audioUnlockDiv);
       }
     },
     

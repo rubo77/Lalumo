@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Musici</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <!-- Scripts and styles will be injected by webpack -->
 </head>
 <body>
@@ -47,6 +48,7 @@
           </div>
         </div>
         
+        <!-- Chapters Section -->
         <div class="menu-chapters">
           <h3>Chapters</h3>
           <button @click="$data.active = 'pitches'; window.innerWidth < 1024 ? menuOpen = false : null" :class="{ 'active': active === 'pitches' }">Pitches & Melodies</button>
@@ -54,13 +56,9 @@
           <button @click="$data.active = 'rhythms'; window.innerWidth < 1024 ? menuOpen = false : null" :class="{ 'active': active === 'rhythms' }" style="display: none;">Rhythm</button>
           <button @click="$data.active = 'chords'; window.innerWidth < 1024 ? menuOpen = false : null" :class="{ 'active': active === 'chords' }" style="display: none;">Chords</button>
           <button @click="$data.active = 'freeplay'; window.innerWidth < 1024 ? menuOpen = false : null" :class="{ 'active': active === 'freeplay' }" style="display: none;">Free Play</button>
-          
-          <h3 class="settings-header">Settings</h3>
-          <button @click="$data.active = 'settings'; window.innerWidth < 1024 ? menuOpen = false : null" :class="{ 'active': active === 'settings' }">
-            <span>Player Settings</span>
-          </button>
         </div>
         
+        <!-- Activities Section (shows only when Pitches chapter is active) -->
         <template x-if="active === 'pitches'">
           <div class="menu-activities">
             <h3>Activities</h3>
@@ -96,6 +94,31 @@
             >Memory Game</button>
           </div>
         </template>
+        
+        <!-- Flexible spacer to push settings and legal to bottom -->
+        <div class="menu-spacer"></div>
+        
+        <!-- Settings Section -->
+        <div class="menu-settings">
+          <h3 class="settings-header">Settings</h3>
+          <button @click="$data.active = 'settings'; window.innerWidth < 1024 ? menuOpen = false : null" :class="{ 'active': active === 'settings' }">
+            <span>Player Settings</span>
+          </button>
+        </div>
+        
+        <!-- Legal Section -->
+        <div class="menu-legal">
+          <h3 class="legal-header">Legal</h3>
+          <button @click="$data.active = 'impressum'; window.innerWidth < 1024 ? menuOpen = false : null" :class="{ 'active': active === 'impressum' }">
+            <span>Impressum</span>
+          </button>
+          <button @click="$data.active = 'datenschutz'; window.innerWidth < 1024 ? menuOpen = false : null" :class="{ 'active': active === 'datenschutz' }">
+            <span>Datenschutz</span>
+          </button>
+          <button @click="$data.active = 'credits'; window.innerWidth < 1024 ? menuOpen = false : null" :class="{ 'active': active === 'credits' }">
+            <span>Credits</span>
+          </button>
+        </div>
       </div>
     </div>
 
@@ -298,90 +321,102 @@
             <div class="tone-icon cold"></div>
             <p>Cold</p>
           </div>
-          <div class="tone-card" @click="pick('soft')">
-            <div class="tone-icon soft"></div>
-            <p>Soft</p>
-          </div>
-          <div class="tone-card" @click="pick('sharp')">
-            <div class="tone-icon sharp"></div>
-            <p>Sharp</p>
-          </div>
-        </div>
-        <div x-show="selected" class="feedback">
-          <p>You selected: <span x-text="selected"></span></p>
         </div>
       </div>
     </section>
-
-    <!-- Chapter: Rhythms -->
+    
+    <!-- Chapter: Rhythm -->
     <section x-show="active === 'rhythms'" x-transition>
-      <div x-data="rhythms">
-        <h2>Experience Rhythm</h2>
-        <p>Coming soon...</p>
-      </div>
+      <h2>Rhythm Exercises</h2>
+      <p>Coming soon!</p>
     </section>
-
+    
     <!-- Chapter: Chords -->
     <section x-show="active === 'chords'" x-transition>
-      <div x-data="chords">
-        <h2>Feel the Chords</h2>
-        <p>Coming soon...</p>
-      </div>
+      <h2>Chord Exploration</h2>
+      <p>Coming soon!</p>
     </section>
-
+    
     <!-- Chapter: Free Play -->
     <section x-show="active === 'freeplay'" x-transition>
-      <div x-data="freeplay">
-        <h2>Free Sound Play</h2>
-        <p>Coming soon...</p>
+      <h2>Free Play Mode</h2>
+      <p>Coming soon!</p>
+    </section>
+    
+    <!-- Legal: Impressum -->
+    <section x-show="active === 'impressum'" x-transition>
+      <h2>Impressum</h2>
+      <div class="legal-content">
+        <p>Musici App - Musik lernen für Kinder</p>
+        <p>Verantwortlich für den Inhalt:</p>
+        <p>[Name]<br>
+        [Adresse]<br>
+        [Kontakt]</p>
+      </div>
+    </section>
+    
+    <!-- Legal: Datenschutz -->
+    <section x-show="active === 'datenschutz'" x-transition>
+      <h2>Datenschutz</h2>
+      <div class="legal-content">
+        <p>Datenschutzerklärung für die Musici App</p>
+        <p>Wir nehmen den Schutz Ihrer persönlichen Daten sehr ernst. Alle Daten werden lokal auf Ihrem Gerät gespeichert und nicht an Server übertragen.</p>
+        <h3>Lokale Speicherung</h3>
+        <p>Die App speichert Folgendes lokal auf Ihrem Gerät:</p>
+        <ul>
+          <li>Benutzername</li>
+          <li>Lernfortschritte</li>
+        </ul>
+      </div>
+    </section>
+    
+    <!-- Legal: Credits -->
+    <section x-show="active === 'credits'" x-transition>
+      <h2>Credits</h2>
+      <div class="legal-content">
+        <h3>App-Entwicklung</h3>
+        <p>Musici Team</p>
+        
+        <h3>Grafiken & Illustrationen</h3>
+        <p>SVG-Grafiken von [Quelle]</p>
+        
+        <h3>Technologien</h3>
+        <ul>
+          <li>Alpine.js</li>
+          <li>Web Audio API</li>
+          <li>HTML5 & CSS3</li>
+        </ul>
       </div>
     </section>
     
     <!-- Settings Page -->
     <section x-show="active === 'settings'" x-transition class="settings-page">
       <h2>Player Settings</h2>
-      
-      <div class="settings-card">
-        <h3>Player Profile</h3>
-        <div class="profile-info" x-show="username">
-          <div class="profile-header">
-            <div class="large-avatar">
-              <span x-text="username ? username.charAt(0) : '?'"></span>
-            </div>
-            <div class="profile-name">
-              <h4>Your Name</h4>
-              <p x-text="username"></p>
-            </div>
+      <div x-show="username" class="settings-section">
+        <h3>Your Profile</h3>
+        <div class="profile-section">
+          <div class="profile-avatar">
+            <span x-text="username ? username.charAt(0) : '?'"></span>
           </div>
-          
-          <button class="primary-button" @click="setUsername()">Generate New Name</button>
-        </div>
-      </div>
-      
-      <div class="settings-card">
-        <h3>Save Your Progress</h3>
-        <p>Get a special code to save your progress. You can use this code on another device or if you need to reinstall the app.</p>
-        
-        <div x-data="{ saveCode: '', showCode: false }">
-          <button class="primary-button" @click="saveCode = exportProgress(); showCode = true;">Generate Save Code</button>
-          
-          <div x-show="showCode" class="save-code-container">
-            <p>Copy this code somewhere safe:</p>
-            <div class="save-code" x-text="saveCode"></div>
+          <div class="profile-details">
+            <p class="profile-name" x-text="username"></p>
+            <button class="secondary-button" @click="setUsername()">Generate New Name</button>
           </div>
         </div>
-      </div>
-      
-      <div class="settings-card">
-        <h3>Load Progress</h3>
-        <p>Enter a save code to restore your progress:</p>
         
-        <div x-data="{ loadCode: '', loadResult: '' }">
-          <textarea class="code-input" placeholder="Paste your save code here" x-model="loadCode"></textarea>
+        <h3>Game Progress</h3>
+        <div class="progress-section">
+          <p>Export your progress to save or transfer to another device:</p>
+          <button class="primary-button" @click="exportProgress()">Export Progress</button>
+          <div x-show="exportedData" class="export-data">
+            <p>Copy this code to save your progress:</p>
+            <textarea x-text="exportedData" readonly class="export-textarea"></textarea>
+            <button class="secondary-button" @click="copyToClipboard()">Copy to Clipboard</button>
+          </div>
           
-          <button class="primary-button" @click="loadResult = importProgress(loadCode) ? 'Success! Your progress has been restored.' : 'Sorry, that code did not work. Please check and try again.';">Load Progress</button>
-          
-          <p x-show="loadResult" x-text="loadResult" class="load-result"></p>
+          <p class="import-label">Import your progress from another device:</p>
+          <textarea placeholder="Paste your progress data here..." x-model="importData" class="import-textarea"></textarea>
+          <button class="primary-button" @click="importProgress()">Import Progress</button>
         </div>
       </div>
     </section>

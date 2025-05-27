@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="32" cy="32" r="32" fill="#6c5ce7" />
+  <circle cx="32" cy="32" r="28" fill="#a29bfe" />
+  <!-- Music note symbol -->
+  <g transform="translate(18, 10) scale(0.9)">
+    <circle cx="16" cy="34" r="8" fill="#ff9f43" />
+    <rect x="22" y="12" width="4" height="22" fill="#ff9f43" />
+    <ellipse cx="26" cy="12" rx="10" ry="6" fill="#ff9f43" />
+  </g>
+</svg>
