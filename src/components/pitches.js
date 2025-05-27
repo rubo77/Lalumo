@@ -39,6 +39,11 @@ export function pitches() {
       this.mode = newMode;
       this.resetState();
       
+      // Store the current mode in Alpine.js store for menu highlighting
+      if (window.Alpine && window.Alpine.store) {
+        window.Alpine.store('pitchMode', newMode);
+      }
+      
       // Set up the specific mode
       switch(newMode) {
         case 'listen':
@@ -86,13 +91,43 @@ export function pitches() {
         'C5', 'D5', 'E5', 'F5', 'G5', 'A5', 'B5', 'C6'
       ];
       
-      // Define standard patterns
-      this.melodies = {
-        up: ['C4', 'D4', 'E4', 'F4', 'G4'],
-        down: ['G4', 'F4', 'E4', 'D4', 'C4']
-      };
+      // All patterns (up, down, wave, jump) will be generated on-demand when buttons are clicked
+    },
+    
+    /**
+     * Generate an ascending melody starting from a random note
+     * @returns {Array} The generated pattern
+     */
+    generateUpPattern() {
+      // Pick a random starting position that allows room for 4 more notes going up
+      const maxStartIndex = this.availableNotes.length - 5;
+      const startIndex = Math.floor(Math.random() * maxStartIndex);
       
-      // The wavy and jump patterns will be generated on-demand when the buttons are clicked
+      // Create a 5-note ascending pattern from this starting position
+      const pattern = [];
+      for (let i = 0; i < 5; i++) {
+        pattern.push(this.availableNotes[startIndex + i]);
+      }
+      
+      return pattern;
+    },
+    
+    /**
+     * Generate a descending melody starting from a random note
+     * @returns {Array} The generated pattern
+     */
+    generateDownPattern() {
+      // Pick a random starting position that allows room for 4 more notes going down
+      const minStartIndex = 4; // Need at least 4 notes below it
+      const startIndex = minStartIndex + Math.floor(Math.random() * (this.availableNotes.length - minStartIndex));
+      
+      // Create a 5-note descending pattern from this starting position
+      const pattern = [];
+      for (let i = 0; i < 5; i++) {
+        pattern.push(this.availableNotes[startIndex - i]);
+      }
+      
+      return pattern;
     },
     
     /**
@@ -158,16 +193,23 @@ export function pitches() {
     playSequence(type) {
       this.currentAnimation = type;
       
-      // Generate new patterns for wavy and jumpy on-demand
+      // Generate new patterns on-demand for all types
       // This ensures a new random pattern each time the button is pressed
-      if (type === 'wave') {
-        this.currentSequence = this.generateWavyPattern();
-      } else if (type === 'jump') {
-        this.currentSequence = this.generateJumpyPattern();
-      } else if (this.melodies && this.melodies[type]) {
-        this.currentSequence = this.melodies[type];
-      } else {
-        return; // Invalid type
+      switch (type) {
+        case 'up':
+          this.currentSequence = this.generateUpPattern();
+          break;
+        case 'down':
+          this.currentSequence = this.generateDownPattern();
+          break;
+        case 'wave':
+          this.currentSequence = this.generateWavyPattern();
+          break;
+        case 'jump':
+          this.currentSequence = this.generateJumpyPattern();
+          break;
+        default:
+          return; // Invalid type
       }
       
       // Play each note in sequence with proper timing

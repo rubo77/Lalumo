@@ -155,9 +155,53 @@ body {
   max-width: calc(300px - 1.5rem);
 }
 
-@media (min-width: 768px) {
+/* Desktop Menu Styles */
+@media (min-width: 1024px) {
+  /* Container layout modifications */
+  .container {
+    padding-left: 300px; /* Space for the menu */
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
+  }
+  
+  /* Menu positioning on desktop */
+  .desktop-menu {
+    width: 300px;
+  }
+  
+  .desktop-menu .menu-content {
+    position: fixed;
+    width: 300px;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .desktop-menu .hamburger-button {
+    /* Hide hamburger button on desktop */
+    display: none;
+  }
+  
+  /* Ensure sections take appropriate space */
+  section {
+    padding: 2rem;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  /* Make activities take full available space */
+  .pitch-activity {
+    width: 100%;
+  }
+}
+
+/* Tablet Styles */
+@media (min-width: 768px) and (max-width: 1023px) {
   .menu-open .hamburger-button {
     left: calc(300px - 1.5rem);
+  }
+  
+  section {
+    padding: 1rem;
   }
 }
 

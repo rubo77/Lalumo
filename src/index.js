@@ -12,6 +12,9 @@ import { rhythms } from './components/rhythms';
 import { chords } from './components/chords';
 import { freeplay } from './components/freeplay';
 
+// Initialize Alpine store for state management
+Alpine.store('pitchMode', 'listen'); // Default is listen mode
+
 // Register Alpine components
 Alpine.data('app', app);
 Alpine.data('tonecolors', tonecolors);

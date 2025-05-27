@@ -11,7 +11,7 @@
   <main x-data="app()" x-init="init()" @click="initAudio()" class="container">
 
     <!-- Hamburger Menu -->
-    <div class="hamburger-container" :class="{ 'menu-open': menuOpen }">
+    <div class="hamburger-container" :class="{ 'menu-open': menuOpen, 'desktop-menu': window.innerWidth >= 1024 }" x-init="window.innerWidth >= 1024 ? menuOpen = true : menuOpen = false; window.addEventListener('resize', () => { if(window.innerWidth >= 1024) menuOpen = true; })">
       <button class="hamburger-button" @click="menuOpen = !menuOpen">
         <div class="hamburger-icon">
           <span></span>
@@ -21,25 +21,50 @@
       </button>
       
       <!-- Menu content -->
-      <div class="menu-content" x-show="menuOpen" @click.away="menuOpen = false" x-transition>
+      <div class="menu-content" x-show="menuOpen" @click.away="window.innerWidth < 1024 ? menuOpen = false : null" x-transition>
         <h2>Musici</h2>
         <div class="menu-chapters">
           <h3>Chapters</h3>
-          <button @click="active = 'pitches'; menuOpen = false" :class="{ 'active': active === 'pitches' }">Pitches & Melodies</button>
-          <button @click="active = 'tonecolors'; menuOpen = false" :class="{ 'active': active === 'tonecolors' }">Tone Colors</button>
-          <button @click="active = 'rhythms'; menuOpen = false" :class="{ 'active': active === 'rhythms' }">Rhythm</button>
-          <button @click="active = 'chords'; menuOpen = false" :class="{ 'active': active === 'chords' }">Chords</button>
-          <button @click="active = 'freeplay'; menuOpen = false" :class="{ 'active': active === 'freeplay' }">Free Play</button>
+          <button @click="active = 'pitches'; window.innerWidth < 1024 ? menuOpen = false : null" :class="{ 'active': active === 'pitches' }">Pitches & Melodies</button>
+          <button @click="active = 'tonecolors'; window.innerWidth < 1024 ? menuOpen = false : null" :class="{ 'active': active === 'tonecolors' }">Tone Colors</button>
+          <button @click="active = 'rhythms'; window.innerWidth < 1024 ? menuOpen = false : null" :class="{ 'active': active === 'rhythms' }">Rhythm</button>
+          <button @click="active = 'chords'; window.innerWidth < 1024 ? menuOpen = false : null" :class="{ 'active': active === 'chords' }">Chords</button>
+          <button @click="active = 'freeplay'; window.innerWidth < 1024 ? menuOpen = false : null" :class="{ 'active': active === 'freeplay' }">Free Play</button>
         </div>
         
         <template x-if="active === 'pitches'">
           <div class="menu-activities">
             <h3>Activities</h3>
-            <button @click="$dispatch('set-pitch-mode', 'listen'); menuOpen = false">Listen to Melodies</button>
-            <button @click="$dispatch('set-pitch-mode', 'match'); menuOpen = false">Match Sounds</button>
-            <button @click="$dispatch('set-pitch-mode', 'draw'); menuOpen = false">Draw a Melody</button>
-            <button @click="$dispatch('set-pitch-mode', 'guess'); menuOpen = false">Guess Next Note</button>
-            <button @click="$dispatch('set-pitch-mode', 'memory'); menuOpen = false">Memory Game</button>
+            <button 
+              @click="$dispatch('set-pitch-mode', 'listen'); window.innerWidth < 1024 ? menuOpen = false : null"
+              x-data="{ isActive: false }"
+              x-init="$watch('$store.pitchMode', value => isActive = value === 'listen')"
+              :class="{ 'active': isActive }"
+            >Listen to Melodies</button>
+            <button 
+              @click="$dispatch('set-pitch-mode', 'match'); window.innerWidth < 1024 ? menuOpen = false : null"
+              x-data="{ isActive: false }"
+              x-init="$watch('$store.pitchMode', value => isActive = value === 'match')"
+              :class="{ 'active': isActive }"
+            >Match Sounds</button>
+            <button 
+              @click="$dispatch('set-pitch-mode', 'draw'); window.innerWidth < 1024 ? menuOpen = false : null"
+              x-data="{ isActive: false }"
+              x-init="$watch('$store.pitchMode', value => isActive = value === 'draw')"
+              :class="{ 'active': isActive }"
+            >Draw a Melody</button>
+            <button 
+              @click="$dispatch('set-pitch-mode', 'guess'); window.innerWidth < 1024 ? menuOpen = false : null"
+              x-data="{ isActive: false }"
+              x-init="$watch('$store.pitchMode', value => isActive = value === 'guess')"
+              :class="{ 'active': isActive }"
+            >Guess Next Note</button>
+            <button 
+              @click="$dispatch('set-pitch-mode', 'memory'); window.innerWidth < 1024 ? menuOpen = false : null"
+              x-data="{ isActive: false }"
+              x-init="$watch('$store.pitchMode', value => isActive = value === 'memory')"
+              :class="{ 'active': isActive }"
+            >Memory Game</button>
           </div>
         </template>
       </div>
