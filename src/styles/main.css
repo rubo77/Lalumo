@@ -1,0 +1,505 @@
+/* Musici App Styles */
+
+:root {
+  --primary-color: #ff9f43;
+  --secondary-color: #6c5ce7;
+  --background-color: #fff8e1;
+  --text-color: #2d3436;
+  --accent-color: #fdcb6e;
+  --success-color: #00b894;
+  --warning-color: #ff7675;
+  
+  /* Tone color variables */
+  --warm-color: #ff9f43;
+  --cold-color: #74b9ff;
+  --soft-color: #a29bfe;
+  --sharp-color: #ff7675;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  flex: 1;
+}
+
+/* Header & Navigation */
+.navigation {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+  justify-content: center;
+}
+
+.navigation button {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 1.5rem;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-transform: capitalize;
+  font-weight: 600;
+}
+
+.navigation button:hover {
+  background-color: var(--accent-color);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Section transitions */
+section {
+  background-color: white;
+  border-radius: 1rem;
+  padding: 2rem;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.05);
+  margin-bottom: 1rem;
+}
+
+section h2 {
+  color: var(--secondary-color);
+  text-align: center;
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  font-size: 1.8rem;
+}
+
+/* Tone Colors Component */
+.tone-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.tone-card {
+  background-color: white;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.tone-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+}
+
+.tone-icon {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  margin-bottom: 1rem;
+}
+
+.tone-icon.warm {
+  background-color: var(--warm-color);
+}
+
+.tone-icon.cold {
+  background-color: var(--cold-color);
+}
+
+.tone-icon.soft {
+  background-color: var(--soft-color);
+}
+
+.tone-icon.sharp {
+  background-color: var(--sharp-color);
+}
+
+.tone-card p {
+  margin: 0;
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+.feedback {
+  background-color: var(--accent-color);
+  padding: 1rem;
+  border-radius: 0.5rem;
+  text-align: center;
+  margin-top: 2rem;
+  animation: fadeIn 0.5s ease;
+}
+
+/* Audio initialization message */
+.audio-init-message {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: var(--secondary-color);
+  color: white;
+  text-align: center;
+  padding: 0.8rem;
+  z-index: 1000;
+  animation: pulse 1.5s infinite alternate;
+}
+
+.audio-init-message p {
+  margin: 0;
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+@keyframes pulse {
+  from { opacity: 0.8; }
+  to { opacity: 1; }
+}
+
+/* Animation for section transitions */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Pitches Component Styles */
+.mode-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  justify-content: center;
+}
+
+.mode-tabs button {
+  background-color: #e0e0e0;
+  color: var(--text-color);
+  border: none;
+  border-radius: 1rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.mode-tabs button.active {
+  background-color: var(--secondary-color);
+  color: white;
+  font-weight: bold;
+}
+
+.mode-tabs button:hover {
+  background-color: var(--accent-color);
+  transform: translateY(-2px);
+}
+
+.pitch-activity {
+  margin-top: 1.5rem;
+  animation: fadeIn 0.5s ease;
+}
+
+.pitch-activity h3 {
+  color: var(--primary-color);
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+/* Pitch Grid - for listen and match modes */
+.pitch-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+
+.pitch-card {
+  background-color: white;
+  border-radius: 1rem;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.pitch-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+}
+
+.pitch-card.active {
+  background-color: var(--accent-color);
+  transform: scale(1.05);
+}
+
+.pitch-icon {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  margin-bottom: 0.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f5f5f5;
+  overflow: hidden;
+}
+
+.pitch-icon img {
+  width: 80%;
+  height: 80%;
+  object-fit: contain;
+}
+
+.pitch-icon.up {
+  background-color: #ff9ff3; /* Pink for going up */
+}
+
+.pitch-icon.down {
+  background-color: #48dbfb; /* Blue for going down */
+}
+
+.pitch-icon.wave {
+  background-color: #1dd1a1; /* Green for wavy pattern */
+}
+
+.pitch-icon.jump {
+  background-color: #feca57; /* Yellow for jumps */
+}
+
+/* Drawing mode */
+.drawing-container {
+  position: relative;
+  margin: 1.5rem auto;
+  max-width: 400px;
+}
+
+.drawing-canvas {
+  background-color: white;
+  border: 2px solid var(--secondary-color);
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  cursor: crosshair;
+  touch-action: none; /* Prevent scrolling on touch devices */
+}
+
+.drawing-notes {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  right: -60px;
+  top: 0;
+  height: 100%;
+  justify-content: space-between;
+  color: var(--text-color);
+  font-weight: bold;
+}
+
+.high-note {
+  transform: translateY(10px);
+}
+
+.low-note {
+  transform: translateY(-10px);
+}
+
+.clear-button {
+  background-color: #dfe6e9;
+  color: var(--text-color);
+  border: none;
+  border-radius: 0.5rem;
+  padding: 0.6rem 1rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  display: block;
+  margin: 1rem auto;
+  transition: all 0.2s ease;
+}
+
+.clear-button:hover {
+  background-color: #b2bec3;
+}
+
+/* Guessing mode */
+.play-button {
+  background-color: var(--secondary-color);
+  color: white;
+  border: none;
+  border-radius: 0.7rem;
+  padding: 0.8rem 1.5rem;
+  font-size: 1rem;
+  cursor: pointer;
+  display: block;
+  margin: 1.5rem auto;
+  transition: all 0.2s ease;
+  font-weight: bold;
+}
+
+.play-button:hover {
+  background-color: #5f50e0;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.guess-options {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin: 2rem 0;
+}
+
+.guess-button {
+  background-color: white;
+  border: 2px solid var(--primary-color);
+  border-radius: 0.7rem;
+  padding: 1rem 2rem;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: bold;
+}
+
+.guess-button.up {
+  border-color: #ff9ff3;
+  color: #ff9ff3;
+}
+
+.guess-button.down {
+  border-color: #48dbfb;
+  color: #48dbfb;
+}
+
+.guess-button.up:hover {
+  background-color: #ff9ff3;
+  color: white;
+}
+
+.guess-button.down:hover {
+  background-color: #48dbfb;
+  color: white;
+}
+
+/* Memory mode */
+.memory-grid {
+  display: flex;
+  justify-content: center;
+  gap: 0.6rem;
+  margin: 1.5rem 0;
+  flex-wrap: wrap;
+}
+
+.memory-button {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: none;
+  font-weight: bold;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.memory-button:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+}
+
+.memory-button.c4 { background-color: #ff9ff3; color: white; }
+.memory-button.d4 { background-color: #feca57; color: var(--text-color); }
+.memory-button.e4 { background-color: #1dd1a1; color: white; }
+.memory-button.f4 { background-color: #48dbfb; color: var(--text-color); }
+.memory-button.g4 { background-color: #c8d6e5; color: var(--text-color); }
+
+.sequence-progress {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin: 1.5rem 0;
+}
+
+.progress-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: #dfe6e9;
+  transition: all 0.3s ease;
+}
+
+.progress-dot.active {
+  background-color: var(--secondary-color);
+  transform: scale(1.2);
+}
+
+/* Feedback messages */
+.feedback-message {
+  background-color: var(--accent-color);
+  color: var(--text-color);
+  padding: 1rem;
+  border-radius: 0.8rem;
+  text-align: center;
+  margin: 1.5rem auto;
+  max-width: 80%;
+  font-weight: bold;
+  animation: bounce 0.5s ease;
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+  40% {transform: translateY(-10px);}
+  60% {transform: translateY(-5px);}
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .navigation {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .navigation button {
+    width: 100%;
+    margin-bottom: 0.5rem;
+  }
+  
+  .tone-grid, .pitch-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .mode-tabs {
+    flex-direction: column;
+  }
+  
+  .drawing-container {
+    max-width: 90%;
+  }
+  
+  .drawing-canvas {
+    width: 100%;
+    height: 180px;
+  }
+  
+  .drawing-notes {
+    right: -40px;
+  }
+  
+  .guess-options {
+    flex-direction: column;
+    gap: 1rem;
+  }
+}

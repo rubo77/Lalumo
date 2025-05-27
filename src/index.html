@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Musici</title>
+  <!-- Scripts and styles will be injected by webpack -->
+</head>
+<body>
+
+  <main x-data="app()" x-init="init()" @click="initAudio()" class="container">
+    <!-- Audio initialization message -->
+    <div x-show="!isInitialized" class="audio-init-message">
+      <p>Click or tap anywhere to enable sounds! 🔊</p>
+    </div>
+
+    <!-- Hamburger Menu -->
+    <div class="hamburger-container" :class="{ 'menu-open': menuOpen }">
+      <button class="hamburger-button" @click="menuOpen = !menuOpen">
+        <div class="hamburger-icon">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </button>
+      
+      <!-- Menu content -->
+      <div class="menu-content" x-show="menuOpen" @click.away="menuOpen = false" x-transition>
+        <h2>Musici</h2>
+        <div class="menu-chapters">
+          <h3>Chapters</h3>
+          <button @click="active = 'pitches'; menuOpen = false" :class="{ 'active': active === 'pitches' }">Pitches & Melodies</button>
+          <button @click="active = 'tonecolors'; menuOpen = false" :class="{ 'active': active === 'tonecolors' }">Tone Colors</button>
+          <button @click="active = 'rhythms'; menuOpen = false" :class="{ 'active': active === 'rhythms' }">Rhythm</button>
+          <button @click="active = 'chords'; menuOpen = false" :class="{ 'active': active === 'chords' }">Chords</button>
+          <button @click="active = 'freeplay'; menuOpen = false" :class="{ 'active': active === 'freeplay' }">Free Play</button>
+        </div>
+        
+        <template x-if="active === 'pitches'">
+          <div class="menu-activities">
+            <h3>Activities</h3>
+            <button @click="$dispatch('set-pitch-mode', 'listen'); menuOpen = false">Listen to Melodies</button>
+            <button @click="$dispatch('set-pitch-mode', 'match'); menuOpen = false">Match Sounds</button>
+            <button @click="$dispatch('set-pitch-mode', 'draw'); menuOpen = false">Draw a Melody</button>
+            <button @click="$dispatch('set-pitch-mode', 'guess'); menuOpen = false">Guess Next Note</button>
+            <button @click="$dispatch('set-pitch-mode', 'memory'); menuOpen = false">Memory Game</button>
+          </div>
+        </template>
+      </div>
+    </div>
+
+    <!-- Chapter: Pitches -->
+    <section x-show="active === 'pitches'" x-transition>
+      <div x-data="pitches" x-init="init()">
+        <h2>Pitches and Melodies</h2>
+        
+        <!-- Mode selection tabs -->
+        <div class="mode-tabs">
+          <button @click="setMode('listen')" :class="{ active: mode === 'listen' }">Listen to Melodies</button>
+          <button @click="setMode('match')" :class="{ active: mode === 'match' }">Match Sounds</button>
+          <button @click="setMode('draw')" :class="{ active: mode === 'draw' }">Draw a Melody</button>
+          <button @click="setMode('guess')" :class="{ active: mode === 'guess' }">Guess Next Note</button>
+          <button @click="setMode('memory')" :class="{ active: mode === 'memory' }">Memory Game</button>
+        </div>
+        
+        <!-- Listening Mode -->
+        <div x-show="mode === 'listen'" class="pitch-activity">
+          <h3>Listen to different melodies!</h3>
+          <p>Click on each picture to hear what that melody sounds like:</p>
+          
+          <div class="pitch-grid">
+            <div class="pitch-card" @click="playSequence('up')" :class="{ active: currentAnimation === 'up' }">
+              <div class="pitch-icon up">
+                <img src="/images/rocket.svg" alt="Rocket going up" />
+              </div>
+              <p>Going Up</p>
+            </div>
+            
+            <div class="pitch-card" @click="playSequence('down')" :class="{ active: currentAnimation === 'down' }">
+              <div class="pitch-icon down">
+                <img src="/images/slide.svg" alt="Slide going down" />
+              </div>
+              <p>Going Down</p>
+            </div>
+            
+            <div class="pitch-card" @click="playSequence('wave')" :class="{ active: currentAnimation === 'wave' }">
+              <div class="pitch-icon wave">
+                <img src="/images/wave.svg" alt="Wave pattern" />
+              </div>
+              <p>Wavy Pattern</p>
+            </div>
+            
+            <div class="pitch-card" @click="playSequence('jump')" :class="{ active: currentAnimation === 'jump' }">
+              <div class="pitch-icon jump">
+                <img src="/images/frog.svg" alt="Jumping frog" />
+              </div>
+              <p>Jumping Notes</p>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Matching Mode -->
+        <div x-show="mode === 'match'" class="pitch-activity">
+          <h3>Match the sound to the picture!</h3>
+          <p>Listen to the melody and tap the matching picture:</p>
+          
+          <button class="play-button" @click="setupMatchingMode()">
+            <span>Play Melody</span> 🔊
+          </button>
+          
+          <div class="pitch-grid">
+            <div class="pitch-card" @click="checkMatch('up')">
+              <div class="pitch-icon up">
+                <img src="/images/rocket.svg" alt="Rocket going up" />
+              </div>
+              <p>Going Up</p>
+            </div>
+            
+            <div class="pitch-card" @click="checkMatch('down')">
+              <div class="pitch-icon down">
+                <img src="/images/slide.svg" alt="Slide going down" />
+              </div>
+              <p>Going Down</p>
+            </div>
+            
+            <div class="pitch-card" @click="checkMatch('wave')">
+              <div class="pitch-icon wave">
+                <img src="/images/wave.svg" alt="Wave pattern" />
+              </div>
+              <p>Wavy Pattern</p>
+            </div>
+            
+            <div class="pitch-card" @click="checkMatch('jump')">
+              <div class="pitch-icon jump">
+                <img src="/images/frog.svg" alt="Jumping frog" />
+              </div>
+              <p>Jumping Notes</p>
+            </div>
+          </div>
+          
+          <div x-show="showFeedback" class="feedback-message" x-text="feedback"></div>
+        </div>
+        
+        <!-- Drawing Mode -->
+        <div x-show="mode === 'draw'" class="pitch-activity">
+          <h3>Draw a melody!</h3>
+          <p>Draw a line with your finger or mouse. The app will play your melody!</p>
+          
+          <div class="drawing-container">
+            <canvas class="drawing-canvas" width="400" height="200"
+                   @mousedown="startDrawing" 
+                   @mousemove="draw" 
+                   @mouseup="endDrawing"
+                   @touchstart="startDrawing" 
+                   @touchmove="draw" 
+                   @touchend="endDrawing">
+            </canvas>
+            
+            <div class="drawing-notes">
+              <div class="high-note">High Notes</div>
+              <div class="low-note">Low Notes</div>
+            </div>
+          </div>
+          
+          <button class="clear-button" @click="drawPath = []; setupDrawingMode()">Clear & Try Again</button>
+        </div>
+        
+        <!-- Guessing Mode -->
+        <div x-show="mode === 'guess'" class="pitch-activity">
+          <h3>What comes next?</h3>
+          <p>Listen to the start of a melody, then guess if the next note goes up or down!</p>
+          
+          <button class="play-button" @click="setupGuessingMode()">
+            <span>Play Melody</span> 🔊
+          </button>
+          
+          <div class="guess-options">
+            <button class="guess-button up" @click="checkGuess('up')">
+              <span>Up</span> ⬆️
+            </button>
+            <button class="guess-button down" @click="checkGuess('down')">
+              <span>Down</span> ⬇️
+            </button>
+          </div>
+          
+          <div x-show="showFeedback" class="feedback-message" x-text="feedback"></div>
+        </div>
+        
+        <!-- Memory Mode -->
+        <div x-show="mode === 'memory'" class="pitch-activity">
+          <h3>Remember the melody!</h3>
+          <p>Listen to the melody, then tap the colored buttons in the same order!</p>
+          
+          <button class="play-button" @click="playMemorySequence()">
+            <span>Play Melody Again</span> 🔊
+          </button>
+          
+          <div class="memory-grid">
+            <button class="memory-button c4" @click="addToSequence('C4')">DO</button>
+            <button class="memory-button d4" @click="addToSequence('D4')">RE</button>
+            <button class="memory-button e4" @click="addToSequence('E4')">MI</button>
+            <button class="memory-button f4" @click="addToSequence('F4')">FA</button>
+            <button class="memory-button g4" @click="addToSequence('G4')">SOL</button>
+          </div>
+          
+          <div class="sequence-progress">
+            <template x-for="(_, index) in userSequence" :key="index">
+              <div class="progress-dot active"></div>
+            </template>
+            
+            <template x-for="(_, index) in Array(currentSequence.length - userSequence.length)" :key="index">
+              <div class="progress-dot"></div>
+            </template>
+          </div>
+          
+          <div x-show="showFeedback" class="feedback-message" x-text="feedback"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Chapter: Tone Colors -->
+    <section x-show="active === 'tonecolors'" x-transition>
+      <div x-data="tonecolors" x-init="init()">
+        <h2>Discover Tone Colors</h2>
+        <div class="tone-grid">
+          <div class="tone-card" @click="pick('warm')">
+            <div class="tone-icon warm"></div>
+            <p>Warm</p>
+          </div>
+          <div class="tone-card" @click="pick('cold')">
+            <div class="tone-icon cold"></div>
+            <p>Cold</p>
+          </div>
+          <div class="tone-card" @click="pick('soft')">
+            <div class="tone-icon soft"></div>
+            <p>Soft</p>
+          </div>
+          <div class="tone-card" @click="pick('sharp')">
+            <div class="tone-icon sharp"></div>
+            <p>Sharp</p>
+          </div>
+        </div>
+        <div x-show="selected" class="feedback">
+          <p>You selected: <span x-text="selected"></span></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Chapter: Rhythms -->
+    <section x-show="active === 'rhythms'" x-transition>
+      <div x-data="rhythms">
+        <h2>Experience Rhythm</h2>
+        <p>Coming soon...</p>
+      </div>
+    </section>
+
+    <!-- Chapter: Chords -->
+    <section x-show="active === 'chords'" x-transition>
+      <div x-data="chords">
+        <h2>Feel the Chords</h2>
+        <p>Coming soon...</p>
+      </div>
+    </section>
+
+    <!-- Chapter: Free Play -->
+    <section x-show="active === 'freeplay'" x-transition>
+      <div x-data="freeplay">
+        <h2>Free Sound Play</h2>
+        <p>Coming soon...</p>
+      </div>
+    </section>
+
+  </main>
+
+</body>
+</html>

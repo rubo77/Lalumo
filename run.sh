@@ -1,0 +1,18 @@
+#!/bin/bash
+# run.sh - script to kill existing servers, build and start new
+
+echo "Stopping any running webpack servers..."
+# Kill processes on port 9091 (current webpack port)
+fuser -k 9091/tcp 2>/dev/null || echo "No process running on port 9091"
+
+# Also try to kill by process name in case port changed
+pkill -f 'webpack.*serve' 2>/dev/null || echo "No webpack process found"
+
+echo "Starting webpack development server..."
+cd /var/www/Musici && npm run watch &
+
+# Wait a moment and then provide a link
+sleep 2
+echo "
+Application should be available at: http://localhost:9091"
+echo "If the browser doesn't open automatically, please visit the URL manually."
