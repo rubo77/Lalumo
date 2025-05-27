@@ -5,6 +5,9 @@ export function app() {
   return {
     active: 'pitches',
     menuOpen: false,
+    username: null,
+    firstVisit: false,
+    showUsernamePrompt: false,
     isAudioEnabled: false,
     audioContext: null,
     oscillators: {},
@@ -13,12 +16,138 @@ export function app() {
       // We'll initialize audio only on first user interaction
       this.isAudioEnabled = false;
       
+      // Set up event listener for audio initialization
+      window.addEventListener('click', () => this.initAudio(), { once: true });
+      
+      // Initialize Alpine.js store for state sharing
+      window.Alpine.store('pitchMode', 'listen');
+      
+      // Check for existing username in localStorage
+      this.loadUserData();
+      
+      // If no username exists, show prompt after a short delay
+      if (!this.username) {
+        this.firstVisit = true;
+        setTimeout(() => {
+          this.showUsernamePrompt = true;
+        }, 2000);
+      }
+      
       // Set up event listener for playing notes from other components
       window.addEventListener('musici:playnote', (event) => {
         if (event.detail && event.detail.note) {
           this.playSound(event.detail.note);
         }
       });
+    },
+    
+    /**
+     * Load user data from localStorage
+     */
+    loadUserData() {
+      try {
+        const savedUsername = localStorage.getItem('musici_username');
+        if (savedUsername) {
+          this.username = savedUsername;
+          console.log('Progress loaded for user:', this.username);
+        }
+      } catch (e) {
+        console.log('Error loading user data', e);
+      }
+    },
+    
+    /**
+     * Generate a random username for new users
+     */
+    generateUsername() {
+      const adjectives = ['Happy', 'Clever', 'Brave', 'Bright', 'Creative', 'Curious', 'Eager', 'Friendly', 'Gentle', 'Kind'];
+      const animals = ['Dolphin', 'Tiger', 'Eagle', 'Panda', 'Koala', 'Lion', 'Penguin', 'Rabbit', 'Fox', 'Butterfly'];
+      
+      const randomAdjective = adjectives[Math.floor(Math.random() * adjectives.length)];
+      const randomAnimal = animals[Math.floor(Math.random() * animals.length)];
+      const randomNumber = Math.floor(Math.random() * 100);
+      
+      return `${randomAdjective}${randomAnimal}${randomNumber}`;
+    },
+    
+    /**
+     * Set the username and save it to localStorage
+     */
+    setUsername(useGenerated = true) {
+      if (useGenerated) {
+        this.username = this.generateUsername();
+      }
+      
+      try {
+        localStorage.setItem('musici_username', this.username);
+        console.log('Username saved:', this.username);
+      } catch (e) {
+        console.log('Error saving username', e);
+      }
+      
+      this.showUsernamePrompt = false;
+    },
+    
+    /**
+     * Export the user's progress as a save game string
+     */
+    exportProgress() {
+      try {
+        // Collect all progress data
+        const progressData = {
+          username: this.username,
+          lastSaved: new Date().toISOString(),
+          pitchProgress: localStorage.getItem('musici_progress') || {},
+          lastActivity: this.active
+        };
+        
+        // Convert to JSON and encode for export
+        const jsonString = JSON.stringify(progressData);
+        const encoded = btoa(jsonString);
+        
+        // Return the save code
+        return encoded;
+      } catch (e) {
+        console.log('Error exporting progress', e);
+        return null;
+      }
+    },
+    
+    /**
+     * Import progress from a save game string
+     */
+    importProgress(saveCode) {
+      try {
+        // Decode and parse the save code
+        const jsonString = atob(saveCode);
+        const progressData = JSON.parse(jsonString);
+        
+        // Validate the data
+        if (!progressData || !progressData.username) {
+          console.log('Invalid save code');
+          return false;
+        }
+        
+        // Restore the username
+        this.username = progressData.username;
+        localStorage.setItem('musici_username', this.username);
+        
+        // Restore pitch progress
+        if (progressData.pitchProgress) {
+          localStorage.setItem('musici_progress', progressData.pitchProgress);
+        }
+        
+        // Restore last activity
+        if (progressData.lastActivity) {
+          this.active = progressData.lastActivity;
+        }
+        
+        console.log('Imported progress for', this.username);
+        return true;
+      } catch (e) {
+        console.log('Error importing progress', e);
+        return false;
+      }
     },
     
     /**

@@ -14,21 +14,74 @@ export function pitches() {
     choices: [],
     feedback: '',
     showFeedback: false,
+    mascotMessage: '',
+    // Available notes for melodies
+    availableNotes: [
+      // C3 - B3 (Lower octave)
+      'C3', 'D3', 'E3', 'F3', 'G3', 'A3', 'B3',
+      // C4 - B4 (Middle octave)
+      'C4', 'D4', 'E4', 'F4', 'G4', 'A4', 'B4',
+      // C5 - C6 (Upper octave)
+      'C5', 'D5', 'E5', 'F5', 'G5', 'A5', 'B5', 'C6'
+    ],
+    // Progress tracking
+    progress: {
+      listen: 0,
+      match: 0,
+      draw: 0,
+      guess: 0,
+      memory: 0
+    },
     
     /**
      * Initialize the component
      */
     init() {
-      console.log('Pitches component initialized');
-      // Start with listening mode by default
-      this.setMode('listen');
+      // Set up text-to-speech if available
+      this.speechSynthesis = window.speechSynthesis;
+      this.ttsAvailable = !!this.speechSynthesis;
       
-      // Listen for mode change events from hamburger menu
-      window.addEventListener('set-pitch-mode', (event) => {
-        if (event.detail) {
-          this.setMode(event.detail);
+      // Try to load saved progress from localStorage
+      try {
+        const savedProgress = localStorage.getItem('musici_progress');
+        if (savedProgress) {
+          this.progress = JSON.parse(savedProgress);
         }
+      } catch (e) {
+        console.log('Could not load saved progress');
+      }
+      
+      // Listen for pitch mode changes from the menu
+      window.addEventListener('set-pitch-mode', (e) => {
+        console.log('Received pitch mode change event:', e.detail);
+        this.setMode(e.detail);
       });
+      
+      // Set initial mode based on Alpine store
+      if (this.$store.pitchMode) {
+        this.mode = this.$store.pitchMode;
+      } else {
+        // Default to 'listen' and update the store
+        this.$store.pitchMode = 'listen';
+      }
+      
+      // Show welcome message with the mascot
+      setTimeout(() => {
+        this.showMascotMessage('Welcome to Pitches & Melodies! Click on the pictures to hear different melodies.');
+      }, 1000);
+    },
+    
+    /**
+     * Reset component state between mode changes
+     */
+    resetState() {
+      // Reset state for clean mode switching
+      this.currentAnimation = null;
+      this.showFeedback = false;
+      this.feedback = '';
+      this.isPlaying = false;
+      
+      console.log('MODSWITCH: State reset completed');
     },
     
     /**
@@ -36,6 +89,7 @@ export function pitches() {
      * @param {string} newMode - The mode to switch to
      */
     setMode(newMode) {
+      console.log('MODSWITCH: Changing mode from', this.mode, 'to', newMode);
       this.mode = newMode;
       this.resetState();
       
@@ -44,24 +98,25 @@ export function pitches() {
         window.Alpine.store('pitchMode', newMode);
       }
       
-      // Set up the specific mode
-      switch(newMode) {
-        case 'listen':
-          this.setupListeningMode();
-          break;
-        case 'match':
-          this.setupMatchingMode();
-          break;
-        case 'draw':
-          this.setupDrawingMode();
-          break;
-        case 'guess':
-          this.setupGuessingMode();
-          break;
-        case 'memory':
-          this.setupMemoryMode();
-          break;
+      // Setup the new mode
+      if (newMode === 'listen') {
+        this.showMascotMessage('Click on each picture to hear what that melody sounds like!');
+      } else if (newMode === 'match') {
+        this.setupMatchingMode();
+        this.showMascotMessage('Listen to the melody and tap the matching picture!');
+      } else if (newMode === 'draw') {
+        this.setupDrawingMode();
+        this.showMascotMessage('Draw a line with your finger or mouse to create a melody!');
+      } else if (newMode === 'guess') {
+        this.setupGuessingMode();
+        this.showMascotMessage('Listen to the melody and guess if the next note goes up or down!');
+      } else if (newMode === 'memory') {
+        this.setupMemoryMode();
+        this.showMascotMessage('Listen to the melody, then tap the colored buttons in the same order!');
       }
+      
+      // Update progress tracking
+      this.updateProgressGarden();
     },
     
     /**
@@ -78,20 +133,43 @@ export function pitches() {
     },
     
     /**
+     * Show a mascot message and speak it if text-to-speech is available
+     */
+    showMascotMessage(message) {
+      this.mascotMessage = message;
+      
+      // Use text-to-speech if available
+      if (this.ttsAvailable) {
+        // Cancel any ongoing speech
+        this.speechSynthesis.cancel();
+        
+        // Create a new utterance
+        const utterance = new SpeechSynthesisUtterance(message);
+        utterance.rate = 0.9; // Slightly slower for children
+        utterance.pitch = 1.2; // Slightly higher pitch for friendly sound
+        
+        // Speak the message
+        this.speechSynthesis.speak(utterance);
+      }
+    },
+    
+    /**
+     * Update the progress garden based on user's progress
+     */
+    updateProgressGarden() {
+      // Calculate total progress (0-100%)
+      const totalProgress = Object.values(this.progress).reduce((sum, val) => sum + val, 0) / 5;
+      
+      // Store progress in localStorage for persistence
+      localStorage.setItem('musici_progress', JSON.stringify(this.progress));
+    },
+    
+    /**
      * Setup for the listening mode
      */
     setupListeningMode() {
-      // Define available notes for patterns across 3 octaves
-      this.availableNotes = [
-        // C3 - B3 (Lower octave)
-        'C3', 'D3', 'E3', 'F3', 'G3', 'A3', 'B3',
-        // C4 - B4 (Middle octave)
-        'C4', 'D4', 'E4', 'F4', 'G4', 'A4', 'B4',
-        // C5 - C6 (Upper octave)
-        'C5', 'D5', 'E5', 'F5', 'G5', 'A5', 'B5', 'C6'
-      ];
-      
       // All patterns (up, down, wave, jump) will be generated on-demand when buttons are clicked
+      console.log('Listening mode ready with', this.availableNotes.length, 'available notes');
     },
     
     /**
@@ -187,37 +265,38 @@ export function pitches() {
     },
     
     /**
-     * Play a melodic sequence
-     * @param {string} type - Type of sequence (up, down, wave, jump)
+     * Play a specific melodic sequence
      */
     playSequence(type) {
-      this.currentAnimation = type;
+      // Only one animation at a time
+      if (this.isPlaying) return;
       
-      // Generate new patterns on-demand for all types
-      // This ensures a new random pattern each time the button is pressed
-      switch (type) {
-        case 'up':
-          this.currentSequence = this.generateUpPattern();
-          break;
-        case 'down':
-          this.currentSequence = this.generateDownPattern();
-          break;
-        case 'wave':
-          this.currentSequence = this.generateWavyPattern();
-          break;
-        case 'jump':
-          this.currentSequence = this.generateJumpyPattern();
-          break;
-        default:
-          return; // Invalid type
+      this.currentAnimation = type;
+      this.isPlaying = true;
+      
+      // Generate the requested pattern on demand - ensures fresh melodies each time
+      let pattern;
+      if (type === 'up') {
+        pattern = this.generateUpPattern();
+      } else if (type === 'down') {
+        pattern = this.generateDownPattern();
+      } else if (type === 'wave') {
+        pattern = this.generateWavyPattern();
+      } else if (type === 'jump') {
+        pattern = this.generateJumpyPattern();
+      } else {
+        return; // Invalid type
       }
       
-      // Play each note in sequence with proper timing
-      const noteArray = [...this.currentSequence]; // Create a copy to be safe
+      // Store the pattern for reference and play each note in sequence
+      this.currentSequence = pattern;
+      const noteArray = [...pattern]; // Create a copy to be safe
       
       // Play notes with timing
       const playNote = (noteIndex) => {
-        if (noteIndex >= noteArray.length) return;
+        if (noteIndex >= noteArray.length) {
+          return;  // Done with all notes
+        }
         
         // Get the current note
         const note = noteArray[noteIndex];
@@ -237,11 +316,15 @@ export function pitches() {
       
       // Start playing the sequence
       playNote(0);
+      console.log('Started playing melody type:', type);
       
-      // Reset animation after sequence completes
+      // Reset animation and playing state after sequence completes
+      // Use the sequence length to calculate total duration
       setTimeout(() => {
+        this.isPlaying = false;
         this.currentAnimation = null;
-      }, this.currentSequence.length * 600 + 200);
+        console.log('Ready for next melody');
+      }, noteArray.length * 600 + 300);
     },
     
     /**

@@ -9,6 +9,21 @@
 <body>
 
   <main x-data="app()" x-init="init()" @click="initAudio()" class="container">
+    
+    <!-- Username Prompt Modal -->
+    <div class="modal-overlay" x-show="showUsernamePrompt" x-transition>
+      <div class="modal-content" @click.outside="setUsername()">
+        <h3>Welcome to Musici!</h3>
+        <div class="mascot-welcome">
+          <img src="/images/mascot.svg" alt="Musici Mascot" class="mascot" />
+          <p>Let's create a special name just for you!</p>
+        </div>
+        <button class="primary-button" @click="setUsername()">Generate Random Name</button>
+        <div class="modal-footer">
+          <p class="note">Your progress will be saved automatically</p>
+        </div>
+      </div>
+    </div>
 
     <!-- Hamburger Menu -->
     <div class="hamburger-container" :class="{ 'menu-open': menuOpen, 'desktop-menu': window.innerWidth >= 1024 }" x-init="window.innerWidth >= 1024 ? menuOpen = true : menuOpen = false; window.addEventListener('resize', () => { if(window.innerWidth >= 1024) menuOpen = true; })">
@@ -23,13 +38,27 @@
       <!-- Menu content -->
       <div class="menu-content" x-show="menuOpen" @click.away="window.innerWidth < 1024 ? menuOpen = false : null" x-transition>
         <h2>Musici</h2>
+        <div class="user-profile" x-show="username">
+          <div class="user-avatar">
+            <span x-text="username ? username.charAt(0) : '?'"></span>
+          </div>
+          <div class="user-name">
+            <span x-text="username"></span>
+          </div>
+        </div>
+        
         <div class="menu-chapters">
           <h3>Chapters</h3>
-          <button @click="active = 'pitches'; window.innerWidth < 1024 ? menuOpen = false : null" :class="{ 'active': active === 'pitches' }">Pitches & Melodies</button>
-          <button @click="active = 'tonecolors'; window.innerWidth < 1024 ? menuOpen = false : null" :class="{ 'active': active === 'tonecolors' }">Tone Colors</button>
-          <button @click="active = 'rhythms'; window.innerWidth < 1024 ? menuOpen = false : null" :class="{ 'active': active === 'rhythms' }">Rhythm</button>
-          <button @click="active = 'chords'; window.innerWidth < 1024 ? menuOpen = false : null" :class="{ 'active': active === 'chords' }">Chords</button>
-          <button @click="active = 'freeplay'; window.innerWidth < 1024 ? menuOpen = false : null" :class="{ 'active': active === 'freeplay' }">Free Play</button>
+          <button @click="$data.active = 'pitches'; window.innerWidth < 1024 ? menuOpen = false : null" :class="{ 'active': active === 'pitches' }">Pitches & Melodies</button>
+          <button @click="$data.active = 'tonecolors'; window.innerWidth < 1024 ? menuOpen = false : null" :class="{ 'active': active === 'tonecolors' }" style="display: none;">Tone Colors</button>
+          <button @click="$data.active = 'rhythms'; window.innerWidth < 1024 ? menuOpen = false : null" :class="{ 'active': active === 'rhythms' }" style="display: none;">Rhythm</button>
+          <button @click="$data.active = 'chords'; window.innerWidth < 1024 ? menuOpen = false : null" :class="{ 'active': active === 'chords' }" style="display: none;">Chords</button>
+          <button @click="$data.active = 'freeplay'; window.innerWidth < 1024 ? menuOpen = false : null" :class="{ 'active': active === 'freeplay' }" style="display: none;">Free Play</button>
+          
+          <h3 class="settings-header">Settings</h3>
+          <button @click="$data.active = 'settings'; window.innerWidth < 1024 ? menuOpen = false : null" :class="{ 'active': active === 'settings' }">
+            <span>Player Settings</span>
+          </button>
         </div>
         
         <template x-if="active === 'pitches'">
@@ -73,6 +102,32 @@
     <!-- Chapter: Pitches -->
     <section x-show="active === 'pitches'" x-transition>
       <div x-data="pitches" x-init="init()">
+        <div class="mascot-container">
+          <img src="/images/mascot.svg" alt="Musici Mascot" class="mascot" @click="showMascotMessage('Hi there! I\'m your music friend. Click on the activities to learn about music!')" />
+          <div class="speech-bubble" x-show="mascotMessage" x-text="mascotMessage" x-transition></div>
+        </div>
+        
+        <!-- Progress Garden Visualization -->
+        <div class="progress-garden">
+          <div class="progress-label">Your Music Garden:</div>
+          <div class="garden-plants">
+            <div class="garden-plant" x-bind:style="'height: ' + (progress.listen/2 + 20) + '%'" title="Listening Progress">
+              <span>🎵</span>
+            </div>
+            <div class="garden-plant" x-bind:style="'height: ' + (progress.match/2 + 20) + '%'" title="Matching Progress">
+              <span>🎹</span>
+            </div>
+            <div class="garden-plant" x-bind:style="'height: ' + (progress.draw/2 + 20) + '%'" title="Drawing Progress">
+              <span>🖌️</span>
+            </div>
+            <div class="garden-plant" x-bind:style="'height: ' + (progress.guess/2 + 20) + '%'" title="Guessing Progress">
+              <span>❓</span>
+            </div>
+            <div class="garden-plant" x-bind:style="'height: ' + (progress.memory/2 + 20) + '%'" title="Memory Progress">
+              <span>🧠</span>
+            </div>
+          </div>
+        </div>
         <h2>Pitches and Melodies</h2>
         
         <!-- Listening Mode -->
@@ -281,7 +336,55 @@
         <p>Coming soon...</p>
       </div>
     </section>
-
+    
+    <!-- Settings Page -->
+    <section x-show="active === 'settings'" x-transition class="settings-page">
+      <h2>Player Settings</h2>
+      
+      <div class="settings-card">
+        <h3>Player Profile</h3>
+        <div class="profile-info" x-show="username">
+          <div class="profile-header">
+            <div class="large-avatar">
+              <span x-text="username ? username.charAt(0) : '?'"></span>
+            </div>
+            <div class="profile-name">
+              <h4>Your Name</h4>
+              <p x-text="username"></p>
+            </div>
+          </div>
+          
+          <button class="primary-button" @click="setUsername()">Generate New Name</button>
+        </div>
+      </div>
+      
+      <div class="settings-card">
+        <h3>Save Your Progress</h3>
+        <p>Get a special code to save your progress. You can use this code on another device or if you need to reinstall the app.</p>
+        
+        <div x-data="{ saveCode: '', showCode: false }">
+          <button class="primary-button" @click="saveCode = exportProgress(); showCode = true;">Generate Save Code</button>
+          
+          <div x-show="showCode" class="save-code-container">
+            <p>Copy this code somewhere safe:</p>
+            <div class="save-code" x-text="saveCode"></div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="settings-card">
+        <h3>Load Progress</h3>
+        <p>Enter a save code to restore your progress:</p>
+        
+        <div x-data="{ loadCode: '', loadResult: '' }">
+          <textarea class="code-input" placeholder="Paste your save code here" x-model="loadCode"></textarea>
+          
+          <button class="primary-button" @click="loadResult = importProgress(loadCode) ? 'Success! Your progress has been restored.' : 'Sorry, that code did not work. Please check and try again.';">Load Progress</button>
+          
+          <p x-show="loadResult" x-text="loadResult" class="load-result"></p>
+        </div>
+      </div>
+    </section>
   </main>
 
 </body>
