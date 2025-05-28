@@ -43,12 +43,43 @@ export function app() {
         }, 2000);
       }
       
+      // Tracking für Events zur Vermeidung von Duplikaten
+      this.lastNoteEventId = null;
+      this.lastNoteEventTime = 0;
+      
       // Set up event listener for playing notes from other components
       window.addEventListener('lalumo:playnote', (event) => {
         if (event.detail && event.detail.note) {
+          // Event-ID generieren, falls keine vorhanden
+          const eventId = event.detail.id || `${event.detail.note}_${Date.now()}`;
+          const currentTime = Date.now();
+          
+          // Doppelte Events verhindern: Ignoriere Events mit gleicher ID oder zu kurzen Abständen
+          if (eventId === this.lastNoteEventId || (currentTime - this.lastNoteEventTime < 50)) {
+            console.log(`Skipping duplicate event: ${event.detail.note}`);
+            return;
+          }
+          
+          // Event-Tracking aktualisieren
+          this.lastNoteEventId = eventId;
+          this.lastNoteEventTime = currentTime;
+          
+          // Verbesserte Protokollierung zur Fehlersuche
+          console.log(`Playing sound: ${event.detail.note}${event.detail.sequenceIndex !== undefined ? ` (index: ${event.detail.sequenceIndex})` : ''}`);
+          
+          // Alle vorherigen Töne stoppen, um Überlappungen zu vermeiden
+          if (this.currentToneTimeout) {
+            clearTimeout(this.currentToneTimeout);
+            this.currentToneTimeout = null;
+          }
+          
           // Try to unlock audio first in case this is the first interaction
           this.unlockAudio();
-          this.playSound(event.detail.note);
+          
+          // Ton mit kurzer Verzögerung abspielen, um sicherzustellen, dass vorherige Töne gestoppt wurden
+          this.currentToneTimeout = setTimeout(() => {
+            this.playSound(event.detail.note);
+          }, 10);
         }
       });
       
@@ -226,6 +257,29 @@ export function app() {
       } catch (e) {
         console.log('Error exporting progress', e);
         return null;
+      }
+    },
+    
+    /**
+     * Stoppt alle aktiven Oszillatoren, um Audio-Konflikte zu vermeiden
+     */
+    stopAllOscillators() {
+      if (this.activeOscillators && this.activeOscillators.length > 0) {
+        console.log(`Stopping ${this.activeOscillators.length} active oscillators`);
+        
+        // Stoppe alle aktiven Oszillatoren sofort
+        this.activeOscillators.forEach(osc => {
+          try {
+            osc.stop(0); // Sofort stoppen
+            osc.disconnect();
+          } catch (e) {
+            // Ignoriere Fehler von bereits gestoppten Oszillatoren
+            console.log('Error stopping oscillator, may already be stopped');
+          }
+        });
+        
+        // Liste leeren
+        this.activeOscillators = [];
       }
     },
     
@@ -440,21 +494,22 @@ export function app() {
       if (!this.audioContext) return;
       
       try {
-        // If we have active oscillators, store them so we can access them later
-        if (this.activeOscillators) {
-          // Stop all currently playing oscillators immediately to avoid audio conflicts
-          this.activeOscillators.forEach(osc => {
-            try {
-              osc.stop();
-              osc.disconnect();
-            } catch (e) {
-              // Ignore errors from already stopped oscillators
-            }
-          });
+        // Verbesserte Protokollierung für Audio-Debugging
+        console.log(`Playing tone ${frequency}Hz for ${duration}s`);
+        
+        // Zuerst alle aktiven Oszillatoren stoppen - WICHTIG für saubere Wiedergabe
+        this.stopAllOscillators();
+        
+        // Garantieren, dass wir eine leere Liste haben
+        if (!this.activeOscillators) {
+          this.activeOscillators = [];
         }
         
-        // Create a new array to track active oscillators
-        this.activeOscillators = [];
+        // Sicherstellen, dass Timeout-Handles korrekt verwaltet werden
+        if (this.currentToneTimeout) {
+          clearTimeout(this.currentToneTimeout);
+          this.currentToneTimeout = null;
+        }
         
         // Create oscillator
         const oscillator = this.audioContext.createOscillator();
@@ -631,11 +686,41 @@ export function app() {
         'D5': 587.33,
         'E5': 659.25,
         'F5': 698.46,
-        'G5': 783.99
+        'G5': 783.99,
+        'A5': 880.00,
+        'B5': 987.77,
+        'C6': 1046.50
       };
       
-      // Return the frequency or default to middle C
-      return noteFrequencies[noteName] || 261.63;
+      // Return the frequency or generate it if not in our table
+      if (noteFrequencies[noteName]) {
+        return noteFrequencies[noteName];
+      }
+      
+      // Log fehlende Note für Debugging
+      console.log(`Note ${noteName} not found in frequency table, using mathematical calculation`);
+      
+      // Als Fallback: Berechne die Frequenz mathematisch
+      try {
+        // Parse the note name and octave (e.g., 'A5' -> 'A' and '5')
+        const noteLetter = noteName.replace(/[0-9]/g, '');
+        const octave = parseInt(noteName.match(/[0-9]/g)[0], 10);
+        
+        // Basisnote für die Berechnung (A4 = 440Hz)
+        const baseFreq = 440.0; // A4
+        
+        // Semitone offsets from A4
+        const offsets = { 'C': -9, 'D': -7, 'E': -5, 'F': -4, 'G': -2, 'A': 0, 'B': 2 };
+        
+        // Berechne Halbtonabstand zu A4
+        const semitones = offsets[noteLetter] + (octave - 4) * 12;
+        
+        // Berechne Frequenz: f = f0 * 2^(n/12)
+        return baseFreq * Math.pow(2, semitones / 12);
+      } catch (e) {
+        console.error(`Failed to calculate frequency for ${noteName}:`, e);
+        return 440; // A4 als Fallback
+      }
     }
   };
 }

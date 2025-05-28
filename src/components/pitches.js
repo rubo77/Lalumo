@@ -459,13 +459,25 @@ export function pitches() {
      * @returns {Array} The generated pattern
      */
     generateDownPattern() {
+      // Verwende einen höheren Startindex, um sicherzustellen, dass genug Platz nach unten ist
       const startIndex = 11 + Math.floor(Math.random() * 10); // 11-20
       
       // Create a 5-note descending pattern from this starting position
       const pattern = [];
+      
+      // Log kompletten Tonbereich
+      console.log('Available notes:', this.availableNotes.join(', '));
+      console.log(`Starting down pattern at index ${startIndex}: ${this.availableNotes[startIndex]}`);
+      
       for (let i = 0; i < 5; i++) {
-        pattern.push(this.availableNotes[startIndex - i]);
+        const noteIndex = Math.max(0, startIndex - i); // Stelle sicher, dass der Index nie negativ wird
+        const note = this.availableNotes[noteIndex];
+        pattern.push(note);
+        console.log(`Down pattern note ${i+1}: Index ${noteIndex} -> ${note}`);
       }
+      
+      // Debug-Ausgabe der gesamten Melodie
+      console.log('Down pattern complete:', pattern.join(', '));
       
       return pattern;
     },
@@ -548,20 +560,32 @@ export function pitches() {
         return;
       }
       
+      // Audio-Wiedergabe verbessern, um Konflikte zu vermeiden
       // Aktuelle Note abspielen
       const note = noteArray[index];
+      
+      // Für Debug-Zwecke die abgespielte Note protokollieren
+      console.log(`Playing note ${index+1}/${noteArray.length}: ${note}`);
+      
       try {
+        // Event-Verarbeitung durch klare ID verbessern
+        const uniqueId = Date.now() + '-' + index;
         window.dispatchEvent(new CustomEvent('lalumo:playnote', { 
-          detail: { note: `pitch_${note.toLowerCase()}` }
+          detail: { 
+            note: `pitch_${note.toLowerCase()}`,
+            id: uniqueId, // Eindeutige ID zur Unterscheidung paralleler Events
+            sequenceIndex: index // Position in der Sequenz
+          }
         }));
       } catch (err) {
         console.error('Error playing note:', err);
       }
       
+      // Etwas längere Pause zwischen den Noten für bessere Unterscheidbarkeit
       // Nächste Note mit Verzögerung abspielen
       setTimeout(() => {
         this.playNoteSequence(noteArray, index + 1);
-      }, 600); // 600ms zwischen den Noten
+      }, 750); // 750ms zwischen den Noten für klarere Trennung
     },
     
     /**

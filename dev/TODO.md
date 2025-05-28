@@ -34,9 +34,12 @@ First finish pitches and melodies completely:
 - immer bei Erfolg: Regenbogen
 - immer bei Misserfolg: wackeln
 
+- ergänze ein debug flag, das die console logs nur ausgibt, wenn man die app  im debug mode startet, nicht aber wenn man diese deployed oder als android app startet
+
 
 Match Sounds:
 - die selbe melodie bei erneutem play button click wiederholen bis man es richtig hat
+- die selbe animationen, wie bei "listen to melodies"; den effekt, dass die rocket hoch, der slide runter bewegt u.s.w extrahieren, so dass keine code doppelung passiert, so dass der auch bei play melody angewendet wird ohne code-doppelungen.
 
 memory game: 
 - die selbe melodie bei erneutem play button click wiederholen bis man es richtig hat
