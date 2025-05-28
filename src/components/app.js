@@ -241,7 +241,8 @@ export function app() {
         const progressData = {
           username: this.username,
           lastSaved: new Date().toISOString(),
-          pitchProgress: localStorage.getItem('lalumo_progress') || {},
+          pitchProgress: JSON.parse(localStorage.getItem('lalumo_progress') || '{}'),
+          memoryGameLevel: parseInt(localStorage.getItem('lalumo_memory_level') || '0', 10),
           lastActivity: this.active
         };
         
@@ -252,7 +253,7 @@ export function app() {
         // Set the exportedData property for display in the UI
         this.exportedData = encoded;
         
-        console.log('Progress exported successfully');
+        console.log('Progress exported successfully with memory game data');
         return encoded;
       } catch (e) {
         console.log('Error exporting progress', e);

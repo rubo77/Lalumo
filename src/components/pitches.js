@@ -1119,9 +1119,10 @@ export function pitches() {
       // Use the specific C, D, E, G, A notes for the memory game (skipping F and H/B)
       const fixedNotes = ['C4', 'D4', 'E4', 'G4', 'A4'];
       
-      // Initialize memory success count if not existing
+      // Initialize memory success count from localStorage or default to 0
       if (this.memorySuccessCount === undefined) {
-        this.memorySuccessCount = 0;
+        const savedLevel = localStorage.getItem('lalumo_memory_level');
+        this.memorySuccessCount = savedLevel ? parseInt(savedLevel, 10) : 0;
       }
       
       if (generateNew) {
@@ -1226,12 +1227,21 @@ export function pitches() {
      */
     checkMemorySequence() {
       let isCorrect = true;
+      let lastPressedKey = null;
+      
+      // Find the last pressed key for potential error animation
+      if (this.userSequence.length > 0) {
+        lastPressedKey = document.querySelector(`.piano-key.${this.userSequence[this.userSequence.length-1].toLowerCase()}`);
+      }
+      
+      // Check if sequence matches
       for (let i = 0; i < this.currentSequence.length; i++) {
         if (this.currentSequence[i] !== this.userSequence[i]) {
           isCorrect = false;
           break;
         }
       }
+      
       this.showFeedback = true;
       this.feedback = isCorrect ? 
         'Amazing memory! You got it right!' : 
@@ -1242,12 +1252,39 @@ export function pitches() {
         detail: { note: isCorrect ? 'success' : 'try_again' }
       }));
       
+      // Show appropriate animation based on result
+      if (isCorrect) {
+        // Create and show rainbow success animation
+        const rainbow = document.createElement('div');
+        rainbow.className = 'rainbow-success';
+        document.body.appendChild(rainbow);
+        
+        // Remove rainbow element after animation completes
+        setTimeout(() => {
+          if (rainbow && rainbow.parentNode) {
+            rainbow.parentNode.removeChild(rainbow);
+          }
+        }, 2000);
+        
+        // Increment and save memory game progress
+        this.memorySuccessCount = (this.memorySuccessCount || 0) + 1;
+        this.progress.memory = Math.max(this.memorySuccessCount, this.progress.memory || 0);
+        localStorage.setItem('lalumo_memory_level', this.memorySuccessCount.toString());
+        localStorage.setItem('lalumo_progress', JSON.stringify(this.progress));
+      } else {
+        // Show shake animation on the last pressed key if available
+        if (lastPressedKey) {
+          lastPressedKey.classList.add('shake-error');
+          setTimeout(() => {
+            lastPressedKey.classList.remove('shake-error');
+          }, 500);
+        }
+      }
+      
       // Reset after feedback
       setTimeout(() => {
         this.showFeedback = false;
         if (isCorrect) {
-          // Increment success count for progressive difficulty
-          this.memorySuccessCount = (this.memorySuccessCount || 0) + 1;
           // Generate a new memory challenge
           this.setupMemoryMode();
         } else {

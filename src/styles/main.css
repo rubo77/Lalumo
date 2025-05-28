@@ -132,9 +132,26 @@
   margin-top: 1.5rem;
 }
 
-/* Settings page */
-.settings-page {
-  padding: 1rem;
+/* Settings */
+.settings-section {
+  margin-top: 2rem;
+  position: relative;
+  z-index: 900; /* Higher z-index to ensure settings are visible */
+}
+
+/* Player Settings - ensure they're not overlapped */
+.settings-panel, 
+.player-settings, 
+.export-section {
+  position: relative;
+  z-index: 1000; /* Higher than menu */
+  margin-left: auto; /* Center content away from menu */
+  margin-right: auto;
+  width: calc(100% - 240px); /* Leave space for menu width */
+  background: white;
+  border-radius: 8px;
+  padding: 15px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
 .sett.pitch-card {
@@ -431,7 +448,7 @@ body {
   align-items: center;
   padding: 0.5rem;
   margin-right: 0.75rem;
-  z-index: 110;
+  z-index: 2500; /* Highest z-index to appear above absolutely everything */
   transition: all 0.3s ease;
 }
 
@@ -569,16 +586,11 @@ body {
   width: 85%;
   max-width: 300px;
   height: 100%;
-  max-height: 100vh;
   background-color: white;
-  box-shadow: 3px 0 10px rgba(0, 0, 0, 0.1);
-  padding: 3rem 1.5rem 300px; /* Reduced top padding for X button */
-  margin-right: 10px; /* Add margin to the right */
-  overflow-y: scroll !important; /* Force scrolling to always be available */
-  overflow-x: hidden;
-  -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
-  overscroll-behavior: contain; /* Prevent scroll chaining */
-  z-index: 100;
+  padding: 5rem 1rem 2rem;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+  overflow-y: auto;
+  z-index: 90; /* Lower than lock button but higher than regular content */
   /* Ensure menu content doesn't cause layout issues */
   display: flex;
   flex-direction: column;
@@ -599,14 +611,11 @@ body {
   font-size: 1.2rem;
 }
 
-.menu-chapters, .menu-activities, .menu-settings, .menu-legal {
+.menu-chapters, .menu-activities {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  margin-bottom: 1.5rem;
-  margin-top: 1.5rem;
-  width: 100%;
-  min-height: fit-content;
+  padding-top: 1rem;
 }
 
 .menu-spacer {
@@ -619,13 +628,19 @@ body {
   max-height: 100vh;
   position: relative;
   overflow: visible; /* Ensure container doesn't clip content */
+  z-index: 1500; /* High enough but below lock button */
 }
 
 /* Ensure scrolling container properly shows all content */
+/* Ensure menu doesn't overlap with content */
 .hamburger-container.menu-open .menu-content {
   max-height: 100vh; 
   overflow-y: auto;
-  /* Already have increased padding in .menu-content */
+  max-width: 90%;
+  /* Make sure menu stays on the side and doesn't overlap center content */
+  position: fixed;
+  left: 0;
+  top: 0;
 }
 
 .menu-settings, .menu-legal {
@@ -642,6 +657,8 @@ body {
   justify-content: flex-start !important;
   gap: 10px;
   padding: 8px 12px !important;
+  position: relative;
+  z-index: 85; /* Higher than general player settings */
 }
 
 /* Language preference section */
@@ -811,6 +828,8 @@ section {
   padding: 2rem;
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.05);
   margin-bottom: 1rem;
+  position: relative;
+  z-index: 95; /* Ensure sections appear above menu content */
 }
 
 section h2 {
@@ -1041,6 +1060,46 @@ section h2 {
   0% { transform: translateY(0); }
   50% { transform: translateY(30px); }
   100% { transform: translateY(0); }
+}
+
+/* Success Animation - Rainbow */
+@keyframes rainbow-appear {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.1);
+  }
+  70% {
+    opacity: 0.9;
+    transform: translate(-50%, -50%) scale(1.2);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(1.5);
+  }
+}
+
+.rainbow-success {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 300px;
+  height: 300px;
+  background: linear-gradient(to bottom, 
+    #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #8b00ff);
+  border-radius: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 1000;
+  box-shadow: 0 0 30px rgba(255, 255, 255, 0.7);
+  animation: rainbow-appear 2s ease-in-out;
+}
+
+/* Error Animation - Shake */
+@keyframes shake-element {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+  20%, 40%, 60%, 80% { transform: translateX(5px); }
 }
 
 @keyframes wave-move {
@@ -1438,6 +1497,11 @@ section h2 {
     #d5d5d5 5px,
     #d5d5d5 10px
   );
+}
+
+/* Class for shaking incorrect elements */
+.shake-error {
+  animation: shake-element 0.5s ease-in-out;
 }
 
 .memory-button:hover {
