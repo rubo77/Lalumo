@@ -16,3 +16,8 @@ cp -r public/sitemap.xml dist/
 rsync -avz --no-perms --no-owner --no-group --delete dist/ root@vm06.eclabs:/var/kunden/webs/ruben/www/lalumo.z11.de/
 
 echo "Deployment complete! All files including images have been uploaded."
+
+echo "upload the git repo:"
+rsync -avz --no-perms --no-owner --no-group --delete .git/ root@vm06.eclabs:/var/kunden/webs/ruben/git/lalumo.z11.de/
+
+echo "done"

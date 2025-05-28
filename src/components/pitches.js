@@ -1264,6 +1264,13 @@ export function pitches() {
       // Highlight the key when pressed
       this.currentHighlightedNote = note;
       
+      // Get the current user input position
+      const currentPosition = this.userSequence.length;
+      
+      // Check if the current note is correct before adding it
+      const isCurrentNoteCorrect = note === this.currentSequence[currentPosition];
+      
+      // Add note to sequence
       this.userSequence.push(note);
       
       // Play the note using event
@@ -1275,6 +1282,37 @@ export function pitches() {
       setTimeout(() => {
         this.currentHighlightedNote = null;
       }, 300);
+      
+      // If the note is incorrect, immediately give feedback
+      if (!isCurrentNoteCorrect) {
+        // Find the pressed key element for error animation
+        const pressedKey = document.querySelector(`.piano-key[data-note='${note}']`);
+        
+        // Show shake animation on the pressed key
+        if (pressedKey) {
+          pressedKey.classList.add('shake-error');
+          setTimeout(() => {
+            pressedKey.classList.remove('shake-error');
+          }, 500);
+        }
+        
+        // Play error sound and show feedback
+        window.dispatchEvent(new CustomEvent('lalumo:playnote', { 
+          detail: { note: 'try_again' }
+        }));
+        
+        this.showFeedback = true;
+        this.feedback = 'Let\'s try again. Listen carefully!';
+        
+        // Reset after a delay
+        setTimeout(() => {
+          this.showFeedback = false;
+          this.userSequence = [];
+          this.playMemorySequence();
+        }, 2000);
+        
+        return;
+      }
       
       // Check if the sequence is complete
       if (this.userSequence.length === this.currentSequence.length) {
@@ -1345,8 +1383,13 @@ export function pitches() {
       setTimeout(() => {
         this.showFeedback = false;
         if (isCorrect) {
-          // Generate a new memory challenge
+          // Play the new melody automatically after 2 seconds
           this.setupMemoryMode();
+          
+          // Play the new sequence automatically after another 2 seconds
+          setTimeout(() => {
+            this.playMemorySequence();
+          }, 2000);
         } else {
           // Reset user sequence and replay the current sequence
           this.userSequence = [];
