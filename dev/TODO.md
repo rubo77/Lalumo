@@ -43,10 +43,14 @@ Match Sounds:
 - wenn man auf den play button drückt, soll noch keine animation des richtigen buttons (rakete, ....) starten
 
 
+- Draw a melody:
+ - 
+
 memory game: 
-- langsam schwerer werden 
-- schwarze Tasten andeuten 
+- keine wiederholungen, also aufeinanderfolgende noten müssen unterschiedlich sein
 - cdega statt cdefg
+- langsam schwerer werden mit den erfolgen, anfangen mit 2 noten, dann 3x mit 3 noten, dann 5x mit 4, ... 
+- die schwarze Tasten und F und H nur leicht grafisch andeuten 
 
 im memory game und in "guess next note" bei beiden auch den play button aus "match sounds" benutzen und ausserdem bei beiden  die selbe melodie bei erneutem play button click wiederholen bis man es richtig hat, also die selbe funktionalität wie bei "match sounds"; analysiere "match sounds" wie es dort gelöst ist um code doppelungen zu vermeiden und falls nötig die selben variablennamen zu verwenden
 
@@ -56,8 +60,3 @@ im memory game und in "guess next note" bei beiden auch den play button aus "mat
 
 # most important
 - the player settings should not be overlapped by the menu
-
-- Draw a melody:
-  - on android there is no sound
-  - einen strich malen, wo man langgemalt hat
-- die up and down melodien dürfen nicht zu hoch bzw zu tief anfangen
