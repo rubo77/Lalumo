@@ -35,14 +35,22 @@ First finish pitches and melodies completely:
 - ergänze ein debug flag, das die console logs nur ausgibt, wenn man die app  im debug mode startet, nicht aber wenn man diese deployed oder als android app startet
 
 
-
+- in settings eine möglichkeit den fortschritt zurückzusetzen
 
 Draw a melody:
 memory game: 
- - den fortschritt in der localstorage merken für den user, das soll dann auch in dem export landen unter "Game Progress - Export your progress to save or transfer to another device:"
+ - wenn man richtig war, nach 2 s die neue melodie abspielen
+ - sobald  man einen falschen ton spielt schon abbrechen und misserfolg wackeln
 
 # most important
-- immer bei Erfolg: einen Regenbogen, der sich langsam einblendet und grösser wird, bis er über das ganze bild verschwindet
+Dies soll in allen aktionen:
+- bei Erfolg Regenbogen soll sich noch weiter ausdehnen, sonst alles so lassen, perfekt!
 - immer bei Misserfolg: das element, auf das man gedrückt hat etwas hin und her-wackeln
 
-- the player settings should not be overlapped by the menu
+bei what comes next:
+    Uncaught runtime errors:
+    ERROR
+    _this0.playGuessingSequence is not a function
+    checkGuess/<@webpack-internal:///./src/components/pitches.js:1031:16
+
+

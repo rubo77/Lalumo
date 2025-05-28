@@ -761,28 +761,49 @@ export function pitches() {
         'Great job! That\'s correct!' : 
         'Not quite. Let\'s try again!';
       
-      // Play feedback sound using the event system instead of direct method call
+      // Trigger sound feedback
       window.dispatchEvent(new CustomEvent('lalumo:playnote', { 
         detail: { note: isCorrect ? 'success' : 'try_again' }
       }));
       
-      // Fortschritt nur bei richtiger Antwort erhöhen
+      // Show appropriate animation based on result
       if (isCorrect) {
-        this.progress.match++;
-        // Speichern des Fortschritts im localStorage
+        // Create and show rainbow success animation
+        const rainbow = document.createElement('div');
+        rainbow.className = 'rainbow-success';
+        document.body.appendChild(rainbow);
+        
+        // Remove rainbow element after animation completes
+        setTimeout(() => {
+          if (rainbow && rainbow.parentNode) {
+            rainbow.parentNode.removeChild(rainbow);
+          }
+        }, 2500);
+        
+        // Update progress if correct
+        this.progress.match += 1;
+        
+        // Save progress to localStorage
         localStorage.setItem('lalumo_progress', JSON.stringify(this.progress));
+      } else {
+        // Find the clicked element for potential error animation
+        const clickedElement = document.querySelector(`.pitch-card .pitch-icon.${selected}`);
+        
+        if (clickedElement) {
+          // Show shake animation on the clicked element
+          clickedElement.classList.add('shake-error');
+          setTimeout(() => {
+            clickedElement.classList.remove('shake-error');
+          }, 500);
+        }
       }
       
-      // Reset after feedback
+      // Reset after showing feedback
       setTimeout(() => {
         this.showFeedback = false;
-        // Animationsklassen entfernen nach Feedback
-        document.querySelectorAll('.pitch-icon').forEach(element => {
-          element.classList.remove('animate-up', 'animate-down', 'animate-wave', 'animate-jump');
-        });
         
         if (isCorrect) {
-          // Generate a new matching challenge - generateNew = true bedeutet eine neue Melodie erstellen
+          // Generate a new pattern if correct (generateNew=true)
           this.setupMatchingMode(false, true);
         }
         // Bei falscher Antwort wird keine neue Melodie generiert, damit der Spieler die gleiche 
@@ -1049,6 +1070,9 @@ export function pitches() {
     checkGuess(guess) {
       const isCorrect = guess === this.correctAnswer;
       
+      // Find the clicked element for potential error animation
+      const clickedElement = document.querySelector(`.guess-button[data-direction="${guess}"]`);
+      
       this.showFeedback = true;
       this.feedback = isCorrect ? 
         'Great job! You guessed it!' : 
@@ -1062,6 +1086,27 @@ export function pitches() {
         fullSequence.push(this.getLowerNote(fullSequence[fullSequence.length - 1]));
       }
       
+      // Show appropriate animation based on result
+      if (isCorrect) {
+        // Create and show rainbow success animation
+        const rainbow = document.createElement('div');
+        rainbow.className = 'rainbow-success';
+        document.body.appendChild(rainbow);
+        
+        // Remove rainbow element after animation completes
+        setTimeout(() => {
+          if (rainbow && rainbow.parentNode) {
+            rainbow.parentNode.removeChild(rainbow);
+          }
+        }, 2500);
+      } else if (clickedElement) {
+        // Show shake animation on the clicked element
+        clickedElement.classList.add('shake-error');
+        setTimeout(() => {
+          clickedElement.classList.remove('shake-error');
+        }, 500);
+      }
+      
       // Play the full sequence with the correct answer
       const playFull = (notes, index = 0) => {
         if (index >= notes.length) return;
@@ -1071,21 +1116,36 @@ export function pitches() {
           detail: { note: `pitch_${notes[index].toLowerCase()}` }
         }));
         
-        // Schedule next note
+        // Schedule next note after a delay
         setTimeout(() => playFull(notes, index + 1), 600);
       };
       
-      // Start playing
+      // Play the sequence
       playFull(fullSequence);
+      
+      // Play feedback sound
+      window.dispatchEvent(new CustomEvent('lalumo:playnote', { 
+        detail: { note: isCorrect ? 'success' : 'try_again' }
+      }));
       
       // Reset after feedback
       setTimeout(() => {
         this.showFeedback = false;
+        
         if (isCorrect) {
-          this.setupGuessingMode(false, true); // Generate a new guessing challenge ONLY if correct
+          // Update progress tracking
+          this.progress.guess += 1;
+          localStorage.setItem('lalumo_progress', JSON.stringify(this.progress));
+          
+          // Generate a new sequence
+          this.setupGuessingMode();
+        } else {
+          // Let them try again with the same sequence
+          this.userSequence = [];
+          // Call setupGuessingMode to replay the current sequence without generating a new one
+          this.setupGuessingMode(true, false);
         }
-        // If incorrect, keep the same melody
-      }, 3000);
+      }, 2000);
     },
     
     /**
