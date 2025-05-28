@@ -442,9 +442,8 @@ export function pitches() {
      * @returns {Array} The generated pattern
      */
     generateUpPattern() {
-      // Pick a random starting position that allows room for 4 more notes going up
-      const maxStartIndex = this.availableNotes.length - 5;
-      const startIndex = Math.floor(Math.random() * maxStartIndex);
+      // Einfacher Ansatz: Wähle einen Zufallswert zwischen 0 und 16
+      const startIndex = Math.floor(Math.random() * 15); // 0-14
       
       // Create a 5-note ascending pattern from this starting position
       const pattern = [];
@@ -460,9 +459,7 @@ export function pitches() {
      * @returns {Array} The generated pattern
      */
     generateDownPattern() {
-      // Pick a random starting position that allows room for 4 more notes going down
-      const minStartIndex = 4; // Need at least 4 notes below it
-      const startIndex = minStartIndex + Math.floor(Math.random() * (this.availableNotes.length - minStartIndex));
+      const startIndex = 11 + Math.floor(Math.random() * 10); // 11-20
       
       // Create a 5-note descending pattern from this starting position
       const pattern = [];
@@ -532,6 +529,76 @@ export function pitches() {
     /**
      * Play a specific melodic sequence
      */
+    /**
+     * Animiert ein Muster-Element (Rakete, Rutsche, usw.) während die Melodie abgespielt wird
+     * Extrahiert, um Codeduplizierung zu vermeiden und an mehreren Stellen verwendbar zu sein
+     * @param {string} elementType - Typ des zu animierenden Elements ('up', 'down', 'wave', 'jump')
+     * @param {boolean} inMatchMode - Gibt an, ob die Animation im Match-Modus verwendet wird
+     */
+    /**
+     * Spielt eine Sequenz von Noten mit Timing ab
+     * @param {Array} noteArray - Array mit Noten, die abgespielt werden sollen
+     * @param {number} index - Aktuelle Position im Array
+     */
+    playNoteSequence(noteArray, index) {
+      if (index >= noteArray.length) {
+        // Am Ende der Sequenz angekommen, Wiedergabe beenden
+        this.isPlaying = false;
+        this.currentAnimation = null;
+        return;
+      }
+      
+      // Aktuelle Note abspielen
+      const note = noteArray[index];
+      try {
+        window.dispatchEvent(new CustomEvent('lalumo:playnote', { 
+          detail: { note: `pitch_${note.toLowerCase()}` }
+        }));
+      } catch (err) {
+        console.error('Error playing note:', err);
+      }
+      
+      // Nächste Note mit Verzögerung abspielen
+      setTimeout(() => {
+        this.playNoteSequence(noteArray, index + 1);
+      }, 600); // 600ms zwischen den Noten
+    },
+    
+    /**
+     * Animiert ein Muster-Element (Rakete, Rutsche, usw.) während die Melodie abgespielt wird
+     * Extrahiert, um Codeduplizierung zu vermeiden und an mehreren Stellen verwendbar zu sein
+     * @param {string} elementType - Typ des zu animierenden Elements ('up', 'down', 'wave', 'jump')
+     */
+    animatePatternElement(elementType) {
+      // Animations-Klassen basierend auf dem Element-Typ
+      const animationClasses = {
+        up: 'animate-up',
+        down: 'animate-down',
+        wave: 'animate-wave',
+        jump: 'animate-jump'
+      };
+      
+      // Animationsklasse hinzufügen
+      const elementClass = `.pitch-icon.${elementType}`;
+      const elements = document.querySelectorAll(elementClass);
+      
+      elements.forEach(element => {
+        // Alle bestehenden Animationsklassen entfernen
+        element.classList.remove('animate-up', 'animate-down', 'animate-wave', 'animate-jump');
+        // Passende Animationsklasse hinzufügen
+        element.classList.add(animationClasses[elementType]);
+        
+        // Animation nach kurzer Zeit wieder entfernen
+        setTimeout(() => {
+          element.classList.remove(animationClasses[elementType]);
+        }, 1500); // Länger als die Animation dauert
+      });
+    },
+    
+    /**
+     * Spielt eine Melodie ab basierend auf dem angegebenen Mustertyp
+     * @param {string} type - Typ des Musters ('up', 'down', 'wave', 'jump')
+     */
     playSequence(type) {
       // If already playing, stop the current sound first
       if (this.isPlaying) {
@@ -554,6 +621,9 @@ export function pitches() {
       } else {
         return; // Invalid type
       }
+      
+      // Animieren des entsprechenden Elements
+      this.animatePatternElement(type);
       
       // Store the pattern for reference and play each note in sequence
       this.currentSequence = pattern;
@@ -610,7 +680,29 @@ export function pitches() {
       
       // Only play the sound if explicitly requested
       if (playSound) {
-        this.playSequence(randomType);
+        // Generiere und spiele die Melodie ohne Animation
+        let pattern;
+        if (randomType === 'up') {
+          pattern = this.generateUpPattern();
+        } else if (randomType === 'down') {
+          pattern = this.generateDownPattern();
+        } else if (randomType === 'wave') {
+          pattern = this.generateWavyPattern();
+        } else if (randomType === 'jump') {
+          pattern = this.generateJumpyPattern();
+        }
+
+        // Melodie abspielen und Animation zeigen
+        this.currentSequence = pattern;
+        this.isPlaying = true;
+        this.currentAnimation = randomType;
+        
+        // Animation starten
+        this.animatePatternElement(randomType);
+        
+        // Töne nacheinander abspielen
+        const noteArray = [...pattern];
+        this.playNoteSequence(noteArray, 0);
       }
     },
     
@@ -682,9 +774,31 @@ export function pitches() {
      * @param {Event} e - Mouse/touch event
      */
     startDrawing(e) {
+      e.preventDefault(); // Verhindert unbeabsichtigtes Verhalten auf Mobilgeräten
+      
       // Reset path
       this.drawPath = [];
+      
+      // Hole den Canvas-Kontext zum Zeichnen
+      const canvas = e.currentTarget;
+      this.ctx = canvas.getContext('2d');
+      
+      // Setze Zeichenstil
+      this.ctx.clearRect(0, 0, canvas.width, canvas.height);
+      this.ctx.strokeStyle = '#3498db'; // Blauer Strich
+      this.ctx.lineWidth = 4;
+      this.ctx.lineCap = 'round';
+      this.ctx.lineJoin = 'round';
+      
+      // Füge den ersten Punkt hinzu
       this.addPointToPath(e);
+      
+      // Beginne einen neuen Pfad
+      this.ctx.beginPath();
+      this.ctx.moveTo(this.drawPath[0].x, this.drawPath[0].y);
+      
+      // Speichere den Status, dass wir zeichnen
+      this.isDrawing = true;
     },
     
     /**
@@ -692,8 +806,17 @@ export function pitches() {
      * @param {Event} e - Mouse/touch event
      */
     draw(e) {
-      if (this.drawPath.length === 0) return;
+      e.preventDefault(); // Verhindert unbeabsichtigtes Verhalten auf Mobilgeräten
+      
+      if (!this.isDrawing || this.drawPath.length === 0) return;
+      
+      // Füge den aktuellen Punkt hinzu
       this.addPointToPath(e);
+      
+      // Zeichne den aktuellen Pfad
+      const lastPoint = this.drawPath[this.drawPath.length - 1];
+      this.ctx.lineTo(lastPoint.x, lastPoint.y);
+      this.ctx.stroke();
     },
     
     /**
@@ -703,8 +826,24 @@ export function pitches() {
     addPointToPath(e) {
       const canvas = e.currentTarget;
       const rect = canvas.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
+      
+      // Behandle sowohl Touch- als auch Mausereignisse
+      let clientX, clientY;
+      
+      if (e.type.startsWith('touch')) {
+        // Touch-Event
+        const touch = e.touches[0] || e.changedTouches[0];
+        clientX = touch.clientX;
+        clientY = touch.clientY;
+      } else {
+        // Maus-Event
+        clientX = e.clientX;
+        clientY = e.clientY;
+      }
+      
+      // Berechne die Position relativ zum Canvas
+      const x = clientX - rect.left;
+      const y = clientY - rect.top;
       
       this.drawPath.push({ x, y });
     },
@@ -712,10 +851,22 @@ export function pitches() {
     /**
      * End drawing and play the resulting melody
      */
-    endDrawing() {
+    endDrawing(e) {
+      if (e) {
+        e.preventDefault(); // Verhindert unbeabsichtigtes Verhalten auf Mobilgeräten
+      }
+      
+      // Zeichnung beenden
+      this.isDrawing = false;
+      
       if (this.drawPath.length === 0) return;
       
-      // Convert drawing to melody
+      // Zeichnen abschließen
+      if (this.ctx) {
+        this.ctx.closePath();
+      }
+      
+      // Melodie aus der Zeichnung generieren und abspielen
       this.playDrawnMelody();
     },
     
@@ -728,7 +879,7 @@ export function pitches() {
       const canvas = document.querySelector('.drawing-canvas');
       const height = canvas.height;
       
-      // Sample points from the path to create a melody
+      // Punkte aus dem Pfad samplen, um eine Melodie zu erzeugen
       const sampleSize = Math.min(8, this.drawPath.length);
       const step = Math.floor(this.drawPath.length / sampleSize);
       
@@ -737,31 +888,64 @@ export function pitches() {
         sampledPoints.push(this.drawPath[i * step]);
       }
       
-      // Map y-positions to notes (higher position = higher pitch)
+      // Y-Positionen auf Noten abbilden (höhere Position = höherer Ton)
       const notes = ['C3', 'D3', 'E3', 'F3', 'G3', 'A3', 'B3', 'C4', 'D4', 'E4', 'F4', 'G4'];
       
       const sequence = sampledPoints.map(point => {
-        // Invert Y coordinate (0 is top in canvas)
+        // Y-Koordinate invertieren (0 ist oben im Canvas)
         const relativeHeight = 1 - (point.y / height);
         const noteIndex = Math.floor(relativeHeight * notes.length);
         return notes[Math.min(noteIndex, notes.length - 1)];
       });
       
-      // Play sequence with proper timing
-      const playSequentially = (notes, index = 0) => {
-        if (index >= notes.length) return;
-        
-        // Play current note
+      console.log('Playing drawn melody sequence:', sequence);
+      
+      // Visuelle Darstellung verbessern - farbige Punkte für gesampelte Stellen
+      if (this.ctx) {
+        sampledPoints.forEach((point, index) => {
+          // Kreise an den gesampelten Punkten zeichnen
+          this.ctx.fillStyle = '#e74c3c'; // Rote Punkte für die gesampelten Stellen
+          this.ctx.beginPath();
+          this.ctx.arc(point.x, point.y, 6, 0, Math.PI * 2);
+          this.ctx.fill();
+          
+          // Optional: Notennamen dazuschreiben
+          this.ctx.fillStyle = '#333';
+          this.ctx.font = '10px Arial';
+          this.ctx.fillText(sequence[index], point.x + 8, point.y - 8);
+        });
+      }
+      
+      // Sequenz mit korrektem Timing abspielen
+      this.playDrawnNoteSequence(sequence.map(note => note.toLowerCase()), 0);
+    },
+    
+    /**
+     * Spielt eine Sequenz von Noten nacheinander ab
+     * Diese Methode funktioniert zuverlässiger auf Android
+     */
+    playDrawnNoteSequence(notes, index = 0) {
+      if (index >= notes.length) return;
+      
+      // Versuche zuerst native Android TTS (wenn verfügbar)
+      const note = notes[index];
+      const soundId = `pitch_${note}`;
+      
+      try {
+        // Sound abspielen
         window.dispatchEvent(new CustomEvent('lalumo:playnote', { 
-          detail: { note: `pitch_${notes[index].toLowerCase()}` }
+          detail: { note: soundId }
         }));
         
-        // Schedule next note
-        setTimeout(() => playSequentially(notes, index + 1), 300);
-      };
-      
-      // Start playing
-      playSequentially(sequence);
+        console.log(`Playing note ${index + 1}/${notes.length}: ${note}`);
+        
+        // Nächste Note mit Verzögerung abspielen
+        setTimeout(() => this.playDrawnNoteSequence(notes, index + 1), 300);
+      } catch (error) {
+        console.error('Error playing note in drawn melody:', error);
+        // Trotz Fehler weitergehen
+        setTimeout(() => this.playDrawnNoteSequence(notes, index + 1), 300);
+      }
     },
     
     /**

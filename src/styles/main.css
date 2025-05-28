@@ -983,18 +983,51 @@ section h2 {
 
 /* Play buttons in pitch cards */
 .pitch-card .play-button {
-  margin-top: 10px;
-  padding: 8px 15px;
-  background-color: var(--accent-color);
+  display: block;
+  margin: 1rem auto;
+  padding: 0.75rem 1.5rem;
+  background-color: var(--primary-color);
+  color: white;
   border: none;
-  border-radius: 20px;
-  font-weight: 500;
+  border-radius: 50px;
+  font-size: 1rem;
   cursor: pointer;
   transition: all 0.2s ease;
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* New circular play button */
+.circular-play-button {
   display: flex;
-  align-items: center;
   justify-content: center;
-  gap: 5px;
+  align-items: center;
+  margin: 1.5rem auto;
+  width: 4.5rem;
+  height: 4.5rem;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.circular-play-button svg {
+  width: 2.5rem;
+  height: 2.5rem;
+  margin-left: 0.25rem; /* Slight offset to visually center the triangle */
+}
+
+.circular-play-button:hover {
+  transform: scale(1.05);
+  background-color: var(--accent-color);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
+}
+
+.circular-play-button:active {
+  transform: scale(0.98);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .pitch-card .play-button:hover {

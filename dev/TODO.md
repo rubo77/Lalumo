@@ -34,16 +34,12 @@ First finish pitches and melodies completely:
 - immer bei Erfolg: Regenbogen
 - immer bei Misserfolg: wackeln
 
-- Draw a melody:
-  - on android no sound
-  - high und low notes weg
-  - einen strich malen, wo man langgemalt hat
 
-Match Soundss:
-- wiederholen bis man es richtig hat
+Match Sounds:
+- die selbe melodie bei erneutem play button click wiederholen bis man es richtig hat
 
 memory game: 
-- wiederholen bis man es hat
+- die selbe melodie bei erneutem play button click wiederholen bis man es richtig hat
 - langsam schwerer werden 
 - schwarze Tasten andeuten 
 - cdega statt cdefg
@@ -53,4 +49,8 @@ memory game:
 
 # most important
 - the player settings should not be overlapped by the menu
+
+- Draw a melody:
+  - on android there is no sound
+  - einen strich malen, wo man langgemalt hat
 - die up and down melodien dürfen nicht zu hoch bzw zu tief anfangen
