@@ -1107,24 +1107,53 @@ export function pitches() {
     
     /**
      * Setup for the memory mode
-     */
-    /**
-     * Setup for the memory mode
      * @param {boolean} playSound - Whether to play the melody
      * @param {boolean} generateNew - Whether to generate a new melody
      */
     setupMemoryMode(playSound = false, generateNew = true) {
-      // Use the specific C, D, E, F, G notes for the memory game
-      const fixedNotes = ['C4', 'D4', 'E4', 'F4', 'G4'];
+      // Use the specific C, D, E, G, A notes for the memory game (skipping F and H/B)
+      const fixedNotes = ['C4', 'D4', 'E4', 'G4', 'A4'];
+      
+      // Initialize memory success count if not existing
+      if (this.memorySuccessCount === undefined) {
+        this.memorySuccessCount = 0;
+      }
+      
       if (generateNew) {
         this.currentSequence = [];
-        // Generate a random sequence of 3-5 notes
-        const length = Math.floor(Math.random() * 3) + 3; // 3 to 5 notes
-        for (let i = 0; i < length; i++) {
-          this.currentSequence.push(fixedNotes[Math.floor(Math.random() * fixedNotes.length)]);
+        // Determine sequence length based on success count
+        let length;
+        if (this.memorySuccessCount < 3) {
+          length = 2; // First 3 successes: 2 notes
+        } else if (this.memorySuccessCount < 6) {
+          length = 3; // Next 3 successes: 3 notes
+        } else if (this.memorySuccessCount < 11) {
+          length = 4; // Next 5 successes: 4 notes
+        } else if (this.memorySuccessCount < 16) {
+          length = 5; // Next 5 successes: 5 notes
+        } else {
+          length = 6; // After 15 successes: 6 notes
         }
+        
+        console.log(`Memory game: Level ${this.memorySuccessCount + 1}, using ${length} notes`);
+        
+        // First note is fully random
+        let lastNote = fixedNotes[Math.floor(Math.random() * fixedNotes.length)];
+        this.currentSequence.push(lastNote);
+        
+        // Generate remaining notes ensuring no consecutive repetitions
+        for (let i = 1; i < length; i++) {
+          // Create a copy of fixedNotes without the last note used
+          const availableNotes = fixedNotes.filter(note => note !== lastNote);
+          
+          // Select randomly from available notes
+          lastNote = availableNotes[Math.floor(Math.random() * availableNotes.length)];
+          this.currentSequence.push(lastNote);
+        }
+        
         this.userSequence = [];
       }
+      
       // Play the sequence only if explicitly requested
       if (playSound) {
         this.playMemorySequence();
@@ -1212,6 +1241,8 @@ export function pitches() {
       setTimeout(() => {
         this.showFeedback = false;
         if (isCorrect) {
+          // Increment success count for progressive difficulty
+          this.memorySuccessCount = (this.memorySuccessCount || 0) + 1;
           // Generate a new memory challenge
           this.setupMemoryMode();
         } else {

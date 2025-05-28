@@ -1372,7 +1372,7 @@ section h2 {
   display: flex;
   justify-content: center;
   width: 100%;
-  max-width: 400px;
+  max-width: 500px;
   height: 120px;
   margin: 1.5rem auto;
   position: relative;
@@ -1398,7 +1398,7 @@ section h2 {
 
 .piano-key.white {
   background-color: white;
-  width: 18%;
+  width: 9%;
   color: #333;
   z-index: 1;
   border-radius: 0 0 5px 5px;
@@ -1408,6 +1408,36 @@ section h2 {
   background-color: #ffe066; /* Yellow glow */
   transform: translateY(2px);
   box-shadow: 0 0 15px rgba(255, 224, 102, 0.8);
+}
+
+.piano-key.black {
+  background-color: #222;
+  width: 5%;
+  height: 60%;
+  z-index: 2;
+  margin: 0 -2.5%;
+  border-radius: 0 0 3px 3px;
+}
+
+.piano-key.inactive {
+  background-color: #e0e0e0;
+  width: 9%;
+  color: #999;
+  z-index: 1;
+  border-radius: 0 0 5px 5px;
+  cursor: default;
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.piano-key.inactive.f4, .piano-key.inactive.b4 {
+  background: repeating-linear-gradient(
+    45deg,
+    #e0e0e0,
+    #e0e0e0 5px,
+    #d5d5d5 5px,
+    #d5d5d5 10px
+  );
 }
 
 .memory-button:hover {

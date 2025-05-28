@@ -266,11 +266,18 @@
 
           
           <div class="piano-keyboard">
+            <!-- White keys C, D, E, G, A with black key indicators -->
             <button class="piano-key white c4" @click="addToSequence('C4')" :class="{ 'active': currentHighlightedNote === 'C4' }">C</button>
+            <div class="piano-key black" aria-hidden="true"></div>
             <button class="piano-key white d4" @click="addToSequence('D4')" :class="{ 'active': currentHighlightedNote === 'D4' }">D</button>
+            <div class="piano-key black" aria-hidden="true"></div>
             <button class="piano-key white e4" @click="addToSequence('E4')" :class="{ 'active': currentHighlightedNote === 'E4' }">E</button>
-            <button class="piano-key white f4" @click="addToSequence('F4')" :class="{ 'active': currentHighlightedNote === 'F4' }">F</button>
+            <div class="piano-key inactive f4" aria-hidden="true">F</div>
             <button class="piano-key white g4" @click="addToSequence('G4')" :class="{ 'active': currentHighlightedNote === 'G4' }">G</button>
+            <div class="piano-key black" aria-hidden="true"></div>
+            <button class="piano-key white a4" @click="addToSequence('A4')" :class="{ 'active': currentHighlightedNote === 'A4' }">A</button>
+            <div class="piano-key black" aria-hidden="true"></div>
+            <div class="piano-key inactive b4" aria-hidden="true">H</div>
           </div>
           
           <div class="sequence-progress">
