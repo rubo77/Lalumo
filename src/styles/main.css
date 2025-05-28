@@ -1027,6 +1027,53 @@ section h2 {
 
 .circular-play-button:active {
   transform: scale(0.98);
+  background-color: #2980b9;
+}
+
+/* Animationen für die Pattern-Elemente */
+@keyframes rocket-up {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-30px); }
+  100% { transform: translateY(0); }
+}
+
+@keyframes slide-down {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(30px); }
+  100% { transform: translateY(0); }
+}
+
+@keyframes wave-move {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-15px); }
+  50% { transform: translateX(0); }
+  75% { transform: translateX(15px); }
+  100% { transform: translateX(0); }
+}
+
+@keyframes jump-bounce {
+  0% { transform: translateY(0); }
+  20% { transform: translateY(-20px); }
+  40% { transform: translateY(0); }
+  60% { transform: translateY(-10px); }
+  80% { transform: translateY(0); }
+  100% { transform: translateY(0); }
+}
+
+.pitch-icon.up.animate-up {
+  animation: rocket-up 1.5s ease-in-out;
+}
+
+.pitch-icon.down.animate-down {
+  animation: slide-down 1.5s ease-in-out;
+}
+
+.pitch-icon.wave.animate-wave {
+  animation: wave-move 1.5s ease-in-out;
+}
+
+.pitch-icon.jump.animate-jump {
+  animation: jump-bounce 1.5s ease-in-out;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 

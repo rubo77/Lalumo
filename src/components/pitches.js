@@ -746,6 +746,9 @@ export function pitches() {
       // First stop any currently playing melody
       this.stopCurrentSound();
       
+      // Die gewählte Animation anzeigen, unabhängig davon, ob richtig oder falsch
+      this.animatePatternElement(selected);
+      
       const isCorrect = selected === this.correctAnswer;
       
       this.showFeedback = true;
@@ -768,6 +771,11 @@ export function pitches() {
       // Reset after feedback
       setTimeout(() => {
         this.showFeedback = false;
+        // Animationsklassen entfernen nach Feedback
+        document.querySelectorAll('.pitch-icon').forEach(element => {
+          element.classList.remove('animate-up', 'animate-down', 'animate-wave', 'animate-jump');
+        });
+        
         if (isCorrect) {
           // Generate a new matching challenge - generateNew = true bedeutet eine neue Melodie erstellen
           this.setupMatchingMode(false, true);
