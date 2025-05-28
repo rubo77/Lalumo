@@ -98,11 +98,16 @@ export function pitches() {
      * Start a long press timer for showing help text
      * @param {string} pattern - The pattern being long-pressed
      */
-    startLongPress(pattern) {
+    startLongPress(pattern, event) {
       this.cancelLongPress(); // Clear any existing timer
       
+      // Prevent default touch behavior on Android to avoid interference
+      if (event && event.type && event.type.includes('touch')) {
+        event.preventDefault();
+      }
+      
       // Debug-Log, um zu sehen, welches Pattern übergeben wird
-      console.log('Starting long press for pattern:', pattern);
+      console.log('Starting long press for pattern:', pattern, 'event type:', event ? event.type : 'none');
       
       this.longPressTimer = setTimeout(() => {
         // Get the appropriate help text based on pattern and language
@@ -725,12 +730,12 @@ export function pitches() {
         // Verwende die gespeicherte Melodie
         const pattern = this.matchingPattern || this.currentSequence;
         
-        // Melodie abspielen und Animation zeigen
+        // Melodie abspielen ohne Animation des richtigen Elements
         this.isPlaying = true;
-        this.currentAnimation = this.correctAnswer;
         
-        // Animation starten - Animiere das richtige Element (Rakete, Rutsche, etc.)
-        this.animatePatternElement(this.correctAnswer);
+        // REMOVED: Animation of correct answer when play button is clicked
+        // this.currentAnimation = this.correctAnswer;
+        // this.animatePatternElement(this.correctAnswer);
         
         // Töne nacheinander abspielen
         const noteArray = [...pattern];

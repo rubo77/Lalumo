@@ -31,8 +31,6 @@ First finish pitches and melodies completely:
 
 - Cookie Banner
 
-- immer bei Erfolg: Regenbogen
-- immer bei Misserfolg: wackeln
 
 - ergänze ein debug flag, das die console logs nur ausgibt, wenn man die app  im debug mode startet, nicht aber wenn man diese deployed oder als android app startet
 
@@ -41,15 +39,10 @@ First finish pitches and melodies completely:
 
 Draw a melody:
 memory game: 
- - 
+ - den fortschritt in der localstorage merken für den user, das soll dann auch in dem export landen unter "Game Progress - Export your progress to save or transfer to another device:"
 
 # most important
-Listen to melodies:
-- longpress on the buttons still does not work on android (the long press to unlock the kindersicherung works though)
-
-Match Sounds:
-- wenn man auf den play button drückt, soll noch keine animation des richtigen buttons (rakete, ....) starten
-- 
-
+- immer bei Erfolg: einen Regenbogen, der sich langsam einblendet und grösser wird, bis er über das ganze bild verschwindet
+- immer bei Misserfolg: das element, auf das man gedrückt hat etwas hin und her-wackeln
 
 - the player settings should not be overlapped by the menu
