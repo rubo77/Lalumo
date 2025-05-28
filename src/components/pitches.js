@@ -695,16 +695,15 @@ export function pitches() {
     /**
      * Setup for the matching mode
      */
-    setupMatchingMode(playSound = false) {
-      // Prepare a random sequence and image choices
-      const types = ['up', 'down', 'wave', 'jump'];
-      const randomType = types[Math.floor(Math.random() * types.length)];
-      
-      this.correctAnswer = randomType;
-      
-      // Only play the sound if explicitly requested
-      if (playSound) {
-        // Generiere und spiele die Melodie ohne Animation
+    setupMatchingMode(playSound = false, generateNew = true) {
+      // Wenn generateNew = true, dann eine neue Melodie erstellen, ansonsten die aktuelle beibehalten
+      if (generateNew) {
+        // Prepare a random sequence and image choices
+        const types = ['up', 'down', 'wave', 'jump'];
+        const randomType = types[Math.floor(Math.random() * types.length)];
+        this.correctAnswer = randomType;
+        
+        // Generiere die passende Melodie für den ausgewählten Typ
         let pattern;
         if (randomType === 'up') {
           pattern = this.generateUpPattern();
@@ -715,14 +714,23 @@ export function pitches() {
         } else if (randomType === 'jump') {
           pattern = this.generateJumpyPattern();
         }
-
-        // Melodie abspielen und Animation zeigen
-        this.currentSequence = pattern;
-        this.isPlaying = true;
-        this.currentAnimation = randomType;
         
-        // Animation starten
-        this.animatePatternElement(randomType);
+        // Speichere die generierte Melodie für späteres Wiederholen
+        this.currentSequence = pattern;
+        this.matchingPattern = pattern; // Speziell für den Match-Modus
+      }
+      
+      // Only play the sound if explicitly requested
+      if (playSound) {
+        // Verwende die gespeicherte Melodie
+        const pattern = this.matchingPattern || this.currentSequence;
+        
+        // Melodie abspielen und Animation zeigen
+        this.isPlaying = true;
+        this.currentAnimation = this.correctAnswer;
+        
+        // Animation starten - Animiere das richtige Element (Rakete, Rutsche, etc.)
+        this.animatePatternElement(this.correctAnswer);
         
         // Töne nacheinander abspielen
         const noteArray = [...pattern];
@@ -750,13 +758,22 @@ export function pitches() {
         detail: { note: isCorrect ? 'success' : 'try_again' }
       }));
       
+      // Fortschritt nur bei richtiger Antwort erhöhen
+      if (isCorrect) {
+        this.progress.match++;
+        // Speichern des Fortschritts im localStorage
+        localStorage.setItem('lalumo_progress', JSON.stringify(this.progress));
+      }
+      
       // Reset after feedback
       setTimeout(() => {
         this.showFeedback = false;
         if (isCorrect) {
-          // Generate a new matching challenge
-          this.setupMatchingMode();
+          // Generate a new matching challenge - generateNew = true bedeutet eine neue Melodie erstellen
+          this.setupMatchingMode(false, true);
         }
+        // Bei falscher Antwort wird keine neue Melodie generiert, damit der Spieler die gleiche 
+        // Melodie noch einmal versuchen kann
       }, 2000);
     },
     
