@@ -999,8 +999,10 @@ export function pitches() {
     
     /**
      * Setup for the guessing mode
+     * @param {boolean} playSound - Whether to play the melody
+     * @param {boolean} generateNew - Whether to generate a new melody
      */
-    setupGuessingMode(playSound = false) {
+    setupGuessingMode(playSound = false, generateNew = true) {
       // Define possible sequence types and their expected next note direction
       const options = [
         { type: 'up', next: 'up', generator: this.generateUpPattern.bind(this) },
@@ -1009,30 +1011,26 @@ export function pitches() {
         { type: 'jump', next: 'down', generator: this.generateJumpyPattern.bind(this) }
       ];
       
-      // Select a random pattern type
-      const selected = options[Math.floor(Math.random() * options.length)];
-      
-      // Generate a sequence for the selected pattern type
-      const fullSequence = selected.generator();
-      
-      // Only use the first 3 notes for the guessing game
-      this.currentSequence = fullSequence.slice(0, 3);
-      this.correctAnswer = selected.next;
-      this.choices = ['up', 'down'];
-      
+      if (generateNew) {
+        // Select a random pattern type
+        const selected = options[Math.floor(Math.random() * options.length)];
+        // Generate a sequence for the selected pattern type
+        const fullSequence = selected.generator();
+        // Only use the first 3 notes for the guessing game
+        this.currentSequence = fullSequence.slice(0, 3);
+        this.correctAnswer = selected.next;
+        this.choices = ['up', 'down'];
+      }
       // Play the partial sequence
       const playPartial = (notes, index = 0) => {
         if (index >= notes.length) return;
-        
         // Play current note
         window.dispatchEvent(new CustomEvent('lalumo:playnote', { 
           detail: { note: `pitch_${notes[index].toLowerCase()}` }
         }));
-        
         // Schedule next note
         setTimeout(() => playPartial(notes, index + 1), 600);
       };
-      
       // Only play sound if explicitly requested
       if (playSound) {
         playPartial(this.currentSequence);
@@ -1078,7 +1076,10 @@ export function pitches() {
       // Reset after feedback
       setTimeout(() => {
         this.showFeedback = false;
-        this.setupGuessingMode(); // Generate a new guessing challenge
+        if (isCorrect) {
+          this.setupGuessingMode(false, true); // Generate a new guessing challenge ONLY if correct
+        }
+        // If incorrect, keep the same melody
       }, 3000);
     },
     
@@ -1107,19 +1108,23 @@ export function pitches() {
     /**
      * Setup for the memory mode
      */
-    setupMemoryMode(playSound = false) {
+    /**
+     * Setup for the memory mode
+     * @param {boolean} playSound - Whether to play the melody
+     * @param {boolean} generateNew - Whether to generate a new melody
+     */
+    setupMemoryMode(playSound = false, generateNew = true) {
       // Use the specific C, D, E, F, G notes for the memory game
       const fixedNotes = ['C4', 'D4', 'E4', 'F4', 'G4'];
-      this.currentSequence = [];
-      
-      // Generate a random sequence of 3-5 notes
-      const length = Math.floor(Math.random() * 3) + 3; // 3 to 5 notes
-      for (let i = 0; i < length; i++) {
-        this.currentSequence.push(fixedNotes[Math.floor(Math.random() * fixedNotes.length)]);
+      if (generateNew) {
+        this.currentSequence = [];
+        // Generate a random sequence of 3-5 notes
+        const length = Math.floor(Math.random() * 3) + 3; // 3 to 5 notes
+        for (let i = 0; i < length; i++) {
+          this.currentSequence.push(fixedNotes[Math.floor(Math.random() * fixedNotes.length)]);
+        }
+        this.userSequence = [];
       }
-      
-      this.userSequence = [];
-      
       // Play the sequence only if explicitly requested
       if (playSound) {
         this.playMemorySequence();
@@ -1187,14 +1192,12 @@ export function pitches() {
      */
     checkMemorySequence() {
       let isCorrect = true;
-      
       for (let i = 0; i < this.currentSequence.length; i++) {
         if (this.currentSequence[i] !== this.userSequence[i]) {
           isCorrect = false;
           break;
         }
       }
-      
       this.showFeedback = true;
       this.feedback = isCorrect ? 
         'Amazing memory! You got it right!' : 
@@ -1217,6 +1220,20 @@ export function pitches() {
           this.playMemorySequence();
         }
       }, 2000);
+    },
+
+    /**
+     * Play the current melody for the active mode (match, guess, memory)
+     * This is called by the shared Play button in the UI
+     */
+    playCurrentMelody() {
+      if (this.mode === 'match') {
+        this.setupMatchingMode(true, false);
+      } else if (this.mode === 'guess') {
+        this.setupGuessingMode(true, false);
+      } else if (this.mode === 'memory') {
+        this.setupMemoryMode(true, false);
+      }
     }
   };
 }

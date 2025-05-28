@@ -137,7 +137,7 @@
 
     <!-- Chapter: Pitches -->
     <section x-show="active === 'pitches'" x-transition>
-      <div x-data="pitches" x-init="init()">
+      <div x-data="pitches()" x-init="init()">
         <div class="mascot-container" @click="showContextMessage()">
           <div class="mascot-wrapper">
             <img src="/images/mascot.png" alt="Lalumo Mascot" class="mascot" />
@@ -179,8 +179,7 @@
         <!-- Matching Mode -->
         <div x-show="mode === 'match'" class="pitch-activity">
           <h3>Match the sound to the picture!</h3>
-          
-          <button class="circular-play-button" @click="setupMatchingMode(true, false)" aria-label="Play Melody">
+          <button class="circular-play-button" @click="playCurrentMelody()" aria-label="Play Melody">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
               <path d="M8 5v14l11-7z"/>
             </svg>
@@ -237,10 +236,12 @@
         <!-- Guessing Mode -->
         <div x-show="mode === 'guess'" class="pitch-activity">
           <h3>What comes next?</h3>
-          
-          <button class="play-button" @click="setupGuessingMode(true)">
-            <span>Play Melody</span> 🔊
+          <button class="circular-play-button" @click="playCurrentMelody()" aria-label="Play Melody">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M8 5v14l11-7z"/>
+            </svg>
           </button>
+
           
           <div class="guess-options">
             <button class="guess-button up" @click="checkGuess('up')">
@@ -257,10 +258,12 @@
         <!-- Memory Mode -->
         <div x-show="mode === 'memory'" class="pitch-activity">
           <h3>Remember the melody!</h3>
-          
-          <button class="play-button" @click="setupMemoryMode(true)">
-            <span>Play Melody</span> 🔊
+          <button class="circular-play-button" @click="playCurrentMelody()" aria-label="Play Melody">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M8 5v14l11-7z"/>
+            </svg>
           </button>
+
           
           <div class="piano-keyboard">
             <button class="piano-key white c4" @click="addToSequence('C4')" :class="{ 'active': currentHighlightedNote === 'C4' }">C</button>
@@ -326,9 +329,10 @@
       <div class="legal-content">
         <p>Lalumo App - Musik lernen für Kinder</p>
         <p>Verantwortlich für den Inhalt:</p>
-        <p>[Name]<br>
-        [Adresse]<br>
-        [Kontakt]</p>
+        <p>Ruben Barkow-Kuder<br>
+        Knickweg 16
+        24114 Kiel<br>
+        <a href="mailto:lalumo-support@it.z11.de">lalumo-support@it.z11.de</a></p>
       </div>
     </section>
     

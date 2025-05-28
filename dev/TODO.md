@@ -36,18 +36,22 @@ First finish pitches and melodies completely:
 
 - ergänze ein debug flag, das die console logs nur ausgibt, wenn man die app  im debug mode startet, nicht aber wenn man diese deployed oder als android app startet
 
+Listen to melodies:
+- longpress on the buttons still does not work on android (the long press to unlock the kindersicherung works though)
 
 Match Sounds:
-- die selbe melodie bei erneutem play button click wiederholen bis man es richtig hat
-- die selbe animationen, wie bei "listen to melodies"; den effekt, dass die rocket hoch, der slide runter bewegt u.s.w extrahieren, so dass keine code doppelung passiert, so dass der auch bei play melody angewendet wird ohne code-doppelungen.
+- wenn man auf den play button drückt, soll noch keine animation des richtigen buttons (rakete, ....) starten
+
 
 memory game: 
-- die selbe melodie bei erneutem play button click wiederholen bis man es richtig hat
 - langsam schwerer werden 
 - schwarze Tasten andeuten 
 - cdega statt cdefg
 
--andere chapters ausarbeiten mit je 5 Aktionen
+im memory game und in "guess next note" bei beiden auch den play button aus "match sounds" benutzen und ausserdem bei beiden  die selbe melodie bei erneutem play button click wiederholen bis man es richtig hat, also die selbe funktionalität wie bei "match sounds"; analysiere "match sounds" wie es dort gelöst ist um code doppelungen zu vermeiden und falls nötig die selben variablennamen zu verwenden
+
+
+- die anderen 4 chapters ausarbeiten mit je 5 Aktionen
 
 
 # most important
