@@ -132,6 +132,87 @@
   margin-top: 1.5rem;
 }
 
+/* Settings page */
+.settings-page {
+  padding: 20px;
+}
+
+.settings-section {
+  margin-bottom: 30px;
+}
+
+.username-edit {
+  display: flex;
+  align-items: center;
+  margin: 8px 0;
+  gap: 10px;
+}
+
+.username-input {
+  padding: 8px 12px;
+  border: 2px solid var(--color-accent-light);
+  border-radius: 8px;
+  font-size: 1rem;
+  flex: 1;
+  background: var(--color-background-lighter);
+  color: var(--color-text);
+}
+
+/* Reset Progress Section */
+.reset-section {
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid var(--color-accent-light);
+}
+
+.reset-buttons {
+  margin-top: 15px;
+}
+
+.confirm-reset {
+  background-color: rgba(255, 0, 0, 0.1);
+  padding: 15px;
+  border-radius: 8px;
+  margin: 15px 0;
+}
+
+.confirm-reset p {
+  margin-bottom: 15px;
+  color: #ff3333;
+  font-weight: bold;
+}
+
+.warning-button {
+  background-color: #ff9800;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  font-size: 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.warning-button:hover {
+  background-color: #e68a00;
+}
+
+.danger-button {
+  background-color: #f44336;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  font-size: 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  margin-right: 10px;
+}
+
+.danger-button:hover {
+  background-color: #d32f2f;
+}
+
 /* Settings */
 .settings-section {
   margin-top: 2rem;
@@ -238,6 +319,19 @@
   margin: 1rem 0;
   max-width: 100%;
   word-break: break-all;
+}
+
+.export-textarea, .import-textarea {
+  width: 100%;
+  height: 80px;
+  margin: 10px 0;
+  padding: 10px;
+  border-radius: 8px;
+  border: 2px solid var(--color-accent-light);
+  background-color: var(--color-background-lighter);
+  font-family: monospace;
+  color: var(--color-text);
+  resize: vertical;
 }
 
 .code-input {

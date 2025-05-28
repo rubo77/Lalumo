@@ -8,6 +8,8 @@ export function app() {
     menuLocked: false,  // Zustandsvariable für die Kindersicherung
     lockPressStartTime: null, // Timestamp für den Beginn des Entperrvorgangs
     username: null,
+    editableUsername: '', // For the username edit input field
+    showResetConfirm: false, // For the reset progress confirmation
     firstVisit: false,
     showUsernamePrompt: false,
     isAudioEnabled: false,
@@ -104,7 +106,12 @@ export function app() {
         const savedUsername = localStorage.getItem('lalumo_username');
         if (savedUsername) {
           this.username = savedUsername;
+          // Initialize the editable username field
+          this.editableUsername = savedUsername;
           console.log('Progress loaded for user:', this.username);
+        } else {
+          this.firstVisit = true;
+          this.showUsernamePrompt = true;
         }
         
         // Load language preference from localStorage
@@ -224,12 +231,63 @@ export function app() {
       
       try {
         localStorage.setItem('lalumo_username', this.username);
-        console.log('Username saved:', this.username);
+        // Set the editable username field to match current username
+        this.editableUsername = this.username;
       } catch (e) {
         console.log('Error saving username', e);
       }
       
       this.showUsernamePrompt = false;
+    },
+    
+    /**
+     * Save the custom username entered by the user
+     */
+    saveUsername() {
+      // Check if the username is valid
+      if (this.editableUsername && this.editableUsername.trim()) {
+        this.username = this.editableUsername.trim();
+        
+        try {
+          localStorage.setItem('lalumo_username', this.username);
+        } catch (e) {
+          console.log('Error saving custom username', e);
+        }
+      } else {
+        // If empty, revert to current username
+        this.editableUsername = this.username;
+      }
+    },
+    
+    /**
+     * Reset all user progress data
+     */
+    resetProgress() {
+      try {
+        // Keep username and language preference
+        const currentUsername = this.username;
+        const currentLanguage = this.preferredLanguage;
+        
+        // Clear game progress
+        localStorage.removeItem('lalumo_progress');
+        localStorage.removeItem('lalumo_memory_level');
+        
+        // Reset in-memory progress too
+        this.progress = { match: 0, guess: 0, memory: 0 };
+        this.memorySuccessCount = 0;
+        
+        // Restore username and language
+        localStorage.setItem('lalumo_username', currentUsername);
+        localStorage.setItem('lalumo_language', currentLanguage);
+        
+        // Hide confirmation dialog
+        this.showResetConfirm = false;
+        
+        // Show feedback or refresh the page
+        alert('Progress has been reset successfully');
+      } catch (e) {
+        console.log('Error resetting progress', e);
+      }
     },
     
     /**

@@ -49,4 +49,6 @@ memory game:
 # most important
 
 
-- in settings eine möglichkeit den fortschritt zurückzusetzen
+wenn man auf pitches und melodies drückt, dann soll das pitches5.png als hintergrund sein und man soll auf die verschiedenen bereiche des bildes drücken können um in die aktionen zu wechseln
+
+das soll auch der startscreen sein, wenn man die app oeffnet

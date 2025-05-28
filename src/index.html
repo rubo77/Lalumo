@@ -397,7 +397,11 @@
           </div>
           <div class="profile-details">
             <p class="profile-name" x-text="username"></p>
-            <button class="secondary-button" @click="setUsername()">Generate New Name</button>
+            <div class="username-edit">
+              <input type="text" x-model="editableUsername" class="username-input" placeholder="Enter your name" maxlength="20">
+              <button class="secondary-button" @click="saveUsername()">Save Name</button>
+            </div>
+            <button class="secondary-button" @click="setUsername()">Generate Random Name</button>
           </div>
         </div>
         
@@ -423,6 +427,19 @@
           <p class="import-label">Import your progress from another device:</p>
           <textarea placeholder="Paste your progress data here..." x-model="importData" class="import-textarea"></textarea>
           <button class="primary-button" @click="importProgress()">Import Progress</button>
+          
+          <div class="reset-section">
+            <h3>Reset Progress</h3>
+            <p>Reset all your game progress and start fresh:</p>
+            <div class="reset-buttons">
+              <button class="warning-button" @click="showResetConfirm = true" x-show="!showResetConfirm">Reset All Progress</button>
+              <div class="confirm-reset" x-show="showResetConfirm">
+                <p>Are you sure? This cannot be undone.</p>
+                <button class="danger-button" @click="resetProgress()">Yes, Reset Everything</button>
+                <button class="secondary-button" @click="showResetConfirm = false">Cancel</button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
