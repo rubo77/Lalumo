@@ -142,11 +142,21 @@
         <!-- Main landing with clickable image -->
         <div x-show="!mode || mode === 'main'" class="pitch-landing">
           <div class="image-map-container">
-            <div class="clickable-area listen-area" @click="setMode('listen')" aria-label="Listen Mode"></div>
-            <div class="clickable-area match-area" @click="setMode('match')" aria-label="Match Mode"></div>
-            <div class="clickable-area guess-area" @click="setMode('guess')" aria-label="Guess Mode"></div>
-            <div class="clickable-area memory-area" @click="setMode('memory')" aria-label="Memory Mode"></div>
-            <div class="clickable-area draw-area" @click="setMode('draw')" aria-label="Draw Mode"></div>
+            <div class="clickable-area listen-area" @click="setMode('listen')" aria-label="Listen Mode">
+              <span class="area-label">Listen to Melodies</span>
+            </div>
+            <div class="clickable-area match-area" @click="setMode('match')" aria-label="Match Mode">
+              <span class="area-label">Match Sounds</span>
+            </div>
+            <div class="clickable-area guess-area" @click="setMode('guess')" aria-label="Guess Mode">
+              <span class="area-label">Guess Next Note</span>
+            </div>
+            <div class="clickable-area memory-area" @click="setMode('memory')" aria-label="Memory Mode">
+              <span class="area-label">Memory Game</span>
+            </div>
+            <div class="clickable-area draw-area" @click="setMode('draw')" aria-label="Draw Mode">
+              <span class="area-label">Draw a Melody</span>
+            </div>
           </div>
 
         </div>

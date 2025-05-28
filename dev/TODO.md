@@ -48,7 +48,4 @@ memory game:
 
 # most important
 
-
-wenn man auf pitches und melodies drückt, dann soll das pitches5.png als hintergrund sein und man soll auf die verschiedenen bereiche des bildes drücken können um in die aktionen zu wechseln
-
-das soll auch der startscreen sein, wenn man die app oeffnet
+wenn der hintergrund grösser wird, dann sollen die schaltflächen sich mit nach unten sich quetschen, so dass alle sichtbar sind, aber mit weniger höhe auskommen, so dass die Schrift auf dem hintergrund immer oberhalb der obersten schaltfläche

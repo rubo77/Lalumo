@@ -115,40 +115,59 @@
   background-color: rgba(255, 255, 255, 0.25);
 }
 
+.area-label {
+  display: none;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 8px 12px;
+  font-size: 1rem;
+  text-align: center;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.clickable-area:hover .area-label {
+  display: block;
+}
+
 /* Position the clickable areas */
 .listen-area {
-  top: 15%;
+  top: clamp(25%, 30%, 35%);
   left: 15%;
   width: 20%;
-  height: 20%;
+  height: clamp(15%, 20%, 25%);
 }
 
 .match-area {
-  top: 15%;
+  top: clamp(25%, 30%, 35%);
   right: 15%;
   width: 20%;
-  height: 20%;
+  height: clamp(15%, 20%, 25%);
 }
 
 .guess-area {
-  bottom: 30%;
+  top: clamp(50%, 55%, 60%);
   left: 15%;
   width: 20%;
-  height: 20%;
+  height: clamp(15%, 20%, 25%);
 }
 
 .memory-area {
-  bottom: 30%;
+  top: clamp(50%, 55%, 60%);
   right: 15%;
   width: 20%;
-  height: 20%;
+  height: clamp(15%, 20%, 25%);
 }
 
 .draw-area {
-  bottom: 15%;
+  top: clamp(70%, 75%, 80%);
   left: 40%;
   width: 20%;
-  height: 20%;
+  height: clamp(15%, 20%, 25%);
 }
 
 .mode-instructions {
