@@ -31,14 +31,18 @@ First finish pitches and melodies completely:
 
 - Cookie Banner
 
-- Draw a melody on android
-
-- Match: wiederholen bis man es richtig hat
-
 - immer bei Erfolg: Regenbogen
 - immer bei Misserfolg: wackeln
 
-Remember: 
+- Draw a melody:
+  - on android no sound
+  - high und low notes weg
+  - einen strich malen, wo man langgemalt hat
+
+Match Soundss:
+- wiederholen bis man es richtig hat
+
+memory game: 
 - wiederholen bis man es hat
 - langsam schwerer werden 
 - schwarze Tasten andeuten 
