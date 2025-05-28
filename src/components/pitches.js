@@ -190,7 +190,10 @@ export function pitches() {
       }
       
       // Setup the new mode without playing any sounds
-      if (newMode === 'listen') {
+      if (newMode === 'main') {
+        // This is the landing page with clickable image, no additional setup needed
+        console.log('Showing main selection screen with clickable image');
+      } else if (newMode === 'listen') {
         // For listen mode, just show instructions
       } else if (newMode === 'match') {
         this.setupMatchingMode(false); // Setup without playing sound

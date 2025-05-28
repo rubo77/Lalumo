@@ -3,6 +3,7 @@ import Alpine from 'alpinejs';
 
 // Import styles
 import './styles/main.css';
+import './styles/clickable-map.css';
 
 // Import Capacitor initialization
 import { initCapacitor } from './capacitor';
@@ -16,7 +17,7 @@ import { chords } from './components/chords';
 import { freeplay } from './components/freeplay';
 
 // Initialize Alpine store for state management
-Alpine.store('pitchMode', 'listen'); // Default is listen mode
+Alpine.store('pitchMode', 'main'); // Default is the main selection screen with clickable image
 
 // Register Alpine components
 Alpine.data('app', app);

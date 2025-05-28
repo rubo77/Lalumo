@@ -513,10 +513,12 @@ body {
 }
 
 .container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 2rem;
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
   flex: 1;
+  overflow-x: hidden;
 }
 
 /* Hamburger Menu */
@@ -530,6 +532,12 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  padding: 0;
+}
+
+.hamburger-button {
+  margin-left: 30px;
+  margin-top: 25px;
 }
 
 /* Menu Lock Button */
@@ -542,6 +550,7 @@ body {
   align-items: center;
   padding: 0.5rem;
   margin-right: 0.75rem;
+  margin-top: 60px;
   z-index: 2500; /* Highest z-index to appear above absolutely everything */
   transition: all 0.3s ease;
 }
@@ -1214,18 +1223,14 @@ section h2 {
 }
 
 /* Error Animation - Shake */
-@keyframes shake-element {
+@keyframes shake {
   0%, 100% { transform: translateX(0); }
   10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
   20%, 40%, 60%, 80% { transform: translateX(5px); }
 }
 
-@keyframes wave-move {
-  0% { transform: translateX(0); }
-  25% { transform: translateX(-15px); }
-  50% { transform: translateX(0); }
-  75% { transform: translateX(15px); }
-  100% { transform: translateX(0); }
+.shake-error {
+  animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
 }
 
 @keyframes jump-bounce {

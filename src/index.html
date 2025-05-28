@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Lalumo</title>
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
   <!-- Scripts and styles will be injected by webpack -->
 </head>
 <body>
@@ -63,7 +63,7 @@
         
         <!-- Chapters Section -->
         <div class="menu-chapters">
-          <button @click="$data.active = 'pitches'; window.innerWidth < 1024 ? menuOpen = false : null" :class="{ 'active': active === 'pitches' }">Pitches & Melodies</button>
+          <button @click="$data.active = 'pitches'; $dispatch('set-pitch-mode', 'main'); window.innerWidth < 1024 ? menuOpen = false : null" :class="{ 'active': active === 'pitches' }">Pitches & Melodies</button>
           <button @click="$data.active = 'tonecolors'; window.innerWidth < 1024 ? menuOpen = false : null" :class="{ 'active': active === 'tonecolors' }" style="display: none;">Tone Colors</button>
           <button @click="$data.active = 'rhythms'; window.innerWidth < 1024 ? menuOpen = false : null" :class="{ 'active': active === 'rhythms' }" style="display: none;">Rhythm</button>
           <button @click="$data.active = 'chords'; window.innerWidth < 1024 ? menuOpen = false : null" :class="{ 'active': active === 'chords' }" style="display: none;">Chords</button>
@@ -135,19 +135,33 @@
       </div>
     </div>
 
-    <!-- Chapter: Pitches -->
-    <section x-show="active === 'pitches'" x-transition>
+    <!-- Chapter: Pitch Chapters View -->
+    <section x-show="active === 'pitches'" x-transition class="pitch-chapters-view" style="background-image: url('./images/backgrounds/pitches5.png'); background-size: cover; background-position: top center; border-radius: 0;">
       <div x-data="pitches()" x-init="init()">
-        <div class="mascot-container" @click="showContextMessage()">
-          <div class="mascot-wrapper">
-            <img src="/images/mascot.png" alt="Lalumo Mascot" class="mascot" />
+        
+        <!-- Main landing with clickable image -->
+        <div x-show="!mode || mode === 'main'" class="pitch-landing">
+          <div class="image-map-container">
+            <div class="clickable-area listen-area" @click="setMode('listen')" aria-label="Listen Mode"></div>
+            <div class="clickable-area match-area" @click="setMode('match')" aria-label="Match Mode"></div>
+            <div class="clickable-area guess-area" @click="setMode('guess')" aria-label="Guess Mode"></div>
+            <div class="clickable-area memory-area" @click="setMode('memory')" aria-label="Memory Mode"></div>
+            <div class="clickable-area draw-area" @click="setMode('draw')" aria-label="Draw Mode"></div>
           </div>
-          <div class="speech-bubble" x-show="mascotMessage" x-text="mascotMessage" x-transition></div>
+
         </div>
         
         <!-- Listening Mode -->
         <div x-show="mode === 'listen'" class="pitch-activity">
-          <h3>Listen to different melodies!</h3>
+          <div class="mode-header">
+            <h3>Listen to different melodies!</h3>
+            <button class="back-to-main" @click="setMode('main')" aria-label="Back to main menu">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
+                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+              </svg>
+              <span>Back to Menu</span>
+            </button>
+          </div>
           
           <div class="pitch-grid">
             <div class="pitch-card" :class="{ 'active': currentAnimation === 'up' }" @click="playSequence('up')" 
@@ -186,7 +200,15 @@
         
         <!-- Matching Mode -->
         <div x-show="mode === 'match'" class="pitch-activity">
-          <h3>Match the sound to the picture!</h3>
+          <div class="mode-header">
+            <h3>Match the sound to the picture!</h3>
+            <button class="back-to-main" @click="setMode('main')" aria-label="Back to main menu">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
+                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+              </svg>
+              <span>Back to Menu</span>
+            </button>
+          </div>
           <button class="circular-play-button" @click="playCurrentMelody()" aria-label="Play Melody">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
               <path d="M8 5v14l11-7z"/>
@@ -224,7 +246,15 @@
         
         <!-- Drawing Mode -->
         <div x-show="mode === 'draw'" class="pitch-activity">
-          <h3>Draw a melody!</h3>
+          <div class="mode-header">
+            <h3>Draw a melody!</h3>
+            <button class="back-to-main" @click="setMode('main')" aria-label="Back to main menu">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
+                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+              </svg>
+              <span>Back to Menu</span>
+            </button>
+          </div>
           
           <div class="drawing-container">
             <canvas class="drawing-canvas" width="400" height="200"
@@ -243,7 +273,15 @@
         
         <!-- Guessing Mode -->
         <div x-show="mode === 'guess'" class="pitch-activity">
-          <h3>What comes next?</h3>
+          <div class="mode-header">
+            <h3>What comes next?</h3>
+            <button class="back-to-main" @click="setMode('main')" aria-label="Back to main menu">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
+                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+              </svg>
+              <span>Back to Menu</span>
+            </button>
+          </div>
           <button class="circular-play-button" @click="playCurrentMelody()" aria-label="Play Melody">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
               <path d="M8 5v14l11-7z"/>
@@ -265,7 +303,15 @@
         
         <!-- Memory Mode -->
         <div x-show="mode === 'memory'" class="pitch-activity">
-          <h3>Remember the melody!</h3>
+          <div class="mode-header">
+            <h3>Remember the melody!</h3>
+            <button class="back-to-main" @click="setMode('main')" aria-label="Back to main menu">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
+                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+              </svg>
+              <span>Back to Menu</span>
+            </button>
+          </div>
           <button class="circular-play-button" @click="playCurrentMelody()" aria-label="Play Melody">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
               <path d="M8 5v14l11-7z"/>
