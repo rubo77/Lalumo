@@ -31,10 +31,22 @@ First finish pitches and melodies completely:
 
 - Cookie Banner
 
+- Draw a melody on android
+
+- Match: wiederholen bis man es richtig hat
+
+- immer bei Erfolg: Regenbogen
+- immer bei Misserfolg: wackeln
+
+Remember: 
+- wiederholen bis man es hat
+- langsam schwerer werden 
+- schwarze Tasten andeuten 
+- cdega statt cdefg
+
+-andere chapters ausarbeiten mit je 5 Aktionen
+
+
 # most important
 - the player settings should not be overlapped by the menu
 - die up and down melodien dürfen nicht zu hoch bzw zu tief anfangen
-
-
-- android app:
- - soll laufen

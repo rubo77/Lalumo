@@ -101,24 +101,61 @@ export function pitches() {
     startLongPress(pattern) {
       this.cancelLongPress(); // Clear any existing timer
       
+      // Debug-Log, um zu sehen, welches Pattern übergeben wird
+      console.log('Starting long press for pattern:', pattern);
+      
       this.longPressTimer = setTimeout(() => {
         // Get the appropriate help text based on pattern and language
-        const language = localStorage.getItem('lalumo_language') || 'en';
+        const languageSetting = localStorage.getItem('lalumo_language') || 'english';
+        console.log('Current language setting:', languageSetting);
+        
+        // Konvertiere die Spracheinstellung zu Sprachcodes für die Hilfstexte
+        const language = languageSetting === 'german' ? 'de' : 'en';
+        
+        // Definiere einen Fallback-Text, falls kein Pattern-Text gefunden wird
+        let helpText = '';
+        
+        // Hilfstexte für alle Patterns definieren
         const helpTexts = {
-          up: { en: 'Going Up', de: 'Hoch' },
-          down: { en: 'Going Down', de: 'Runter' },
-          wave: { en: 'Wavy Pattern', de: 'Wellenform' },
-          jump: { en: 'Jumping Notes', de: 'Springende Noten' }
+          up: { en: 'Up', de: 'Hoch' },
+          down: { en: 'Down', de: 'Runter' },
+          wave: { en: 'Wavy', de: 'Wellen' },
+          jump: { en: 'Random', de: 'Zufall' }
         };
         
-        const helpText = helpTexts[pattern][language];
-        this.mascotMessage = helpText;
+        // Pattern-Namen normalisieren (Kleinbuchstaben, Leerzeichen entfernen)
+        const normalizedPattern = String(pattern).toLowerCase().trim();
         
-        // Also read out the help text using TTS
-        if (window.speechSynthesis) {
-          const speech = new SpeechSynthesisUtterance(helpText);
-          speech.lang = language === 'de' ? 'de-DE' : 'en-US';
-          window.speechSynthesis.speak(speech);
+        // Prüfen, ob das Pattern existiert
+        if (helpTexts[normalizedPattern]) {
+          // Wenn ja, den entsprechenden Text in der gewünschten Sprache oder English als Fallback holen
+          helpText = helpTexts[normalizedPattern][language] || helpTexts[normalizedPattern]['en'];
+        } else {
+          // Fallback, wenn das Pattern nicht gefunden wurde
+          helpText = language === 'de' ? 'Melodie abspielen' : 'Play melody';
+          console.warn(`Pattern '${pattern}' nicht in helpTexts definiert. Verwende Fallback-Text.`);
+        }
+        
+        // Setze immer die Nachricht, auch wenn ein Fallback verwendet wird
+        this.mascotMessage = helpText;
+        console.log('Mascot message set to:', helpText);
+        
+        // TTS verwenden, wenn verfügbar
+        try {
+          // Native Android TTS zuerst versuchen
+          if (window.AndroidTTS) {
+            window.AndroidTTS.speak(helpText);
+            console.log('Using Android TTS');
+          } 
+          // Fallback auf Web Speech API
+          else if (window.speechSynthesis) {
+            const speech = new SpeechSynthesisUtterance(helpText);
+            speech.lang = language === 'de' ? 'de-DE' : 'en-US';
+            window.speechSynthesis.speak(speech);
+            console.log('Using Web Speech API');
+          }
+        } catch (error) {
+          console.error('TTS error:', error);
         }
       }, this.longPressThreshold);
     },
