@@ -5,6 +5,8 @@ export function app() {
   return {
     active: 'pitches',
     menuOpen: false,
+    menuLocked: false,  // Zustandsvariable für die Kindersicherung
+    lockPressStartTime: null, // Timestamp für den Beginn des Entperrvorgangs
     username: null,
     firstVisit: false,
     showUsernamePrompt: false,
@@ -82,8 +84,79 @@ export function app() {
           // Default to English if not set
           localStorage.setItem('lalumo_language', 'english');
         }
+        
+        // Load menu lock state from localStorage
+        const savedLockState = localStorage.getItem('lalumo_menu_locked');
+        if (savedLockState) {
+          this.menuLocked = (savedLockState === 'true');
+          console.log('Menu lock state loaded:', this.menuLocked);
+        }
       } catch (e) {
         console.log('Error loading user data', e);
+      }
+    },
+    
+    /**
+     * Toggle the menu lock state (child safety feature)
+     */
+    toggleMenuLock() {
+      this.menuLocked = !this.menuLocked;
+      try {
+        localStorage.setItem('lalumo_menu_locked', this.menuLocked);
+        console.log('Menu lock state updated:', this.menuLocked);
+      } catch (e) {
+        console.log('Error saving menu lock state', e);
+      }
+    },
+    
+    /**
+     * Alternative unlock method that uses a progress indicator
+     */
+    startLongPressUnlock() {
+      if (!this.menuLocked) {
+        // If not locked, simply lock it immediately
+        this.toggleMenuLock();
+        return;
+      }
+      
+      // Variable to track the unlock progress
+      this.unlockProgress = 0;
+      this.unlockInterval = null;
+      
+      // Start the interval that will increment the progress
+      this.unlockInterval = setInterval(() => {
+        this.unlockProgress += 0.05; // Increment by 5% every 150ms
+        
+        // Update the visual indicator (will be implemented in HTML/CSS)
+        document.documentElement.style.setProperty('--unlock-progress', this.unlockProgress);
+        
+        // Check if we've reached 100% (3 seconds)
+        if (this.unlockProgress >= 1) {
+          // Clear the interval
+          clearInterval(this.unlockInterval);
+          this.unlockInterval = null;
+          
+          // Unlock the menu
+          this.toggleMenuLock();
+          console.log('Menu unlocked after long press');
+          
+          // Reset progress
+          this.unlockProgress = 0;
+          document.documentElement.style.setProperty('--unlock-progress', 0);
+        }
+      }, 150);
+    },
+    
+    /**
+     * Cancel the unlock process if the user releases before completion
+     */
+    cancelLongPressUnlock() {
+      if (this.unlockInterval) {
+        clearInterval(this.unlockInterval);
+        this.unlockInterval = null;
+        this.unlockProgress = 0;
+        document.documentElement.style.setProperty('--unlock-progress', 0);
+        console.log('Unlock canceled');
       }
     },
     

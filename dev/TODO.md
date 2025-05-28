@@ -29,8 +29,6 @@ First finish pitches and melodies completely:
     - Create adaptive exercise scenarios
     - Develop test cases for different child interactions
 
-- Hamburger Menü mit Kinder-Sicherung: man kann das menu sperren mit einem schloss symbol, dann kann das kind nichts anderes mehr auswählen. um zu entsperren muss man 3s lange auf das schloss drücken
-
 - Cookie Banner
 
 # most important

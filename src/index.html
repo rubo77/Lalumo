@@ -27,13 +27,35 @@
     </div>
 
     <!-- Hamburger Menu -->
-    <div class="hamburger-container" :class="{ 'menu-open': menuOpen, 'desktop-menu': window.innerWidth >= 1024 }" x-init="window.innerWidth >= 1024 ? menuOpen = true : menuOpen = false; window.addEventListener('resize', () => { if(window.innerWidth >= 1024) menuOpen = true; })">
-      <button class="hamburger-button" @click="menuOpen = !menuOpen">
+    <div class="hamburger-container" :class="{ 'menu-open': menuOpen, 'desktop-menu': window.innerWidth >= 1024, 'menu-locked': menuLocked }" x-init="window.innerWidth >= 1024 ? menuOpen = true : menuOpen = false; window.addEventListener('resize', () => { if(window.innerWidth >= 1024) menuOpen = true; })">
+      <!-- Hamburger button with conditional click handler based on lock state -->
+      <button class="hamburger-button" @click="menuLocked ? null : menuOpen = !menuOpen">
         <div class="hamburger-icon">
           <span></span>
           <span></span>
           <span></span>
         </div>
+      </button>
+      
+      <!-- Child Lock button with progress indicator -->
+      <button class="menu-lock-button" 
+        :class="{ 'locked': menuLocked }"
+        @mousedown="startLongPressUnlock" 
+        @mouseup="cancelLongPressUnlock" 
+        @mouseleave="cancelLongPressUnlock"
+        @touchstart="startLongPressUnlock" 
+        @touchend="cancelLongPressUnlock" 
+        @touchcancel="cancelLongPressUnlock">
+        <div class="lock-icon-container">
+          <div class="lock-progress-indicator" x-show="menuLocked"></div>
+          <div class="lock-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 1C8.676 1 6 3.676 6 7v2H4v14h16V9h-2V7c0-3.324-2.676-6-6-6zm0 2c2.276 0 4 1.724 4 4v2H8V7c0-2.276 1.724-4 4-4zm0 10c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2z" x-show="menuLocked"/>
+              <path d="M12 1C8.676 1 6 3.676 6 7v2h4V7c0-1.104.896-2 2-2s2 .896 2 2v2h4V7c0-3.324-2.676-6-6-6zm0 20c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm6-9H6v8h12v-8z" x-show="!menuLocked"/>
+            </svg>
+          </div>
+        </div>
+        <span class="lock-hint" x-show="menuLocked">Halte 3 Sek. gedrückt zum Entsperren</span>
       </button>
       
       <!-- Menu content -->
