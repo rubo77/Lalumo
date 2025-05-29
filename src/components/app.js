@@ -60,37 +60,64 @@ export function app() {
       
       // Define all strings used in the application with their resource IDs
       const stringMap = {
+        // Welcome and Onboarding
+        'welcome_message': { en: 'Welcome to Lalumo!', de: 'Willkommen bei Lalumo!' },
+        'create_name_message': { en: 'Let\'s create a special name just for you!', de: 'Lass uns einen besonderen Namen für dich erstellen!' },
+        'auto_save_message': { en: 'Your progress will be saved automatically', de: 'Dein Fortschritt wird automatisch gespeichert' },
+        
         // Menu items
         'menu_pitches': { en: 'Pitches & Melodies', de: 'Tonhöhen & Melodien' },
+        'menu_tonecolors': { en: 'Tone Colors', de: 'Klangfarben' },
+        'menu_rhythm': { en: 'Rhythm', de: 'Rhythmus' },
+        'menu_chords': { en: 'Chords', de: 'Akkorde' },
+        'menu_freeplay': { en: 'Free Play', de: 'Freies Spiel' },
         'menu_settings': { en: 'Settings', de: 'Einstellungen' },
         'menu_impressum': { en: 'Impressum', de: 'Impressum' },
         'menu_datenschutz': { en: 'Privacy Policy', de: 'Datenschutz' },
         'menu_credits': { en: 'Credits', de: 'Credits' },
+        'menu_unlock_hint': { en: 'Hold for 3 seconds to unlock', de: 'Halte 3 Sek. gedrückt zum Entsperren' },
+        'player_settings': { en: 'Player Settings', de: 'Spieler-Einstellungen' },
         
         // Navigation
         'nav_home': { en: 'Home', de: 'Startseite' },
         'nav_back': { en: 'Back', de: 'Zurück' },
         'nav_up': { en: 'Up', de: 'Hoch' },
         'nav_down': { en: 'Down', de: 'Runter' },
+        'back_to_main_a11y': { en: 'Back to main menu', de: 'Zurück zum Hauptmenü' },
         
         // Buttons
         'button_generate_name': { en: 'Generate Random Name', de: 'Zufälligen Namen generieren' },
         'button_save_name': { en: 'Save Name', de: 'Namen speichern' },
         'button_clear': { en: 'Clear & Try Again', de: 'Löschen & neu versuchen' },
         'button_play_melody': { en: 'Play Melody', de: 'Melodie abspielen' },
+        'button_play_melody_a11y': { en: 'Play Melody', de: 'Melodie abspielen' },
+        'button_export_progress': { en: 'Export Progress', de: 'Fortschritt exportieren' },
+        'button_import_progress': { en: 'Import Progress', de: 'Fortschritt importieren' },
+        'button_copy_clipboard': { en: 'Copy to Clipboard', de: 'In die Zwischenablage kopieren' },
+        'button_reset_progress': { en: 'Reset All Progress', de: 'Fortschritt zurücksetzen' },
+        'button_confirm_reset': { en: 'Yes, Reset Everything', de: 'Ja, alles zurücksetzen' },
+        'button_cancel': { en: 'Cancel', de: 'Abbrechen' },
         
-        // Features
+        // Language Selection
+        'language_english': { en: 'English', de: 'English' },
+        'language_german': { en: 'Deutsch', de: 'Deutsch' },
+        
+        // Features & Activities
         'play_melody': { en: 'Play melody', de: 'Melodie abspielen' },
         'guess_direction': { en: 'Guess if the melody goes up or down', de: 'Rate, ob die Melodie nach oben oder unten geht' },
-        'listen_to_melody': { en: 'Listen to melodies', de: 'Höre Melodien an' },
-        'draw_melody': { en: 'Draw a melody', de: 'Zeichne eine Melodie' },
-        'create_melody': { en: 'Create a melody', de: 'Erstelle eine Melodie' },
+        'listen_to_melody': { en: 'Listen to Melodies', de: 'Melodien anhören' },
+        'draw_melody': { en: 'Draw a Melody', de: 'Melodie zeichnen' },
+        'create_melody': { en: 'Create a Melody', de: 'Melodie erstellen' },
+        'match_sounds': { en: 'Match Sounds', de: 'Klänge zuordnen' },
+        'guess_next_note': { en: 'Guess Next Note', de: 'Nächsten Ton erraten' },
+        'memory_game': { en: 'Memory Game', de: 'Gedächtnisspiel' },
         
         // Messages
         'success_message': { en: 'Great job! That\'s correct!', de: 'Sehr gut! Das ist richtig!' },
         'error_message': { en: 'Not quite right. Try again!', de: 'Nicht ganz richtig. Versuche es noch einmal!' },
         'next_level_message': { en: 'You\'ve advanced to the next level!', de: 'Du bist zur nächsten Stufe aufgestiegen!' },
-        'completion_message': { en: 'Congratulations! You\'ve completed all levels!', de: 'Glückwunsch! Du hast alle Stufen abgeschlossen!' }
+        'completion_message': { en: 'Congratulations! You\'ve completed all levels!', de: 'Glückwunsch! Du hast alle Stufen abgeschlossen!' },
+        'try_again_message': { en: 'Let\'s try again!', de: 'Lass es uns noch einmal versuchen!' }
       };
       
       // Process all strings based on current language

@@ -20,7 +20,10 @@ function updateHomeButtonsVisibility() {
   } catch (error) {
     // Fallback to localStorage if there's an error
     menuLocked = localStorage.getItem('lalumo_menu_locked') === 'true';
-    console.log('Error accessing Alpine data, falling back to localStorage', error);
+    // Use debug logging for errors
+    import('../utils/debug').then(({ debugLog }) => {
+      debugLog('UI', `Error accessing Alpine data, falling back to localStorage: ${error.message}`);
+    });
   }
 
   // Find all Home buttons

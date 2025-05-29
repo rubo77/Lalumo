@@ -312,18 +312,6 @@ export function pitches() {
         message = language === 'german' ? 
           'Klicke auf jedes Bild, um zu hören, wie diese Melodie klingt!' : 
           'Click on each picture to hear what that melody sounds like!';
-      } else if (this.mode === 'match') {
-        message = language === 'german' ? 
-          'Höre dir die Melodie an und tippe auf das passende Bild!' : 
-          'Listen to the melody and tap the matching picture!';
-      } else if (this.mode === 'draw') {
-        message = language === 'german' ? 
-          'Zeichne eine Linie mit deinem Finger oder der Maus, um eine Melodie zu erstellen!' : 
-          'Draw a line with your finger or mouse to create a melody!';
-      } else if (this.mode === 'guess') {
-        message = language === 'german' ? 
-          'Höre dir die Melodie an und rate, ob der nächste Ton höher oder tiefer ist!' : 
-          'Listen to the melody and guess if the next note goes up or down!';
       } else if (this.mode === 'memory') {
         message = language === 'german' ? 
           'Höre dir die Melodie an und tippe dann auf die farbigen Knöpfe in der gleichen Reihenfolge!' : 
@@ -1140,10 +1128,12 @@ export function pitches() {
         
         // Force resume the audio context immediately
         audioCtx.resume().then(() => {
-          console.log('AUDIO: Android audio context resumed for direct playback');
-          
-          // Schedule all notes in advance
-          this.scheduleAndroidNotes(audioCtx, noteArray, type);
+          // Use debug logging
+          import('../utils/debug').then(({ debugLog }) => {
+            debugLog('AUDIO', 'Android audio context resumed for direct playback');
+            // Schedule all notes in advance
+            this.scheduleAndroidNotes(audioCtx, noteArray, type);
+          });
         }).catch(err => {
           console.error('AUDIO: Failed to resume Android audio context:', err);
           
@@ -1522,9 +1512,16 @@ export function pitches() {
       const clickedElement = document.querySelector(`.guess-button[data-direction="${guess}"]`);
       
       this.showFeedback = true;
-      this.feedback = isCorrect ? 
-        'Great job! You guessed it!' : 
-        'Not quite. Let\'s try another one!';
+      
+      // Get feedback text from string resources
+      const successMsg = Alpine.store('strings')['success_message'] || 'Great job! You guessed it!';
+      const errorMsg = Alpine.store('strings')['error_message'] || 'Not quite. Let\'s try another one!';
+      this.feedback = isCorrect ? successMsg : errorMsg;
+      
+      // Log feedback with debug utility
+      import('../utils/debug').then(({ debugLog }) => {
+        debugLog('GAME', `User guessed ${guess}, correct answer was ${this.correctAnswer}, result: ${isCorrect ? 'correct' : 'incorrect'}`);
+      });
       
       // Play the full sequence including the correct next note
       const fullSequence = [...this.currentSequence];
