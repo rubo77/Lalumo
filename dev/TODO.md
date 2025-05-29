@@ -42,14 +42,14 @@ Dies soll in allen aktionen:
 Draw a melody:
 - beim zeichnen ist der Strich zu weit links
 
+unter chromedem handy android 15:
 -Multi Touch: wenn mulititouch bemerkt wird, alle anderen touchs ignorieren und trotzdem den knopf drücken
 
 - Die Melodien muss ein Vogel piepen
 - Die Welle muss Sägezahn sein ohne Brandung 
 
-# most important
-unter chromedem handy android 15:
 Listen to melodies:
- geht nicht unter chrome auf dem handy im browser: es kommt kein sound und keine animation
+- 
 
+# most important
 - alle texte in android-konformer strings.xml am richtigen ort speichern und die überrsetzung ins deutsche und englische vervollständigen. überall soll englisch als default sein

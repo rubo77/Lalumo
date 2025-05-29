@@ -9,7 +9,7 @@
 </head>
 <body>
 
-  <main x-data="app()" x-init="init()" @click="initAudio()" class="container">
+  <main x-data="app()" x-init="init()" @click="initAudio(); unlockAudio()" @touchstart="unlockAudio()" class="container">
     
     <!-- Username Prompt Modal -->
     <div class="modal-overlay" x-show="showUsernamePrompt" x-transition>
@@ -173,7 +173,7 @@
           <div class="pitch-grid">
             <div class="pitch-card" :class="{ 'active': currentAnimation === 'up' }" @click="playSequence('up')" 
                  @mousedown="$event => startLongPress('up', $event)" @mouseup="cancelLongPress()" @mouseleave="cancelLongPress()"
-                 @touchstart="$event => startLongPress('up', $event)" @touchend="cancelLongPress()" @touchcancel="cancelLongPress()">
+                 @touchstart="$event => handleTouchStart('up', $event)" @touchend="cancelLongPress()" @touchcancel="cancelLongPress()">
               <div class="pitch-icon up">
                 <img src="/images/rocket.png" alt="Rocket going up" />
               </div>
@@ -181,7 +181,7 @@
             
             <div class="pitch-card" :class="{ 'active': currentAnimation === 'down' }" @click="playSequence('down')" 
                  @mousedown="$event => startLongPress('down', $event)" @mouseup="cancelLongPress()" @mouseleave="cancelLongPress()"
-                 @touchstart="$event => startLongPress('down', $event)" @touchend="cancelLongPress()" @touchcancel="cancelLongPress()">
+                 @touchstart="$event => handleTouchStart('down', $event)" @touchend="cancelLongPress()" @touchcancel="cancelLongPress()">
               <div class="pitch-icon down">
                 <img src="/images/slide.png" alt="Slide going down" />
               </div>
@@ -189,7 +189,7 @@
             
             <div class="pitch-card" :class="{ 'active': currentAnimation === 'wave' }" @click="playSequence('wave')" 
                  @mousedown="$event => startLongPress('wave', $event)" @mouseup="cancelLongPress()" @mouseleave="cancelLongPress()"
-                 @touchstart="$event => startLongPress('wave', $event)" @touchend="cancelLongPress()" @touchcancel="cancelLongPress()">
+                 @touchstart="$event => handleTouchStart('wave', $event)" @touchend="cancelLongPress()" @touchcancel="cancelLongPress()">
               <div class="pitch-icon wave">
                 <img src="/images/waves.png" alt="Wave pattern" />
               </div>
@@ -197,7 +197,7 @@
             
             <div class="pitch-card" :class="{ 'active': currentAnimation === 'jump' }" @click="playSequence('jump')" 
                  @mousedown="$event => startLongPress('jump', $event)" @mouseup="cancelLongPress()" @mouseleave="cancelLongPress()"
-                 @touchstart="$event => startLongPress('jump', $event)" @touchend="cancelLongPress()" @touchcancel="cancelLongPress()">
+                 @touchstart="$event => handleTouchStart('jump', $event)" @touchend="cancelLongPress()" @touchcancel="cancelLongPress()">
               <div class="pitch-icon jump">
                 <img src="/images/frog.png" alt="Jumping frog" />
               </div>

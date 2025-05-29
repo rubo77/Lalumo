@@ -23,13 +23,33 @@ export function app() {
       // We'll initialize audio only on first user interaction
       this.isAudioEnabled = false;
       
-      // Set up multiple event listeners for iOS audio unlocking
+      // Detect if we're on Android
+      const isAndroid = /Android/.test(navigator.userAgent);
+      const isChrome = /Chrome/.test(navigator.userAgent);
+      this.isAndroid = isAndroid;
+      this.isAndroidChrome = isAndroid && isChrome;
+      
+      if (this.isAndroidChrome) {
+        console.log('AUDIODEBUG: Android Chrome detected, using specialized audio handling');
+        this.initAndroidAudio();
+      }
+      
+      // Set up multiple event listeners for mobile audio unlocking
       ['touchstart', 'touchend', 'mousedown', 'keydown'].forEach(eventType => {
         document.documentElement.addEventListener(eventType, this.unlockAudio.bind(this), true);
       });
       
       // Additional global handler for any user interaction
       document.addEventListener('click', () => this.unlockAudio(), false);
+      
+      // Add specialized event for audio fixes
+      document.addEventListener('lalumo:force-audio', () => {
+        console.log('AUDIODEBUG: Received force-audio event');
+        this.unlockAudio();
+        if (this.isAndroidChrome) {
+          this.initAndroidAudio();
+        }
+      }, false);
       
       // Initialize Alpine.js store for state sharing
       window.Alpine.store('pitchMode', 'listen');
@@ -408,42 +428,75 @@ export function app() {
     },
     
     /**
-     * Unlock audio on iOS devices
-     * This addresses the iOS requirement for user interaction to enable audio
+     * Unlock audio on mobile devices
+     * This addresses both iOS and Android requirements for user interaction to enable audio
      */
     unlockAudio() {
       console.log('Attempting to unlock audio...');
       
-      if (this.isAudioEnabled) return;
+      if (this.isAudioEnabled && this.audioContext && this.audioContext.state === 'running') {
+        console.log('Audio already unlocked and running');
+        return;
+      }
       
       try {
         // Create audio context if it doesn't exist
         const AudioContext = window.AudioContext || window.webkitAudioContext;
         if (!this.audioContext) {
           this.audioContext = new AudioContext();
+          console.log('Created new AudioContext, state:', this.audioContext.state);
         }
         
-        // iOS specific: resume the audio context
+        // Resume the audio context (needed for both iOS and newer Android Chrome)
         if (this.audioContext.state === 'suspended') {
-          this.audioContext.resume();
+          console.log('Resuming suspended audio context');
+          this.audioContext.resume().then(() => {
+            console.log('AudioContext resumed successfully, new state:', this.audioContext.state);
+          }).catch(err => {
+            console.error('Failed to resume AudioContext:', err);
+          });
         }
         
-        // Create and play a silent buffer to unlock audio
+        // Create and play a silent buffer to unlock audio - critical for Chrome on Android
         const buffer = this.audioContext.createBuffer(1, 1, 22050);
         const source = this.audioContext.createBufferSource();
         source.buffer = buffer;
         source.connect(this.audioContext.destination);
-        source.start(0);
+        
+        // Use try-catch specifically for the start call which can sometimes fail
+        try {
+          source.start(0);
+          console.log('Started silent audio buffer');
+        } catch (startError) {
+          console.warn('Could not start audio buffer source:', startError);
+        }
         
         // Mark audio as enabled
         this.isAudioEnabled = true;
-        console.log('Audio unlocked successfully, context state:', this.audioContext.state);
+        console.log('Audio unlock attempt complete, context state:', this.audioContext.state);
         
-        // Remove the event listeners once audio is unlocked
-        ['touchstart', 'touchend', 'mousedown', 'keydown'].forEach(eventType => {
-          document.documentElement.removeEventListener(eventType, this.unlockAudio.bind(this), true);
-        });
+        // Check if we're on Android and Chrome
+        const isAndroid = /Android/.test(navigator.userAgent);
+        const isChrome = /Chrome/.test(navigator.userAgent);
         
+        if (isAndroid && isChrome) {
+          console.log('Android Chrome detected, applying special audio handling');
+          // Additional audio setup specifically for Android Chrome
+          document.addEventListener('visibilitychange', () => {
+            if (!document.hidden && this.audioContext && this.audioContext.state === 'suspended') {
+              this.audioContext.resume().then(() => {
+                console.log('AudioContext resumed after visibility change');
+              });
+            }
+          });
+        }
+        
+        // Only remove listeners if we're confident audio is working
+        if (this.audioContext.state === 'running') {
+          ['touchstart', 'touchend', 'mousedown', 'keydown'].forEach(eventType => {
+            document.documentElement.removeEventListener(eventType, this.unlockAudio.bind(this), true);
+          });
+        }
       } catch (error) {
         console.error('Failed to unlock audio:', error);
       }
@@ -455,26 +508,116 @@ export function app() {
     initAudio() {
       // Now just call the unlock function since it handles everything
       this.unlockAudio();
+      
+      // For Android Chrome, use the specialized initialization
+      if (this.isAndroidChrome) {
+        this.initAndroidAudio();
+      }
+    },
+    
+    /**
+     * Specialized audio initialization for Android Chrome
+     * Addresses specific issues with audio playback on Android devices
+     */
+    initAndroidAudio() {
+      console.log('AUDIODEBUG: Initializing specialized Android audio handling');
+      
+      if (!this.audioContext) {
+        try {
+          // Create audio context with explicit options for Android
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          this.audioContext = new AudioContext({
+            latencyHint: 'interactive',
+            sampleRate: 44100 // Standard sample rate that works well on most devices
+          });
+          console.log('AUDIODEBUG: Created Android-optimized audio context');
+        } catch (e) {
+          console.error('AUDIODEBUG: Failed to create Android audio context:', e);
+          return;
+        }
+      }
+      
+      // Force the audio context to resume
+      if (this.audioContext.state === 'suspended') {
+        // Create and play a very short beep to force audio activation
+        try {
+          const oscillator = this.audioContext.createOscillator();
+          const gainNode = this.audioContext.createGain();
+          
+          // Configure a very quiet, short beep
+          oscillator.type = 'sine';
+          oscillator.frequency.value = 440; // A4 note
+          gainNode.gain.value = 0.01; // Very quiet
+          
+          // Connect and start
+          oscillator.connect(gainNode);
+          gainNode.connect(this.audioContext.destination);
+          
+          // Play for just 10ms
+          oscillator.start();
+          oscillator.stop(this.audioContext.currentTime + 0.01);
+          
+          // Force resume in parallel
+          this.audioContext.resume().then(() => {
+            console.log('AUDIODEBUG: Android audio context resumed');
+            this.isAudioEnabled = true;
+          }).catch(err => {
+            console.error('AUDIODEBUG: Failed to resume Android audio context:', err);
+          });
+          
+          console.log('AUDIODEBUG: Android audio initialization completed');
+        } catch (e) {
+          console.error('AUDIODEBUG: Error during Android audio initialization:', e);
+        }
+      } else {
+        console.log('AUDIODEBUG: Android audio context already running');
+      }
     },
     
     /**
      * Play a sound - simplified approach
      */
     playSound(sound) {
+      // Enhanced audio initialization for Android Chrome
+      const isAndroid = /Android/.test(navigator.userAgent);
+      const isChrome = /Chrome/.test(navigator.userAgent);
+      
+      if (isAndroid && isChrome) {
+        console.log('AUDIODEBUG: Android Chrome detected in playSound:', sound);
+      }
+      
       if (!this.isAudioEnabled) {
+        console.log('AUDIODEBUG: Audio not enabled, attempting to unlock');
         this.unlockAudio();
         if (!this.isAudioEnabled) {
           console.log('AUDIOTROUBLE: Still cannot enable audio. User may need to interact with the page first');
           // Try to get user attention with a visible message
           this.showMascotMessage('Tap anywhere on the screen to enable sound!');
+          
+          // On Android Chrome, try to force start the audio context anyway
+          if (isAndroid && isChrome && this.audioContext) {
+            console.log('AUDIODEBUG: Forcing audio context resume for Android Chrome');
+            this.audioContext.resume().then(() => {
+              console.log('AUDIODEBUG: Forced audio context resume successful');
+              // Try to play the sound again after a short delay
+              setTimeout(() => {
+                this.isAudioEnabled = true;
+                this.playSound(sound);
+              }, 100);
+            }).catch(err => {
+              console.error('AUDIODEBUG: Failed to force audio context resume:', err);
+            });
+          }
           return;
         }
       }
       
-      // iOS Safari requires resuming AudioContext on each user interaction
+      // Always try to resume suspended audio context for all browsers
       if (this.audioContext && this.audioContext.state === 'suspended') {
         console.log('AUDIOTROUBLE: Resuming suspended audio context');
-        this.audioContext.resume();
+        this.audioContext.resume().then(() => {
+          console.log('AUDIODEBUG: Audio context resumed successfully in playSound');
+        });
       }
       
       try {

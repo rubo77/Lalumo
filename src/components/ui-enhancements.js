@@ -34,13 +34,34 @@ function updateHomeButtonsVisibility() {
     } else {
       button.style.visibility = 'visible';
       button.disabled = false;
-    }
-    
-    // TODO: einfach einen unicode arrow im html nehmen
-    // Update SVG to left arrow (only once)
-    const svg = button.querySelector('svg path');
-    if (svg && svg.getAttribute('d').includes('M10 20')) {
-      svg.setAttribute('d', 'M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z');
+      
+      // Ensure click handlers are properly attached
+      button.style.pointerEvents = 'auto';
+      button.style.cursor = 'pointer';
+      
+      // Add direct click handler as backup for mobile devices
+      if (!button._hasClickHandler) {
+        button.addEventListener('click', function(e) {
+          // Prevent default to ensure the click is captured
+          e.preventDefault();
+          
+          // Try to dispatch click to Alpine.js
+          try {
+            // Find the app component and call setMode directly
+            const appRoot = document.querySelector('[x-data="app()"]');
+            if (appRoot && appRoot.__x) {
+              const pitchesEl = document.querySelector('[x-data="pitches()"]');
+              if (pitchesEl && pitchesEl.__x) {
+                pitchesEl.__x.$data.setMode('main');
+                console.log('Back button clicked - setMode called directly');
+              }
+            }
+          } catch (err) {
+            console.error('Error handling home button click:', err);
+          }
+        });
+        button._hasClickHandler = true;
+      }
     }
   });
 }

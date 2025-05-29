@@ -75,6 +75,12 @@ export function pitches() {
         this.$store.pitchMode = 'listen';
       }
       
+      // Add a global event listener for the home button
+      document.addEventListener('lalumo:go-home', () => {
+        console.log('Home button pressed via custom event');
+        this.setMode('main');
+      });
+      
       // Show welcome message with the mascot based on language preference
       setTimeout(() => {
         this.showContextMessage();
@@ -95,18 +101,84 @@ export function pitches() {
     },
     
     /**
+     * Enhanced multi-touch long press handler
+     * Allows long press to work with any finger, not just the first one
+     */
+    startMultiTouchLongPress(pattern, event) {
+      // Clear any existing timer
+      this.cancelLongPress();
+      
+      // No need to prevent default or stop propagation
+      // This allows second finger touches to work
+      
+      // Log the long press start
+      console.log('TOUCH: Starting multi-touch long press for pattern:', pattern);
+      
+      // Start the long press timer
+      this.longPressTimer = setTimeout(() => {
+        // Get the appropriate help text based on pattern and language
+        const languageSetting = localStorage.getItem('lalumo_language') || 'english';
+        const language = languageSetting === 'german' ? 'de' : 'en';
+        
+        // Define fallback text if no pattern text is found
+        let helpText = '';
+        
+        // Define help texts for all patterns
+        const helpTexts = {
+          up: { en: 'Up', de: 'Hoch' },
+          down: { en: 'Down', de: 'Runter' },
+          wave: { en: 'Wavy', de: 'Wellen' },
+          jump: { en: 'Random', de: 'Zufall' }
+        };
+        
+        // Normalize pattern name (lowercase, remove spaces)
+        const normalizedPattern = String(pattern).toLowerCase().trim();
+        
+        // Check if the pattern exists
+        if (helpTexts[normalizedPattern]) {
+          // If yes, get the corresponding text in the desired language or English as fallback
+          helpText = helpTexts[normalizedPattern][language] || helpTexts[normalizedPattern]['en'];
+        } else {
+          // Fallback if pattern not found
+          helpText = language === 'de' ? 'Melodie abspielen' : 'Play melody';
+          console.warn(`Pattern '${pattern}' not defined in helpTexts. Using fallback text.`);
+        }
+        
+        // Always set the message, even if fallback is used
+        this.mascotMessage = helpText;
+        console.log('TOUCH: Showing mascot message:', helpText);
+        
+        // Use TTS if available
+        try {
+          // Try native Android TTS first
+          if (window.AndroidTTS) {
+            window.AndroidTTS.speak(helpText);
+            console.log('Using Android TTS');
+          } 
+          // Fallback to Web Speech API
+          else if (window.speechSynthesis) {
+            const speech = new SpeechSynthesisUtterance(helpText);
+            speech.lang = language === 'de' ? 'de-DE' : 'en-US';
+            window.speechSynthesis.speak(speech);
+            console.log('Using Web Speech API');
+          }
+        } catch (error) {
+          console.error('TTS error:', error);
+        }
+      }, this.longPressThreshold);
+    },
+    
+    /**
      * Start a long press timer for showing help text
      * @param {string} pattern - The pattern being long-pressed
      */
     startLongPress(pattern, event) {
+      // This function is kept for compatibility with mouse events
+      // For touch events, we now use startMultiTouchLongPress
+      
       this.cancelLongPress(); // Clear any existing timer
       
-      // Prevent default touch behavior on Android to avoid interference
-      if (event && event.type && event.type.includes('touch')) {
-        event.preventDefault();
-      }
-      
-      // Debug-Log, um zu sehen, welches Pattern übergeben wird
+      // Debug log to see which pattern is passed
       console.log('Starting long press for pattern:', pattern, 'event type:', event ? event.type : 'none');
       
       this.longPressTimer = setTimeout(() => {
@@ -602,6 +674,8 @@ export function pitches() {
      * @param {string} elementType - Typ des zu animierenden Elements ('up', 'down', 'wave', 'jump')
      */
     animatePatternElement(elementType) {
+      console.log('ANIM: Animating element type:', elementType);
+      
       // Animations-Klassen basierend auf dem Element-Typ
       const animationClasses = {
         up: 'animate-up',
@@ -614,31 +688,172 @@ export function pitches() {
       const elementClass = `.pitch-icon.${elementType}`;
       const elements = document.querySelectorAll(elementClass);
       
+      // Also apply animation to the parent card (especially for Android)
+      const cardClass = `.pitch-card:has(.pitch-icon.${elementType})`;
+      const cards = document.querySelectorAll(cardClass);
+      
+      // If no elements found using traditional selector, try direct card selection
+      if (elements.length === 0) {
+        console.log('ANIM: No icon elements found, trying alternate selectors');
+        const altCards = document.querySelectorAll(`.pitch-card`);
+        altCards.forEach(card => {
+          if (card.querySelector(`.${elementType}`) || 
+              card.textContent.toLowerCase().includes(elementType.toLowerCase())) {
+            console.log('ANIM: Found card via alternate selector');
+            card.classList.add('active');
+            setTimeout(() => card.classList.remove('active'), 2000);
+          }
+        });
+      }
+      
+      // Apply animation to cards (for Android compatibility)
+      cards.forEach(card => {
+        console.log('ANIM: Animating card for', elementType);
+        card.classList.add('active');
+        
+        // Enhanced animation for Android
+        const isAndroid = /Android/.test(navigator.userAgent);
+        if (isAndroid) {
+          console.log('ANIM: Adding Android-specific animation');
+          // Add more visible animation effect
+          try {
+            card.style.transition = 'all 0.5s ease';
+            card.style.transform = 'scale(1.05)';
+            card.style.boxShadow = '0 0 20px rgba(52, 152, 219, 0.8)';
+            
+            // Reset after animation
+            setTimeout(() => {
+              card.style.transform = '';
+              card.style.boxShadow = '';
+            }, 1800);
+          } catch (err) {
+            console.error('ANIM: Error applying Android animation:', err);
+          }
+        }
+        
+        setTimeout(() => {
+          card.classList.remove('active');
+        }, 2000);
+      });
+      
+      // Apply original animation to icon elements
       elements.forEach(element => {
+        console.log('ANIM: Animating icon for', elementType);
         // Alle bestehenden Animationsklassen entfernen
         element.classList.remove('animate-up', 'animate-down', 'animate-wave', 'animate-jump');
         // Passende Animationsklasse hinzufügen
         element.classList.add(animationClasses[elementType]);
+        element.classList.add('active');
         
         // Animation nach kurzer Zeit wieder entfernen
         setTimeout(() => {
           element.classList.remove(animationClasses[elementType]);
-        }, 1500); // Länger als die Animation dauert
+          element.classList.remove('active');
+        }, 2000); // Longer animation duration for better visibility
       });
     },
     
     /**
-     * Spielt eine Melodie ab basierend auf dem angegebenen Mustertyp
-     * @param {string} type - Typ des Musters ('up', 'down', 'wave', 'jump')
+     * Global multi-touch registry to track all active touches
+     */
+    setupMultiTouchHandling() {
+      if (this.multiTouchHandlingSetup) return;
+      
+      console.log('TOUCH: Setting up global multi-touch handling');
+      
+      // Track all touches globally
+      this.activeTouches = {};
+      
+      // Create a global touch start handler
+      document.addEventListener('touchstart', (e) => {
+        // Don't prevent default globally - this would block all touches
+        // Instead just track the touches
+        for (let i = 0; i < e.changedTouches.length; i++) {
+          const touch = e.changedTouches[i];
+          this.activeTouches[touch.identifier] = {
+            id: touch.identifier,
+            x: touch.clientX,
+            y: touch.clientY,
+            target: touch.target,
+            timestamp: Date.now()
+          };
+        }
+        console.log(`TOUCH: ${Object.keys(this.activeTouches).length} active touches`);
+      }, {passive: true});
+      
+      // Clean up touches when they end
+      document.addEventListener('touchend', (e) => {
+        for (let i = 0; i < e.changedTouches.length; i++) {
+          const touch = e.changedTouches[i];
+          delete this.activeTouches[touch.identifier];
+        }
+      }, {passive: true});
+      
+      // Also clean up on cancel
+      document.addEventListener('touchcancel', (e) => {
+        for (let i = 0; i < e.changedTouches.length; i++) {
+          const touch = e.changedTouches[i];
+          delete this.activeTouches[touch.identifier];
+        }
+      }, {passive: true});
+      
+      this.multiTouchHandlingSetup = true;
+    },
+    
+    /**
+     * Handle touch start events with multi-touch support
+     * Enhanced to allow second finger touches to work
+     */
+    handleTouchStart(pattern, event) {
+      // Setup multi-touch handling if not done already
+      this.setupMultiTouchHandling();
+      
+      // IMPORTANT: Don't prevent default or stop propagation here
+      // This allows second finger touches to work
+      
+      console.log(`TOUCH: Touch on ${pattern} pattern, touches:`, event.touches.length);
+      
+      // Directly trigger the pattern playback regardless of how many touches
+      if (!this.isPlaying) {
+        console.log(`TOUCH: Playing ${pattern} from touch handler`);
+        this.playSequence(pattern);
+      }
+      
+      // Start long press (modified to handle multi-touch better)
+      this.startMultiTouchLongPress(pattern, event);
+    },
+    
+    /**
+     * Play a sequence of notes based on the selected pattern
+     * Completely rewritten for better Android Chrome support
+     * @param {string} type - Type of pattern ('up', 'down', 'wave', 'jump')
      */
     playSequence(type) {
+      // Enhanced logging for diagnosis
+      console.log('AUDIO: Sequence play requested for type:', type, 'User Agent:', navigator.userAgent);
+      
       // If already playing, stop the current sound first
       if (this.isPlaying) {
         this.stopCurrentSound();
       }
       
+      // Start animation immediately regardless of audio status
       this.currentAnimation = type;
       this.isPlaying = true;
+      
+      // Get the card element and apply immediate visual feedback
+      const cardSelector = `.pitch-card:has(.pitch-icon.${type})`;
+      const card = document.querySelector(cardSelector);
+      if (card) {
+        // Add animation class
+        card.classList.add('active');
+        console.log('AUDIO: Added active class to card for animation');
+      }
+      
+      // Set up variables for enhanced Android audio handling
+      const isAndroid = /Android/.test(navigator.userAgent);
+      const isChrome = /Chrome/.test(navigator.userAgent);
+      const isAndroidChrome = isAndroid && isChrome;
       
       // Generate the requested pattern on demand - ensures fresh melodies each time
       let pattern;
@@ -651,15 +866,42 @@ export function pitches() {
       } else if (type === 'jump') {
         pattern = this.generateJumpyPattern();
       } else {
+        console.error('AUDIO: Invalid pattern type:', type);
         return; // Invalid type
       }
       
-      // Animieren des entsprechenden Elements
-      this.animatePatternElement(type);
-      
-      // Store the pattern for reference and play each note in sequence
+      // Store the pattern for reference and visualization
       this.currentSequence = pattern;
       const noteArray = [...pattern]; // Create a copy to be safe
+      console.log('AUDIO: Will play sequence with notes:', noteArray.join(', '));
+      
+      // ALWAYS animate the pattern element for immediate visual feedback
+      this.animatePatternElement(type);
+      
+      // For Android Chrome, ensure we have a good animation even if audio fails
+      if (isAndroidChrome) {
+        console.log('AUDIO: Android Chrome detected - applying enhanced handling');
+        
+        // Direct audio synthesis for Android Chrome
+        this.playAndroidDirectAudio(noteArray, type);
+        
+        // Make sure animations persist long enough
+        const animationDuration = noteArray.length * 600 + 500;
+        setTimeout(() => {
+          if (card) {
+            card.classList.remove('active');
+          }
+          
+          // Reset state after animation completes
+          this.isPlaying = false;
+          this.currentAnimation = null;
+          console.log('AUDIO: Animation completed for Android');
+        }, animationDuration);
+        
+        return; // Exit early, direct audio method will handle everything
+      }
+      
+      // ======= STANDARD AUDIO PLAYBACK FOR NON-ANDROID DEVICES =======
       
       // Play notes with timing
       const playNote = (noteIndex) => {
@@ -669,14 +911,21 @@ export function pitches() {
         
         // Get the current note
         const note = noteArray[noteIndex];
+        console.log(`AUDIO: Playing note ${note} (${noteIndex + 1}/${noteArray.length})`);
         
         // Try to play it through the app component
         try {
           window.dispatchEvent(new CustomEvent('lalumo:playnote', { 
-            detail: { note: `pitch_${note.toLowerCase()}` }
+            detail: { 
+              note: `pitch_${note.toLowerCase()}`,
+              id: `sequence_${type}_${noteIndex}_${Date.now()}`
+            }
           }));
+          
+          // Visual feedback for current note
+          this.currentHighlightedNote = note.toLowerCase();
         } catch (err) {
-          console.error('Error playing note:', err);
+          console.error('AUDIO: Error dispatching note event:', err);
         }
         
         // Schedule the next note and store the timeout ID
@@ -685,18 +934,18 @@ export function pitches() {
       
       // Start playing the sequence
       playNote(0);
-      console.log('Started playing melody type:', type);
+      console.log('AUDIO: Started playing melody type:', type);
       
       // Reset animation and playing state after sequence completes
-      // Use the sequence length to calculate total duration
       const resetTimeoutId = setTimeout(() => {
         this.isPlaying = false;
         this.currentAnimation = null;
         this.soundTimeoutId = null;
-        console.log('Ready for next melody');
+        this.currentHighlightedNote = null;
+        console.log('AUDIO: Finished playing melody, ready for next');
       }, noteArray.length * 600 + 300);
       
-      // Store this timeout ID as well so it can be cleared if needed
+      // Store this timeout ID for cleanup
       this.resetTimeoutId = resetTimeoutId;
     },
     
@@ -819,31 +1068,220 @@ export function pitches() {
      * Stop any currently playing sound
      */
     stopCurrentSound() {
-      // Clear any scheduled note playback
-      window.dispatchEvent(new CustomEvent('lalumo:stopallsounds', {}));
-      
-      // Reset animation and playing state
-      this.isPlaying = false;
-      this.currentAnimation = null;
-      
-      // Cancel any scheduled timeouts for animations or sounds
+      // Cancel any pending timeouts
       if (this.soundTimeoutId) {
         clearTimeout(this.soundTimeoutId);
         this.soundTimeoutId = null;
       }
       
-      // Also clear the reset timeout
       if (this.resetTimeoutId) {
         clearTimeout(this.resetTimeoutId);
         this.resetTimeoutId = null;
       }
       
-      console.log('Stopped current sound');
+      // Stop animations and reset flags
+      this.isPlaying = false;
+      this.currentAnimation = null;
+      
+      // Remove active classes from all pitch cards
+      const activeCards = document.querySelectorAll('.pitch-card.active');
+      activeCards.forEach(card => card.classList.remove('active'));
+      
+      // Stop all active oscillators via global event
+      window.dispatchEvent(new CustomEvent('lalumo:stopallsounds'));
+      console.log('AUDIO: Stopped all sounds');
     },
     
     /**
-     * Setup for the drawing mode
+     * Clear the current drawing and reset the canvas
      */
+    clearDrawing() {
+      // Reset path array
+      this.drawPath = [];
+      
+      const canvas = document.querySelector('.drawing-canvas');
+      if (canvas) {
+        const ctx = canvas.getContext('2d');
+        // Clear the entire canvas
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        // Reset any drawing state
+        this.isDrawing = false;
+        
+        // Log for debugging
+        console.log('Drawing cleared');
+      } else {
+        console.error('Could not find drawing canvas');
+      }
+    },
+    
+    /**
+     * Direct audio synthesis for Android Chrome
+     * Bypasses the standard event-based audio system
+     * @param {Array} noteArray - Array of notes to play
+     * @param {string} type - Type of pattern being played
+     */
+    playAndroidDirectAudio(noteArray, type) {
+      console.log('AUDIO: Using direct Android audio synthesis for', noteArray.length, 'notes');
+      
+      // Create audio context specifically for this playback
+      try {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        const audioCtx = new AudioContext({
+          latencyHint: 'interactive',
+          sampleRate: 44100
+        });
+        
+        // Force resume the audio context immediately
+        audioCtx.resume().then(() => {
+          console.log('AUDIO: Android audio context resumed for direct playback');
+          
+          // Schedule all notes in advance
+          this.scheduleAndroidNotes(audioCtx, noteArray, type);
+        }).catch(err => {
+          console.error('AUDIO: Failed to resume Android audio context:', err);
+          
+          // Even if audio fails, ensure animation plays correctly
+          this.ensureAndroidAnimation(type, noteArray.length);
+        });
+      } catch (error) {
+        console.error('AUDIO: Error creating Android audio context:', error);
+        // Fall back to animation only
+        this.ensureAndroidAnimation(type, noteArray.length);
+      }
+    },
+    
+    /**
+     * Schedule all notes for direct Android audio playback
+     */
+    scheduleAndroidNotes(audioCtx, noteArray, type) {
+      // Keep track of oscillators for cleanup
+      const oscillators = [];
+      
+      // Schedule each note
+      noteArray.forEach((note, index) => {
+        // Calculate timing
+        const startTime = audioCtx.currentTime + (index * 0.6); // 600ms per note
+        
+        // Create oscillator
+        const osc = audioCtx.createOscillator();
+        const gainNode = audioCtx.createGain();
+        
+        // Get frequency from note name
+        const frequency = this.getNoteFrequency(note);
+        osc.frequency.value = frequency;
+        osc.type = 'sine';
+        
+        // Configure gain (volume)
+        gainNode.gain.value = 0;
+        gainNode.gain.setValueAtTime(0, startTime);
+        gainNode.gain.linearRampToValueAtTime(0.5, startTime + 0.1); // 100ms attack
+        gainNode.gain.linearRampToValueAtTime(0, startTime + 0.5); // 400ms release
+        
+        // Connect and schedule
+        osc.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+        
+        // Start and stop
+        osc.start(startTime);
+        osc.stop(startTime + 0.6);
+        
+        // Keep track for cleanup
+        oscillators.push(osc);
+        
+        // Log each note as it's scheduled
+        console.log(`AUDIO: Scheduled Android note ${note} (${index + 1}/${noteArray.length}) at time ${startTime}`);
+        
+        // Schedule animation update for this note
+        setTimeout(() => {
+          // Highlight the current note in the UI
+          this.currentHighlightedNote = note.toLowerCase();
+          console.log(`AUDIO: Playing Android note ${note} (${index + 1}/${noteArray.length})`);
+          
+          // Refresh animation
+          this.refreshAnimation(type);
+        }, index * 600);
+      });
+      
+      // Clean up after all notes are played
+      const totalDuration = noteArray.length * 600 + 300;
+      setTimeout(() => {
+        // Stop any remaining oscillators
+        oscillators.forEach(osc => {
+          try {
+            osc.stop();
+            osc.disconnect();
+          } catch (e) {
+            // Ignore errors from already stopped oscillators
+          }
+        });
+        
+        // Clean up context
+        try {
+          audioCtx.close();
+        } catch (e) {
+          console.error('AUDIO: Error closing Android audio context:', e);
+        }
+        
+        console.log('AUDIO: Android direct audio playback completed');
+      }, totalDuration);
+    },
+    
+    /**
+     * Get frequency for a note name
+     */
+    getNoteFrequency(noteName) {
+      // Simple mapping for common notes (can be expanded)
+      const noteFrequencies = {
+        'C3': 130.81, 'D3': 146.83, 'E3': 164.81, 'F3': 174.61, 'G3': 196.00, 'A3': 220.00, 'B3': 246.94,
+        'C4': 261.63, 'D4': 293.66, 'E4': 329.63, 'F4': 349.23, 'G4': 392.00, 'A4': 440.00, 'B4': 493.88,
+        'C5': 523.25, 'D5': 587.33, 'E5': 659.25, 'F5': 698.46, 'G5': 783.99, 'A5': 880.00, 'B5': 987.77,
+        'C6': 1046.50
+      };
+      
+      return noteFrequencies[noteName] || 440; // Default to A4 if note not found
+    },
+    
+    /**
+     * Ensure animation plays correctly on Android even if audio fails
+     */
+    ensureAndroidAnimation(type, noteCount) {
+      console.log('AUDIO: Ensuring animation plays for Android pattern:', type);
+      
+      // Make sure animation is visible
+      this.refreshAnimation(type);
+      
+      // Schedule animation updates to simulate note playing
+      for (let i = 0; i < noteCount; i++) {
+        setTimeout(() => {
+          this.refreshAnimation(type);
+        }, i * 600);
+      }
+    },
+    
+    /**
+     * Refresh the animation for a pattern
+     */
+    refreshAnimation(type) {
+      // Get all relevant elements
+      const card = document.querySelector(`.pitch-card:has(.pitch-icon.${type})`);
+      const icon = document.querySelector(`.pitch-icon.${type}`);
+      
+      if (card) {
+        // Remove and re-add active class to trigger CSS animations
+        card.classList.remove('active');
+        setTimeout(() => card.classList.add('active'), 10);
+      }
+      
+      if (icon) {
+        // Apply a pulse effect
+        icon.style.transform = 'scale(1.1)';
+        setTimeout(() => {
+          icon.style.transform = 'scale(1)';
+        }, 300);
+      }
+    },
+    
     setupDrawingMode() {
       this.drawPath = [];
     },
