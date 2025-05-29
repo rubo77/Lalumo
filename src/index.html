@@ -164,8 +164,8 @@
         <!-- Listening Mode -->
         <div x-show="mode === 'listen'" class="pitch-activity">
           <div class="mode-header">
-            <button class="back-to-main" @click="setMode('main')" aria-label="Back to main menu">
-              <span style="font-size: 24px;">&#8592;</span>
+            <button class="back-to-main" onclick="document.dispatchEvent(new CustomEvent('lalumo:go-home'))" aria-label="Back to main menu">
+              <span style="font-size: 24px;">←</span>
               <span>Home</span>
             </button>
           </div>
@@ -208,8 +208,8 @@
         <!-- Matching Mode -->
         <div x-show="mode === 'match'" class="pitch-activity">
           <div class="mode-header">
-            <button class="back-to-main" @click="setMode('main')" aria-label="Back to main menu">
-              <span style="font-size: 24px;">&#8592;</span>
+            <button class="back-to-main" onclick="document.dispatchEvent(new CustomEvent('lalumo:go-home'))" aria-label="Back to main menu">
+              <span style="font-size: 24px;">←</span>
               <span>Home</span>
             </button>
           </div>
@@ -251,8 +251,8 @@
         <!-- Drawing Mode -->
         <div x-show="mode === 'draw'" class="pitch-activity">
           <div class="mode-header">
-            <button class="back-to-main" @click="setMode('main')" aria-label="Back to main menu">
-              <span style="font-size: 24px;">&#8592;</span>
+            <button class="back-to-main" onclick="document.dispatchEvent(new CustomEvent('lalumo:go-home'))" aria-label="Back to main menu">
+              <span style="font-size: 24px;">←</span>
               <span>Home</span>
             </button>
           </div>
@@ -269,14 +269,14 @@
             
           </div>
           
-          <button class="clear-button" @click="drawPath = []; setupDrawingMode()" title="Clear & Try Again"><span style="font-size: 24px;">&#9999;&#65039;</span></button>
+          <button class="clear-button" @click="clearDrawing()" title="Clear & Try Again"><span style="font-size: 24px;">&#9999;&#65039;</span></button>
         </div>
         
         <!-- Guessing Mode -->
         <div x-show="mode === 'guess'" class="pitch-activity">
           <div class="mode-header">
-            <button class="back-to-main" @click="setMode('main')" aria-label="Back to main menu">
-              <span style="font-size: 24px;">&#8592;</span>
+            <button class="back-to-main" onclick="document.dispatchEvent(new CustomEvent('lalumo:go-home'))" aria-label="Back to main menu">
+              <span style="font-size: 24px;">←</span>
               <span>Home</span>
             </button>
           </div>
@@ -302,8 +302,8 @@
         <!-- Memory Mode -->
         <div x-show="mode === 'memory'" class="pitch-activity">
           <div class="mode-header">
-            <button class="back-to-main" @click="setMode('main')" aria-label="Back to main menu">
-              <span style="font-size: 24px;">&#8592;</span>
+            <button class="back-to-main" onclick="document.dispatchEvent(new CustomEvent('lalumo:go-home'))" aria-label="Back to main menu">
+              <span style="font-size: 24px;">←</span>
               <span>Home</span>
             </button>
           </div>

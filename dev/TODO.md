@@ -48,9 +48,8 @@ Draw a melody:
 - Die Welle muss Sägezahn sein ohne Brandung 
 
 # most important
-unter chrome:
-- der home button geht nicht mehr. benutze einfach einen left arrow unicode statt 
+unter chromedem handy android 15:
 Listen to melodies:
  geht nicht unter chrome auf dem handy im browser: es kommt kein sound und keine animation
 
-- der Clear & Try Again Button  radiergummi hat noch keine funktion
+- alle texte in android-konformer strings.xml am richtigen ort speichern und die überrsetzung ins deutsche und englische vervollständigen. überall soll englisch als default sein
