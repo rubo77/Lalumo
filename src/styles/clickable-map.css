@@ -28,7 +28,7 @@
 /* Game mode sections - white background with image border */
 .pitch-activity {
   background-color: white;
-  border-radius: 0;
+  border-radius: 20px;
   margin: 15% auto 5% auto;
   padding: 20px;
   position: relative;
