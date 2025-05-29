@@ -389,9 +389,342 @@
     </section>
     
     <!-- Chapter: Chords -->
-    <section x-show="active === 'chords'" x-transition>
-      <h2>Chord Exploration</h2>
-      <p>Coming soon!</p>
+    <section x-show="active === 'chords'" x-transition class="chord-chapters-view" style="background-image: url('./images/backgrounds/chords1.png'); background-size: cover; background-position: top center; border-radius: 0;">
+      <div x-data="chords()" x-init="init()">
+        
+        <!-- Main chord activity selection screen -->
+        <div x-show="!mode || mode === 'main'" class="chord-landing">
+          <div class="image-map-container">
+            <div class="clickable-area color-matching-area" @click="setMode('color-matching')" aria-label="Color Matching">
+              <span class="area-label" x-text="$store.strings.chord_color_matching || 'Chord Color Matching'">Chord Color Matching</span>
+            </div>
+            <div class="clickable-area mood-landscapes-area" @click="setMode('mood-landscapes')" aria-label="Mood Landscapes">
+              <span class="area-label" x-text="$store.strings.mood_landscapes || 'Mood Landscapes'">Mood Landscapes</span>
+            </div>
+            <div class="clickable-area chord-building-area" @click="setMode('chord-building')" aria-label="Chord Building">
+              <span class="area-label" x-text="$store.strings.chord_building || 'Chord Building'">Chord Building</span>
+            </div>
+            <div class="clickable-area missing-note-area" @click="setMode('missing-note')" aria-label="Missing Note">
+              <span class="area-label" x-text="$store.strings.missing_note || 'Guess the Missing Note'">Guess the Missing Note</span>
+            </div>
+            <div class="clickable-area character-matching-area" @click="setMode('character-matching')" aria-label="Character Matching">
+              <span class="area-label" x-text="$store.strings.chord_characters || 'Chord Story Characters'">Chord Story Characters</span>
+            </div>
+            <div class="clickable-area harmony-gardens-area" @click="setMode('harmony-gardens')" aria-label="Harmony Gardens">
+              <span class="area-label" x-text="$store.strings.harmony_gardens || 'Harmony Gardens'">Harmony Gardens</span>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Color Matching Activity -->
+        <div x-show="mode === 'color-matching'" class="chord-activity">
+          <div class="mode-header">
+            <button class="back-to-main" @click="setMode('main')" aria-label="Back to main menu">
+              <span style="font-size: 24px;">←</span>
+              <span x-text="$store.strings.nav_home || 'Home'"></span>
+            </button>
+          </div>
+          
+          <div class="activity-container">
+            <h2 x-text="$store.strings.chord_color_matching_title || 'Match Colors to Chords'">Match Colors to Chords</h2>
+            
+            <div class="color-matching-explanation">
+              <p x-text="$store.strings.chord_color_matching_intro || 'Listen to the chord and select the color that matches how it sounds to you.'">Listen to the chord and select the color that matches how it sounds to you.</p>
+            </div>
+            
+            <div class="play-chord-button-container">
+              <button @click="playChord(currentChordType)" class="play-button">
+                <span>🔈</span>
+                <span x-text="$store.strings.play_chord || 'Play Chord'">Play Chord</span>
+              </button>
+            </div>
+            
+            <div class="color-grid">
+              <div class="color-option" 
+                   @click="checkColorAnswer('#FFD700')" 
+                   style="background-color: #FFD700;">
+                <span>Major</span>
+              </div>
+              <div class="color-option" 
+                   @click="checkColorAnswer('#4682B4')" 
+                   style="background-color: #4682B4;">
+                <span>Minor</span>
+              </div>
+              <div class="color-option" 
+                   @click="checkColorAnswer('#800080')" 
+                   style="background-color: #800080;">
+                <span>Diminished</span>
+              </div>
+              <div class="color-option" 
+                   @click="checkColorAnswer('#FF4500')" 
+                   style="background-color: #FF4500;">
+                <span>Augmented</span>
+              </div>
+              <div class="color-option" 
+                   @click="checkColorAnswer('#32CD32')" 
+                   style="background-color: #32CD32;">
+                <span>Sus4</span>
+              </div>
+              <div class="color-option" 
+                   @click="checkColorAnswer('#00BFFF')" 
+                   style="background-color: #00BFFF;">
+                <span>Sus2</span>
+              </div>
+            </div>
+            
+            <div class="feedback-message" x-show="showFeedback">
+              <p x-text="feedbackMessage"></p>
+            </div>
+            
+            <div class="score-display">
+              <span x-text="`${correctAnswers} / ${totalQuestions}`"></span>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Mood Landscapes Activity -->
+        <div x-show="mode === 'mood-landscapes'" class="chord-activity">
+          <div class="mode-header">
+            <button class="back-to-main" @click="setMode('main')" aria-label="Back to main menu">
+              <span style="font-size: 24px;">←</span>
+              <span x-text="$store.strings.nav_home || 'Home'"></span>
+            </button>
+          </div>
+          
+          <div class="activity-container">
+            <h2 x-text="$store.strings.mood_landscapes_title || 'Chord Mood Landscapes'">Chord Mood Landscapes</h2>
+            
+            <div class="mood-landscapes-explanation">
+              <p x-text="$store.strings.mood_landscapes_intro || 'Different chord types create different feelings and landscapes. Play each chord to see how the landscape changes!'">Different chord types create different feelings and landscapes. Play each chord to see how the landscape changes!</p>
+            </div>
+            
+            <div class="landscape-viewer">
+              <!-- Landscape image will change based on selected chord -->
+              <div class="landscape-image">
+                <img src="./images/landscapes/sunny-field.jpg" alt="Landscape scene" id="landscape-image" />
+              </div>
+            </div>
+            
+            <div class="chord-selector">
+              <button @click="playChord('major'); updateLandscape('major')" class="chord-button">
+                <span>🌞</span>
+                <span>Major</span>
+              </button>
+              
+              <button @click="playChord('minor'); updateLandscape('minor')" class="chord-button">
+                <span>☁️</span>
+                <span>Minor</span>
+              </button>
+              
+              <button @click="playChord('diminished'); updateLandscape('diminished')" class="chord-button">
+                <span>🌫️</span>
+                <span>Diminished</span>
+              </button>
+              
+              <button @click="playChord('augmented'); updateLandscape('augmented')" class="chord-button">
+                <span>⚡</span>
+                <span>Augmented</span>
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Chord Building Activity -->
+        <div x-show="mode === 'chord-building'" class="chord-activity">
+          <div class="mode-header">
+            <button class="back-to-main" @click="setMode('main')" aria-label="Back to main menu">
+              <span style="font-size: 24px;">←</span>
+              <span x-text="$store.strings.nav_home || 'Home'"></span>
+            </button>
+          </div>
+          
+          <div class="activity-container">
+            <h2 x-text="$store.strings.chord_building_title || 'Build Your Own Chords'">Build Your Own Chords</h2>
+            
+            <div class="chord-building-explanation">
+              <p x-text="$store.strings.chord_building_intro || 'Stack blocks to build different chords. Add each note to hear how the chord changes!'">Stack blocks to build different chords. Add each note to hear how the chord changes!</p>
+            </div>
+            
+            <div class="chord-building-area">
+              <div class="chord-blocks">
+                <!-- Blocks will be added here as notes are selected -->
+              </div>
+              
+              <div class="note-selector">
+                <button @click="addNoteToChord(0)" class="note-button">Root</button>
+                <button @click="addNoteToChord(3)" class="note-button">Minor 3rd</button>
+                <button @click="addNoteToChord(4)" class="note-button">Major 3rd</button>
+                <button @click="addNoteToChord(7)" class="note-button">Perfect 5th</button>
+                <button @click="addNoteToChord(6)" class="note-button">Diminished 5th</button>
+                <button @click="addNoteToChord(8)" class="note-button">Augmented 5th</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Missing Note Activity -->
+        <div x-show="mode === 'missing-note'" class="chord-activity">
+          <div class="mode-header">
+            <button class="back-to-main" @click="setMode('main')" aria-label="Back to main menu">
+              <span style="font-size: 24px;">←</span>
+              <span x-text="$store.strings.nav_home || 'Home'"></span>
+            </button>
+          </div>
+          
+          <div class="activity-container">
+            <h2 x-text="$store.strings.missing_note_title || 'Find the Missing Note'">Find the Missing Note</h2>
+            
+            <div class="missing-note-explanation">
+              <p x-text="$store.strings.missing_note_intro || 'Listen to the incomplete chord and select which note is missing.'">Listen to the incomplete chord and select which note is missing.</p>
+            </div>
+            
+            <div class="play-chord-button-container">
+              <button @click="playIncompleteChord()" class="play-button">
+                <span>🔈</span>
+                <span x-text="$store.strings.play_incomplete_chord || 'Play Incomplete Chord'">Play Incomplete Chord</span>
+              </button>
+            </div>
+            
+            <div class="note-options">
+              <button @click="checkMissingNote(3)" class="note-option-button">Minor 3rd</button>
+              <button @click="checkMissingNote(4)" class="note-option-button">Major 3rd</button>
+              <button @click="checkMissingNote(7)" class="note-option-button">Perfect 5th</button>
+              <button @click="checkMissingNote(6)" class="note-option-button">Diminished 5th</button>
+            </div>
+            
+            <div class="feedback-message" x-show="showFeedback">
+              <p x-text="feedbackMessage"></p>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Character Matching Activity -->
+        <div x-show="mode === 'character-matching'" class="chord-activity">
+          <div class="mode-header">
+            <button class="back-to-main" @click="setMode('main')" aria-label="Back to main menu">
+              <span style="font-size: 24px;">←</span>
+              <span x-text="$store.strings.nav_home || 'Home'"></span>
+            </button>
+          </div>
+          
+          <div class="activity-container">
+            <h2 x-text="$store.strings.chord_characters_title || 'Chord Characters'">Chord Characters</h2>
+            
+            <div class="character-matching-explanation">
+              <p x-text="$store.strings.character_matching_intro || 'Each chord type has its own personality! Listen to the chord and match it to the right character.'">Each chord type has its own personality! Listen to the chord and match it to the right character.</p>
+            </div>
+            
+            <div class="play-chord-button-container">
+              <button @click="playCurrentChord()" class="play-button">
+                <span>🔈</span>
+                <span x-text="$store.strings.play_chord || 'Play Chord'">Play Chord</span>
+              </button>
+            </div>
+            
+            <div class="character-grid">
+              <div class="character" @click="checkCharacterMatch('major')">
+                <div class="character-image">
+                  <span class="character-emoji">😊</span>
+                </div>
+                <div class="character-name">Happy</div>
+              </div>
+              
+              <div class="character" @click="checkCharacterMatch('minor')">
+                <div class="character-image">
+                  <span class="character-emoji">😢</span>
+                </div>
+                <div class="character-name">Sad</div>
+              </div>
+              
+              <div class="character" @click="checkCharacterMatch('diminished')">
+                <div class="character-image">
+                  <span class="character-emoji">🧙</span>
+                </div>
+                <div class="character-name">Mysterious</div>
+              </div>
+              
+              <div class="character" @click="checkCharacterMatch('augmented')">
+                <div class="character-image">
+                  <span class="character-emoji">😮</span>
+                </div>
+                <div class="character-name">Surprised</div>
+              </div>
+            </div>
+            
+            <div class="feedback-message" x-show="showFeedback">
+              <p x-text="feedbackMessage"></p>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Harmony Gardens Activity -->
+        <div x-show="mode === 'harmony-gardens'" class="chord-activity">
+          <div class="mode-header">
+            <button class="back-to-main" @click="setMode('main')" aria-label="Back to main menu">
+              <span style="font-size: 24px;">←</span>
+              <span x-text="$store.strings.nav_home || 'Home'"></span>
+            </button>
+          </div>
+          
+          <div class="activity-container">
+            <h2 x-text="$store.strings.harmony_gardens_title || 'Harmony Gardens'">Harmony Gardens</h2>
+            
+            <div class="harmony-gardens-explanation">
+              <p x-text="$store.strings.harmony_gardens_intro || 'Create a beautiful garden by choosing different chord sequences. Each chord type grows different plants!'">Create a beautiful garden by choosing different chord sequences. Each chord type grows different plants!</p>
+            </div>
+            
+            <div class="garden-viewer">
+              <div class="garden-canvas">
+                <!-- Garden elements will be added here -->
+              </div>
+            </div>
+            
+            <div class="chord-sequence">
+              <div class="chord-slot" @click="selectChordSlot(0)">
+                <div class="chord-placeholder">+</div>
+              </div>
+              <div class="chord-slot" @click="selectChordSlot(1)">
+                <div class="chord-placeholder">+</div>
+              </div>
+              <div class="chord-slot" @click="selectChordSlot(2)">
+                <div class="chord-placeholder">+</div>
+              </div>
+              <div class="chord-slot" @click="selectChordSlot(3)">
+                <div class="chord-placeholder">+</div>
+              </div>
+            </div>
+            
+            <div class="chord-palette">
+              <button @click="plantChordInGarden('major')" class="chord-button">
+                <span>🌻</span>
+                <span>Major</span>
+              </button>
+              
+              <button @click="plantChordInGarden('minor')" class="chord-button">
+                <span>🌷</span>
+                <span>Minor</span>
+              </button>
+              
+              <button @click="plantChordInGarden('diminished')" class="chord-button">
+                <span>🌵</span>
+                <span>Diminished</span>
+              </button>
+              
+              <button @click="plantChordInGarden('augmented')" class="chord-button">
+                <span>🌺</span>
+                <span>Augmented</span>
+              </button>
+            </div>
+            
+            <div class="play-sequence-container">
+              <button @click="playChordSequence()" class="play-button">
+                <span>🔈</span>
+                <span x-text="$store.strings.play_sequence || 'Play Sequence'">Play Sequence</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
     
     <!-- Chapter: Free Play -->

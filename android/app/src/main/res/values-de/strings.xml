@@ -54,4 +54,39 @@
     <string name="next_level_message">Du bist zur nächsten Stufe aufgestiegen!</string>
     <string name="completion_message">Glückwunsch! Du hast alle Stufen abgeschlossen!</string>
     <string name="try_again_message">Lass es uns noch einmal versuchen!</string>
+    
+    <!-- Chords - Main Menu -->
+    <string name="chord_color_matching">Akkord-Farben Zuordnung</string>
+    <string name="mood_landscapes">Stimmungslandschaften</string>
+    <string name="chord_building">Akkorde Bauen</string>
+    <string name="missing_note">Rate die fehlende Note</string>
+    <string name="chord_characters">Akkord-Charaktere</string>
+    <string name="harmony_gardens">Harmonie-Gärten</string>
+    
+    <!-- Chords - Color Matching Activity -->
+    <string name="chord_color_matching_title">Ordne Farben zu Akkorden zu</string>
+    <string name="chord_color_matching_intro">Höre den Akkord und wähle die Farbe, die am besten dazu passt.</string>
+    <string name="play_chord">Akkord spielen</string>
+    
+    <!-- Chords - Mood Landscapes Activity -->
+    <string name="mood_landscapes_title">Akkord-Stimmungslandschaften</string>
+    <string name="mood_landscapes_intro">Verschiedene Akkordtypen erzeugen unterschiedliche Gefühle und Landschaften. Spiele jeden Akkord, um zu sehen, wie sich die Landschaft verändert!</string>
+    
+    <!-- Chords - Chord Building Activity -->
+    <string name="chord_building_title">Baue deine eigenen Akkorde</string>
+    <string name="chord_building_intro">Stapele Blöcke, um verschiedene Akkorde zu bauen. Füge jede Note hinzu, um zu hören, wie sich der Akkord verändert!</string>
+    
+    <!-- Chords - Missing Note Activity -->
+    <string name="missing_note_title">Finde die fehlende Note</string>
+    <string name="missing_note_intro">Höre den unvollständigen Akkord und wähle aus, welche Note fehlt.</string>
+    <string name="play_incomplete_chord">Unvollständigen Akkord spielen</string>
+    
+    <!-- Chords - Character Matching Activity -->
+    <string name="chord_characters_title">Akkord-Charaktere</string>
+    <string name="character_matching_intro">Jeder Akkordtyp hat seine eigene Persönlichkeit! Höre den Akkord und ordne ihn dem richtigen Charakter zu.</string>
+    
+    <!-- Chords - Harmony Gardens Activity -->
+    <string name="harmony_gardens_title">Harmonie-Gärten</string>
+    <string name="harmony_gardens_intro">Erschaffe einen wunderschönen Garten, indem du verschiedene Akkordsequenzen auswählst. Jeder Akkordtyp lässt andere Pflanzen wachsen!</string>
+    <string name="play_sequence">Sequenz abspielen</string>
 </resources>

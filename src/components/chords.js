@@ -290,12 +290,126 @@ export function chords() {
     
     // Character Matching Activity Methods
     startCharacterMatching() {
-      // Setup for matching characters to chord types
-    },
-    
-    // Harmony Gardens Activity Methods
-    plantChordInGarden(chordType) {
-      // Add a chord to the garden composition
     }
+
+    // Store in sequence
+    if (!this.chordSequence) this.chordSequence = [];
+    this.chordSequence[this.selectedSlotIndex] = chordType;
+
+    // Play the chord
+    this.playChord(chordType);
+
+    // Update garden with a plant element based on chord type
+    this.addPlantToGarden(chordType);
+  }
+},
+
+addPlantToGarden(chordType) {
+  const garden = document.querySelector('.garden-canvas');
+  if (!garden) return;
+
+  const plantEmojis = {
+    major: '🌻', // sunflower
+    minor: '🌷', // tulip
+    diminished: '🌵', // cactus
+    augmented: '🌺', // hibiscus
+    sus4: '🍀', // four leaf clover
+    sus2: '🌱', // seedling
+    dominant7: '🌴', // palm tree
+    major7: '🌸'  // cherry blossom
   };
+
+  // Create plant element
+  const plant = document.createElement('div');
+  plant.className = 'garden-plant';
+  plant.textContent = plantEmojis[chordType] || '🌿';
+
+  // Position randomly in the garden
+  plant.style.left = `${20 + Math.random() * 60}%`;
+  plant.style.top = `${20 + Math.random() * 60}%`;
+  plant.style.fontSize = `${24 + Math.random() * 12}px`;
+
+  // Add to the garden
+  garden.appendChild(plant);
+},
+
+selectChordSlot(index) {
+  this.selectedSlotIndex = index;
+
+  // Highlight the selected slot
+  const slots = document.querySelectorAll('.chord-slot');
+  slots.forEach((slot, i) => {
+    if (i === index) {
+      slot.classList.add('selected');
+    } else {
+      slot.classList.remove('selected');
+    }
+  });
+},
+
+playChordSequence() {
+  if (!this.chordSequence || this.chordSequence.length === 0) {
+    this.showFeedback = true;
+    this.feedbackMessage = this.$store.strings.no_chords_in_sequence || 'Add some chords to your sequence first';
+    setTimeout(() => this.showFeedback = false, 2000);
+    return;
+  }
+
+  // Stop any playing sounds
+  this.stopAllSounds();
+
+  // Filter out undefined entries
+  const sequence = this.chordSequence.filter(chord => chord);
+
+  // Play each chord in sequence with a delay between them
+  let delay = 0;
+  sequence.forEach(chordType => {
+    setTimeout(() => {
+      this.playChord(chordType);
+    }, delay);
+    delay += 1000; // 1 second between chords
+  });
+},
+
+playIncompleteChord() {
+  this.stopAllSounds();
+
+  if (!this.audioContext) {
+    this.initAudio();
+    if (!this.audioContext) return;
+  }
+
+  // Resume audio context if suspended
+  if (this.audioContext.state === 'suspended') {
+    this.audioContext.resume();
+  }
+
+  // Select a random chord type if none is set
+  if (!this.currentChordType) {
+    const chordTypes = ['major', 'minor', 'diminished', 'augmented'];
+    this.currentChordType = chordTypes[Math.floor(Math.random() * chordTypes.length)];
+  }
+
+  // Get the chord definition
+  const chord = this.chords[this.currentChordType];
+
+  // Choose a note to remove (not the root)
+  const availableIntervals = chord.intervals.slice(1); // Skip root note
+  this.missingInterval = availableIntervals[Math.floor(Math.random() * availableIntervals.length)];
+
+  // Root note frequency
+  const rootFreq = this.baseNotes['C4'];
+
+  // Play incomplete chord (all notes except the missing one)
+  chord.intervals.forEach(interval => {
+    if (interval !== this.missingInterval) {
+      const freq = rootFreq * Math.pow(2, interval / 12);
+      this.playNote(freq);
+    }
+  });
+
+  // Import debug utils to log the missing interval
+  import('../utils/debug').then(({ debugLog }) => {
+    debugLog('CHORDS', `Missing interval: ${this.missingInterval}`);
+  });
 }
