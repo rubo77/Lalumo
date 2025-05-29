@@ -134,40 +134,153 @@
   display: block;
 }
 
-/* Position the clickable areas */
-.listen-area {
-  top: clamp(25%, 30%, 35%);
-  left: 15%;
-  width: 20%;
-  height: clamp(15%, 20%, 25%);
+/* Position the clickable areas - responsive to screen width */
+@media (max-width: 550px) {
+  .listen-area {
+    top: 25%;
+    left: 15%;
+    width: 20%;
+    height: 15%;
+  }
+  
+  .match-area {
+    top: 25%;
+    right: 15%;
+    width: 20%;
+    height: 15%;
+  }
+  
+  .guess-area {
+    top: 45%;
+    left: 15%;
+    width: 20%;
+    height: 15%;
+  }
+  
+  .memory-area {
+    top: 45%;
+    right: 15%;
+    width: 20%;
+    height: 15%;
+  }
+  
+  .draw-area {
+    top: 65%;
+    left: 40%;
+    width: 20%;
+    height: 15%;
+  }
 }
 
-.match-area {
-  top: clamp(25%, 30%, 35%);
-  right: 15%;
-  width: 20%;
-  height: clamp(15%, 20%, 25%);
+@media (min-width: 551px) and (max-width: 767px) {
+  .listen-area {
+    top: 30%;
+    left: 15%;
+    width: 20%;
+    height: 15%;
+  }
+  
+  .match-area {
+    top: 30%;
+    right: 15%;
+    width: 20%;
+    height: 15%;
+  }
+  
+  .guess-area {
+    top: 50%;
+    left: 15%;
+    width: 20%;
+    height: 15%;
+  }
+  
+  .memory-area {
+    top: 50%;
+    right: 15%;
+    width: 20%;
+    height: 15%;
+  }
+  
+  .draw-area {
+    top: 70%;
+    left: 40%;
+    width: 20%;
+    height: 15%;
+  }
 }
 
-.guess-area {
-  top: clamp(50%, 55%, 60%);
-  left: 15%;
-  width: 20%;
-  height: clamp(15%, 20%, 25%);
+@media (min-width: 768px) and (max-width: 1023px) {
+  .listen-area {
+    top: 35%;
+    left: 15%;
+    width: 20%;
+    height: 15%;
+  }
+  
+  .match-area {
+    top: 35%;
+    right: 15%;
+    width: 20%;
+    height: 15%;
+  }
+  
+  .guess-area {
+    top: 55%;
+    left: 15%;
+    width: 20%;
+    height: 15%;
+  }
+  
+  .memory-area {
+    top: 55%;
+    right: 15%;
+    width: 20%;
+    height: 15%;
+  }
+  
+  .draw-area {
+    top: 75%;
+    left: 40%;
+    width: 20%;
+    height: 15%;
+  }
 }
 
-.memory-area {
-  top: clamp(50%, 55%, 60%);
-  right: 15%;
-  width: 20%;
-  height: clamp(15%, 20%, 25%);
-}
-
-.draw-area {
-  top: clamp(70%, 75%, 80%);
-  left: 40%;
-  width: 20%;
-  height: clamp(15%, 20%, 25%);
+@media (min-width: 1024px) {
+  .listen-area {
+    top: 40%;
+    left: 15%;
+    width: 20%;
+    height: 15%;
+  }
+  
+  .match-area {
+    top: 40%;
+    right: 15%;
+    width: 20%;
+    height: 15%;
+  }
+  
+  .guess-area {
+    top: 60%;
+    left: 15%;
+    width: 20%;
+    height: 15%;
+  }
+  
+  .memory-area {
+    top: 60%;
+    right: 15%;
+    width: 20%;
+    height: 15%;
+  }
+  
+  .draw-area {
+    top: 80%;
+    left: 40%;
+    width: 20%;
+    height: 15%;
+  }
 }
 
 .mode-instructions {
