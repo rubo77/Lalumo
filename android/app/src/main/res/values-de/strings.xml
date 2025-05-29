@@ -1,0 +1,57 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <!-- App Information -->
+    <string name="app_name">Lalumo</string>
+    <string name="title_activity_main">Lalumo</string>
+    <string name="package_name">com.lalumo.app</string>
+    <string name="custom_url_scheme">com.lalumo.app</string>
+    
+    <!-- Menu Items -->
+    <string name="menu_pitches">Tonhöhen & Melodien</string>
+    <string name="menu_tonecolors">Klangfarben</string>
+    <string name="menu_rhythm">Rhythmus</string>
+    <string name="menu_chords">Akkorde</string>
+    <string name="menu_freeplay">Freies Spiel</string>
+    <string name="menu_settings">Einstellungen</string>
+    <string name="menu_impressum">Impressum</string>
+    <string name="menu_datenschutz">Datenschutz</string>
+    <string name="menu_credits">Credits</string>
+    
+    <!-- Navigation -->
+    <string name="nav_home">Startseite</string>
+    <string name="nav_back">Zurück</string>
+    <string name="nav_up">Hoch</string>
+    <string name="nav_down">Runter</string>
+    <string name="back_to_main_a11y">Zurück zum Hauptmenü</string>
+    
+    <!-- Buttons -->
+    <string name="button_generate_name">Zufälligen Namen generieren</string>
+    <string name="button_save_name">Namen speichern</string>
+    <string name="button_clear">Löschen & neu versuchen</string>
+    <string name="button_play_melody">Melodie abspielen</string>
+    <string name="button_play_melody_a11y">Melodie abspielen</string>
+    <string name="button_export_progress">Fortschritt exportieren</string>
+    <string name="button_import_progress">Fortschritt importieren</string>
+    <string name="button_copy_clipboard">In die Zwischenablage kopieren</string>
+    <string name="button_reset_progress">Fortschritt zurücksetzen</string>
+    <string name="button_confirm_reset">Ja, alles zurücksetzen</string>
+    <string name="button_cancel">Abbrechen</string>
+    
+    <!-- Language Selection -->
+    <string name="language_english">English</string>
+    <string name="language_german">Deutsch</string>
+    
+    <!-- Melodies & Pitches -->
+    <string name="play_melody">Melodie abspielen</string>
+    <string name="guess_direction">Rate, ob die Melodie nach oben oder unten geht</string>
+    <string name="listen_to_melody">Höre Melodien an</string>
+    <string name="draw_melody">Zeichne eine Melodie</string>
+    <string name="create_melody">Erstelle eine Melodie</string>
+    
+    <!-- Success & Error Messages -->
+    <string name="success_message">Sehr gut! Das ist richtig!</string>
+    <string name="error_message">Nicht ganz richtig. Versuche es noch einmal!</string>
+    <string name="next_level_message">Du bist zur nächsten Stufe aufgestiegen!</string>
+    <string name="completion_message">Glückwunsch! Du hast alle Stufen abgeschlossen!</string>
+    <string name="try_again_message">Lass es uns noch einmal versuchen!</string>
+</resources>

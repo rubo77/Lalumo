@@ -19,9 +19,100 @@ export function app() {
     importData: '',
     preferredLanguage: 'english',
     
+    /**
+     * Get a localized string from Android resources if available
+     * Falls back to provided English/German strings if not
+     * @param {string} resourceName - The resource key name in strings.xml
+     * @param {string} enDefault - English default text
+     * @param {string} deDefault - German default text
+     * @returns {string} - The localized string
+     */
+    getStringResource(resourceName, enDefault, deDefault) {
+      // Check if we're on Capacitor/Android where string resources are available
+      if (window.Capacitor && window.Capacitor.isNative) {
+        try {
+          // Use the Android plugin to get the string resource
+          // This is a placeholder for actual implementation that would use a Capacitor plugin
+          return window.Capacitor.Plugins.App.getResourceString({ name: resourceName })
+            .then(result => result.value)
+            .catch(() => {
+              // Fall back to language-based text
+              return this.preferredLanguage === 'german' ? deDefault : enDefault;
+            });
+        } catch (e) {
+          // Fall back to language-based text
+          console.warn(`Error accessing string resource: ${resourceName}`, e);
+          return this.preferredLanguage === 'german' ? deDefault : enDefault;
+        }
+      }
+      
+      // If not on Android/Capacitor, use the language preference
+      return this.preferredLanguage === 'german' ? deDefault : enDefault;
+    },
+    
+    /**
+     * Initialize all application strings from resources
+     * This makes strings available globally via Alpine.store
+     */
+    initStrings() {
+      // Set up store for localized strings
+      const appStrings = {};
+      
+      // Define all strings used in the application with their resource IDs
+      const stringMap = {
+        // Menu items
+        'menu_pitches': { en: 'Pitches & Melodies', de: 'Tonhöhen & Melodien' },
+        'menu_settings': { en: 'Settings', de: 'Einstellungen' },
+        'menu_impressum': { en: 'Impressum', de: 'Impressum' },
+        'menu_datenschutz': { en: 'Privacy Policy', de: 'Datenschutz' },
+        'menu_credits': { en: 'Credits', de: 'Credits' },
+        
+        // Navigation
+        'nav_home': { en: 'Home', de: 'Startseite' },
+        'nav_back': { en: 'Back', de: 'Zurück' },
+        'nav_up': { en: 'Up', de: 'Hoch' },
+        'nav_down': { en: 'Down', de: 'Runter' },
+        
+        // Buttons
+        'button_generate_name': { en: 'Generate Random Name', de: 'Zufälligen Namen generieren' },
+        'button_save_name': { en: 'Save Name', de: 'Namen speichern' },
+        'button_clear': { en: 'Clear & Try Again', de: 'Löschen & neu versuchen' },
+        'button_play_melody': { en: 'Play Melody', de: 'Melodie abspielen' },
+        
+        // Features
+        'play_melody': { en: 'Play melody', de: 'Melodie abspielen' },
+        'guess_direction': { en: 'Guess if the melody goes up or down', de: 'Rate, ob die Melodie nach oben oder unten geht' },
+        'listen_to_melody': { en: 'Listen to melodies', de: 'Höre Melodien an' },
+        'draw_melody': { en: 'Draw a melody', de: 'Zeichne eine Melodie' },
+        'create_melody': { en: 'Create a melody', de: 'Erstelle eine Melodie' },
+        
+        // Messages
+        'success_message': { en: 'Great job! That\'s correct!', de: 'Sehr gut! Das ist richtig!' },
+        'error_message': { en: 'Not quite right. Try again!', de: 'Nicht ganz richtig. Versuche es noch einmal!' },
+        'next_level_message': { en: 'You\'ve advanced to the next level!', de: 'Du bist zur nächsten Stufe aufgestiegen!' },
+        'completion_message': { en: 'Congratulations! You\'ve completed all levels!', de: 'Glückwunsch! Du hast alle Stufen abgeschlossen!' }
+      };
+      
+      // Process all strings based on current language
+      for (const [key, translations] of Object.entries(stringMap)) {
+        appStrings[key] = this.getStringResource(key, translations.en, translations.de);
+      }
+      
+      // Make strings available globally via Alpine store
+      Alpine.store('strings', appStrings);
+      
+      // Import debug utils for logging
+      import('../utils/debug').then(({ debugLog }) => {
+        debugLog('APP', 'String resources initialized');
+      });
+    },
+    
     init() {
       // We'll initialize audio only on first user interaction
       this.isAudioEnabled = false;
+      
+      // Initialize strings from resources
+      this.initStrings();
       
       // Detect if we're on Android
       const isAndroid = /Android/.test(navigator.userAgent);
@@ -431,27 +522,32 @@ export function app() {
      * Unlock audio on mobile devices
      * This addresses both iOS and Android requirements for user interaction to enable audio
      */
-    unlockAudio() {
-      console.log('Attempting to unlock audio...');
+    async unlockAudio() {
+      // Import debug utils for consistent logging
+      const { debugLog } = await import('../utils/debug');
+      debugLog('AUDIO', 'Attempting to unlock audio...');
       
       if (this.isAudioEnabled && this.audioContext && this.audioContext.state === 'running') {
-        console.log('Audio already unlocked and running');
+        debugLog('AUDIO', 'Audio already unlocked and running');
         return;
       }
       
       try {
         // Create audio context if it doesn't exist
         const AudioContext = window.AudioContext || window.webkitAudioContext;
+        // Import debug utils for consistent logging
+        const { debugLog } = await import('../utils/debug');
+        
         if (!this.audioContext) {
           this.audioContext = new AudioContext();
-          console.log('Created new AudioContext, state:', this.audioContext.state);
+          debugLog('AUDIO', `Created new AudioContext, state: ${this.audioContext.state}`);
         }
         
         // Resume the audio context (needed for both iOS and newer Android Chrome)
         if (this.audioContext.state === 'suspended') {
-          console.log('Resuming suspended audio context');
+          debugLog('AUDIO', 'Resuming suspended audio context');
           this.audioContext.resume().then(() => {
-            console.log('AudioContext resumed successfully, new state:', this.audioContext.state);
+            debugLog('AUDIO', `AudioContext resumed successfully, new state: ${this.audioContext.state}`);
           }).catch(err => {
             console.error('Failed to resume AudioContext:', err);
           });
@@ -519,8 +615,10 @@ export function app() {
      * Specialized audio initialization for Android Chrome
      * Addresses specific issues with audio playback on Android devices
      */
-    initAndroidAudio() {
-      console.log('AUDIODEBUG: Initializing specialized Android audio handling');
+    async initAndroidAudio() {
+      // Import debug utils for consistent logging
+      const { debugLog } = await import('../utils/debug');
+      debugLog('AUDIO', 'Initializing specialized Android audio handling');
       
       if (!this.audioContext) {
         try {
@@ -530,9 +628,9 @@ export function app() {
             latencyHint: 'interactive',
             sampleRate: 44100 // Standard sample rate that works well on most devices
           });
-          console.log('AUDIODEBUG: Created Android-optimized audio context');
+          debugLog('AUDIO', 'Created Android-optimized audio context');
         } catch (e) {
-          console.error('AUDIODEBUG: Failed to create Android audio context:', e);
+          console.error('Failed to create Android audio context:', e);
           return;
         }
       }

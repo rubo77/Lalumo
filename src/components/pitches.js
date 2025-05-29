@@ -140,13 +140,16 @@ export function pitches() {
           helpText = helpTexts[normalizedPattern][language] || helpTexts[normalizedPattern]['en'];
         } else {
           // Fallback if pattern not found
-          helpText = language === 'de' ? 'Melodie abspielen' : 'Play melody';
+          helpText = Alpine.store('app').getStringResource('play_melody', 'Play melody', 'Melodie abspielen');
           console.warn(`Pattern '${pattern}' not defined in helpTexts. Using fallback text.`);
         }
         
         // Always set the message, even if fallback is used
         this.mascotMessage = helpText;
-        console.log('TOUCH: Showing mascot message:', helpText);
+        // Use debug logging instead of direct console.log
+        import('../utils/debug').then(({ debugLog }) => {
+          debugLog('TOUCH', `Showing mascot message: ${helpText}`);
+        });
         
         // Use TTS if available
         try {
@@ -1122,7 +1125,10 @@ export function pitches() {
      * @param {string} type - Type of pattern being played
      */
     playAndroidDirectAudio(noteArray, type) {
-      console.log('AUDIO: Using direct Android audio synthesis for', noteArray.length, 'notes');
+      // Use debug logging for audio diagnostics
+      import('../utils/debug').then(({ debugLog }) => {
+        debugLog('AUDIO', `Using direct Android audio synthesis for ${noteArray.length} notes`);
+      });
       
       // Create audio context specifically for this playback
       try {

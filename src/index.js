@@ -5,6 +5,12 @@ import Alpine from 'alpinejs';
 import './styles/main.css';
 import './styles/clickable-map.css';
 
+// Import Debug Utility
+import { checkStoredDebugSettings, debugLog } from './utils/debug';
+
+// Initialize debug mode first, before any other operations
+checkStoredDebugSettings();
+
 // Import Capacitor initialization
 import { initCapacitor } from './capacitor';
 
@@ -18,6 +24,9 @@ import { freeplay } from './components/freeplay';
 
 // Import UI enhancements
 import './components/ui-enhancements';
+
+// Log application startup in debug mode
+debugLog('App', 'Application initializing');
 
 // Initialize Alpine store for state management
 Alpine.store('pitchMode', 'main'); // Default is the main selection screen with clickable image

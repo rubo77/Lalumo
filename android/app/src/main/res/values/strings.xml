@@ -1,7 +1,57 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
+    <!-- App Information -->
     <string name="app_name">Lalumo</string>
     <string name="title_activity_main">Lalumo</string>
     <string name="package_name">com.lalumo.app</string>
     <string name="custom_url_scheme">com.lalumo.app</string>
+    
+    <!-- Menu Items -->
+    <string name="menu_pitches">Pitches & Melodies</string>
+    <string name="menu_tonecolors">Tone Colors</string>
+    <string name="menu_rhythm">Rhythm</string>
+    <string name="menu_chords">Chords</string>
+    <string name="menu_freeplay">Free Play</string>
+    <string name="menu_settings">Settings</string>
+    <string name="menu_impressum">Impressum</string>
+    <string name="menu_datenschutz">Privacy Policy</string>
+    <string name="menu_credits">Credits</string>
+    
+    <!-- Navigation -->
+    <string name="nav_home">Home</string>
+    <string name="nav_back">Back</string>
+    <string name="nav_up">Up</string>
+    <string name="nav_down">Down</string>
+    <string name="back_to_main_a11y">Back to main menu</string>
+    
+    <!-- Buttons -->
+    <string name="button_generate_name">Generate Random Name</string>
+    <string name="button_save_name">Save Name</string>
+    <string name="button_clear">Clear & Try Again</string>
+    <string name="button_play_melody">Play Melody</string>
+    <string name="button_play_melody_a11y">Play Melody</string>
+    <string name="button_export_progress">Export Progress</string>
+    <string name="button_import_progress">Import Progress</string>
+    <string name="button_copy_clipboard">Copy to Clipboard</string>
+    <string name="button_reset_progress">Reset All Progress</string>
+    <string name="button_confirm_reset">Yes, Reset Everything</string>
+    <string name="button_cancel">Cancel</string>
+    
+    <!-- Language Selection -->
+    <string name="language_english">English</string>
+    <string name="language_german">Deutsch</string>
+    
+    <!-- Melodies & Pitches -->
+    <string name="play_melody">Play melody</string>
+    <string name="guess_direction">Guess if the melody goes up or down</string>
+    <string name="listen_to_melody">Listen to melodies</string>
+    <string name="draw_melody">Draw a melody</string>
+    <string name="create_melody">Create a melody</string>
+    
+    <!-- Success & Error Messages -->
+    <string name="success_message">Great job! That's correct!</string>
+    <string name="error_message">Not quite right. Try again!</string>
+    <string name="next_level_message">You've advanced to the next level!</string>
+    <string name="completion_message">Congratulations! You've completed all levels!</string>
+    <string name="try_again_message">Let's try again!</string>
 </resources>

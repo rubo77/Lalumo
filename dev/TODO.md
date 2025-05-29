@@ -32,8 +32,6 @@ First finish pitches and melodies completely:
 - Cookie Banner
 
 
-- ergänze ein debug flag, das die console logs nur ausgibt, wenn man die app  im debug mode startet, nicht aber wenn man diese deployed oder als android app startet
-
 
 Dies soll in allen aktionen:
 - bei Erfolg Regenbogen soll sich noch weiter ausdehnen, sonst alles so lassen, perfekt!
@@ -52,4 +50,7 @@ Listen to melodies:
 - 
 
 # most important
+- analysiere alle texte, wie sie in de und en angezeigt werden und auch alle, die noch nicht uebersetzt sind 
 - alle texte in android-konformer strings.xml am richtigen ort speichern und die überrsetzung ins deutsche und englische vervollständigen. überall soll englisch als default sein
+
+- ergänze ein debug flag, das die console logs nur ausgibt, wenn man die app  im debug mode startet, nicht aber wenn man diese deployed oder als android app startet
