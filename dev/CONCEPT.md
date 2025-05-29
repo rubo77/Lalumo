@@ -42,7 +42,31 @@ Tones going up, down, waves, jumps: Children recognize tone movements and assign
   All pitch actions are accompanied by animated helpers (e.g., a bird flying up, a submarine diving down), making abstract pitch concepts tangible and memorable.
 
 
-### 2. Discovering Timbres
+### 2. Feeling Chords
+
+Simple triads are translated into colors, moods, or figures. Children can guess, draw, or match them.
+
+#### in details:
+
+[ ] **Chord Color Matching:**
+  Major chords are represented by bright colors, minor chords by cooler or darker colors. Children listen to a chord and select which color best matches what they hear, developing emotional understanding of harmony.
+
+[ ] **Mood Landscapes:**
+  Different chord progressions create changing landscapes in a visual scene (sunny fields for major chords, misty forests for minor ones). Children explore how harmony affects mood and atmosphere.
+
+[ ] **Chord Building:**
+  Children stack blocks representing different notes to build their own chords. As they add each note, the sound plays, teaching how chords are constructed from individual tones.
+
+[ ] **Guess the Missing Note:**
+  A chord is played with one note missing. Children must identify which note completes the chord by selecting from options, developing their ear for harmony.
+
+[ ] **Chord Story Characters:**
+  Different chord types are represented by distinct characters with matching personalities (e.g., happy character for major, mysterious character for diminished). Children match characters to the chords they hear.
+
+[ ] **Harmony Gardens:**
+  Children plant and grow virtual flowers by selecting chord sequences. Different chord combinations create different garden patterns, visualizing how harmonies work together in music.
+
+### 3. Discovering Timbres
 
 Children hear different sounds (e.g., warm, cold, sharp, soft) and learn to distinguish them. They playfully select, for example, "the softest tone."
 
@@ -66,7 +90,7 @@ Children hear different sounds (e.g., warm, cold, sharp, soft) and learn to dist
 [ ] **Sound Source Guessing:**
   Children hear everyday sounds (water splashing, door closing, animal sounds) and must guess what makes the sound, developing awareness of how different materials and actions create distinct timbres.
 
-### 3. Experiencing Rhythm
+### 4. Experiencing Rhythm
 
 Children tap, jump, or tap along. The app recognizes how well the rhythm was matched – and provides motivating feedback.
 
@@ -90,29 +114,7 @@ Children tap, jump, or tap along. The app recognizes how well the rhythm was mat
 [ ] **Musical Storytelling:**
   Simple stories where rhythm changes represent different events (fast for chasing, slow for sleeping). Children control the story pace by tapping the appropriate rhythm.
 
-### 4. Feeling Chords
 
-Simple triads are translated into colors, moods, or figures. Children can guess, draw, or match them.
-
-#### in details:
-
-[ ] **Chord Color Matching:**
-  Major chords are represented by bright colors, minor chords by cooler or darker colors. Children listen to a chord and select which color best matches what they hear, developing emotional understanding of harmony.
-
-[ ] **Mood Landscapes:**
-  Different chord progressions create changing landscapes in a visual scene (sunny fields for major chords, misty forests for minor ones). Children explore how harmony affects mood and atmosphere.
-
-[ ] **Chord Building:**
-  Children stack blocks representing different notes to build their own chords. As they add each note, the sound plays, teaching how chords are constructed from individual tones.
-
-[ ] **Guess the Missing Note:**
-  A chord is played with one note missing. Children must identify which note completes the chord by selecting from options, developing their ear for harmony.
-
-[ ] **Chord Story Characters:**
-  Different chord types are represented by distinct characters with matching personalities (e.g., happy character for major, mysterious character for diminished). Children match characters to the chords they hear.
-
-[ ] **Harmony Gardens:**
-  Children plant and grow virtual flowers by selecting chord sequences. Different chord combinations create different garden patterns, visualizing how harmonies work together in music.
 
 ### 5. Free Sound Play
 
