@@ -805,12 +805,13 @@ export function pitches() {
       setTimeout(() => {
         this.showFeedback = false;
         
+        // If correct answer, automatically progress to next melody after feedback
         if (isCorrect) {
-          // Generate a new pattern if correct (generateNew=true)
-          this.setupMatchingMode(false, true);
+          // Setup a new match automatically
+          this.setupMatchingMode(true, true);
+          console.log('Auto-progressed to next melody in match mode');
         }
-        // Bei falscher Antwort wird keine neue Melodie generiert, damit der Spieler die gleiche 
-        // Melodie noch einmal versuchen kann
+        // Bei falscher Antwort wird keine neue Melodie generiert, damit der Spieler die gleiche Melodie noch einmal versuchen kann
       }, 2000);
     },
     

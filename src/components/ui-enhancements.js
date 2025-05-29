@@ -1,6 +1,6 @@
 // UI enhancements for Lalumo
-// 1. Auto-progression to next melody after success
-// 2. Left arrow Home buttons that respect menu lock state
+// 1. Left arrow Home buttons that respect menu lock state
+// 2. Debug helper functions
 
 // Check for menu lock and update Home button visibility
 function updateHomeButtonsVisibility() {
@@ -44,64 +44,11 @@ function updateHomeButtonsVisibility() {
   });
 }
 
-// Add functionality to auto-progress after successful completion
+// Add functionality for home buttons and menu lock state
 document.addEventListener('DOMContentLoaded', () => {
   // Regularly check menu lock state
   updateHomeButtonsVisibility();
   setInterval(updateHomeButtonsVisibility, 1000);
-  // Add event listeners for success events
-  document.addEventListener('click', function(event) {
-    // Find the success events when user gets correct answer
-    if (event.target.closest('.note-button, .drawing-pad, .melody-choice, .piano-key')) {
-      // Get Alpine component instance
-      setTimeout(() => {
-        const feedbackElements = document.querySelectorAll('.feedback');
-        feedbackElements.forEach(element => {
-          // Check if feedback shows success
-          if (element.textContent.includes('Great job') || element.textContent.includes('correct')) {
-            // Auto-progress to next melody after 2 seconds
-            setTimeout(() => {
-              const pitchesElement = document.querySelector('[x-data="pitches()"]');
-              if (pitchesElement && typeof pitchesElement.__x !== 'undefined') {
-                const pitchesComponent = pitchesElement.__x.getUnobservedData();
-                if (pitchesComponent && typeof pitchesComponent.loadNextMelody === 'function') {
-                  pitchesComponent.loadNextMelody();
-                  pitchesComponent.playCurrentMelody();
-                }
-              }
-            }, 2000);
-          }
-        });
-      }, 500); // Check shortly after click
-    }
-  });
   
-  // Replace all Home buttons with left arrow icons
-  setTimeout(() => {
-    const homeButtons = document.querySelectorAll('.back-to-main');
-    
-    homeButtons.forEach(button => {
-      // Modify the SVG to be a left arrow
-      const svg = button.querySelector('svg path');
-      if (svg) {
-        svg.setAttribute('d', 'M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z');
-      }
-      
-      // Instead of using setAttribute directly, we'll modify the HTML
-      // to avoid issues with nested quotes
-      if (button.outerHTML.includes('setMode')) {
-        // Create a temporary element
-        const tempDiv = document.createElement('div');
-        // Set the inner HTML with our modified attributes
-        tempDiv.innerHTML = button.outerHTML
-          .replace(/(@click|x-on:click)="[^"]*"/g, '@click="!$root.menuLocked && setMode(\'main\')"')
-          .replace(/(:class|x-bind:class)="[^"]*"/g, ':class="{\'disabled\': $root.menuLocked}"');
-        
-        // Replace the original button with our modified one
-        if (tempDiv.firstChild) {
-          button.parentNode.replaceChild(tempDiv.firstChild, button);
-        }
-      }
-    });
-  }, 500); // Wait for DOM to be fully processed
+  // All home button logic is now handled by updateHomeButtonsVisibility function
 });
