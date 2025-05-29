@@ -165,9 +165,7 @@
         <div x-show="mode === 'listen'" class="pitch-activity">
           <div class="mode-header">
             <button class="back-to-main" @click="setMode('main')" aria-label="Back to main menu">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
-                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
-              </svg>
+              <span style="font-size: 24px;">&#8592;</span>
               <span>Home</span>
             </button>
           </div>
@@ -211,9 +209,7 @@
         <div x-show="mode === 'match'" class="pitch-activity">
           <div class="mode-header">
             <button class="back-to-main" @click="setMode('main')" aria-label="Back to main menu">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
-                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
-              </svg>
+              <span style="font-size: 24px;">&#8592;</span>
               <span>Home</span>
             </button>
           </div>
@@ -256,9 +252,7 @@
         <div x-show="mode === 'draw'" class="pitch-activity">
           <div class="mode-header">
             <button class="back-to-main" @click="setMode('main')" aria-label="Back to main menu">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
-                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
-              </svg>
+              <span style="font-size: 24px;">&#8592;</span>
               <span>Home</span>
             </button>
           </div>
@@ -275,16 +269,14 @@
             
           </div>
           
-          <button class="clear-button" @click="drawPath = []; setupDrawingMode()">Clear & Try Again</button>
+          <button class="clear-button" @click="drawPath = []; setupDrawingMode()" title="Clear & Try Again"><span style="font-size: 24px;">&#9999;&#65039;</span></button>
         </div>
         
         <!-- Guessing Mode -->
         <div x-show="mode === 'guess'" class="pitch-activity">
           <div class="mode-header">
             <button class="back-to-main" @click="setMode('main')" aria-label="Back to main menu">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
-                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
-              </svg>
+              <span style="font-size: 24px;">&#8592;</span>
               <span>Home</span>
             </button>
           </div>
@@ -311,9 +303,7 @@
         <div x-show="mode === 'memory'" class="pitch-activity">
           <div class="mode-header">
             <button class="back-to-main" @click="setMode('main')" aria-label="Back to main menu">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
-                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
-              </svg>
+              <span style="font-size: 24px;">&#8592;</span>
               <span>Home</span>
             </button>
           </div>

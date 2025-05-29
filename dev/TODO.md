@@ -41,14 +41,6 @@ Dies soll in allen aktionen:
 
 Draw a melody:
 - beim zeichnen ist der Strich zu weit links
-- der Clear & Try Again Button soll ein radiergummi sein ohne text
-
-memory game: 
-- Das Klavier ohne Rand
-
-Listen to melodies:
- geht nicht unter chrome auf dem handy im browser: es kommt kein 
-
 
 -Multi Touch: wenn mulititouch bemerkt wird, alle anderen touchs ignorieren und trotzdem den knopf drücken
 
@@ -56,4 +48,9 @@ Listen to melodies:
 - Die Welle muss Sägezahn sein ohne Brandung 
 
 # most important
-- in allen actions: Automatisch die nächste Melodie spielen, 2s nach erfolg bei allen 
+unter chrome:
+- der home button geht nicht mehr. benutze einfach einen left arrow unicode statt 
+Listen to melodies:
+ geht nicht unter chrome auf dem handy im browser: es kommt kein sound und keine animation
+
+- der Clear & Try Again Button  radiergummi hat noch keine funktion

@@ -36,6 +36,7 @@ function updateHomeButtonsVisibility() {
       button.disabled = false;
     }
     
+    // TODO: einfach einen unicode arrow im html nehmen
     // Update SVG to left arrow (only once)
     const svg = button.querySelector('svg path');
     if (svg && svg.getAttribute('d').includes('M10 20')) {
