@@ -16,6 +16,9 @@ import { rhythms } from './components/rhythms';
 import { chords } from './components/chords';
 import { freeplay } from './components/freeplay';
 
+// Import UI enhancements
+import './components/ui-enhancements';
+
 // Initialize Alpine store for state management
 Alpine.store('pitchMode', 'main'); // Default is the main selection screen with clickable image
 

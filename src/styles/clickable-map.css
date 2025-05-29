@@ -78,6 +78,16 @@
   color: white;
 }
 
+.back-to-main.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.back-to-main.disabled:hover {
+  background-color: var(--color-accent-light);
+  color: var(--color-text);
+}
+
 .back-to-main svg {
   width: 16px;
   height: 16px;
