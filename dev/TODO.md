@@ -48,4 +48,25 @@ memory game:
 
 # most important
 
-wenn der hintergrund grösser wird, dann sollen die schaltflächen sich mit nach unten sich quetschen, so dass alle sichtbar sind, aber mit weniger höhe auskommen, so dass die Schrift auf dem hintergrund immer oberhalb der obersten schaltfläche
+wenn der hintergrund grösser wird, dann sollen die schaltflächen sich mit nach unten sich quetschen, so dass alle sichtbar sind, aber mit weniger höhe auskommen, so dass die Schrift auf dem hintergrund immer oberhalb der obersten schaltfläche. also wenn der hintergrund groesser wird, soll die oberkannte der oberen schaltflächen ein bischen nachunten wandern
+
+
+Chrome Handy: 
+-die erste Aktion geht nicht
+-beim zeichnen ist der Strich zu weit links
+-clear and try again Weg
+
+-Überschriften alle weg
+
+-Multi Touch: wenn mulititouch bemerkt wird, alle anderen touchs ignorieren und trotzdem den knopf drücken
+
+- in allen actions: Automatisch die nächste Melodie spielen, 2s nach erfolg bei allen 
+
+- "Home" soll ein knopf sein, mit pfeil nach links. Wenn gesperrt ist dann muss auch der Home Knopf gesperrt sein 
+
+- Die Melodien muss ein Vogel piepen
+- Die Welle muss Sägezahn sein ohne Brandung 
+
+- memory game: Das Klavier ohne Rand
+
+
