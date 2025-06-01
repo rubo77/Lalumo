@@ -13,6 +13,11 @@ export function chords() {
     activeChord: null,
     isPlaying: false,
     
+    // Chord sequence for harmony gardens
+    chordSequence: [],
+    selectedSlotIndex: null,
+    missingInterval: null,
+    
     // Chord definitions
     chords: {
       major: { intervals: [0, 4, 7], name: 'Major', color: '#FFD700', mood: 'happy', character: 'sunny' },
@@ -56,6 +61,11 @@ export function chords() {
       
       // Listen for global events
       window.addEventListener('lalumo:stopallsounds', this.stopAllSounds.bind(this));
+      
+      // Setup navigation elements after DOM is fully loaded
+      document.addEventListener('DOMContentLoaded', () => {
+        this.setupNavigation();
+      });
     },
     
     /**
@@ -221,7 +231,42 @@ export function chords() {
     },
     
     /**
+     * Setup all navigation elements to respect menu locking and ensure accessibility
+     */
+    setupNavigation() {
+      // Make all navigation buttons in chord activities accessible
+      const navButtons = document.querySelectorAll('button.back-to-main');
+      
+      navButtons.forEach(button => {
+        // Update click event to respect menu lock status
+        const originalClick = button.getAttribute('x-on:click') || button.getAttribute('@click');
+        if (originalClick && !originalClick.includes('$root.menuLocked')) {
+          // Add menu lock check to button click handler
+          button.setAttribute('@click', '!$root.menuLocked && ' + originalClick);
+          button.setAttribute(':class', "{'disabled': $root.menuLocked}");
+          
+          // Add ARIA attributes for accessibility
+          if (!button.hasAttribute('aria-label')) {
+            const ariaLabel = button.textContent.trim() || 'Navigation';
+            button.setAttribute('aria-label', ariaLabel + '_a11y');
+          }
+        }
+        
+        // Ensure buttons have appropriate role
+        if (!button.hasAttribute('role')) {
+          button.setAttribute('role', 'button');
+        }
+      });
+      
+      // Import debug utils
+      import('../utils/debug').then(({ debugLog }) => {
+        debugLog('CHORDS', 'Navigation elements configured');
+      });
+    },
+    
+    /**
      * Get a random chord type from available chords
+     * @returns {string} A random chord type
      */
     getRandomChordType() {
       const chordTypes = Object.keys(this.chords);
@@ -230,6 +275,7 @@ export function chords() {
     
     /**
      * Get a random root note for chords
+     * @returns {string} A random root note
      */
     getRandomRootNote() {
       const rootNotes = Object.keys(this.baseNotes);
@@ -271,145 +317,323 @@ export function chords() {
     // Mood Landscapes Activity Methods
     updateLandscape(chordType) {
       // This would update the visual landscape based on chord type
-      this.playChord(chordType);
+      const landscapeImage = document.getElementById('landscape-image');
+      if (landscapeImage) {
+        // Map chord types to landscape images
+        const landscapes = {
+          major: './images/landscapes/sunny-field.jpg',
+          minor: './images/landscapes/rainy-forest.jpg',
+          diminished: './images/landscapes/misty-mountains.jpg',
+          augmented: './images/landscapes/lightning-storm.jpg',
+          sus4: './images/landscapes/windy-plains.jpg',
+          sus2: './images/landscapes/meadow.jpg'
+        };
+        
+        landscapeImage.src = landscapes[chordType] || landscapes.major;
+      }
     },
     
     // Chord Building Activity Methods
     addNoteToChord(interval) {
-      // Logic for adding notes to build chords
+      if (!this.audioContext) {
+        this.initAudio();
+        if (!this.audioContext) return;
+      }
+      
+      // Add a visual block for this note
+      const blocksContainer = document.querySelector('.chord-blocks');
+      if (blocksContainer) {
+        const block = document.createElement('div');
+        block.className = 'chord-block';
+        block.textContent = this.getNoteName(interval);
+        block.style.backgroundColor = this.getNoteColor(interval);
+        blocksContainer.appendChild(block);
+      }
+      
+      // Play just this note
+      const rootFreq = this.baseNotes['C4'];
+      const freq = rootFreq * Math.pow(2, interval / 12);
+      this.playNote(freq);
+      
+      // Store the current built chord
+      if (!this.builtChordIntervals) this.builtChordIntervals = [];
+      this.builtChordIntervals.push(interval);
+      
+      // Check if a recognized chord has been built
+      this.checkBuiltChord();
+    },
+    
+    getNoteName(interval) {
+      const noteNames = {
+        0: 'Root',
+        2: 'Major 2nd',
+        3: 'Minor 3rd',
+        4: 'Major 3rd',
+        5: 'Perfect 4th',
+        6: 'Diminished 5th',
+        7: 'Perfect 5th',
+        8: 'Augmented 5th',
+        9: 'Major 6th',
+        10: 'Minor 7th',
+        11: 'Major 7th'
+      };
+      return noteNames[interval] || `Interval ${interval}`;
+    },
+    
+    getNoteColor(interval) {
+      // Map intervals to colors
+      const colors = {
+        0: '#FF6347',  // Root - Tomato
+        3: '#4682B4',  // Minor 3rd - Steel Blue
+        4: '#FFD700',  // Major 3rd - Gold
+        6: '#800080',  // Diminished 5th - Purple
+        7: '#32CD32',  // Perfect 5th - Lime Green
+        8: '#FF4500'   // Augmented 5th - Orange Red
+      };
+      return colors[interval] || '#CCCCCC';
+    },
+    
+    checkBuiltChord() {
+      if (!this.builtChordIntervals || this.builtChordIntervals.length < 3) return;
+      
+      // Sort intervals to normalize the chord
+      const sortedIntervals = [...this.builtChordIntervals].sort((a, b) => a - b);
+      
+      // Check against known chord types
+      let recognizedChord = null;
+      Object.entries(this.chords).forEach(([type, chord]) => {
+        if (JSON.stringify(sortedIntervals) === JSON.stringify(chord.intervals)) {
+          recognizedChord = type;
+        }
+      });
+      
+      if (recognizedChord) {
+        this.showFeedback = true;
+        this.feedbackMessage = `You built a ${this.chords[recognizedChord].name} chord!`;
+        setTimeout(() => this.showFeedback = false, 3000);
+      }
     },
     
     // Missing Note Activity Methods
-    startMissingNoteActivity() {
-      // Setup for the missing note activity
+    playIncompleteChord() {
+      this.stopAllSounds();
+      
+      if (!this.audioContext) {
+        this.initAudio();
+        if (!this.audioContext) return;
+      }
+      
+      // Resume audio context if suspended
+      if (this.audioContext.state === 'suspended') {
+        this.audioContext.resume();
+      }
+      
+      // Select a random chord type if none is set
+      if (!this.currentChordType) {
+        const chordTypes = ['major', 'minor', 'diminished', 'augmented'];
+        this.currentChordType = chordTypes[Math.floor(Math.random() * chordTypes.length)];
+      }
+      
+      // Get the chord definition
+      const chord = this.chords[this.currentChordType];
+      
+      // Choose a note to remove (not the root)
+      const availableIntervals = chord.intervals.slice(1); // Skip root note
+      this.missingInterval = availableIntervals[Math.floor(Math.random() * availableIntervals.length)];
+      
+      // Root note frequency
+      const rootFreq = this.baseNotes['C4'];
+      
+      // Play incomplete chord (all notes except the missing one)
+      chord.intervals.forEach(interval => {
+        if (interval !== this.missingInterval) {
+          const freq = rootFreq * Math.pow(2, interval / 12);
+          this.playNote(freq);
+        }
+      });
+      
+      // Import debug utils to log the missing interval
+      import('../utils/debug').then(({ debugLog }) => {
+        debugLog('CHORDS', `Missing interval: ${this.missingInterval}`);
+      });
     },
     
     checkMissingNote(noteInterval) {
-      // Check if the selected note completes the chord correctly
+      if (!this.missingInterval) {
+        this.playIncompleteChord(); // Initialize if not yet done
+        return;
+      }
+      
+      const isCorrect = noteInterval === this.missingInterval;
+      
+      this.showFeedback = true;
+      if (isCorrect) {
+        this.feedbackMessage = this.$store.strings.success_message || 'Great job! That\'s correct!';
+        this.correctAnswers++;
+        
+        // Play the complete chord
+        setTimeout(() => {
+          this.playChord(this.currentChordType);
+        }, 500);
+        
+        // Set up a new chord after a delay
+        setTimeout(() => {
+          this.currentChordType = null; // Reset for next question
+          this.showFeedback = false;
+          this.playIncompleteChord();
+        }, 2000);
+      } else {
+        this.feedbackMessage = this.$store.strings.error_message || 'Not quite right. Try again!';
+        
+        // Hide feedback after delay
+        setTimeout(() => {
+          this.showFeedback = false;
+        }, 1500);
+      }
+      
+      this.totalQuestions++;
     },
     
     // Character Matching Activity Methods
-    startCharacterMatching() {
+    playCurrentChord() {
+      if (!this.currentChordType) {
+        // Random chord if none selected yet
+        const chordTypes = ['major', 'minor', 'diminished', 'augmented'];
+        this.currentChordType = chordTypes[Math.floor(Math.random() * chordTypes.length)];
+      }
+      
+      this.playChord(this.currentChordType);
+    },
+    
+    checkCharacterMatch(selectedChordType) {
+      // Initialize if needed
+      if (!this.currentChordType) {
+        this.playCurrentChord(); // This will set a random chord
+        return; // Don't process the selection yet
+      }
+      
+      const isCorrect = selectedChordType === this.currentChordType;
+      
+      this.showFeedback = true;
+      if (isCorrect) {
+        this.feedbackMessage = this.$store.strings.success_message || 'Great job! That\'s correct!';
+        this.correctAnswers++;
+        
+        // Set up a new chord after a delay
+        setTimeout(() => {
+          const chordTypes = ['major', 'minor', 'diminished', 'augmented'];
+          this.currentChordType = chordTypes[Math.floor(Math.random() * chordTypes.length)];
+          this.showFeedback = false;
+        }, 1500);
+      } else {
+        this.feedbackMessage = this.$store.strings.error_message || 'Not quite right. Try again!';
+        
+        // Hide feedback after delay
+        setTimeout(() => {
+          this.showFeedback = false;
+        }, 1500);
+      }
+      
+      this.totalQuestions++;
+    },
+    
+    // Harmony Gardens Activity Methods
+    selectChordSlot(index) {
+      this.selectedSlotIndex = index;
+      
+      // Highlight the selected slot
+      const slots = document.querySelectorAll('.chord-slot');
+      slots.forEach((slot, i) => {
+        if (i === index) {
+          slot.classList.add('selected');
+        } else {
+          slot.classList.remove('selected');
+        }
+      });
+    },
+    
+    plantChordInGarden(chordType) {
+      if (this.selectedSlotIndex === null) {
+        // No slot selected yet
+        this.showFeedback = true;
+        this.feedbackMessage = this.$store.strings.select_slot_first || 'Please select a slot first';
+        setTimeout(() => this.showFeedback = false, 2000);
+        return;
+      }
+      
+      // Add the chord to the sequence
+      const slots = document.querySelectorAll('.chord-slot');
+      if (slots[this.selectedSlotIndex]) {
+        // Update visual content
+        const placeholder = slots[this.selectedSlotIndex].querySelector('.chord-placeholder');
+        if (placeholder) {
+          placeholder.textContent = this.chords[chordType].name;
+          placeholder.style.backgroundColor = this.chords[chordType].color;
+        }
+        
+        // Store in sequence
+        if (!this.chordSequence) this.chordSequence = [];
+        this.chordSequence[this.selectedSlotIndex] = chordType;
+        
+        // Play the chord
+        this.playChord(chordType);
+        
+        // Update garden with a plant element based on chord type
+        this.addPlantToGarden(chordType);
+      }
+    },
+    
+    addPlantToGarden(chordType) {
+      const garden = document.querySelector('.garden-canvas');
+      if (!garden) return;
+      
+      const plantEmojis = {
+        major: '🌻', // sunflower
+        minor: '🌷', // tulip
+        diminished: '🌵', // cactus
+        augmented: '🌺', // hibiscus
+        sus4: '🍀', // four leaf clover
+        sus2: '🌱', // seedling
+        dominant7: '🌴', // palm tree
+        major7: '🌸'  // cherry blossom
+      };
+      
+      // Create plant element
+      const plant = document.createElement('div');
+      plant.className = 'garden-plant';
+      plant.textContent = plantEmojis[chordType] || '🌿';
+      
+      // Position randomly in the garden
+      plant.style.left = `${20 + Math.random() * 60}%`;
+      plant.style.top = `${20 + Math.random() * 60}%`;
+      plant.style.fontSize = `${24 + Math.random() * 12}px`;
+      
+      // Add to the garden
+      garden.appendChild(plant);
+    },
+    
+    playChordSequence() {
+      if (!this.chordSequence || !this.chordSequence.filter(chord => chord).length) {
+        this.showFeedback = true;
+        this.feedbackMessage = this.$store.strings.no_chords_in_sequence || 'Add some chords to your sequence first';
+        setTimeout(() => this.showFeedback = false, 2000);
+        return;
+      }
+      
+      // Stop any playing sounds
+      this.stopAllSounds();
+      
+      // Filter out undefined entries
+      const sequence = this.chordSequence.filter(chord => chord);
+      
+      // Play each chord in sequence with a delay between them
+      let delay = 0;
+      sequence.forEach(chordType => {
+        setTimeout(() => {
+          this.playChord(chordType);
+        }, delay);
+        delay += 1000; // 1 second between chords
+      });
     }
-
-    // Store in sequence
-    if (!this.chordSequence) this.chordSequence = [];
-    this.chordSequence[this.selectedSlotIndex] = chordType;
-
-    // Play the chord
-    this.playChord(chordType);
-
-    // Update garden with a plant element based on chord type
-    this.addPlantToGarden(chordType);
-  }
-},
-
-addPlantToGarden(chordType) {
-  const garden = document.querySelector('.garden-canvas');
-  if (!garden) return;
-
-  const plantEmojis = {
-    major: '🌻', // sunflower
-    minor: '🌷', // tulip
-    diminished: '🌵', // cactus
-    augmented: '🌺', // hibiscus
-    sus4: '🍀', // four leaf clover
-    sus2: '🌱', // seedling
-    dominant7: '🌴', // palm tree
-    major7: '🌸'  // cherry blossom
   };
-
-  // Create plant element
-  const plant = document.createElement('div');
-  plant.className = 'garden-plant';
-  plant.textContent = plantEmojis[chordType] || '🌿';
-
-  // Position randomly in the garden
-  plant.style.left = `${20 + Math.random() * 60}%`;
-  plant.style.top = `${20 + Math.random() * 60}%`;
-  plant.style.fontSize = `${24 + Math.random() * 12}px`;
-
-  // Add to the garden
-  garden.appendChild(plant);
-},
-
-selectChordSlot(index) {
-  this.selectedSlotIndex = index;
-
-  // Highlight the selected slot
-  const slots = document.querySelectorAll('.chord-slot');
-  slots.forEach((slot, i) => {
-    if (i === index) {
-      slot.classList.add('selected');
-    } else {
-      slot.classList.remove('selected');
-    }
-  });
-},
-
-playChordSequence() {
-  if (!this.chordSequence || this.chordSequence.length === 0) {
-    this.showFeedback = true;
-    this.feedbackMessage = this.$store.strings.no_chords_in_sequence || 'Add some chords to your sequence first';
-    setTimeout(() => this.showFeedback = false, 2000);
-    return;
-  }
-
-  // Stop any playing sounds
-  this.stopAllSounds();
-
-  // Filter out undefined entries
-  const sequence = this.chordSequence.filter(chord => chord);
-
-  // Play each chord in sequence with a delay between them
-  let delay = 0;
-  sequence.forEach(chordType => {
-    setTimeout(() => {
-      this.playChord(chordType);
-    }, delay);
-    delay += 1000; // 1 second between chords
-  });
-},
-
-playIncompleteChord() {
-  this.stopAllSounds();
-
-  if (!this.audioContext) {
-    this.initAudio();
-    if (!this.audioContext) return;
-  }
-
-  // Resume audio context if suspended
-  if (this.audioContext.state === 'suspended') {
-    this.audioContext.resume();
-  }
-
-  // Select a random chord type if none is set
-  if (!this.currentChordType) {
-    const chordTypes = ['major', 'minor', 'diminished', 'augmented'];
-    this.currentChordType = chordTypes[Math.floor(Math.random() * chordTypes.length)];
-  }
-
-  // Get the chord definition
-  const chord = this.chords[this.currentChordType];
-
-  // Choose a note to remove (not the root)
-  const availableIntervals = chord.intervals.slice(1); // Skip root note
-  this.missingInterval = availableIntervals[Math.floor(Math.random() * availableIntervals.length)];
-
-  // Root note frequency
-  const rootFreq = this.baseNotes['C4'];
-
-  // Play incomplete chord (all notes except the missing one)
-  chord.intervals.forEach(interval => {
-    if (interval !== this.missingInterval) {
-      const freq = rootFreq * Math.pow(2, interval / 12);
-      this.playNote(freq);
-    }
-  });
-
-  // Import debug utils to log the missing interval
-  import('../utils/debug').then(({ debugLog }) => {
-    debugLog('CHORDS', `Missing interval: ${this.missingInterval}`);
-  });
 }
