@@ -141,6 +141,13 @@ export function app() {
       // Initialize strings from resources
       this.initStrings();
       
+      // Add event listener for custom sound events
+      window.addEventListener('lalumo:play-sound', (event) => {
+        if (event.detail && event.detail.sound) {
+          this.playSound(event.detail.sound);
+        }
+      });
+      
       // Detect if we're on Android
       const isAndroid = /Android/.test(navigator.userAgent);
       const isChrome = /Chrome/.test(navigator.userAgent);
@@ -758,8 +765,17 @@ export function app() {
           // Play a simple error sound
           this.playErrorSound();
         } else if (sound.startsWith('tonecolor_')) {
+          // Play a tone color sound
           const color = sound.split('_')[1];
           this.playToneColor(color);
+        } else if (sound.startsWith('rhythm_')) {
+          // Play a rhythm beat sound
+          const beatType = sound.split('_')[1];
+          this.playRhythmBeat(beatType);
+        } else if (sound.includes('_')) {
+          // Format: instrument_note (e.g., piano_C4, guitar_A3)
+          const [instrument, note] = sound.split('_');
+          this.playInstrumentNote(instrument, note);
         }
       } catch (error) {
         console.error('Error playing sound:', error);
@@ -778,7 +794,116 @@ export function app() {
     },
     
     /**
-     * Check for iOS device and add special handling
+     * Play a rhythm beat sound
+     * @param {string} type - The type of beat (high or low)
+     */
+    playRhythmBeat(type) {
+      if (!this.audioContext) return;
+      
+      try {
+        // Create oscillator and gain node
+        const oscillator = this.audioContext.createOscillator();
+        const gainNode = this.audioContext.createGain();
+        
+        // Set properties based on beat type
+        if (type === 'high') {
+          // High click/tick sound
+          oscillator.type = 'sine';
+          oscillator.frequency.value = 1200;
+        } else {
+          // Low click/tick sound
+          oscillator.type = 'triangle';
+          oscillator.frequency.value = 800;
+        }
+        
+        // Connect nodes
+        oscillator.connect(gainNode);
+        gainNode.connect(this.audioContext.destination);
+        
+        // Set volume
+        gainNode.gain.value = 0.3;
+        
+        // Very short attack and release for percussion sounds
+        const now = this.audioContext.currentTime;
+        gainNode.gain.setValueAtTime(0, now);
+        gainNode.gain.linearRampToValueAtTime(0.3, now + 0.01);
+        gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
+        
+        // Start and stop sound
+        oscillator.start(now);
+        oscillator.stop(now + 0.1);
+      } catch (error) {
+        console.error('Error playing rhythm beat:', error);
+      }
+    },
+    
+    /**
+     * Play a specific note with a specific instrument
+     * @param {string} instrument - The instrument to use
+     * @param {string} note - The note to play
+     */
+    playInstrumentNote(instrument, note) {
+      if (!this.audioContext) return;
+      
+      try {
+        // Create oscillator and gain node
+        const oscillator = this.audioContext.createOscillator();
+        const gainNode = this.audioContext.createGain();
+        
+        // Get frequency for the note
+        let frequency = 440; // Default A4
+        if (note.match(/^[A-G][#b]?[0-8]$/)) {
+          frequency = this.getNoteFrequency(note);
+        }
+        
+        // Set properties based on instrument
+        switch(instrument) {
+          case 'piano':
+            oscillator.type = 'triangle';
+            break;
+          case 'guitar':
+            oscillator.type = 'sawtooth';
+            break;
+          case 'synth':
+            oscillator.type = 'square';
+            break;
+          case 'drums':
+            // Special case - just play a percussion sound
+            this.playRhythmBeat('high');
+            return;
+          default:
+            oscillator.type = 'sine';
+        }
+        
+        // Set frequency
+        oscillator.frequency.value = frequency;
+        
+        // Connect nodes
+        oscillator.connect(gainNode);
+        gainNode.connect(this.audioContext.destination);
+        
+        // Set volume
+        gainNode.gain.value = 0.5;
+        
+        // Sound envelope
+        const now = this.audioContext.currentTime;
+        const attackTime = instrument === 'piano' ? 0.02 : 0.1;
+        const decayTime = instrument === 'piano' ? 1.5 : 0.8;
+        
+        gainNode.gain.setValueAtTime(0, now);
+        gainNode.gain.linearRampToValueAtTime(0.5, now + attackTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.001, now + decayTime);
+        
+        // Start and stop sound
+        oscillator.start(now);
+        oscillator.stop(now + decayTime + 0.1);
+      } catch (error) {
+        console.error(`Error playing ${instrument} note ${note}:`, error);
+      }
+    },
+    
+    /**
+     * Check for iOS audio special handling
      */
     checkIOSAudio() {
       const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
@@ -812,6 +937,14 @@ export function app() {
         });
         document.body.appendChild(audioUnlockDiv);
       }
+    },
+    
+    /**
+     * Check if the device is an iPad
+     * @returns {boolean} - True if the device is an iPad
+     */
+    isIPad() {
+      return navigator.userAgent.match(/iPad/i) !== null;
     },
     
     /**

@@ -19,10 +19,9 @@ Run the webpack-dev-server including live-reload with:
 npm run watch
 ```
 
-For the multiplayer mode, you also need to run the Socket.io server:
+to start the app use 
 ```
-cd server
-node server.js
+run.sh
 ```
 
 The application will be available at http://localhost:9091 in your browser.

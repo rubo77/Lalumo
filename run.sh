@@ -26,18 +26,10 @@ Do you also want to update the mobile app? (Y/n)"
 read -n 1 -r update_mobile
 echo ""  # Neue Zeile nach der Eingabe
 
-if [[ -n "$1" ]]; then
+# Akzeptiere Enter, Y oder y or called with argument "-y" or "-n"
+
     echo "Starting mobile app update..."
     ./mobile-build.sh update
 else
-    read -p "Mobile app updaten? (Y/n) " input
-    case "$input" in
-        "" | "y" | "Y")
-            echo "Starting mobile app update..."
-            ./mobile-build.sh update
-            ;;
-        *)
-            echo "Mobile app update skipped."
-            ;;
-    esac
+    echo "Mobile app update skipped."
 fi
