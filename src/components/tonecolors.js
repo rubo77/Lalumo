@@ -20,7 +20,15 @@ export function tonecolors() {
     pick(sound) {
       this.selected = sound;
       // Make sure to use tonecolor_ prefix for the app component to recognize
-      this.$root.playSound(`tonecolor_${sound}`);
+      try {
+        // Dispatch a custom event that the app component will listen for
+        window.dispatchEvent(new CustomEvent('lalumo:play-sound', {
+          detail: { sound: `tonecolor_${sound}` }
+        }));
+        console.log(`Dispatched sound event for: tonecolor_${sound}`);
+      } catch (error) {
+        console.error('Error dispatching sound event:', error);
+      }
     }
   };
 }
