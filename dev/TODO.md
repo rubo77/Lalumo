@@ -40,7 +40,7 @@ Dies soll in allen aktionen:
 Draw a melody:
 - beim zeichnen ist der Strich zu weit links
 
-unter chromedem handy android 15:
+unter chrome auf dem handy android 15:
 -Multi Touch: wenn mulititouch bemerkt wird, alle anderen touchs ignorieren und trotzdem den knopf drücken
 
 - Die Melodien muss ein Vogel piepen
@@ -53,5 +53,15 @@ Listen to melodies:
 
 - ergänze ein debug flag, das die console logs nur ausgibt, wenn man die app  im debug mode startet, nicht aber wenn man diese deployed oder als android app startet (already started to be implemented with `debugLog`)
 
+- in "chords" use the same piano as in "pitches" export the piano functionality to a shared component and reuse it
+
+
 # most important
-in "chords" use the same piano as in "pitches" export the piano functionality to a shared component and reuse it
+- zuerst soll man einfach auf die symbole für hoch und runter drücken können und dann wird eine melodie entsprechend abgespielt, jedes mal eine neue zufällige (dies entspricht dem bisherigen "Listen to melodies")
+- wenn man auf den pay button drückt kommt man in den spiel modus (bisheriger "Match Sounds")
+ - zuerst nur hoch und runter üben
+ - wenn man 10x richtig gespielt hat, dann kommt wellen dazu
+ - wenn man 20x richtig gespielt hat, dann kommt zufalls melody dazu (Frosch)
+- ebenso soll "Memory Game" umgebaut werden:
+ - zuerst kann man frei auf die Tasten drücken
+ - wenn man den play button drückt, dann kommt der spiel modus wie bisher "Memory Game"

@@ -114,7 +114,7 @@
               x-data="{ isActive: false }"
               x-init="$watch('$store.pitchMode', value => isActive = value === 'guess')"
               :class="{ 'active': isActive }"
-            >
+              style="display: none;">
               👉 <span x-text="$store.strings.guess_next_note || 'Guess Next Note'"></span>
             </button>
             <button 
@@ -154,6 +154,30 @@
               :class="{ 'active': isActive }"
             >
               🧱 <span x-text="$store.strings.chord_building || 'Chord Building'"></span>
+            </button>
+            <button 
+              @click="$dispatch('set-chord-mode', 'missing-note'); window.innerWidth < 1024 ? menuOpen = false : null"
+              x-data="{ isActive: false }"
+              x-init="$watch('$store.chordMode', value => isActive = value === 'missing-note')"
+              :class="{ 'active': isActive }"
+            >
+              🎼 <span x-text="$store.strings.missing_note || 'Missing Note'"></span>
+            </button>
+            <button 
+              @click="$dispatch('set-chord-mode', 'character-matching'); window.innerWidth < 1024 ? menuOpen = false : null"
+              x-data="{ isActive: false }"
+              x-init="$watch('$store.chordMode', value => isActive = value === 'character-matching')"
+              :class="{ 'active': isActive }"
+            >
+              🎭 <span x-text="$store.strings.chord_characters || 'Character Matching'"></span>
+            </button>
+            <button 
+              @click="$dispatch('set-chord-mode', 'harmony-gardens'); window.innerWidth < 1024 ? menuOpen = false : null"
+              x-data="{ isActive: false }"
+              x-init="$watch('$store.chordMode', value => isActive = value === 'harmony-gardens')"
+              :class="{ 'active': isActive }"
+            >
+              🌸 <span x-text="$store.strings.harmony_gardens || 'Harmony Gardens'"></span>
             </button>
             <button 
               class="back-to-main"
