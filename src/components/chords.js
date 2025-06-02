@@ -62,6 +62,13 @@ export function chords() {
       // Listen for global events
       window.addEventListener('lalumo:stopallsounds', this.stopAllSounds.bind(this));
       
+      // Listen for chord mode changes
+      document.addEventListener('set-chord-mode', (event) => {
+        const mode = event.detail || 'main';
+        this.mode = mode;
+        console.log('Chord mode changed to:', mode);
+      });
+      
       // Setup navigation elements after DOM is fully loaded
       document.addEventListener('DOMContentLoaded', () => {
         this.setupNavigation();

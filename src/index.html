@@ -64,21 +64,20 @@
         <!-- Chapters Section -->
         <div class="menu-chapters">
           <button @click="$data.active = 'pitches'; $dispatch('set-pitch-mode', 'main'); window.innerWidth < 1024 ? menuOpen = false : null" :class="{ 'active': active === 'pitches' }">
-            <span x-text="$store.strings.menu_pitches || 'Pitches & Melodies'"></span>
+            🎵 <span x-text="$store.strings.menu_pitches || 'Pitches & Melodies'"></span>
           </button>
-          <button @click="$data.active = 'feelingchords'; window.innerWidth < 1024 ? menuOpen = false : null" :class="{ 'active': active === 'feelingchords' }">
-            💝 <span>Feeling Chords</span>
-          </button>
-          <button @click="$data.active = 'tonecolors'; window.innerWidth < 1024 ? menuOpen = false : null" :class="{ 'active': active === 'tonecolors' }">
-            <span x-text="$store.strings.menu_tonecolors || 'Tone Colors'"></span>
-          </button>
-          <button @click="$data.active = 'rhythms'; window.innerWidth < 1024 ? menuOpen = false : null" :class="{ 'active': active === 'rhythms' }">
-            ⏱️ <span x-text="$store.strings.menu_rhythm || 'Rhythm'"></span>
-          </button>
-          <button @click="$data.active = 'chords'; window.innerWidth < 1024 ? menuOpen = false : null" :class="{ 'active': active === 'chords' }">
+          <button @click="$data.active = 'chords'; $dispatch('set-chord-mode', 'main')" :class="{ 'active': active === 'chords' }">
             🎹 <span x-text="$store.strings.menu_chords || 'Chords'"></span>
           </button>
-          <button @click="$data.active = 'freeplay'; window.innerWidth < 1024 ? menuOpen = false : null" :class="{ 'active': active === 'freeplay' }">
+
+          <!-- later -->
+          <button @click="$data.active = 'tonecolors'; window.innerWidth < 1024 ? menuOpen = false : null" :class="{ 'active': active === 'tonecolors' }" style="display: none;">
+            🎨 <span x-text="$store.strings.menu_tonecolors || 'Tone Colors'"></span>
+          </button>
+          <button @click="$data.active = 'rhythms'; window.innerWidth < 1024 ? menuOpen = false : null" :class="{ 'active': active === 'rhythms' }" style="display: none;">
+            ⏱️ <span x-text="$store.strings.menu_rhythm || 'Rhythm'"></span>
+          </button>
+          <button @click="$data.active = 'freeplay'; window.innerWidth < 1024 ? menuOpen = false : null" :class="{ 'active': active === 'freeplay' }" style="display: none;">
             🎮 <span x-text="$store.strings.menu_freeplay || 'Free Play'"></span>
           </button>
         </div>
@@ -129,109 +128,11 @@
           </div>
         </template>
 
-        <!-- Activities Section for Feeling Chords -->
-        <template x-if="active === 'feelingchords'">
-          <div class="menu-activities">
-            <button 
-              @click="$data.active = 'feelingchords'; $dispatch('set-tonecolor-mode', 'warm-cold'); window.innerWidth < 1024 ? menuOpen = false : null"
-              x-data="{ isActive: false }"
-              x-init="$watch('$store.tonecolorMode', value => isActive = value === 'warm-cold')"
-              :class="{ 'active': isActive }"
-            >
-              🔥❄️ <span x-text="$store.strings.warm_cold || 'Warm vs Cold'"></span>
-            </button>
-            <button 
-              @click="$data.active = 'feelingchords'; $dispatch('set-tonecolor-mode', 'soft-sharp'); window.innerWidth < 1024 ? menuOpen = false : null"
-              x-data="{ isActive: false }"
-              x-init="$watch('$store.tonecolorMode', value => isActive = value === 'soft-sharp')"
-              :class="{ 'active': isActive }"
-            >
-              🪶⚡ <span x-text="$store.strings.soft_sharp || 'Soft vs Sharp'"></span>
-            </button>
-            <button 
-              @click="$data.active = 'feelingchords'; $dispatch('set-tonecolor-mode', 'instruments'); window.innerWidth < 1024 ? menuOpen = false : null"
-              x-data="{ isActive: false }"
-              x-init="$watch('$store.tonecolorMode', value => isActive = value === 'instruments')"
-              :class="{ 'active': isActive }"
-            >
-              🎻 <span x-text="$store.strings.instruments || 'Instrument Sounds'"></span>
-            </button>
-          </div>
-        </template>
-
-        <!-- Activities Section for Tone Colors -->
-        <template x-if="active === 'tonecolors'">
-          <div class="menu-activities">
-            <button 
-              @click="$data.active = 'tonecolors'; $dispatch('set-tonecolor-mode', 'warm-cold'); window.innerWidth < 1024 ? menuOpen = false : null"
-              x-data="{ isActive: false }"
-              x-init="$watch('$store.tonecolorMode', value => isActive = value === 'warm-cold')"
-              :class="{ 'active': isActive }"
-            >
-              🔥❄️ <span x-text="$store.strings.warm_cold || 'Warm vs Cold'"></span>
-            </button>
-            <button 
-              @click="$data.active = 'tonecolors'; $dispatch('set-tonecolor-mode', 'soft-sharp'); window.innerWidth < 1024 ? menuOpen = false : null"
-              x-data="{ isActive: false }"
-              x-init="$watch('$store.tonecolorMode', value => isActive = value === 'soft-sharp')"
-              :class="{ 'active': isActive }"
-            >
-              🪶⚡ <span x-text="$store.strings.soft_sharp || 'Soft vs Sharp'"></span>
-            </button>
-            <button 
-              @click="$data.active = 'tonecolors'; $dispatch('set-tonecolor-mode', 'instruments'); window.innerWidth < 1024 ? menuOpen = false : null"
-              x-data="{ isActive: false }"
-              x-init="$watch('$store.tonecolorMode', value => isActive = value === 'instruments')"
-              :class="{ 'active': isActive }"
-            >
-              🎻 <span x-text="$store.strings.instruments || 'Instrument Sounds'"></span>
-            </button>
-          </div>
-        </template>
-
-        <!-- Activities Section for Rhythms -->
-        <template x-if="active === 'rhythms'">
-          <div class="menu-activities">
-            <button 
-              @click="$data.active = 'rhythms'; $dispatch('set-rhythm-mode', 'tap'); window.innerWidth < 1024 ? menuOpen = false : null"
-              x-data="{ isActive: false }"
-              x-init="$watch('$store.rhythmMode', value => isActive = value === 'tap')"
-              :class="{ 'active': isActive }"
-            >
-              🥁 <span x-text="$store.strings.tap_rhythm || 'Tap the Rhythm'"></span>
-            </button>
-            <button 
-              @click="$data.active = 'rhythms'; $dispatch('set-rhythm-mode', 'match'); window.innerWidth < 1024 ? menuOpen = false : null"
-              x-data="{ isActive: false }"
-              x-init="$watch('$store.rhythmMode', value => isActive = value === 'match')"
-              :class="{ 'active': isActive }"
-            >
-              🔄 <span x-text="$store.strings.match_pattern || 'Match the Pattern'"></span>
-            </button>
-            <button 
-              @click="$data.active = 'rhythms'; $dispatch('set-rhythm-mode', 'create'); window.innerWidth < 1024 ? menuOpen = false : null"
-              x-data="{ isActive: false }"
-              x-init="$watch('$store.rhythmMode', value => isActive = value === 'create')"
-              :class="{ 'active': isActive }"
-            >
-              ✏️ <span x-text="$store.strings.create_rhythm || 'Create a Rhythm'"></span>
-            </button>
-            <button 
-              @click="$data.active = 'rhythms'; $dispatch('set-rhythm-mode', 'dance'); window.innerWidth < 1024 ? menuOpen = false : null"
-              x-data="{ isActive: false }"
-              x-init="$watch('$store.rhythmMode', value => isActive = value === 'dance')"
-              :class="{ 'active': isActive }"
-            >
-              💃 <span x-text="$store.strings.dance_along || 'Dance Along'"></span>
-            </button>
-          </div>
-        </template>
-
-        <!-- Activities Section for Chords -->
+        <!-- Activities for Chapter Chords -->
         <template x-if="active === 'chords'">
           <div class="menu-activities">
             <button 
-              @click="$data.active = 'chords'; $dispatch('set-chord-mode', 'color-matching'); window.innerWidth < 1024 ? menuOpen = false : null"
+              @click="$dispatch('set-chord-mode', 'color-matching'); window.innerWidth < 1024 ? menuOpen = false : null"
               x-data="{ isActive: false }"
               x-init="$watch('$store.chordMode', value => isActive = value === 'color-matching')"
               :class="{ 'active': isActive }"
@@ -239,7 +140,7 @@
               🌈 <span x-text="$store.strings.chord_color_matching || 'Color Matching'"></span>
             </button>
             <button 
-              @click="$data.active = 'chords'; $dispatch('set-chord-mode', 'mood-landscapes'); window.innerWidth < 1024 ? menuOpen = false : null"
+              @click="$dispatch('set-chord-mode', 'mood-landscapes'); window.innerWidth < 1024 ? menuOpen = false : null"
               x-data="{ isActive: false }"
               x-init="$watch('$store.chordMode', value => isActive = value === 'mood-landscapes')"
               :class="{ 'active': isActive }"
@@ -247,7 +148,7 @@
               🏞️ <span x-text="$store.strings.mood_landscapes || 'Mood Landscapes'"></span>
             </button>
             <button 
-              @click="$data.active = 'chords'; $dispatch('set-chord-mode', 'chord-building'); window.innerWidth < 1024 ? menuOpen = false : null"
+              @click="$dispatch('set-chord-mode', 'chord-building'); window.innerWidth < 1024 ? menuOpen = false : null"
               x-data="{ isActive: false }"
               x-init="$watch('$store.chordMode', value => isActive = value === 'chord-building')"
               :class="{ 'active': isActive }"
@@ -255,62 +156,16 @@
               🧱 <span x-text="$store.strings.chord_building || 'Chord Building'"></span>
             </button>
             <button 
-              @click="$data.active = 'chords'; $dispatch('set-chord-mode', 'missing-note'); window.innerWidth < 1024 ? menuOpen = false : null"
-              x-data="{ isActive: false }"
-              x-init="$watch('$store.chordMode', value => isActive = value === 'missing-note')"
-              :class="{ 'active': isActive }"
+              class="back-to-main"
+              @click="$root.active = 'main'"
+              role="button"
+              aria-label="Back to main menu_a11y"
             >
-              🎵 <span x-text="$store.strings.missing_note || 'Missing Note'"></span>
-            </button>
-            <button 
-              @click="$data.active = 'chords'; $dispatch('set-chord-mode', 'character-matching'); window.innerWidth < 1024 ? menuOpen = false : null"
-              x-data="{ isActive: false }"
-              x-init="$watch('$store.chordMode', value => isActive = value === 'character-matching')"
-              :class="{ 'active': isActive }"
-            >
-              🎭 <span x-text="$store.strings.chord_characters || 'Character Matching'"></span>
-            </button>
-            <button 
-              @click="$data.active = 'chords'; $dispatch('set-chord-mode', 'harmony-gardens'); window.innerWidth < 1024 ? menuOpen = false : null"
-              x-data="{ isActive: false }"
-              x-init="$watch('$store.chordMode', value => isActive = value === 'harmony-gardens')"
-              :class="{ 'active': isActive }"
-            >
-              🌸 <span x-text="$store.strings.harmony_gardens || 'Harmony Gardens'"></span>
+              ↩️ <span>Back</span>
             </button>
           </div>
         </template>
-
-        <!-- Activities Section for Free Play -->
-        <template x-if="active === 'freeplay'">
-          <div class="menu-activities">
-            <button 
-              @click="$data.active = 'freeplay'; $dispatch('set-freeplay-mode', 'piano'); window.innerWidth < 1024 ? menuOpen = false : null"
-              x-data="{ isActive: false }"
-              x-init="$watch('$store.freeplayMode', value => isActive = value === 'piano')"
-              :class="{ 'active': isActive }"
-            >
-              🎹 <span x-text="$store.strings.piano_play || 'Piano Play'"></span>
-            </button>
-            <button 
-              @click="$data.active = 'freeplay'; $dispatch('set-freeplay-mode', 'record'); window.innerWidth < 1024 ? menuOpen = false : null"
-              x-data="{ isActive: false }"
-              x-init="$watch('$store.freeplayMode', value => isActive = value === 'record')"
-              :class="{ 'active': isActive }"
-            >
-              🎤 <span x-text="$store.strings.record_play || 'Record & Play'"></span>
-            </button>
-            <button 
-              @click="$data.active = 'freeplay'; $dispatch('set-freeplay-mode', 'explore'); window.innerWidth < 1024 ? menuOpen = false : null"
-              x-data="{ isActive: false }"
-              x-init="$watch('$store.freeplayMode', value => isActive = value === 'explore')"
-              :class="{ 'active': isActive }"
-            >
-              🔍 <span x-text="$store.strings.sound_explore || 'Sound Explorer'"></span>
-            </button>
-          </div>
-        </template>
-
+        
         <!-- Flexible spacer to push settings and legal to bottom -->
         <div class="menu-spacer"></div>
         
@@ -566,61 +421,15 @@
         </div>
       </div>
     </section>
-
-    <!-- Chapter: Feeling Chords -->
-    <section x-show="active === 'feelingchords'" x-transition>
-      <div x-data="tonecolors" x-init="init()">
-        <h2>Feeling Chords</h2>
-        <div class="tone-grid">
-          <div class="tone-card" @click="pick('warm')">
-            <div class="tone-icon warm"></div>
-            <p>Warm</p>
-          </div>
-          <div class="tone-card" @click="pick('cold')">
-            <div class="tone-icon cold"></div>
-            <p>Cold</p>
-          </div>
-        </div>
-      </div>
-    </section>
     
     <!-- Chapter: Rhythm -->
-    <section x-show="active === 'rhythms'" x-transition class="rhythms-view" style="background-image: url('./images/backgrounds/rhythms1.png'); background-size: cover; background-position: center;">
-      <div x-data="rhythms()" x-init="init()">
-        <!-- Main content for rhythms activities -->
-        <div class="rhythms-content">
-          <h2>Rhythm Activities</h2>
-          <p>Learn about rhythm patterns and beats!</p>
-          
-          <div class="rhythm-activities">
-            <div class="activity-card" @click="setMode('tap')">
-              <div class="activity-icon">🥁</div>
-              <h3>Tap the Rhythm</h3>
-              <p>Follow along by tapping the beat</p>
-            </div>
-            <div class="activity-card" @click="setMode('match')">
-              <div class="activity-icon">🔄</div>
-              <h3>Match the Pattern</h3>
-              <p>Listen and match the rhythm pattern</p>
-            </div>
-            <div class="activity-card" @click="setMode('create')">
-              <div class="activity-icon">✏️</div>
-              <h3>Create a Rhythm</h3>
-              <p>Make your own rhythm patterns</p>
-            </div>
-            <div class="activity-card" @click="setMode('dance')">
-              <div class="activity-icon">💃</div>
-              <h3>Dance Along</h3>
-              <p>Move to different rhythm styles</p>
-            </div>
-          </div>
-        </div>
-      </div>
+    <section x-show="active === 'rhythms'" x-transition>
+      <h2>Rhythm Exercises</h2>
+      <p>Coming soon!</p>
     </section>
     
     <!-- Chapter: Chords -->
-    <section x-show="active === 'chords'" x-transition class="chord-chapters-view" style="background-image: url('./images/backgrounds/pitches3.png'); background-size: cover; background-position: top center; border-radius: 0;">
-      <div class="section-overlay" style="background-color: rgba(0,0,0,0.3); padding: 20px; border-radius: 10px;">
+    <section x-show="active === 'chords'" x-transition class="chord-chapters-view" style="background-image: url('./images/backgrounds/chords1.png'); background-size: cover; background-position: top center; border-radius: 0;">
       <div x-data="chords()" x-init="init()">
         
         <!-- Main chord activity selection screen -->
@@ -959,42 +768,9 @@
     </section>
     
     <!-- Chapter: Free Play -->
-    <section x-show="active === 'freeplay'" x-transition class="freeplay-view" style="background-image: url('./images/backgrounds/freeplay1.png'); background-size: cover; background-position: center;">
-      <div x-data="freeplay()" x-init="init()">
-        <div class="freeplay-content">
-          <h2>Free Play Area</h2>
-          <p>Create your own music however you want!</p>
-          
-          <div class="instrument-selector">
-            <button @click="selectInstrument('piano')" :class="{'selected': currentInstrument === 'piano'}">Piano</button>
-            <button @click="selectInstrument('guitar')" :class="{'selected': currentInstrument === 'guitar'}">Guitar</button>
-            <button @click="selectInstrument('drums')" :class="{'selected': currentInstrument === 'drums'}">Drums</button>
-            <button @click="selectInstrument('synth')" :class="{'selected': currentInstrument === 'synth'}">Synth</button>
-          </div>
-          
-          <div class="virtual-keyboard">
-            <!-- Piano keys would be generated here -->
-            <div class="white-key" @click="playNote('C4')">C</div>
-            <div class="black-key" @click="playNote('C#4')"></div>
-            <div class="white-key" @click="playNote('D4')">D</div>
-            <div class="black-key" @click="playNote('D#4')"></div>
-            <div class="white-key" @click="playNote('E4')">E</div>
-            <div class="white-key" @click="playNote('F4')">F</div>
-            <div class="black-key" @click="playNote('F#4')"></div>
-            <div class="white-key" @click="playNote('G4')">G</div>
-            <div class="black-key" @click="playNote('G#4')"></div>
-            <div class="white-key" @click="playNote('A4')">A</div>
-            <div class="black-key" @click="playNote('A#4')"></div>
-            <div class="white-key" @click="playNote('B4')">B</div>
-          </div>
-          
-          <div class="recording-controls">
-            <button @click="startRecording()" :disabled="isRecording">Record</button>
-            <button @click="stopRecording()" :disabled="!isRecording">Stop</button>
-            <button @click="playRecording()" :disabled="!hasRecording">Play</button>
-          </div>
-        </div>
-      </div>
+    <section x-show="active === 'freeplay'" x-transition>
+      <h2>Free Play Mode</h2>
+      <p>Coming soon!</p>
     </section>
     
     <!-- Legal: Impressum -->
