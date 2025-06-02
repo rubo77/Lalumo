@@ -48,9 +48,10 @@ unter chromedem handy android 15:
 
 Listen to melodies:
 - 
-
-# most important
 - analysiere alle texte, wie sie in de und en angezeigt werden und auch alle, die noch nicht uebersetzt sind 
 - alle texte in android-konformer strings.xml am richtigen ort speichern und die überrsetzung ins deutsche und englische vervollständigen. überall soll englisch als default sein
 
-- ergänze ein debug flag, das die console logs nur ausgibt, wenn man die app  im debug mode startet, nicht aber wenn man diese deployed oder als android app startet
+- ergänze ein debug flag, das die console logs nur ausgibt, wenn man die app  im debug mode startet, nicht aber wenn man diese deployed oder als android app startet (already started to be implemented with `debugLog`)
+
+# most important
+in "chords" use the same piano as in "pitches" export the piano functionality to a shared component and reuse it
