@@ -19,12 +19,5 @@ echo "
 Application should be available at: http://localhost:9091"
 echo "If the browser doesn't open automatically, please visit the URL manually."
 
-# Frage nach dem Mobile-Update im Vordergrund
-echo "
-Do you also want to update the mobile app? (Y/n)"
-# -n 1 liest nur ein Zeichen ein, -r verhindert Escape-Interpretation
-read -n 1 -r update_mobile
-echo ""  # Neue Zeile nach der Eingabe
-
 echo "Starting mobile app update..."
 ./mobile-build.sh update
