@@ -19,8 +19,13 @@ document.addEventListener('DOMContentLoaded', () => {
     // Update the click event to respect menu lock
     const originalClick = button.getAttribute('@click');
     if (originalClick && originalClick.includes('setMode')) {
-      button.setAttribute('@click', '!$root.menuLocked && ' + originalClick);
-      button.setAttribute(':class', "{'disabled': $root.menuLocked}");
+      // Avoid string concatenation to prevent invalid character errors
+      if (originalClick.includes('active')) {
+        button.setAttribute('x-on:click', '!$root.menuLocked && ($root.active = "main")');
+      } else {
+        button.setAttribute('x-on:click', '!$root.menuLocked');
+      }
+      button.setAttribute(':class', '{ disabled: $root.menuLocked }');
     }
   });
   

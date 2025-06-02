@@ -27,11 +27,15 @@ export function freeplay() {
       navButtons.forEach(button => {
         const originalClick = button.getAttribute('x-on:click') || button.getAttribute('@click');
         if (originalClick && !originalClick.includes('$root.menuLocked')) {
-          button.setAttribute('@click', '!$root.menuLocked && ' + originalClick);
-          button.setAttribute(':class', "{'disabled': $root.menuLocked}");
+          // Add menu lock check to button click handler - avoid string concatenation
+          if (originalClick.includes('$root.active')) {
+            button.setAttribute('x-on:click', '!$root.menuLocked && ($root.active = "main")');
+          } else {
+            button.setAttribute('x-on:click', '!$root.menuLocked');
+          }
+          button.setAttribute(':class', '{ disabled: $root.menuLocked }');
           if (!button.hasAttribute('aria-label')) {
-            const ariaLabel = button.textContent.trim() || 'Navigation';
-            button.setAttribute('aria-label', ariaLabel + '_a11y');
+            button.setAttribute('aria-label', 'Back to main menu');
           }
         }
         if (!button.hasAttribute('role')) {
