@@ -2011,6 +2011,21 @@ export function pitches() {
       // Stop all active oscillators via global event
       window.dispatchEvent(new CustomEvent('lalumo:stopallsounds'));
       console.log('AUDIO: Stopped all sounds');
+    },
+
+    /**
+     * Reset all progress for this component (can be called after global reset)
+     * Setzt sowohl den In-Memory-Status als auch localStorage zurück.
+     * Sollte nach einem globalen Reset aufgerufen werden, falls kein Reload erfolgt.
+     */
+    resetProgress() {
+      this.progress = { listen: 0, match: 0, draw: 0, guess: 0, memory: 0 };
+      this.correctAnswersCount = 0;
+      this.unlockedPatterns = ['up', 'down'];
+      this.memorySuccessCount = 0;
+      localStorage.removeItem('lalumo_progress');
+      localStorage.removeItem('lalumo_memory_level');
+      localStorage.removeItem('lalumo_difficulty'); // Wichtig: unlockedPatterns & correctAnswersCount
     }
   };
 }

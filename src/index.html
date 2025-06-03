@@ -339,7 +339,7 @@
           </div>
           
           <!-- Progress display -->
-          <div x-show="gameMode" class="progress-display">
+          <div x-show="mode === 'match'" class="progress-display">
             <p x-text="($store.strings?.correct_answers_count || 'Correct answers: {0}').replace('{0}', correctAnswersCount)"></p>
             <p x-show="correctAnswersCount < 10" x-text="$store.strings?.unlock_wave_message || 'Get 10 correct to unlock wavy patterns! 🌊'"></p>
             <p x-show="correctAnswersCount >= 10 && correctAnswersCount < 20" x-text="$store.strings?.unlock_jump_message || 'Get 20 correct to unlock random patterns! 🐸'"></p>

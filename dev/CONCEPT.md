@@ -30,13 +30,13 @@ Tones going up, down, waves, jumps: Children recognize tone movements and assign
 
 [x] **Listening to Pitch Movements:**
   Children listen to short melodic sequences where tones move upwards, downwards, in waves, or make jumps. Each movement is represented visually (e.g., a rocket for up, a slide for down, waves for undulating patterns, a frog or spring for jumps).
-[x] **Matching Sounds to Images:**
+[x] **Match Sounds to Images:**
   Kids are shown several images and must select the one that matches the direction or character of the melody they just heard.
-[x] **Interactive Sound Drawing:**
+[x] **Draw a Melody:**
   Children can “draw” a melody by dragging their finger or mouse, creating a visual curve. The app plays back a melody that follows the drawn curve, reinforcing the connection between visual movement and pitch.
 [x] **Guess the Next Note:**
   The app plays a sequence and pauses at a point. Children are given a choice (e.g., up or down) to guess what comes next, with immediate playful feedback.
-[x] **Melodic Memory Game:**
+[x] **Memory Game:**
   Simple “repeat the melody” exercises: the app plays a short melody, and the child tries to reproduce it by tapping virtual keys or buttons. Visual aids (like colored steps or animated animals) help guide the sequence.
 [ ] **Visual Feedback:**
   All pitch actions are accompanied by animated helpers (e.g., a bird flying up, a submarine diving down), making abstract pitch concepts tangible and memorable.

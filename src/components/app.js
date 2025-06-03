@@ -372,10 +372,20 @@ export function app() {
         // Clear game progress
         localStorage.removeItem('lalumo_progress');
         localStorage.removeItem('lalumo_memory_level');
+        localStorage.removeItem('lalumo_difficulty');
         
         // Reset in-memory progress too
         this.progress = { match: 0, guess: 0, memory: 0 };
         this.memorySuccessCount = 0;
+        
+        // Auch die In-Memory-Daten der pitches-Komponente zurücksetzen, falls vorhanden
+        if (window.Alpine && window.Alpine.data && window.Alpine.data.pitches) {
+          window.Alpine.data.pitches.progress = { listen: 0, match: 0, draw: 0, guess: 0, memory: 0 };
+          window.Alpine.data.pitches.correctAnswersCount = 0;
+          window.Alpine.data.pitches.unlockedPatterns = ['up', 'down'];
+          window.Alpine.data.pitches.memorySuccessCount = 0;
+          window.Alpine.data.pitches.mode = 'main'; // Setze Melody-Modus auf Start
+        }
         
         // Restore username and language
         localStorage.setItem('lalumo_username', currentUsername);
