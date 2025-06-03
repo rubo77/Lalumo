@@ -9,12 +9,13 @@ public/android/
 
 # IDE files
 .vscode/
-# IntelliJ IDEA - exclude user-specific files but keep shared config
+# IntelliJ IDEA - ignore user-specific files only
 .idea/workspace.xml
 .idea/tasks.xml
 .idea/usage.statistics.xml
-.idea/dictionaries
+.idea/dictionaries/
 .idea/shelf/
+.idea/caches/
 .idea/dataSources/
 .idea/dataSources.ids
 .idea/dataSources.local.xml
@@ -22,6 +23,20 @@ public/android/
 .idea/dynamic.xml
 .idea/uiDesigner.xml
 .idea/dbnavigator.xml
+# Also ignore user-specific files in android/.idea/
+android/.idea/workspace.xml
+android/.idea/tasks.xml
+android/.idea/usage.statistics.xml
+android/.idea/dictionaries/
+android/.idea/shelf/
+android/.idea/dataSources/
+android/.idea/dataSources.ids
+android/.idea/dataSources.local.xml
+android/.idea/sqlDataSources.xml
+android/.idea/dynamic.xml
+android/.idea/uiDesigner.xml
+android/.idea/dbnavigator.xml
+# Editor-Verzeichnisse und Dateien
 *.suo
 *.ntvs*
 *.njsproj
@@ -37,14 +52,6 @@ Thumbs.db
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-lerna-debug.log*
-
-# Editor-Verzeichnisse und Dateien
-.vscode/
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
 
 # Capacitor und iOS spezifisch
 /ios/App/App/public/
@@ -62,15 +69,3 @@ lerna-debug.log*
 /android/build/
 /android/captures/
 /android/local.properties
-/android/.idea/workspace.xml
-/android/.idea/tasks.xml
-/android/.idea/usage.statistics.xml
-/android/.idea/dictionaries
-/android/.idea/shelf/
-/android/.idea/dataSources/
-/android/.idea/dataSources.ids
-/android/.idea/dataSources.local.xml
-/android/.idea/sqlDataSources.xml
-/android/.idea/dynamic.xml
-/android/.idea/uiDesigner.xml
-/android/.idea/dbnavigator.xml
