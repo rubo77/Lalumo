@@ -230,14 +230,8 @@
         <!-- Main landing with clickable image -->
         <div x-show="!mode || mode === 'main'" class="pitch-landing">
           <div class="image-map-container">
-            <div class="clickable-area listen-area" @click="setMode('listen')" aria-label="Listen Mode">
-              <span class="area-label" x-text="$store.strings?.listen_to_melody || 'Listen to Melodies'"></span>
-            </div>
             <div class="clickable-area match-area" @click="setMode('match')" aria-label="Match Mode">
               <span class="area-label" x-text="$store.strings?.match_sounds || 'Match Sounds'"></span>
-            </div>
-            <div class="clickable-area guess-area" @click="setMode('guess')" aria-label="Guess Mode">
-              <span class="area-label" x-text="$store.strings?.guess_next_note || 'Guess Next Note'"></span>
             </div>
             <div class="clickable-area memory-area" @click="setMode('memory')" aria-label="Memory Mode">
               <span class="area-label" x-text="$store.strings?.memory_game || 'Memory Game'"></span>
