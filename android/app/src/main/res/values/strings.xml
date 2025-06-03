@@ -7,7 +7,7 @@
     <string name="custom_url_scheme">com.lalumo.app</string>
     
     <!-- Menu Items -->
-    <string name="menu_pitches">Pitches & Melodies</string>
+    <string name="menu_pitches">Pitches &amp; Melodies</string>
     <string name="menu_tonecolors">Tone Colors</string>
     <string name="menu_rhythm">Rhythm</string>
     <string name="menu_chords">Chords</string>
@@ -27,7 +27,7 @@
     <!-- Buttons -->
     <string name="button_generate_name">Generate Random Name</string>
     <string name="button_save_name">Save Name</string>
-    <string name="button_clear">Clear & Try Again</string>
+    <string name="button_clear">Clear &amp; Try Again</string>
     <string name="button_play_melody">Play Melody</string>
     <string name="button_play_melody_a11y">Play Melody</string>
     <string name="button_export_progress">Export Progress</string>
@@ -89,4 +89,15 @@
     <string name="harmony_gardens_title">Harmony Gardens</string>
     <string name="harmony_gardens_intro">Create a beautiful garden by choosing different chord sequences. Each chord type grows different plants!</string>
     <string name="play_sequence">Play Sequence</string>
+    
+    <!-- Progressive Difficulty Messages -->
+    <string name="correct_answers_count">Correct answers: {0}</string>
+    <string name="unlock_wave_message">Get 10 correct to unlock wavy patterns! 🌊</string>
+    <string name="unlock_jump_message">Get 20 correct to unlock random patterns! 🐸</string>
+    <string name="all_patterns_unlocked">All patterns unlocked! 🎉</string>
+    
+    <!-- Mascot Messages for Unlocks -->
+    <string name="mascot_wave_unlocked">Great! You unlocked wavy melodies! 🌊</string>
+    <string name="mascot_jump_unlocked">Amazing! You unlocked random jump melodies! 🐸</string>
+    <string name="mascot_all_unlocked">Fantastic! All melody patterns are now available! 🎉</string>
 </resources>

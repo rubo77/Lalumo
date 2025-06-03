@@ -20,126 +20,79 @@ export function app() {
     preferredLanguage: 'english',
     
     /**
-     * Get a localized string from Android resources if available
-     * Falls back to provided English/German strings if not
-     * @param {string} resourceName - The resource key name in strings.xml
-     * @param {string} enDefault - English default text
-     * @param {string} deDefault - German default text
-     * @returns {string} - The localized string
+     * Load and parse strings from Android XML files
+     * This makes the strings.xml files the single source of truth
      */
-    getStringResource(resourceName, enDefault, deDefault) {
-      // Check if we're on Capacitor/Android where string resources are available
-      if (window.Capacitor && window.Capacitor.isNative) {
-        try {
-          // Use the Android plugin to get the string resource
-          // This is a placeholder for actual implementation that would use a Capacitor plugin
-          return window.Capacitor.Plugins.App.getResourceString({ name: resourceName })
-            .then(result => result.value)
-            .catch(() => {
-              // Fall back to language-based text
-              return this.preferredLanguage === 'german' ? deDefault : enDefault;
-            });
-        } catch (e) {
-          // Fall back to language-based text
-          console.warn(`Error accessing string resource: ${resourceName}`, e);
-          return this.preferredLanguage === 'german' ? deDefault : enDefault;
-        }
+    async loadStringsFromXML() {
+      // Determine which language file to load
+      const language = this.preferredLanguage === 'german' ? 'de' : 'en';
+      const xmlPath = language === 'de' 
+        ? '/android/app/src/main/res/values-de/strings.xml'
+        : '/android/app/src/main/res/values/strings.xml';
+      
+      console.log(`Loading strings from: ${xmlPath}`);
+      
+      // Fetch the XML file
+      const response = await fetch(xmlPath);
+      if (!response.ok) {
+        throw new Error(`Failed to load ${xmlPath}: ${response.status}`);
       }
       
-      // If not on Android/Capacitor, use the language preference
-      return this.preferredLanguage === 'german' ? deDefault : enDefault;
+      const xmlText = await response.text();
+      
+      // Parse the XML
+      const parser = new DOMParser();
+      const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
+      
+      // Check for parsing errors
+      const parserError = xmlDoc.querySelector('parsererror');
+      if (parserError) {
+        throw new Error('XML parsing error: ' + parserError.textContent);
+      }
+      
+      // Extract all string elements
+      const stringElements = xmlDoc.querySelectorAll('string');
+      const strings = {};
+      
+      stringElements.forEach(element => {
+        const name = element.getAttribute('name');
+        const value = element.textContent;
+        if (name && value) {
+          strings[name] = value;
+        }
+      });
+      
+      console.log(`Loaded ${Object.keys(strings).length} strings from XML`);
+      return strings;
     },
     
     /**
-     * Initialize all application strings from resources
+     * Initialize all application strings from XML resources
      * This makes strings available globally via Alpine.store
      */
-    initStrings() {
-      // Set up store for localized strings
-      const appStrings = {};
-      
-      // Define all strings used in the application with their resource IDs
-      const stringMap = {
-        // Welcome and Onboarding
-        'welcome_message': { en: 'Welcome to Lalumo!', de: 'Willkommen bei Lalumo!' },
-        'create_name_message': { en: 'Let\'s create a special name just for you!', de: 'Lass uns einen besonderen Namen für dich erstellen!' },
-        'auto_save_message': { en: 'Your progress will be saved automatically', de: 'Dein Fortschritt wird automatisch gespeichert' },
-        
-        // Menu items
-        'menu_pitches': { en: 'Pitches & Melodies', de: 'Tonhöhen & Melodien' },
-        'menu_tonecolors': { en: 'Tone Colors', de: 'Klangfarben' },
-        'menu_rhythm': { en: 'Rhythm', de: 'Rhythmus' },
-        'menu_chords': { en: 'Chords', de: 'Akkorde' },
-        'menu_freeplay': { en: 'Free Play', de: 'Freies Spiel' },
-        'menu_settings': { en: 'Settings', de: 'Einstellungen' },
-        'menu_impressum': { en: 'Impressum', de: 'Impressum' },
-        'menu_datenschutz': { en: 'Privacy Policy', de: 'Datenschutz' },
-        'menu_credits': { en: 'Credits', de: 'Credits' },
-        'menu_unlock_hint': { en: 'Hold for 3 seconds to unlock', de: 'Halte 3 Sek. gedrückt zum Entsperren' },
-        'player_settings': { en: 'Player Settings', de: 'Spieler-Einstellungen' },
-        
-        // Navigation
-        'nav_home': { en: 'Home', de: 'Startseite' },
-        'nav_back': { en: 'Back', de: 'Zurück' },
-        'nav_up': { en: 'Up', de: 'Hoch' },
-        'nav_down': { en: 'Down', de: 'Runter' },
-        'back_to_main_a11y': { en: 'Back to main menu', de: 'Zurück zum Hauptmenü' },
-        
-        // Buttons
-        'button_generate_name': { en: 'Generate Random Name', de: 'Zufälligen Namen generieren' },
-        'button_save_name': { en: 'Save Name', de: 'Namen speichern' },
-        'button_clear': { en: 'Clear & Try Again', de: 'Löschen & neu versuchen' },
-        'button_play_melody': { en: 'Play Melody', de: 'Melodie abspielen' },
-        'button_play_melody_a11y': { en: 'Play Melody', de: 'Melodie abspielen' },
-        'button_export_progress': { en: 'Export Progress', de: 'Fortschritt exportieren' },
-        'button_import_progress': { en: 'Import Progress', de: 'Fortschritt importieren' },
-        'button_copy_clipboard': { en: 'Copy to Clipboard', de: 'In die Zwischenablage kopieren' },
-        'button_reset_progress': { en: 'Reset All Progress', de: 'Fortschritt zurücksetzen' },
-        'button_confirm_reset': { en: 'Yes, Reset Everything', de: 'Ja, alles zurücksetzen' },
-        'button_cancel': { en: 'Cancel', de: 'Abbrechen' },
-        
-        // Language Selection
-        'language_english': { en: 'English', de: 'English' },
-        'language_german': { en: 'Deutsch', de: 'Deutsch' },
-        
-        // Features & Activities
-        'play_melody': { en: 'Play melody', de: 'Melodie abspielen' },
-        'guess_direction': { en: 'Guess if the melody goes up or down', de: 'Rate, ob die Melodie nach oben oder unten geht' },
-        'listen_to_melody': { en: 'Listen to Melodies', de: 'Melodien anhören' },
-        'draw_melody': { en: 'Draw a Melody', de: 'Melodie zeichnen' },
-        'create_melody': { en: 'Create a Melody', de: 'Melodie erstellen' },
-        'match_sounds': { en: 'Match Sounds', de: 'Klänge zuordnen' },
-        'guess_next_note': { en: 'Guess Next Note', de: 'Nächsten Ton erraten' },
-        'memory_game': { en: 'Memory Game', de: 'Gedächtnisspiel' },
-        
-        // Messages
-        'success_message': { en: 'Great job! That\'s correct!', de: 'Sehr gut! Das ist richtig!' },
-        'error_message': { en: 'Not quite right. Try again!', de: 'Nicht ganz richtig. Versuche es noch einmal!' },
-        'next_level_message': { en: 'You\'ve advanced to the next level!', de: 'Du bist zur nächsten Stufe aufgestiegen!' },
-        'completion_message': { en: 'Congratulations! You\'ve completed all levels!', de: 'Glückwunsch! Du hast alle Stufen abgeschlossen!' },
-        'try_again_message': { en: 'Let\'s try again!', de: 'Lass es uns noch einmal versuchen!' }
-      };
-      
-      // Process all strings based on current language
-      for (const [key, translations] of Object.entries(stringMap)) {
-        appStrings[key] = this.getStringResource(key, translations.en, translations.de);
-      }
+    async initStrings() {
+      // Load strings directly from XML files
+      const appStrings = await this.loadStringsFromXML();
       
       // Make strings available globally via Alpine store
       Alpine.store('strings', appStrings);
       
       // Import debug utils for logging
       import('../utils/debug').then(({ debugLog }) => {
-        debugLog('APP', 'String resources initialized');
+        debugLog('APP', 'String resources loaded from XML');
       });
     },
     
-    init() {
+    async init() {
       // We'll initialize audio only on first user interaction
       this.isAudioEnabled = false;
       
-      // Initialize strings from resources
-      this.initStrings();
+      // Initialize Alpine.js store immediately to prevent undefined errors
+      window.Alpine.store('strings', {});
+      window.Alpine.store('pitchMode', 'listen');
+      
+      // Initialize strings from XML resources (async)
+      await this.initStrings();
       
       // Add event listener for custom sound events
       window.addEventListener('lalumo:play-sound', (event) => {
@@ -175,9 +128,6 @@ export function app() {
           this.initAndroidAudio();
         }
       }, false);
-      
-      // Initialize Alpine.js store for state sharing
-      window.Alpine.store('pitchMode', 'listen');
       
       // Check for existing username in localStorage
       this.loadUserData();
@@ -346,10 +296,13 @@ export function app() {
     /**
      * Set the preferred language and save to localStorage
      */
-    setLanguage(language) {
+    async setLanguage(language) {
       this.preferredLanguage = language;
       localStorage.setItem('lalumo_language', language);
       console.log('Language set to:', language);
+      
+      // Reload strings with new language
+      await this.initStrings();
     },
     
     /**

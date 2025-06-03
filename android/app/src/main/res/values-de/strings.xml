@@ -7,7 +7,7 @@
     <string name="custom_url_scheme">com.lalumo.app</string>
     
     <!-- Menu Items -->
-    <string name="menu_pitches">Tonhöhen & Melodien</string>
+    <string name="menu_pitches">Tonhöhen &amp; Melodien</string>
     <string name="menu_tonecolors">Klangfarben</string>
     <string name="menu_rhythm">Rhythmus</string>
     <string name="menu_chords">Akkorde</string>
@@ -18,7 +18,7 @@
     <string name="menu_credits">Credits</string>
     
     <!-- Navigation -->
-    <string name="nav_home">Startseite</string>
+    <string name="nav_home">Start</string>
     <string name="nav_back">Zurück</string>
     <string name="nav_up">Hoch</string>
     <string name="nav_down">Runter</string>
@@ -27,7 +27,7 @@
     <!-- Buttons -->
     <string name="button_generate_name">Zufälligen Namen generieren</string>
     <string name="button_save_name">Namen speichern</string>
-    <string name="button_clear">Löschen & neu versuchen</string>
+    <string name="button_clear">Löschen &amp; neu versuchen</string>
     <string name="button_play_melody">Melodie abspielen</string>
     <string name="button_play_melody_a11y">Melodie abspielen</string>
     <string name="button_export_progress">Fortschritt exportieren</string>
@@ -89,4 +89,15 @@
     <string name="harmony_gardens_title">Harmonie-Gärten</string>
     <string name="harmony_gardens_intro">Erschaffe einen wunderschönen Garten, indem du verschiedene Akkordsequenzen auswählst. Jeder Akkordtyp lässt andere Pflanzen wachsen!</string>
     <string name="play_sequence">Sequenz abspielen</string>
+    
+    <!-- Progressive Difficulty Messages -->
+    <string name="correct_answers_count">Richtige Antworten: {0}</string>
+    <string name="unlock_wave_message">Schaffe 10 richtige Antworten für Wellen-Melodien! 🌊</string>
+    <string name="unlock_jump_message">Schaffe 20 richtige Antworten für Zufalls-Melodien! 🐸</string>
+    <string name="all_patterns_unlocked">Alle Muster freigeschaltet! 🎉</string>
+    
+    <!-- Mascot Messages for Unlocks -->
+    <string name="mascot_wave_unlocked">Toll! Du hast Wellen-Melodien freigeschaltet! 🌊</string>
+    <string name="mascot_jump_unlocked">Fantastisch! Du hast Zufalls-Sprung-Melodien freigeschaltet! 🐸</string>
+    <string name="mascot_all_unlocked">Großartig! Alle Melodie-Muster sind jetzt verfügbar! 🎉</string>
 </resources>

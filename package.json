@@ -5,8 +5,10 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack --mode production",
-    "watch": "webpack serve --mode development"
+    "sync-strings": "mkdir -p public/android/app/src/main/res/values public/android/app/src/main/res/values-de && cp android/app/src/main/res/values/strings.xml public/android/app/src/main/res/values/ && cp android/app/src/main/res/values-de/strings.xml public/android/app/src/main/res/values-de/",
+    "watch": "npm run sync-strings && webpack serve --mode development",
+    "dev": "npm run sync-strings && webpack serve --mode development",
+    "build": "npm run sync-strings && webpack --mode production"
   },
   "keywords": [
     "music",
@@ -19,6 +21,7 @@
     "@babel/core": "^7.23.9",
     "@babel/preset-env": "^7.23.9",
     "babel-loader": "^9.1.3",
+    "copy-webpack-plugin": "^13.0.0",
     "css-loader": "^6.10.0",
     "html-webpack-plugin": "^5.5.3",
     "mini-css-extract-plugin": "^2.7.6",

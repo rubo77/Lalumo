@@ -1,7 +1,38 @@
-# Allgemeine Dateien
-node_modules
-/dist/
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+
+# Generated XML files for web development (copied from android/app/src/main/res/)
+public/android/
+
+# IDE files
+.vscode/
+# IntelliJ IDEA - exclude user-specific files but keep shared config
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/usage.statistics.xml
+.idea/dictionaries
+.idea/shelf/
+.idea/dataSources/
+.idea/dataSources.ids
+.idea/dataSources.local.xml
+.idea/sqlDataSources.xml
+.idea/dynamic.xml
+.idea/uiDesigner.xml
+.idea/dbnavigator.xml
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# OS files
 .DS_Store
+Thumbs.db
+
+# Logs
 *.log
 npm-debug.log*
 yarn-debug.log*
@@ -9,7 +40,6 @@ yarn-error.log*
 lerna-debug.log*
 
 # Editor-Verzeichnisse und Dateien
-.idea/
 .vscode/
 *.suo
 *.ntvs*
@@ -32,3 +62,15 @@ lerna-debug.log*
 /android/build/
 /android/captures/
 /android/local.properties
+/android/.idea/workspace.xml
+/android/.idea/tasks.xml
+/android/.idea/usage.statistics.xml
+/android/.idea/dictionaries
+/android/.idea/shelf/
+/android/.idea/dataSources/
+/android/.idea/dataSources.ids
+/android/.idea/dataSources.local.xml
+/android/.idea/sqlDataSources.xml
+/android/.idea/dynamic.xml
+/android/.idea/uiDesigner.xml
+/android/.idea/dbnavigator.xml

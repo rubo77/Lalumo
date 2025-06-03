@@ -57,3 +57,18 @@ rsync -avz --no-perms --no-owner --no-group --delete dist/ root@vm06.eclabs:/var
 # 4. Resume development (optional)
 npm run watch
 ```
+
+## String Management
+
+This app uses Android XML files as the single source of truth for all translations:
+
+**Edit strings here:**
+- English: `android/app/src/main/res/values/strings.xml`
+- German: `android/app/src/main/res/values-de/strings.xml`
+
+**After editing XML files:**
+- Run `npm run sync-strings` 
+- OR restart `npm run watch`
+
+**Mobile builds:**
+Use the XML files directly (no sync needed).

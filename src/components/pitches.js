@@ -18,6 +18,13 @@ export function pitches() {
     currentHighlightedNote: null, // For highlighting piano keys during playback
     longPressTimer: null,
     longPressThreshold: 800, // milliseconds for long press
+    
+    // Progressive difficulty tracking
+    correctAnswersCount: 0,
+    unlockedPatterns: ['up', 'down'], // Start with only up and down
+    gameMode: false, // For match and memory modes - false = free play, true = game mode
+    memoryFreePlay: false, // Track if memory is in free play mode
+    
     // Available notes for melodies
     availableNotes: [
       // C3 - B3 (Lower octave)
@@ -56,6 +63,14 @@ export function pitches() {
         const savedProgress = localStorage.getItem('lalumo_progress');
         if (savedProgress) {
           this.progress = JSON.parse(savedProgress);
+        }
+        
+        // Load progressive difficulty data
+        const savedDifficulty = localStorage.getItem('lalumo_difficulty');
+        if (savedDifficulty) {
+          const difficultyData = JSON.parse(savedDifficulty);
+          this.correctAnswersCount = difficultyData.correctAnswersCount || 0;
+          this.unlockedPatterns = difficultyData.unlockedPatterns || ['up', 'down'];
         }
       } catch (e) {
         console.log('Could not load saved progress');
@@ -98,6 +113,14 @@ export function pitches() {
       this.isPlaying = false;
       
       console.log('MODSWITCH: State reset completed');
+      
+      this.currentSequence = [];
+      this.userSequence = [];
+      this.drawPath = [];
+      this.correctAnswer = null;
+      this.choices = [];
+      this.gameMode = false;
+      this.memoryFreePlay = false;
     },
     
     /**
@@ -271,12 +294,15 @@ export function pitches() {
       } else if (newMode === 'listen') {
         // For listen mode, just show instructions
       } else if (newMode === 'match') {
+        this.gameMode = false; // Start in free play mode
         this.setupMatchingMode(false); // Setup without playing sound
       } else if (newMode === 'draw') {
         this.setupDrawingMode(); // Drawing doesn't play sound by default
       } else if (newMode === 'guess') {
         this.setupGuessingMode(false); // Setup without playing sound
       } else if (newMode === 'memory') {
+        this.gameMode = false; // Start in free play mode
+        this.memoryFreePlay = true; // Enable free play
         this.setupMemoryMode(false); // Setup without playing sound
       }
       
@@ -285,19 +311,6 @@ export function pitches() {
       
       // Update progress tracking
       this.updateProgressGarden();
-    },
-    
-    /**
-     * Reset state variables for clean mode switching
-     */
-    resetState() {
-      this.currentSequence = [];
-      this.userSequence = [];
-      this.drawPath = [];
-      this.correctAnswer = null;
-      this.choices = [];
-      this.feedback = '';
-      this.showFeedback = false;
     },
     
     /**
@@ -312,14 +325,32 @@ export function pitches() {
         message = language === 'german' ? 
           'Klicke auf jedes Bild, um zu hören, wie diese Melodie klingt!' : 
           'Click on each picture to hear what that melody sounds like!';
+      } else if (this.mode === 'match') {
+        if (!this.gameMode) {
+          message = language === 'german' ? 
+            'Klicke auf die Bilder zum Üben. Drücke ▶️ für das Spiel!' : 
+            'Click on pictures to practice. Press ▶️ for the game!';
+        } else {
+          message = language === 'german' ? 
+            'Höre zu und wähle das richtige Bild!' : 
+            'Listen and choose the right picture!';
+        }
       } else if (this.mode === 'memory') {
-        message = language === 'german' ? 
-          'Höre dir die Melodie an und tippe dann auf die farbigen Knöpfe in der gleichen Reihenfolge!' : 
-          'Listen to the melody, then tap the colored buttons in the same order!';
+        if (this.memoryFreePlay) {
+          message = language === 'german' ? 
+            'Drücke frei auf die Tasten zum Üben. Drücke ▶️ für das Spiel!' : 
+            'Press keys freely to practice. Press ▶️ for the game!';
+        } else {
+          message = language === 'german' ? 
+            'Höre dir die Melodie an und tippe dann auf die farbigen Knöpfe in der gleichen Reihenfolge!' : 
+            'Listen to the melody, then tap the colored buttons in the same order!';
+        }
       }
       
       // Show the message using the existing function
-      this.showMascotMessage(message);
+      if (message) {
+        this.showMascotMessage(message);
+      }
     },
     
     /**
@@ -944,14 +975,20 @@ export function pitches() {
      * Setup for the matching mode
      */
     setupMatchingMode(playSound = false, generateNew = true) {
-      // Wenn generateNew = true, dann eine neue Melodie erstellen, ansonsten die aktuelle beibehalten
+      // If not in game mode, allow free exploration of all patterns
+      if (!this.gameMode) {
+        // In free play mode, do nothing special - user can click any pattern
+        return;
+      }
+      
+      // Game mode: use only unlocked patterns
       if (generateNew) {
-        // Prepare a random sequence and image choices
-        const types = ['up', 'down', 'wave', 'jump'];
-        const randomType = types[Math.floor(Math.random() * types.length)];
+        // Only use unlocked patterns for the game
+        const availableTypes = this.unlockedPatterns;
+        const randomType = availableTypes[Math.floor(Math.random() * availableTypes.length)];
         this.correctAnswer = randomType;
         
-        // Generiere die passende Melodie für den ausgewählten Typ
+        // Generate the appropriate melody for the selected type
         let pattern;
         if (randomType === 'up') {
           pattern = this.generateUpPattern();
@@ -963,24 +1000,20 @@ export function pitches() {
           pattern = this.generateJumpyPattern();
         }
         
-        // Speichere die generierte Melodie für späteres Wiederholen
+        // Store the generated melody for later replay
         this.currentSequence = pattern;
-        this.matchingPattern = pattern; // Speziell für den Match-Modus
+        this.matchingPattern = pattern; // Specifically for match mode
       }
       
       // Only play the sound if explicitly requested
       if (playSound) {
-        // Verwende die gespeicherte Melodie
+        // Use the stored melody
         const pattern = this.matchingPattern || this.currentSequence;
         
-        // Melodie abspielen ohne Animation des richtigen Elements
+        // Play melody without animating the correct answer element
         this.isPlaying = true;
         
-        // REMOVED: Animation of correct answer when play button is clicked
-        // this.currentAnimation = this.correctAnswer;
-        // this.animatePatternElement(this.correctAnswer);
-        
-        // Töne nacheinander abspielen
+        // Play notes in sequence
         const noteArray = [...pattern];
         this.playNoteSequence(noteArray, 0);
       }
@@ -994,9 +1027,17 @@ export function pitches() {
       // First stop any currently playing melody
       this.stopCurrentSound();
       
-      // Die gewählte Animation anzeigen, unabhängig davon, ob richtig oder falsch
+      // Show the selected animation
       this.animatePatternElement(selected);
       
+      // In free play mode, just play the selected pattern
+      if (!this.gameMode) {
+        // Just play the selected pattern and provide minimal feedback
+        this.playSequence(selected);
+        return;
+      }
+      
+      // Game mode: check if answer is correct
       const isCorrect = selected === this.correctAnswer;
       
       this.showFeedback = true;
@@ -1011,6 +1052,9 @@ export function pitches() {
       
       // Show appropriate animation based on result
       if (isCorrect) {
+        // Track the correct answer for progressive difficulty
+        this.addCorrectAnswer();
+        
         // Create and show rainbow success animation
         const rainbow = document.createElement('div');
         rainbow.className = 'rainbow-success';
@@ -1051,7 +1095,7 @@ export function pitches() {
           this.setupMatchingMode(true, true);
           console.log('Auto-progressed to next melody in match mode');
         }
-        // Bei falscher Antwort wird keine neue Melodie generiert, damit der Spieler die gleiche Melodie noch einmal versuchen kann
+        // For wrong answers, don't generate new melody so user can try the same one again
       }, 2000);
     },
     
@@ -1709,15 +1753,6 @@ export function pitches() {
       // Highlight the key when pressed
       this.currentHighlightedNote = note;
       
-      // Get the current user input position
-      const currentPosition = this.userSequence.length;
-      
-      // Check if the current note is correct before adding it
-      const isCurrentNoteCorrect = note === this.currentSequence[currentPosition];
-      
-      // Add note to sequence
-      this.userSequence.push(note);
-      
       // Play the note using event
       window.dispatchEvent(new CustomEvent('lalumo:playnote', { 
         detail: { note: `pitch_${note.toLowerCase()}` }
@@ -1727,6 +1762,21 @@ export function pitches() {
       setTimeout(() => {
         this.currentHighlightedNote = null;
       }, 300);
+      
+      // In free play mode, just play the note and return
+      if (this.memoryFreePlay || !this.gameMode) {
+        return;
+      }
+      
+      // Game mode: check for correctness
+      // Get the current user input position
+      const currentPosition = this.userSequence.length;
+      
+      // Check if the current note is correct before adding it
+      const isCurrentNoteCorrect = note === this.currentSequence[currentPosition];
+      
+      // Add note to sequence
+      this.userSequence.push(note);
       
       // If the note is incorrect, immediately give feedback
       if (!isCurrentNoteCorrect) {
@@ -1849,12 +1899,118 @@ export function pitches() {
      */
     playCurrentMelody() {
       if (this.mode === 'match') {
-        this.setupMatchingMode(true, false);
+        if (!this.gameMode) {
+          this.startMatchGame(); // Start game mode from free play
+        } else {
+          this.setupMatchingMode(true, false); // Replay current melody in game mode
+        }
       } else if (this.mode === 'guess') {
         this.setupGuessingMode(true, false);
       } else if (this.mode === 'memory') {
-        this.setupMemoryMode(true, false);
+        if (!this.gameMode) {
+          this.startMemoryGame(); // Start game mode from free play
+        } else {
+          this.playMemorySequence(); // Just replay current sequence in game mode
+        }
       }
+    },
+
+    /**
+     * Start game mode for memory (called when play button is pressed)
+     */
+    startMemoryGame() {
+      this.gameMode = true;
+      this.memoryFreePlay = false;
+      this.setupMemoryMode(true, true); // Play sound and generate new
+      this.showContextMessage(); // Update instructions
+    },
+
+    /**
+     * Save difficulty progress to localStorage
+     */
+    saveDifficultyProgress() {
+      try {
+        const difficultyData = {
+          correctAnswersCount: this.correctAnswersCount,
+          unlockedPatterns: this.unlockedPatterns
+        };
+        localStorage.setItem('lalumo_difficulty', JSON.stringify(difficultyData));
+      } catch (e) {
+        console.log('Could not save difficulty progress');
+      }
+    },
+    
+    /**
+     * Check if new patterns should be unlocked based on correct answers
+     */
+    checkPatternUnlocks() {
+      let unlocked = false;
+      
+      // Unlock wave pattern at 10 correct answers
+      if (this.correctAnswersCount >= 10 && !this.unlockedPatterns.includes('wave')) {
+        this.unlockedPatterns.push('wave');
+        unlocked = true;
+        const message = window.Alpine?.store('strings')?.mascot_wave_unlocked || 'Great! You unlocked wavy melodies! 🌊';
+        this.showMascotMessage(message);
+      }
+      
+      // Unlock jump pattern at 20 correct answers  
+      if (this.correctAnswersCount >= 20 && !this.unlockedPatterns.includes('jump')) {
+        this.unlockedPatterns.push('jump');
+        unlocked = true;
+        const message = window.Alpine?.store('strings')?.mascot_jump_unlocked || 'Amazing! You unlocked random jump melodies! 🐸';
+        this.showMascotMessage(message);
+      }
+      
+      if (unlocked) {
+        this.saveDifficultyProgress();
+      }
+    },
+    
+    /**
+     * Add a correct answer and check for unlocks
+     */
+    addCorrectAnswer() {
+      this.correctAnswersCount++;
+      this.saveDifficultyProgress();
+      this.checkPatternUnlocks();
+    },
+
+    /**
+     * Start game mode for matching (called when play button is pressed)
+     */
+    startMatchGame() {
+      this.gameMode = true;
+      this.setupMatchingMode(true, true); // Play sound and generate new
+      this.showContextMessage(); // Update instructions
+    },
+
+    /**
+     * Stop any currently playing sound
+     */
+    stopCurrentSound() {
+      // Cancel any pending timeouts
+      if (this.soundTimeoutId) {
+        clearTimeout(this.soundTimeoutId);
+        this.soundTimeoutId = null;
+      }
+      
+      if (this.resetTimeoutId) {
+        clearTimeout(this.resetTimeoutId);
+        this.resetTimeoutId = null;
+      }
+      
+      // Stop animations and reset flags
+      this.isPlaying = false;
+      this.currentAnimation = null;
+      
+      // Remove active classes from all pitch cards
+      const activeCards = document.querySelectorAll('.pitch-card.active');
+      activeCards.forEach(card => card.classList.remove('active'));
+      
+      // Stop all active oscillators via global event
+      window.dispatchEvent(new CustomEvent('lalumo:stopallsounds'));
+      console.log('AUDIO: Stopped all sounds');
     }
   };
 }
