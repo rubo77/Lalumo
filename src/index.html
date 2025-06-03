@@ -63,11 +63,14 @@
         
         <!-- Chapters Section -->
         <div class="menu-chapters">
+          <!-- pitches -->
           <button @click="$data.active = 'pitches'; $dispatch('set-pitch-mode', 'main'); window.innerWidth < 1024 ? menuOpen = false : null" :class="{ 'active': active === 'pitches' }">
-            🎵 <span x-text="$store.strings?.menu_pitches || 'Pitches & Melodies'"></span>
+            <span x-text="$store.strings?.menu_pitches || 'Pitches & Melodies'"></span>
           </button>
-          <button @click="$data.active = 'chords'; $dispatch('set-chord-mode', 'main')" :class="{ 'active': active === 'chords' }">
-            🎹 <span x-text="$store.strings?.menu_chords || 'Chords'"></span>
+
+          <!-- chords started developed-->
+          <button @click="$data.active = 'chords'; $dispatch('set-chord-mode', 'main')" :class="{ 'active': active === 'chords' }" style="display: none;">
+            <span x-text="$store.strings?.menu_chords || 'Chords'"></span>
           </button>
 
           <!-- later -->
@@ -90,6 +93,7 @@
               x-data="{ isActive: false }"
               x-init="$watch('$store.pitchMode', value => isActive = value === 'listen')"
               :class="{ 'active': isActive }"
+              style="display: none;"
             >
               🔊 <span x-text="$store.strings?.listen_to_melody || 'Listen to Melodies'"></span>
             </button>
@@ -99,7 +103,7 @@
               x-init="$watch('$store.pitchMode', value => isActive = value === 'match')"
               :class="{ 'active': isActive }"
             >
-              🔀 <span x-text="$store.strings?.match_sounds || 'Match Sounds'"></span>
+            🎵 <span x-text="$store.strings?.match_sounds || 'Match Sounds'"></span>
             </button>
             <button 
               @click="$dispatch('set-pitch-mode', 'draw'); window.innerWidth < 1024 ? menuOpen = false : null"
@@ -123,7 +127,7 @@
               x-init="$watch('$store.pitchMode', value => isActive = value === 'memory')"
               :class="{ 'active': isActive }"
             >
-              💭 <span x-text="$store.strings?.memory_game || 'Memory Game'"></span>
+            🎹 <span x-text="$store.strings?.memory_game || 'Memory Game'"></span>
             </button>
           </div>
         </template>
@@ -249,8 +253,7 @@
         <div x-show="mode === 'listen'" class="pitch-activity">
           <div class="mode-header">
             <button class="back-to-main" onclick="document.dispatchEvent(new CustomEvent('lalumo:go-home'))" aria-label="Back to main menu">
-              <span style="font-size: 24px;">←</span>
-              <span x-text="$store.strings?.nav_home"></span>
+              <span style="font-size: 24px;">🏠</span>
             </button>
           </div>
           
@@ -293,8 +296,7 @@
         <div x-show="mode === 'match'" class="pitch-activity">
           <div class="mode-header">
             <button class="back-to-main" onclick="document.dispatchEvent(new CustomEvent('lalumo:go-home'))" aria-label="Back to main menu">
-              <span style="font-size: 24px;">←</span>
-              <span x-text="$store.strings?.nav_home"></span>
+              <span style="font-size: 24px;">🏠</span>
             </button>
           </div>
           
@@ -357,8 +359,7 @@
         <div x-show="mode === 'draw'" class="pitch-activity">
           <div class="mode-header">
             <button class="back-to-main" onclick="document.dispatchEvent(new CustomEvent('lalumo:go-home'))" aria-label="Back to main menu">
-              <span style="font-size: 24px;">←</span>
-              <span x-text="$store.strings?.nav_home"></span>
+              <span style="font-size: 24px;">🏠</span>
             </button>
           </div>
           
@@ -381,8 +382,7 @@
         <div x-show="mode === 'guess'" class="pitch-activity">
           <div class="mode-header">
             <button class="back-to-main" onclick="document.dispatchEvent(new CustomEvent('lalumo:go-home'))" aria-label="Back to main menu">
-              <span style="font-size: 24px;">←</span>
-              <span x-text="$store.strings?.nav_home"></span>
+              <span style="font-size: 24px;">🏠</span>
             </button>
           </div>
           <button class="circular-play-button" @click="playCurrentMelody()" aria-label="Play Melody">
@@ -408,8 +408,7 @@
         <div x-show="mode === 'memory'" class="pitch-activity">
           <div class="mode-header">
             <button class="back-to-main" onclick="document.dispatchEvent(new CustomEvent('lalumo:go-home'))" aria-label="Back to main menu">
-              <span style="font-size: 24px;">←</span>
-              <span x-text="$store.strings?.nav_home"></span>
+              <span style="font-size: 24px;">🏠</span>
             </button>
           </div>
           <button class="circular-play-button" @click="playCurrentMelody()" aria-label="Play Melody">
@@ -505,8 +504,7 @@
         <div x-show="mode === 'color-matching'" class="chord-activity">
           <div class="mode-header">
             <button class="back-to-main" @click="setMode('main')" aria-label="Back to main menu">
-              <span style="font-size: 24px;">←</span>
-              <span x-text="$store.strings?.nav_home || 'Home'"></span>
+              <span style="font-size: 24px;">🏠</span>
             </button>
           </div>
           
@@ -571,8 +569,7 @@
         <div x-show="mode === 'mood-landscapes'" class="chord-activity">
           <div class="mode-header">
             <button class="back-to-main" @click="setMode('main')" aria-label="Back to main menu">
-              <span style="font-size: 24px;">←</span>
-              <span x-text="$store.strings?.nav_home || 'Home'"></span>
+              <span style="font-size: 24px;">🏠</span>
             </button>
           </div>
           
@@ -618,8 +615,7 @@
         <div x-show="mode === 'chord-building'" class="chord-activity">
           <div class="mode-header">
             <button class="back-to-main" @click="setMode('main')" aria-label="Back to main menu">
-              <span style="font-size: 24px;">←</span>
-              <span x-text="$store.strings?.nav_home || 'Home'"></span>
+              <span style="font-size: 24px;">🏠</span>
             </button>
           </div>
           
@@ -651,8 +647,7 @@
         <div x-show="mode === 'missing-note'" class="chord-activity">
           <div class="mode-header">
             <button class="back-to-main" @click="setMode('main')" aria-label="Back to main menu">
-              <span style="font-size: 24px;">←</span>
-              <span x-text="$store.strings?.nav_home || 'Home'"></span>
+              <span style="font-size: 24px;">🏠</span>
             </button>
           </div>
           
@@ -687,8 +682,7 @@
         <div x-show="mode === 'character-matching'" class="chord-activity">
           <div class="mode-header">
             <button class="back-to-main" @click="setMode('main')" aria-label="Back to main menu">
-              <span style="font-size: 24px;">←</span>
-              <span x-text="$store.strings?.nav_home || 'Home'"></span>
+              <span style="font-size: 24px;">🏠</span>
             </button>
           </div>
           
@@ -746,8 +740,7 @@
         <div x-show="mode === 'harmony-gardens'" class="chord-activity">
           <div class="mode-header">
             <button class="back-to-main" @click="setMode('main')" aria-label="Back to main menu">
-              <span style="font-size: 24px;">←</span>
-              <span x-text="$store.strings?.nav_home || 'Home'"></span>
+              <span style="font-size: 24px;">🏠</span>
             </button>
           </div>
           

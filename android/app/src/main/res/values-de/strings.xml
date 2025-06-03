@@ -18,8 +18,6 @@
     <string name="menu_credits">Credits</string>
     
     <!-- Navigation -->
-    <string name="nav_home">Start</string>
-    <string name="nav_back">Zurück</string>
     <string name="nav_up">Hoch</string>
     <string name="nav_down">Runter</string>
     <string name="back_to_main_a11y">Zurück zum Hauptmenü</string>
