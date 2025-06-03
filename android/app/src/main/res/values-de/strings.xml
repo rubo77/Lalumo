@@ -98,4 +98,18 @@
     <string name="mascot_wave_unlocked">Toll! Du hast Wellen-Melodien freigeschaltet! 🌊</string>
     <string name="mascot_jump_unlocked">Fantastisch! Du hast Zufalls-Sprung-Melodien freigeschaltet! 🐸</string>
     <string name="mascot_all_unlocked">Großartig! Alle Melodie-Muster sind jetzt verfügbar! 🎉</string>
+    
+    <!-- Player Settings -->
+    <string name="player_settings">Spieler-Einstellungen</string>
+    <string name="your_profile">Dein Profil</string>
+    <string name="language_preference">Spracheinstellung</string>
+    <string name="select_language">Wähle deine bevorzugte Sprache:</string>
+    <string name="game_progress">Spiel-Fortschritt</string>
+    <string name="export_progress">Exportiere deinen Fortschritt, um ihn zu speichern oder auf ein anderes Gerät zu übertragen:</string>
+    <string name="copy_code">Kopiere diesen Code, um deinen Fortschritt zu sichern:</string>
+    <string name="import_progress">Importiere deinen Fortschritt von einem anderen Gerät:</string>
+    <string name="paste_progress">Füge hier deine Fortschrittsdaten ein...</string>
+    <string name="reset_progress">Fortschritt zurücksetzen</string>
+    <string name="reset_progress_desc">Setze deinen gesamten Spielfortschritt zurück und starte neu:</string>
+    <string name="reset_confirm">Bist du sicher? Dies kann nicht rückgängig gemacht werden.</string>
 </resources>

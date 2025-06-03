@@ -91,7 +91,10 @@ export function app() {
       window.Alpine.store('strings', {});
       window.Alpine.store('pitchMode', 'listen');
       
-      // Initialize strings from XML resources (async)
+      // Load user data (including language) from localStorage
+      this.loadUserData();
+      
+      // Now load strings with the correct language
       await this.initStrings();
       
       // Add event listener for custom sound events
@@ -383,6 +386,7 @@ export function app() {
         
         // Show feedback or refresh the page
         alert('Progress has been reset successfully');
+        window.location.reload();
       } catch (e) {
         console.log('Error resetting progress', e);
       }

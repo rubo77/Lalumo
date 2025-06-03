@@ -18,7 +18,6 @@
     <string name="menu_credits">Credits</string>
     
     <!-- Navigation -->
-    <string name="nav_back">Back</string>
     <string name="nav_up">Up</string>
     <string name="nav_down">Down</string>
     <string name="back_to_main_a11y">Back to main menu</string>
@@ -99,4 +98,18 @@
     <string name="mascot_wave_unlocked">Great! You unlocked wavy melodies! 🌊</string>
     <string name="mascot_jump_unlocked">Amazing! You unlocked random jump melodies! 🐸</string>
     <string name="mascot_all_unlocked">Fantastic! All melody patterns are now available! 🎉</string>
+    
+    <!-- Player Settings -->
+    <string name="player_settings">Player Settings</string>
+    <string name="your_profile">Your Profile</string>
+    <string name="language_preference">Language Preference</string>
+    <string name="select_language">Select your preferred language:</string>
+    <string name="game_progress">Game Progress</string>
+    <string name="export_progress">Export your progress to save or transfer to another device:</string>
+    <string name="copy_code">Copy this code to save your progress:</string>
+    <string name="import_progress">Import your progress from another device:</string>
+    <string name="paste_progress">Paste your progress data here...</string>
+    <string name="reset_progress">Reset Progress</string>
+    <string name="reset_progress_desc">Reset all your game progress and start fresh:</string>
+    <string name="reset_confirm">Are you sure? This cannot be undone.</string>
 </resources>

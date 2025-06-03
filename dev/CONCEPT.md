@@ -14,7 +14,7 @@ The app playfully teaches preschool children a basic understanding of music – 
 - Supports early musical education and emotional development
 ## 2. Chapter Structure of the App (Learning Areas)
 
-### 1. Pitches and Melodies
+### 1. Pitches & Melodies
 
 Tones going up, down, waves, jumps: Children recognize tone movements and assign them to images (e.g., a rocket for ascending tones).
 

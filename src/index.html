@@ -856,53 +856,49 @@
     <section x-show="active === 'settings' && (window.innerWidth >= 1024 || !menuOpen)" x-transition class="settings-page">
       <h2>Player Settings</h2>
       <div x-show="username" class="settings-section">
-        <h3>Your Profile</h3>
+        <h3 x-text="$store.strings?.your_profile || 'Your Profile'"></h3>
         <div class="profile-section">
           <div class="profile-avatar">
-            <span x-text="username ? username.charAt(0) : '?'"></span>
+            <span x-text="username ? username.charAt(0) : '?' "></span>
           </div>
           <div class="profile-details">
             <p class="profile-name" x-text="username"></p>
             <div class="username-edit">
-              <input type="text" x-model="editableUsername" class="username-input" placeholder="Enter your name" maxlength="20">
-              <button class="secondary-button" @click="saveUsername()">Save Name</button>
+              <input type="text" x-model="editableUsername" class="username-input" :placeholder="$store.strings?.enter_name || 'Enter your name'" maxlength="20">
+              <button class="secondary-button" @click="saveUsername()" x-text="$store.strings?.button_save_name || 'Save Name'"></button>
             </div>
-            <button class="secondary-button" @click="setUsername()">Generate Random Name</button>
+            <button class="secondary-button" @click="setUsername()" x-text="$store.strings?.button_generate_name || 'Generate Random Name'"></button>
           </div>
         </div>
-        
-        <h3>Language Preference</h3>
+        <h3 x-text="$store.strings?.language_preference || 'Language Preference'"></h3>
         <div class="language-section">
-          <p>Select your preferred language:</p>
+          <p x-text="$store.strings?.select_language || 'Select your preferred language:'"></p>
           <div class="language-options">
-            <button class="language-button" :class="{ 'active': preferredLanguage === 'english' }" @click="setLanguage('english')">English</button>
-            <button class="language-button" :class="{ 'active': preferredLanguage === 'german' }" @click="setLanguage('german')">Deutsch</button>
+            <button class="language-button" :class="{ 'active': preferredLanguage === 'english' }" @click="setLanguage('english')" x-text="$store.strings?.language_english || 'English'"></button>
+            <button class="language-button" :class="{ 'active': preferredLanguage === 'german' }" @click="setLanguage('german')" x-text="$store.strings?.language_german || 'Deutsch'"></button>
           </div>
         </div>
-        
-        <h3>Game Progress</h3>
+        <h3 x-text="$store.strings?.game_progress || 'Game Progress'"></h3>
         <div class="progress-section">
-          <p>Export your progress to save or transfer to another device:</p>
-          <button class="primary-button" @click="exportProgress()">Export Progress</button>
+          <p x-text="$store.strings?.export_progress || 'Export your progress to save or transfer to another device:'"></p>
+          <button class="primary-button" @click="exportProgress()" x-text="$store.strings?.button_export_progress || 'Export Progress'"></button>
           <div x-show="exportedData" class="export-data">
-            <p>Copy this code to save your progress:</p>
+            <p x-text="$store.strings?.copy_code || 'Copy this code to save your progress:'"></p>
             <textarea x-text="exportedData" readonly class="export-textarea"></textarea>
-            <button class="secondary-button" @click="copyToClipboard()">Copy to Clipboard</button>
+            <button class="secondary-button" @click="copyToClipboard()" x-text="$store.strings?.button_copy_clipboard || 'Copy to Clipboard'"></button>
           </div>
-          
-          <p class="import-label">Import your progress from another device:</p>
-          <textarea placeholder="Paste your progress data here..." x-model="importData" class="import-textarea"></textarea>
-          <button class="primary-button" @click="importProgress()">Import Progress</button>
-          
+          <p class="import-label" x-text="$store.strings?.import_progress || 'Import your progress from another device:'"></p>
+          <textarea :placeholder="$store.strings?.paste_progress || 'Paste your progress data here...'" x-model="importData" class="import-textarea"></textarea>
+          <button class="primary-button" @click="importProgress()" x-text="$store.strings?.button_import_progress || 'Import Progress'"></button>
           <div class="reset-section">
-            <h3>Reset Progress</h3>
-            <p>Reset all your game progress and start fresh:</p>
+            <h3 x-text="$store.strings?.reset_progress || 'Reset Progress'"></h3>
+            <p x-text="$store.strings?.reset_progress_desc || 'Reset all your game progress and start fresh:'"></p>
             <div class="reset-buttons">
-              <button class="warning-button" @click="showResetConfirm = true" x-show="!showResetConfirm">Reset All Progress</button>
+              <button class="warning-button" @click="showResetConfirm = true" x-show="!showResetConfirm" x-text="$store.strings?.button_reset_progress || 'Reset All Progress'"></button>
               <div class="confirm-reset" x-show="showResetConfirm">
-                <p>Are you sure? This cannot be undone.</p>
-                <button class="danger-button" @click="resetProgress()">Yes, Reset Everything</button>
-                <button class="secondary-button" @click="showResetConfirm = false">Cancel</button>
+                <p x-text="$store.strings?.reset_confirm || 'Are you sure? This cannot be undone.'"></p>
+                <button class="danger-button" @click="resetProgress()" x-text="$store.strings?.button_confirm_reset || 'Yes, Reset Everything'"></button>
+                <button class="secondary-button" @click="showResetConfirm = false" x-text="$store.strings?.button_cancel || 'Cancel'"></button>
               </div>
             </div>
           </div>
