@@ -1069,13 +1069,14 @@ section h2 {
 }
 
 .pitch-activity {
-  height: 99vh; /* Use 99% of viewport height */
-  margin-top: 0;
+  height: 90vh !important; /* Use 99% of viewport height */
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
   padding: 1rem;
   animation: fadeIn 0.5s ease;
   position: relative;
-  background-position: top left;
-  background-size: 100% auto;
+  background-position: top left !important;
+  background-size: 100% auto !important;
   background-repeat: no-repeat;
   overflow-y: auto; /* Allow scrolling if content exceeds height */
 }

@@ -285,9 +285,9 @@
             </div>
           </div>
         </div>
-        
+                
         <!-- Matching Mode -->
-        <div x-show="mode === '1_2_pitches_match-sounds'" class="pitch-activity" style="background-image: url('./images/backgrounds/pitches_action1.png'); background-size: 100% auto; background-position: top left;">
+        <div x-show="mode === '1_2_pitches_match-sounds'" class="pitch-activity" style="background-image: url('./images/backgrounds/pitches_action1.png'); background-size: cover; background-position: top left;">
           <div class="mode-header">
             <button class="back-to-main" onclick="document.dispatchEvent(new CustomEvent('lalumo:go-home'))" aria-label="Back to main menu">
               <span style="font-size: 24px;">🏠</span>
@@ -295,45 +295,46 @@
           </div>
           
           <!-- Play button - only show when not in game mode -->
-          <button x-show="!gameMode" class="circular-play-button" @click="playCurrentMelody()" aria-label="Start Game">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M8 5v14l11-7z"/>
-            </svg>
+          <button x-show="!gameMode" class="circular-play-button" 
+          style="height: calc(32vw + (100vw - 360px) * 0.3);width:100%;"
+          @click="playCurrentMelody()" aria-label="Start Game">
+            <div class="play-icon">
+            </div>
           </button>
           
           <!-- Game mode play button - only show when in game mode -->
-          <button x-show="gameMode" class="circular-play-button" @click="playCurrentMelody()" aria-label="Play Melody">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M8 5v14l11-7z"/>
-            </svg>
+          <button x-show="gameMode" class="circular-play-button" @click="playCurrentMelody()" aria-label="Play Melody"
+          style="height: calc(32vw + (100vw - 360px) * 0.3);width:100%;">
+            <div class="play-icon">
+            </div>
           </button>
           
           <div class="pitch-grid">
             <!-- Always show up pattern -->
             <div class="pitch-card" @click="checkMatch('up')" @mousedown="startLongPress('up')" @mouseup="cancelLongPress()" @mouseleave="cancelLongPress()">
               <div class="pitch-icon up">
-                <img src="/images/rocket.png" alt="Rocket going up" />
+                <img src="/images/1x1.gif" alt="Rocket going up" />
               </div>
             </div>
             
             <!-- Always show down pattern -->
             <div class="pitch-card" @click="checkMatch('down')" @mousedown="startLongPress('down')" @mouseup="cancelLongPress()" @mouseleave="cancelLongPress()">
               <div class="pitch-icon down">
-                <img src="/images/slide.png" alt="Slide going down" />
+                <img src="/images/1x1.gif" alt="Slide going down" />
               </div>
             </div>
             
             <!-- Show wave pattern only if unlocked -->
             <div x-show="unlockedPatterns.includes('wave')" class="pitch-card" @click="checkMatch('wave')" @mousedown="startLongPress('wave')" @mouseup="cancelLongPress()" @mouseleave="cancelLongPress()">
               <div class="pitch-icon wave">
-                <img src="/images/waves.png" alt="Wave pattern" />
+                <img src="/images/1x1.gif" alt="Wave pattern" />
               </div>
             </div>
             
             <!-- Show jump pattern only if unlocked -->
             <div x-show="unlockedPatterns.includes('jump')" class="pitch-card" @click="checkMatch('jump')" @mousedown="startLongPress('jump')" @mouseup="cancelLongPress()" @mouseleave="cancelLongPress()">
               <div class="pitch-icon jump">
-                <img src="/images/frog.png" alt="Jumping frog" />
+                <img src="/images/1x1.gif" alt="Jumping frog" />
               </div>
             </div>
           </div>
