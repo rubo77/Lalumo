@@ -53,6 +53,9 @@ Listen to melodies:
 
 - in "chords" use the same piano as in "pitches" export the piano functionality to a shared component and reuse it
 
+- wenn man in einer activity richtig oder falsch gespielt hat, dann soll die aktuelle melodie unterbrochen werden und der kurze sound von match-sounds auch in memory-game abgespielt werden
+
+- die mascot message in match melody soll direkt wenn man das oeffnet kommen und nicht erst, wenn man den play button drückt
 
 # most important
 - each activity must be reachable via a hash-anchor-link. all chapters and activities are included in the sitemap.

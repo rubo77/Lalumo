@@ -63,6 +63,24 @@ export function pitches() {
         const savedProgress = localStorage.getItem('lalumo_progress');
         if (savedProgress) {
           this.progress = JSON.parse(savedProgress);
+          
+          // Ensure all activity progress fields exist with the new ID format
+          if (!this.progress['1_1_pitches_listen']) this.progress['1_1_pitches_listen'] = 0;
+          if (!this.progress['1_2_pitches_match-sounds']) this.progress['1_2_pitches_match-sounds'] = 0;
+          if (!this.progress['1_3_pitches_draw-melody']) this.progress['1_3_pitches_draw-melody'] = 0;
+          if (!this.progress['1_4_pitches_guess-next-note']) this.progress['1_4_pitches_guess-next-note'] = 0;
+          if (!this.progress['1_5_pitches_memory-game']) this.progress['1_5_pitches_memory-game'] = 0;
+          
+          console.log('Loaded progress data with new IDs:', this.progress);
+        } else {
+          // Initialize with empty progress object using new IDs
+          this.progress = {
+            '1_1_pitches_listen': 0,
+            '1_2_pitches_match-sounds': 0,
+            '1_3_pitches_draw-melody': 0,
+            '1_4_pitches_guess-next-note': 0,
+            '1_5_pitches_memory-game': 0
+          };
         }
         
         // Load progressive difficulty data
@@ -293,16 +311,16 @@ export function pitches() {
         console.log('Showing main selection screen with clickable image');
       } 
       // New ID format handlers
-      else if (newMode === '1_1_pitches_listen' || newMode === 'listen') {
+      else if (newMode === '1_1_pitches_listen') {
         // For listen mode, just show instructions
-      } else if (newMode === '1_2_pitches_match-sounds' || newMode === 'match') {
+      } else if (newMode === '1_2_pitches_match-sounds') {
         this.gameMode = false; // Start in free play mode
         this.setupMatchingMode(false); // Setup without playing sound
-      } else if (newMode === '1_3_pitches_draw-melody' || newMode === 'draw') {
+      } else if (newMode === '1_3_pitches_draw-melody') {
         this.setupDrawingMode(); // Drawing doesn't play sound by default
-      } else if (newMode === '1_4_pitches_guess-next-note' || newMode === 'guess') {
+      } else if (newMode === '1_4_pitches_guess-next-note') {
         this.setupGuessingMode(false); // Setup without playing sound
-      } else if (newMode === '1_5_pitches_memory-game' || newMode === 'memory') {
+      } else if (newMode === '1_5_pitches_memory-game') {
         this.gameMode = false; // Start in free play mode
         this.memoryFreePlay = true; // Enable free play
         this.setupMemoryMode(false); // Setup without playing sound
@@ -323,11 +341,12 @@ export function pitches() {
       const language = localStorage.getItem('lalumo_language') || 'english';
       
       // Provide context-specific instructions based on current mode
+      // TODO: move to strings.xml
       if (this.mode === 'listen') {
         message = language === 'german' ? 
           'Klicke auf jedes Bild, um zu hören, wie diese Melodie klingt!' : 
           'Click on each picture to hear what that melody sounds like!';
-      } else if (this.mode === 'match') {
+      } else if (this.mode === '1_2_pitches_match-sounds') {
         if (!this.gameMode) {
           message = language === 'german' ? 
             'Klicke auf die Bilder zum Üben. Drücke ▶️ für das Spiel!' : 
@@ -337,7 +356,7 @@ export function pitches() {
             'Höre zu und wähle das richtige Bild!' : 
             'Listen and choose the right picture!';
         }
-      } else if (this.mode === 'memory') {
+      } else if (this.mode === '1_5_pitches_memory-game') {
         if (this.memoryFreePlay) {
           message = language === 'german' ? 
             'Drücke frei auf die Tasten zum Üben. Drücke ▶️ für das Spiel!' : 
@@ -526,8 +545,18 @@ export function pitches() {
      * Update the progress garden based on user's progress
      */
     updateProgressGarden() {
+      // Get progress values from the new activity IDs
+      const progressValues = [
+        this.progress['1_1_pitches_listen'] || 0,
+        this.progress['1_2_pitches_match-sounds'] || 0,
+        this.progress['1_3_pitches_draw-melody'] || 0,
+        this.progress['1_4_pitches_guess-next-note'] || 0,
+        this.progress['1_5_pitches_memory-game'] || 0
+      ];
+      
       // Calculate total progress (0-100%)
-      const totalProgress = Object.values(this.progress).reduce((sum, val) => sum + val, 0) / 5;
+      const totalProgress = progressValues.reduce((sum, val) => sum + val, 0) / 5;
+      console.log('Total progress updated:', totalProgress, 'Progress values:', progressValues);
       
       // Store progress in localStorage for persistence
       localStorage.setItem('lalumo_progress', JSON.stringify(this.progress));
@@ -974,7 +1003,7 @@ export function pitches() {
     },
     
     /**
-     * Setup for the matching mode
+     * Setup for the matching mode ('1_2_pitches_match-sounds')
      */
     setupMatchingMode(playSound = false, generateNew = true) {
       // If not in game mode, allow free exploration of all patterns
@@ -1069,8 +1098,13 @@ export function pitches() {
           }
         }, 2500);
         
-        // Update progress if correct
-        this.progress.match += 1;
+        // Update progress with new ID format only
+        if (!this.progress['1_2_pitches_match-sounds']) {
+          this.progress['1_2_pitches_match-sounds'] = 0;
+        }
+        this.progress['1_2_pitches_match-sounds'] += 1;
+        
+        console.log('Updated match progress:', this.progress['1_2_pitches_match-sounds']);
         
         // Save progress to localStorage
         localStorage.setItem('lalumo_progress', JSON.stringify(this.progress));
@@ -1863,7 +1897,17 @@ export function pitches() {
         
         // Increment and save memory game progress
         this.memorySuccessCount = (this.memorySuccessCount || 0) + 1;
-        this.progress.memory = Math.max(this.memorySuccessCount, this.progress.memory || 0);
+        
+        // Update progress with new activity ID only
+        if (!this.progress['1_5_pitches_memory-game']) {
+          this.progress['1_5_pitches_memory-game'] = 0;
+        }
+        
+        // Store the maximum success count as the progress value
+        this.progress['1_5_pitches_memory-game'] = Math.max(this.memorySuccessCount, this.progress['1_5_pitches_memory-game'] || 0);
+        
+        console.log('Updated memory progress:', this.progress['1_5_pitches_memory-game']);
+        
         localStorage.setItem('lalumo_memory_level', this.memorySuccessCount.toString());
         localStorage.setItem('lalumo_progress', JSON.stringify(this.progress));
       } else {
@@ -1900,15 +1944,16 @@ export function pitches() {
      * This is called by the shared Play button in the UI
      */
     playCurrentMelody() {
-      if (this.mode === 'match') {
+      // activity IDs
+      if (this.mode === '1_2_pitches_match-sounds') {
         if (!this.gameMode) {
           this.startMatchGame(); // Start game mode from free play
         } else {
           this.setupMatchingMode(true, false); // Replay current melody in game mode
         }
-      } else if (this.mode === 'guess') {
+      } else if (this.mode === '1_4_pitches_guess-next-note') {
         this.setupGuessingMode(true, false);
-      } else if (this.mode === 'memory') {
+      } else if (this.mode === '1_5_pitches_memory-game') {
         if (!this.gameMode) {
           this.startMemoryGame(); // Start game mode from free play
         } else {
