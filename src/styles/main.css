@@ -1069,8 +1069,15 @@ section h2 {
 }
 
 .pitch-activity {
-  margin-top: 1.5rem;
+  height: 99vh; /* Use 99% of viewport height */
+  margin-top: 0;
+  padding: 1rem;
   animation: fadeIn 0.5s ease;
+  position: relative;
+  background-position: top left;
+  background-size: 100% auto;
+  background-repeat: no-repeat;
+  overflow-y: auto; /* Allow scrolling if content exceeds height */
 }
 
 .pitch-activity h3 {
@@ -1116,6 +1123,27 @@ section h2 {
   cursor: pointer;
   transition: all 0.2s ease;
   box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Progress Display Box */
+.progress-display {
+  position: absolute;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(255, 255, 255, 0.85);
+  border-radius: 1rem;
+  padding: 1rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  text-align: center;
+  width: 90%;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.progress-display p {
+  margin: 0.25rem 0;
+  font-weight: 500;
 }
 
 /* New circular play button */

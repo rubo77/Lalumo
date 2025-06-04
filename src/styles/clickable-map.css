@@ -39,13 +39,13 @@
 .pitch-activity {
   background-color: white;
   border-radius: 20px;
-  margin: 15% auto 5% auto;
+  margin: 3% auto 5% auto;
   padding: 20px;
   position: relative;
   z-index: 10;
   width: 85%;
   max-width: 800px;
-  height: auto;
+  height: 799px;
   min-height: 60vh;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }

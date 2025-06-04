@@ -60,5 +60,3 @@ Listen to melodies:
 # most important
 - each activity must be reachable via a hash-anchor-link. all chapters and activities are included in the sitemap.
 also, if you select another activity in the nav, the hash tag should change, so you can bookmark them
-
-- use /images/backgrounds/pitches_action1.png as background for the pitches action 1_2_pitches_match-sounds
