@@ -55,7 +55,7 @@ Listen to melodies:
 
 
 # most important
-- first refactor the whole app, so the ids for each activity are named <chapter-id>_<chapter-name>_<activity-id>_<activity-name>
-I added numbers in the concept, use those numbers as ids
-- each activity must be reachable via a hash-anchor-link. and all chapters and activities should be included in the sitemap.
+- each activity must be reachable via a hash-anchor-link. all chapters and activities are included in the sitemap.
 also, if you select another activity in the nav, the hash tag should change, so you can bookmark them
+
+- use /images/backgrounds/pitches_action1.png as background for the pitches action 1_2_pitches_match-sounds
