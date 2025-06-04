@@ -219,6 +219,11 @@ export function chords() {
       this.mode = mode;
       this.resetActivity();
       
+      // Update Alpine store
+      if (window.Alpine?.store) {
+        window.Alpine.store('chordMode', mode);
+      }
+      
       // Import debug utils
       import('../utils/debug').then(({ debugLog }) => {
         debugLog('CHORDS', `Switched to ${mode} mode`);

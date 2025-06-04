@@ -14,6 +14,23 @@ The app playfully teaches preschool children a basic understanding of music – 
 - Supports early musical education and emotional development
 ## 2. Chapter Structure of the App (Learning Areas)
 
+- Pitches Kapitel (1_pitches):
+
+ - disabled: Listen to Melodies: (1_1_pitches_listen)
+ - Match Sounds: (1_2_pitches_match-sounds)
+ - Draw a Melody: (1_3_pitches_draw-melody)
+ - disabled: Guess Next Note: (1_4_pitches_guess-next-note)
+ - Memory Game: (1_5_pitches_memory-game)
+
+- disabled: Chords Kapitel (2_chords):
+
+ - Chord Color Matching: (2_1_chords_color-matching)
+ - Mood Landscapes: (2_2_chords_mood-landscapes)
+ - Chord Building: (2_3_chords_chord-building)
+ - Missing Note: (2_4_chords_missing-note)
+ - Character Matching: (2_5_chords_characters)
+ - Harmony Gardens: (2_6_chords_harmony-gardens)
+
 ### 1. Pitches & Melodies
 
 Tones going up, down, waves, jumps: Children recognize tone movements and assign them to images (e.g., a rocket for ascending tones).
@@ -34,10 +51,8 @@ Tones going up, down, waves, jumps: Children recognize tone movements and assign
   Children can “draw” a melody by dragging their finger or mouse, creating a visual curve. The app plays back a melody that follows the drawn curve, reinforcing the connection between visual movement and pitch. the progress is saved.
 [x] **1.3. "Memory Game":**
   Simple “repeat the melody” exercises: the app plays a short melody, and the child tries to reproduce it by tapping virtual keys or buttons. Visual aids (like colored steps or animated animals) help guide the sequence. the progress is saved. when the child has repeated the melody correctly 3 times, the melody is one note longer, ...
-[ ] **"Guess the Next Note":**
+[ ] **"1.4. Guess the Next Note":**
   The app plays a sequence and pauses at a point. Children are given a choice (e.g., up or down) to guess what comes next, with immediate playful feedback.
-[ ] **Visual Feedback:**
-  All pitch actions are accompanied by animated helpers (e.g., a bird flying up, a submarine diving down), making abstract pitch concepts tangible and memorable.
 
 
 ### 2. Feeling Chords

@@ -89,42 +89,42 @@
         <template x-if="active === 'pitches'">
           <div class="menu-activities">
             <button 
-              @click="$dispatch('set-pitch-mode', 'listen'); window.innerWidth < 1024 ? menuOpen = false : null"
+              @click="$dispatch('set-pitch-mode', '1_1_pitches_listen'); window.innerWidth < 1024 ? menuOpen = false : null"
               x-data="{ isActive: false }"
-              x-init="$watch('$store.pitchMode', value => isActive = value === 'listen')"
+              x-init="$watch('$store.pitchMode', value => isActive = value === '1_1_pitches_listen')"
               :class="{ 'active': isActive }"
-              style="display: none;"
+              style="display: auto;"
             >
               🔊 <span x-text="$store.strings?.listen_to_melody || 'Listen to Melodies'"></span>
             </button>
             <button 
-              @click="$dispatch('set-pitch-mode', 'match'); window.innerWidth < 1024 ? menuOpen = false : null"
+              @click="$dispatch('set-pitch-mode', '1_2_pitches_match-sounds'); window.innerWidth < 1024 ? menuOpen = false : null"
               x-data="{ isActive: false }"
-              x-init="$watch('$store.pitchMode', value => isActive = value === 'match')"
+              x-init="$watch('$store.pitchMode', value => isActive = value === '1_2_pitches_match-sounds')"
               :class="{ 'active': isActive }"
             >
             🎵 <span x-text="$store.strings?.match_sounds || 'Match Sounds'"></span>
             </button>
             <button 
-              @click="$dispatch('set-pitch-mode', 'draw'); window.innerWidth < 1024 ? menuOpen = false : null"
+              @click="$dispatch('set-pitch-mode', '1_3_pitches_draw-melody'); window.innerWidth < 1024 ? menuOpen = false : null"
               x-data="{ isActive: false }"
-              x-init="$watch('$store.pitchMode', value => isActive = value === 'draw')"
+              x-init="$watch('$store.pitchMode', value => isActive = value === '1_3_pitches_draw-melody')"
               :class="{ 'active': isActive }"
             >
               ✏️ <span x-text="$store.strings?.draw_melody || 'Draw a Melody'"></span>
             </button>
             <button 
-              @click="$dispatch('set-pitch-mode', 'guess'); window.innerWidth < 1024 ? menuOpen = false : null"
+              @click="$dispatch('set-pitch-mode', '1_4_pitches_guess-next-note'); window.innerWidth < 1024 ? menuOpen = false : null"
               x-data="{ isActive: false }"
-              x-init="$watch('$store.pitchMode', value => isActive = value === 'guess')"
+              x-init="$watch('$store.pitchMode', value => isActive = value === '1_4_pitches_guess-next-note')"
               :class="{ 'active': isActive }"
               style="display: none;">
               👉 <span x-text="$store.strings?.guess_next_note || 'Guess Next Note'"></span>
             </button>
             <button 
-              @click="$dispatch('set-pitch-mode', 'memory'); window.innerWidth < 1024 ? menuOpen = false : null"
+              @click="$dispatch('set-pitch-mode', '1_5_pitches_memory-game'); window.innerWidth < 1024 ? menuOpen = false : null"
               x-data="{ isActive: false }"
-              x-init="$watch('$store.pitchMode', value => isActive = value === 'memory')"
+              x-init="$watch('$store.pitchMode', value => isActive = value === '1_5_pitches_memory-game')"
               :class="{ 'active': isActive }"
             >
             🎹 <span x-text="$store.strings?.memory_game || 'Memory Game'"></span>
@@ -136,49 +136,49 @@
         <template x-if="active === 'chords'">
           <div class="menu-activities">
             <button 
-              @click="$dispatch('set-chord-mode', 'color-matching'); window.innerWidth < 1024 ? menuOpen = false : null"
+              @click="$dispatch('set-chord-mode', '2_1_chords_color-matching'); window.innerWidth < 1024 ? menuOpen = false : null"
               x-data="{ isActive: false }"
-              x-init="$watch('$store.chordMode', value => isActive = value === 'color-matching')"
+              x-init="$watch('$store.chordMode', value => isActive = value === '2_1_chords_color-matching')"
               :class="{ 'active': isActive }"
             >
               🌈 <span x-text="$store.strings?.chord_color_matching || 'Color Matching'"></span>
             </button>
             <button 
-              @click="$dispatch('set-chord-mode', 'mood-landscapes'); window.innerWidth < 1024 ? menuOpen = false : null"
+              @click="$dispatch('set-chord-mode', '2_2_chords_mood-landscapes'); window.innerWidth < 1024 ? menuOpen = false : null"
               x-data="{ isActive: false }"
-              x-init="$watch('$store.chordMode', value => isActive = value === 'mood-landscapes')"
+              x-init="$watch('$store.chordMode', value => isActive = value === '2_2_chords_mood-landscapes')"
               :class="{ 'active': isActive }"
             >
               🏞️ <span x-text="$store.strings?.mood_landscapes || 'Mood Landscapes'"></span>
             </button>
             <button 
-              @click="$dispatch('set-chord-mode', 'chord-building'); window.innerWidth < 1024 ? menuOpen = false : null"
+              @click="$dispatch('set-chord-mode', '2_3_chords_chord-building'); window.innerWidth < 1024 ? menuOpen = false : null"
               x-data="{ isActive: false }"
-              x-init="$watch('$store.chordMode', value => isActive = value === 'chord-building')"
+              x-init="$watch('$store.chordMode', value => isActive = value === '2_3_chords_chord-building')"
               :class="{ 'active': isActive }"
             >
               🧱 <span x-text="$store.strings?.chord_building || 'Chord Building'"></span>
             </button>
             <button 
-              @click="$dispatch('set-chord-mode', 'missing-note'); window.innerWidth < 1024 ? menuOpen = false : null"
+              @click="$dispatch('set-chord-mode', '2_4_chords_missing-note'); window.innerWidth < 1024 ? menuOpen = false : null"
               x-data="{ isActive: false }"
-              x-init="$watch('$store.chordMode', value => isActive = value === 'missing-note')"
+              x-init="$watch('$store.chordMode', value => isActive = value === '2_4_chords_missing-note')"
               :class="{ 'active': isActive }"
             >
               🎼 <span x-text="$store.strings?.missing_note || 'Missing Note'"></span>
             </button>
             <button 
-              @click="$dispatch('set-chord-mode', 'character-matching'); window.innerWidth < 1024 ? menuOpen = false : null"
+              @click="$dispatch('set-chord-mode', '2_5_chords_characters'); window.innerWidth < 1024 ? menuOpen = false : null"
               x-data="{ isActive: false }"
-              x-init="$watch('$store.chordMode', value => isActive = value === 'character-matching')"
+              x-init="$watch('$store.chordMode', value => isActive = value === '2_5_chords_characters')"
               :class="{ 'active': isActive }"
             >
               🎭 <span x-text="$store.strings?.chord_characters || 'Character Matching'"></span>
             </button>
             <button 
-              @click="$dispatch('set-chord-mode', 'harmony-gardens'); window.innerWidth < 1024 ? menuOpen = false : null"
+              @click="$dispatch('set-chord-mode', '2_6_chords_harmony-gardens'); window.innerWidth < 1024 ? menuOpen = false : null"
               x-data="{ isActive: false }"
-              x-init="$watch('$store.chordMode', value => isActive = value === 'harmony-gardens')"
+              x-init="$watch('$store.chordMode', value => isActive = value === '2_6_chords_harmony-gardens')"
               :class="{ 'active': isActive }"
             >
               🌸 <span x-text="$store.strings?.harmony_gardens || 'Harmony Gardens'"></span>
@@ -230,21 +230,21 @@
         <!-- Main landing with clickable image -->
         <div x-show="!mode || mode === 'main'" class="pitch-landing">
           <div class="image-map-container">
-            <div class="clickable-area match-area" @click="setMode('match')" aria-label="Match Mode">
+            <div class="clickable-area match-area" @click="setMode('1_2_pitches_match-sounds')" aria-label="Match Mode">
               <span class="area-label" x-text="$store.strings?.match_sounds || 'Match Sounds'"></span>
             </div>
-            <div class="clickable-area memory-area" @click="setMode('memory')" aria-label="Memory Mode">
-              <span class="area-label" x-text="$store.strings?.memory_game || 'Memory Game'"></span>
-            </div>
-            <div class="clickable-area draw-area" @click="setMode('draw')" aria-label="Draw Mode">
+            <div class="clickable-area draw-area" @click="setMode('1_3_pitches_draw-melody')" aria-label="Draw Mode">
               <span class="area-label" x-text="$store.strings?.draw_melody || 'Draw a Melody'"></span>
+            </div>
+            <div class="clickable-area memory-area" @click="setMode('1_5_pitches_memory-game')" aria-label="Memory Mode">
+              <span class="area-label" x-text="$store.strings?.memory_game || 'Memory Game'"></span>
             </div>
           </div>
 
         </div>
         
         <!-- Listening Mode -->
-        <div x-show="mode === 'listen'" class="pitch-activity">
+        <div x-show="mode === '1_1_pitches_listen'" class="pitch-activity">
           <div class="mode-header">
             <button class="back-to-main" onclick="document.dispatchEvent(new CustomEvent('lalumo:go-home'))" aria-label="Back to main menu">
               <span style="font-size: 24px;">🏠</span>
@@ -287,7 +287,7 @@
         </div>
         
         <!-- Matching Mode -->
-        <div x-show="mode === 'match'" class="pitch-activity">
+        <div x-show="mode === '1_2_pitches_match-sounds'" class="pitch-activity">
           <div class="mode-header">
             <button class="back-to-main" onclick="document.dispatchEvent(new CustomEvent('lalumo:go-home'))" aria-label="Back to main menu">
               <span style="font-size: 24px;">🏠</span>
@@ -350,7 +350,7 @@
         </div>
         
         <!-- Drawing Mode -->
-        <div x-show="mode === 'draw'" class="pitch-activity">
+        <div x-show="mode === '1_3_pitches_draw-melody'" class="pitch-activity">
           <div class="mode-header">
             <button class="back-to-main" onclick="document.dispatchEvent(new CustomEvent('lalumo:go-home'))" aria-label="Back to main menu">
               <span style="font-size: 24px;">🏠</span>
@@ -373,7 +373,7 @@
         </div>
         
         <!-- Guessing Mode -->
-        <div x-show="mode === 'guess'" class="pitch-activity">
+        <div x-show="mode === '1_4_pitches_guess-next-note'" class="pitch-activity">
           <div class="mode-header">
             <button class="back-to-main" onclick="document.dispatchEvent(new CustomEvent('lalumo:go-home'))" aria-label="Back to main menu">
               <span style="font-size: 24px;">🏠</span>
@@ -399,7 +399,7 @@
         </div>
         
         <!-- Memory Mode -->
-        <div x-show="mode === 'memory'" class="pitch-activity">
+        <div x-show="mode === '1_5_pitches_memory-game'" class="pitch-activity">
           <div class="mode-header">
             <button class="back-to-main" onclick="document.dispatchEvent(new CustomEvent('lalumo:go-home'))" aria-label="Back to main menu">
               <span style="font-size: 24px;">🏠</span>
@@ -495,7 +495,7 @@
         </div>
         
         <!-- Color Matching Activity -->
-        <div x-show="mode === 'color-matching'" class="chord-activity">
+        <div x-show="mode === '2_1_chords_color-matching'" class="chord-activity">
           <div class="mode-header">
             <button class="back-to-main" @click="setMode('main')" aria-label="Back to main menu">
               <span style="font-size: 24px;">🏠</span>
@@ -560,7 +560,7 @@
         </div>
         
         <!-- Mood Landscapes Activity -->
-        <div x-show="mode === 'mood-landscapes'" class="chord-activity">
+        <div x-show="mode === '2_2_chords_mood-landscapes'" class="chord-activity">
           <div class="mode-header">
             <button class="back-to-main" @click="setMode('main')" aria-label="Back to main menu">
               <span style="font-size: 24px;">🏠</span>
@@ -606,7 +606,7 @@
         </div>
         
         <!-- Chord Building Activity -->
-        <div x-show="mode === 'chord-building'" class="chord-activity">
+        <div x-show="mode === '2_3_chords_chord-building'" class="chord-activity">
           <div class="mode-header">
             <button class="back-to-main" @click="setMode('main')" aria-label="Back to main menu">
               <span style="font-size: 24px;">🏠</span>
@@ -638,7 +638,7 @@
         </div>
         
         <!-- Missing Note Activity -->
-        <div x-show="mode === 'missing-note'" class="chord-activity">
+        <div x-show="mode === '2_4_chords_missing-note'" class="chord-activity">
           <div class="mode-header">
             <button class="back-to-main" @click="setMode('main')" aria-label="Back to main menu">
               <span style="font-size: 24px;">🏠</span>
@@ -673,7 +673,7 @@
         </div>
         
         <!-- Character Matching Activity -->
-        <div x-show="mode === 'character-matching'" class="chord-activity">
+        <div x-show="mode === '2_5_chords_characters'" class="chord-activity">
           <div class="mode-header">
             <button class="back-to-main" @click="setMode('main')" aria-label="Back to main menu">
               <span style="font-size: 24px;">🏠</span>
@@ -731,7 +731,7 @@
         </div>
         
         <!-- Harmony Gardens Activity -->
-        <div x-show="mode === 'harmony-gardens'" class="chord-activity">
+        <div x-show="mode === '2_6_chords_harmony-gardens'" class="chord-activity">
           <div class="mode-header">
             <button class="back-to-main" @click="setMode('main')" aria-label="Back to main menu">
               <span style="font-size: 24px;">🏠</span>

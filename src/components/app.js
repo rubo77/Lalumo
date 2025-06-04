@@ -20,6 +20,63 @@ export function app() {
     preferredLanguage: 'english',
     
     /**
+     * Mapping of chapters and activities to new ID format
+     * Format: <chapter-id>_<chapter-name>_<activity-id>_<activity-name>
+     */
+    chapterActivityMap: {
+      '1_pitches': {
+        name: 'Pitches & Melodies',
+        activities: {
+          '1_1_pitches_listen': 'Listen to Melodies',
+          '1_2_pitches_match-sounds': 'Match Sounds',
+          '1_3_pitches_draw-melody': 'Draw a Melody',
+          '1_4_pitches_guess-next-note': 'Guess Next Note',
+          '1_5_pitches_memory-game': 'Memory Game'
+        },
+        // Mapping von alten zu neuen IDs
+        legacyMapping: {
+          'listen': '1_1_pitches_listen',
+          'match': '1_2_pitches_match-sounds',
+          'draw': '1_3_pitches_draw-melody',
+          'guess': '1_4_pitches_guess-next-note',
+          'memory': '1_5_pitches_memory-game'
+        }
+      },
+      '2_chords': {
+        name: 'Feeling Chords',
+        activities: {
+          '2_1_chords_color-matching': 'Chord Color Matching',
+          '2_2_chords_mood-landscapes': 'Mood Landscapes',
+          '2_3_chords_chord-building': 'Chord Building',
+          '2_4_chords_missing-note': 'Missing Note',
+          '2_5_chords_characters': 'Chord Characters',
+          '2_6_chords_harmony-gardens': 'Harmony Gardens'
+        },
+        // Mapping von alten zu neuen IDs
+        legacyMapping: {
+          'color-matching': '2_1_chords_color-matching',
+          'mood-landscapes': '2_2_chords_mood-landscapes',
+          'chord-building': '2_3_chords_chord-building',
+          'missing-note': '2_4_chords_missing-note',
+          'character-matching': '2_5_chords_characters',
+          'harmony-gardens': '2_6_chords_harmony-gardens'
+        }
+      },
+      '3_timbres': {
+        name: 'Discovering Timbres',
+        activities: {
+          // Aktivitäten für Timbres hier hinzufügen
+        }
+      },
+      '4_rhythms': {
+        name: 'Rhythms',
+        activities: {
+          // Aktivitäten für Rhythms hier hinzufügen
+        }
+      }
+    },
+    
+    /**
      * Load and parse strings from Android XML files
      * This makes the strings.xml files the single source of truth
      */

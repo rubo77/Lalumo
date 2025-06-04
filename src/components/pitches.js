@@ -291,16 +291,18 @@ export function pitches() {
       if (newMode === 'main') {
         // This is the landing page with clickable image, no additional setup needed
         console.log('Showing main selection screen with clickable image');
-      } else if (newMode === 'listen') {
+      } 
+      // New ID format handlers
+      else if (newMode === '1_1_pitches_listen' || newMode === 'listen') {
         // For listen mode, just show instructions
-      } else if (newMode === 'match') {
+      } else if (newMode === '1_2_pitches_match-sounds' || newMode === 'match') {
         this.gameMode = false; // Start in free play mode
         this.setupMatchingMode(false); // Setup without playing sound
-      } else if (newMode === 'draw') {
+      } else if (newMode === '1_3_pitches_draw-melody' || newMode === 'draw') {
         this.setupDrawingMode(); // Drawing doesn't play sound by default
-      } else if (newMode === 'guess') {
+      } else if (newMode === '1_4_pitches_guess-next-note' || newMode === 'guess') {
         this.setupGuessingMode(false); // Setup without playing sound
-      } else if (newMode === 'memory') {
+      } else if (newMode === '1_5_pitches_memory-game' || newMode === 'memory') {
         this.gameMode = false; // Start in free play mode
         this.memoryFreePlay = true; // Enable free play
         this.setupMemoryMode(false); // Setup without playing sound
