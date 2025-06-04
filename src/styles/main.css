@@ -1306,11 +1306,10 @@ section h2 {
 }
 
 .pitch-card.active {
-  transform: scale(1.1);
-  box-shadow: 0 0 20px var(--primary-color);
-  animation: pulse 1.5s infinite alternate;
-  background-color: var(--accent-color);
   transform: scale(1.05);
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.6);
+  animation: pulse 1.5s infinite alternate;
+  background-color: rgba(255, 255, 255, 0.2);
 }
 
 .pitch-card::after {
