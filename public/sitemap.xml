@@ -6,29 +6,25 @@
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
   </url>
-  <!-- The Lalumo app is a single-page application, but we can list logical sections here -->
-  <url>
-    <loc>https://lalumo.z11.de/#pitches</loc>
-    <lastmod>2025-05-27</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://lalumo.z11.de/#impressum</loc>
-    <lastmod>2025-05-27</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.3</priority>
-  </url>
-  <url>
-    <loc>https://lalumo.z11.de/#datenschutz</loc>
-    <lastmod>2025-05-27</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.3</priority>
-  </url>
-  <url>
-    <loc>https://lalumo.z11.de/#credits</loc>
-    <lastmod>2025-05-27</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.3</priority>
-  </url>
+  <!-- Chapters -->
+  <url><loc>https://lalumo.z11.de/#1_pitches</loc><lastmod>2025-05-27</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://lalumo.z11.de/#2_chords</loc><lastmod>2025-05-27</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://lalumo.z11.de/#3_timbres</loc><lastmod>2025-05-27</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://lalumo.z11.de/#4_rhythm</loc><lastmod>2025-05-27</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://lalumo.z11.de/#5_freeplay</loc><lastmod>2025-05-27</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <!-- Pitches Activities -->
+  <url><loc>https://lalumo.z11.de/#1_pitches-1_1_pitches_match-sounds</loc><lastmod>2025-05-27</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://lalumo.z11.de/#1_pitches-1_2_pitches_draw-melody</loc><lastmod>2025-05-27</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://lalumo.z11.de/#1_pitches-1_3_pitches_memory-game</loc><lastmod>2025-05-27</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <!-- Chords Activities -->
+  <url><loc>https://lalumo.z11.de/#2_chords-2_1_chords_color-matching</loc><lastmod>2025-05-27</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://lalumo.z11.de/#2_chords-2_2_chords_mood-landscapes</loc><lastmod>2025-05-27</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://lalumo.z11.de/#2_chords-2_3_chords_chord-building</loc><lastmod>2025-05-27</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://lalumo.z11.de/#2_chords-2_4_chords_missing-note</loc><lastmod>2025-05-27</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://lalumo.z11.de/#2_chords-2_5_chords_characters</loc><lastmod>2025-05-27</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://lalumo.z11.de/#2_chords-2_6_chords_harmony-gardens</loc><lastmod>2025-05-27</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <!-- Legal -->
+  <url><loc>https://lalumo.z11.de/#impressum</loc><lastmod>2025-05-27</lastmod><changefreq>yearly</changefreq><priority>0.3</priority></url>
+  <url><loc>https://lalumo.z11.de/#datenschutz</loc><lastmod>2025-05-27</lastmod><changefreq>yearly</changefreq><priority>0.3</priority></url>
+  <url><loc>https://lalumo.z11.de/#credits</loc><lastmod>2025-05-27</lastmod><changefreq>yearly</changefreq><priority>0.3</priority></url>
 </urlset>

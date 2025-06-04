@@ -28,16 +28,14 @@ Tones going up, down, waves, jumps: Children recognize tone movements and assign
 [x] the available notes should be 3 octaves
 [x] the up and down melodies should start at a random note
 
-[x] **Listening to Pitch Movements:**
-  Children listen to short melodic sequences where tones move upwards, downwards, in waves, or make jumps. Each movement is represented visually (e.g., a rocket for up, a slide for down, waves for undulating patterns, a frog or spring for jumps).
-[x] **Match Sounds to Images:**
-  Kids are shown several images and must select the one that matches the direction or character of the melody they just heard.
-[x] **Draw a Melody:**
-  Children can “draw” a melody by dragging their finger or mouse, creating a visual curve. The app plays back a melody that follows the drawn curve, reinforcing the connection between visual movement and pitch.
-[x] **Guess the Next Note:**
+[x] **1.1. "Match Sounds" to Images and listening to Pitch Movements:**
+  Children listen to short melodic sequences where tones move upwards, downwards, in waves, or make jumps. Each movement is represented visually (a rocket for up, a slide for down, waves for undulating patterns, a frog or spring for jumps). when play is pressed, the child must select the one that matches the direction or character of the melody they just heard. The progress is saved. when the child has selected the correct image 10 times, the next image is unlocked (first waves, then frog).
+[x] **1.2. "Draw a Melody":**
+  Children can “draw” a melody by dragging their finger or mouse, creating a visual curve. The app plays back a melody that follows the drawn curve, reinforcing the connection between visual movement and pitch. the progress is saved.
+[x] **1.3. "Memory Game":**
+  Simple “repeat the melody” exercises: the app plays a short melody, and the child tries to reproduce it by tapping virtual keys or buttons. Visual aids (like colored steps or animated animals) help guide the sequence. the progress is saved. when the child has repeated the melody correctly 3 times, the melody is one note longer, ...
+[ ] **"Guess the Next Note":**
   The app plays a sequence and pauses at a point. Children are given a choice (e.g., up or down) to guess what comes next, with immediate playful feedback.
-[x] **Memory Game:**
-  Simple “repeat the melody” exercises: the app plays a short melody, and the child tries to reproduce it by tapping virtual keys or buttons. Visual aids (like colored steps or animated animals) help guide the sequence.
 [ ] **Visual Feedback:**
   All pitch actions are accompanied by animated helpers (e.g., a bird flying up, a submarine diving down), making abstract pitch concepts tangible and memorable.
 

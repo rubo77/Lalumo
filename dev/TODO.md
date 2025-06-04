@@ -12,8 +12,6 @@ First finish pitches and melodies completely:
 
 - Rules aus concept.md generieren
 
-- each activity must be reachable via a hash-anchor-link. and all chapters and activities should be included in the sitemap
-
 - Add Child-Friendly Guidance
     - Implement recurring character guides throughout chapters
 
@@ -57,11 +55,7 @@ Listen to melodies:
 
 
 # most important
-- zuerst soll man einfach auf die symbole für hoch und runter drücken können und dann wird eine melodie entsprechend abgespielt, jedes mal eine neue zufällige (dies entspricht dem bisherigen "Listen to melodies")
-- wenn man auf den pay button drückt kommt man in den spiel modus (bisheriger "Match Sounds")
- - zuerst nur hoch und runter üben
- - wenn man 10x richtig gespielt hat, dann kommt wellen dazu
- - wenn man 20x richtig gespielt hat, dann kommt zufalls melody dazu (Frosch)
-- ebenso soll "Memory Game" umgebaut werden:
- - zuerst kann man frei auf die Tasten drücken
- - wenn man den play button drückt, dann kommt der spiel modus wie bisher "Memory Game"
+- first refactor the whole app, so the ids for each activity are named <chapter-id>_<chapter-name>_<activity-id>_<activity-name>
+I added numbers in the concept, use those numbers as ids
+- each activity must be reachable via a hash-anchor-link. and all chapters and activities should be included in the sitemap.
+also, if you select another activity in the nav, the hash tag should change, so you can bookmark them

@@ -69,3 +69,6 @@ yarn-error.log*
 /android/build/
 /android/captures/
 /android/local.properties
+/playwright-report/
+/test-results/
+/tests/*png
