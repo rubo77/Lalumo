@@ -298,17 +298,13 @@
           <button x-show="!gameMode" class="circular-play-button" 
           style="height: calc(32vw + (100vw - 360px) * 0.3);width:100%;"
           @click="playCurrentMelody()" aria-label="Start Game">
-            <div class="play-icon">
-            </div>
           </button>
           
           <!-- Game mode play button - only show when in game mode -->
           <button x-show="gameMode" class="circular-play-button" @click="playCurrentMelody()" aria-label="Play Melody"
           style="height: calc(32vw + (100vw - 360px) * 0.3);width:100%;">
-            <div class="play-icon">
-            </div>
           </button>
-          
+
           <div class="pitch-grid">
             <!-- Always show up pattern -->
             <div class="pitch-card" @click="checkMatch('up')" @mousedown="startLongPress('up')" @mouseup="cancelLongPress()" @mouseleave="cancelLongPress()">

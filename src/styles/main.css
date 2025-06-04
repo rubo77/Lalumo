@@ -1155,30 +1155,33 @@ section h2 {
   margin: 1.5rem auto;
   width: 4.5rem;
   height: 4.5rem;
-  background-color: var(--primary-color);
+  background-color: transparent;
   color: white;
   border: none;
   border-radius: 50%;
   cursor: pointer;
   transition: all 0.2s ease;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: none;
 }
 
-.circular-play-button svg {
-  width: 2.5rem;
-  height: 2.5rem;
-  margin-left: 0.25rem; /* Slight offset to visually center the triangle */
+.play-icon {
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 15px 0 15px 30px;
+  border-color: transparent transparent transparent rgba(255, 255, 255, 0.9);
+  margin-left: 10px;
 }
 
 .circular-play-button:hover {
   transform: scale(1.05);
-  background-color: var(--accent-color);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
+  background-color: rgba(255, 255, 255, 0.1);
+  box-shadow: none;
 }
 
 .circular-play-button:active {
   transform: scale(0.98);
-  background-color: #2980b9;
+  background-color: rgba(255, 255, 255, 0.15);
 }
 
 /* Animationen für die Pattern-Elemente */
