@@ -1350,7 +1350,6 @@ export function pitches() {
     
     /**
      * Play a sequence of notes based on the selected pattern
-     * Uses the common playAudioSequence function
      * @param {string} type - Type of pattern ('up', 'down', 'wave', 'jump')
      */
     activity1_2_matchSoundsPlaySequence(type) {
@@ -1390,33 +1389,29 @@ export function pitches() {
       
       // Store the pattern for reference and visualization
       this.currentSequence = pattern;
-      const noteArray = [...pattern]; // Create a copy to be safe
       
       // ALWAYS animate the pattern element for immediate visual feedback
       this.animatePatternElement(type);
       
-      // Use the common audio sequence player with pattern-specific settings
-      return this.playAudioSequence(noteArray, type, {
-        // Transform notes for match-sounds pattern (prefix with pitch_)
-        prepareNote: (note) => `pitch_${note.toLowerCase()}`,
+      // Verwende die bewährte Methode zum Abspielen der Töne
+      const noteArray = [...pattern]; // Kopie erstellen, um die originale Sequence nicht zu verändern
+      
+      // Play notes in sequence
+      this.playNoteSequence(noteArray, 0);
+      
+      // Cleanup after pattern finishes playing
+      const totalDuration = noteArray.length * 750 + 100; // 750ms pro Note + ein wenig extra
+      setTimeout(() => {
+        this.currentAnimation = null;
+        this.currentHighlightedNote = null;
         
-        // Match sounds patterns use quicker note duration (550ms)
-        // This makes the patterns sound more distinct and appropriate for the activity
-        noteDuration: 550,
-        
-        // Handle completion for match-sounds pattern
-        onComplete: () => {
-          this.currentAnimation = null;
-          this.currentHighlightedNote = null;
-          
-          // Remove active class from card
-          if (card) {
-            card.classList.remove('active');
-          }
-          
-          console.log('AUDIO: Pattern animation and playback complete');
+        // Remove active class from card
+        if (card) {
+          card.classList.remove('active');
         }
-      });
+        
+        console.log('AUDIO: Pattern animation and playback complete');
+      }, totalDuration);
     },
     
     /**
