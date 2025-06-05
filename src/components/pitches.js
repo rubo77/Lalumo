@@ -360,7 +360,8 @@ export function pitches() {
       } else if (newMode === '1_3_pitches_draw-melody') {
         this.setupDrawingMode(); // Drawing doesn't play sound by default
       } else if (newMode === '1_4_pitches_does-it-sound-right') {
-        this.setupSoundJudgmentMode(false); // Setup without playing sound
+        // Always generate a melody but don't play it yet (user will press play button)
+        this.setupSoundJudgmentMode(false); // Setup without auto-playing sound
       } else if (newMode === '1_5_pitches_memory-game') {
         this.gameMode = false; // Start in free play mode
         this.memoryFreePlay = true; // Enable free play
@@ -399,8 +400,8 @@ export function pitches() {
         }
       } else if (this.mode === '1_4_pitches_does-it-sound-right') {
         message = language === 'german' ? 
-          'Höre dir die Melodie an. Klingt sie richtig oder falsch?' : 
-          'Listen to the melody. Does it sound right or wrong?';
+          'Hör dir die Melodie an! Klingt sie richtig? Oder ist da ein falscher Ton?' : 
+          'Listen to the melody! Does it sound right? Or is there a wrong note?';
       } else if (this.mode === '1_5_pitches_memory-game') {
         if (this.memoryFreePlay) {
           message = language === 'german' ? 
@@ -914,7 +915,7 @@ export function pitches() {
       // Directly trigger the pattern playback regardless of how many touches
       if (!this.isPlaying) {
         console.log(`TOUCH: Playing ${pattern} from touch handler`);
-        this.playSequence(pattern);
+        this.activity1_2_matchSoundsPlaySequence(pattern);
       }
       
       // Start long press (modified to handle multi-touch better)
@@ -924,7 +925,7 @@ export function pitches() {
     /**
      * Common function to play any audio sequence - core audio playback logic
      * @param {Array} noteArray - Array of notes to play
-     * @param {string} context - Context identifier ('up', 'down', 'wave', 'jump', 'sound-judgment', etc.)
+     * @param {string} context - logmessage Context identifier ('up', 'down', 'wave', 'jump', 'sound-judgment', etc.)
      * @param {Object} options - Optional configuration parameters
      * @param {Function} options.onComplete - Function to call when sequence completes
      * @param {Function} options.prepareNote - Function to transform note before playing (e.g. add 'pitch_' prefix)
@@ -939,8 +940,7 @@ export function pitches() {
       const onComplete = options.onComplete || (() => {});
       const prepareNote = options.prepareNote || (note => note);
       
-      // Set timing based on context (slower for sound-judgment to avoid duplicate detection)
-      const noteDelay = sequenceContext === 'sound-judgment' ? 700 : 600; // ms
+      const noteDelay = 600; // ms
       
       // Set up variables for enhanced Android audio handling
       const isAndroid = /Android/.test(navigator.userAgent);
@@ -1054,7 +1054,7 @@ export function pitches() {
      * Uses the common playAudioSequence function
      * @param {string} type - Type of pattern ('up', 'down', 'wave', 'jump')
      */
-    playSequence(type) {
+    activity1_2_matchSoundsPlaySequence(type) {
       // Enhanced logging for diagnosis
       console.log('AUDIO: Sequence play requested for type:', type);
       
@@ -1180,7 +1180,7 @@ export function pitches() {
       // In free play mode, just play the selected pattern
       if (!this.gameMode) {
         // Just play the selected pattern and provide minimal feedback
-        this.playSequence(selected);
+        this.activity1_2_matchSoundsPlaySequence(selected);
         return;
       }
       

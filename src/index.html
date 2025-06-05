@@ -251,7 +251,7 @@
           </div>
           
           <div class="pitch-grid">
-            <div class="pitch-card" :class="{ 'active': currentAnimation === 'up' }" @click="playSequence('up')" 
+            <div class="pitch-card" :class="{ 'active': currentAnimation === 'up' }" @click="activity1_2_matchSoundsPlaySequence('up')" 
                  @mousedown="$event => startLongPress('up', $event)" @mouseup="cancelLongPress()" @mouseleave="cancelLongPress()"
                  @touchstart="$event => handleTouchStart('up', $event)" @touchend="cancelLongPress()" @touchcancel="cancelLongPress()">
               <div class="pitch-icon up">
@@ -259,7 +259,7 @@
               </div>
             </div>
             
-            <div class="pitch-card" :class="{ 'active': currentAnimation === 'down' }" @click="playSequence('down')" 
+            <div class="pitch-card" :class="{ 'active': currentAnimation === 'down' }" @click="activity1_2_matchSoundsPlaySequence('down')" 
                  @mousedown="$event => startLongPress('down', $event)" @mouseup="cancelLongPress()" @mouseleave="cancelLongPress()"
                  @touchstart="$event => handleTouchStart('down', $event)" @touchend="cancelLongPress()" @touchcancel="cancelLongPress()">
               <div class="pitch-icon down">
@@ -267,7 +267,7 @@
               </div>
             </div>
             
-            <div class="pitch-card" :class="{ 'active': currentAnimation === 'wave' }" @click="playSequence('wave')" 
+            <div class="pitch-card" :class="{ 'active': currentAnimation === 'wave' }" @click="activity1_2_matchSoundsPlaySequence('wave')" 
                  @mousedown="$event => startLongPress('wave', $event)" @mouseup="cancelLongPress()" @mouseleave="cancelLongPress()"
                  @touchstart="$event => handleTouchStart('wave', $event)" @touchend="cancelLongPress()" @touchcancel="cancelLongPress()">
               <div class="pitch-icon wave">
@@ -275,7 +275,7 @@
               </div>
             </div>
             
-            <div class="pitch-card" :class="{ 'active': currentAnimation === 'jump' }" @click="playSequence('jump')" 
+            <div class="pitch-card" :class="{ 'active': currentAnimation === 'jump' }" @click="activity1_2_matchSoundsPlaySequence('jump')" 
                  @mousedown="$event => startLongPress('jump', $event)" @mouseup="cancelLongPress()" @mouseleave="cancelLongPress()"
                  @touchstart="$event => handleTouchStart('jump', $event)" @touchend="cancelLongPress()" @touchcancel="cancelLongPress()">
               <div class="pitch-icon jump">
