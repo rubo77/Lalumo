@@ -72,7 +72,7 @@
   cursor: pointer;
   transition: background-color 0.2s;
   z-index: 2500; /* Highest z-index to appear above absolutely everything */
-  margin-left: calc(38px - 6vw);
+  margin-left: calc(38px - min(58px, 6vw));
   margin-top: -10px;
 }
 
