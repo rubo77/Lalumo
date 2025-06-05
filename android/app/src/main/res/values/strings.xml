@@ -48,11 +48,11 @@
     <string name="does_it_sound_right">Does It Sound Right?</string>
     
     <!-- Success & Error Messages -->
-    <string name="success_message">Great job! That's correct!</string>
+    <string name="success_message">Great job! That\'s correct!</string>
     <string name="error_message">Not quite right. Try again!</string>
-    <string name="next_level_message">You've advanced to the next level!</string>
-    <string name="completion_message">Congratulations! You've completed all levels!</string>
-    <string name="try_again_message">Let's try again!</string>
+    <string name="next_level_message">You\'ve advanced to the next level!</string>
+    <string name="completion_message">Congratulations! You\'ve completed all levels!</string>
+    <string name="try_again_message">Let\'s try again!</string>
     
     <!-- Chords - Main Menu -->
     <string name="chord_color_matching">Chord Color Matching</string>
