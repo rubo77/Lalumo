@@ -2214,26 +2214,56 @@ export function pitches() {
      * Play the memory sequence for the user
      */
     playMemorySequence() {
+      console.log('DEBUG: Starting memory sequence playback');
+      
+      // Zuerst alle vorherigen Sounds stoppen (wichtig für sauberen Reset)
+      this.stopCurrentSound();
+      
       // Play memory sequence with timing
       const playMemory = (notes, index = 0) => {
         if (index >= notes.length) {
           // Reset highlighting when done
-          setTimeout(() => {
+          const highlightTimeoutId = setTimeout(() => {
             this.currentHighlightedNote = null;
+            
+            // Timeout aus Tracking entfernen
+            const timeoutIndex = this.melodyTimeouts.indexOf(highlightTimeoutId);
+            if (timeoutIndex !== -1) {
+              this.melodyTimeouts.splice(timeoutIndex, 1);
+              console.log('DEBUG: Memory highlight timeout completed and removed from tracking');
+            }
           }, 300);
+          
+          // Highlight-Timeout tracken
+          this.melodyTimeouts.push(highlightTimeoutId);
+          console.log(`DEBUG: Added highlight timeout to tracking (${this.melodyTimeouts.length} total)`);
           return;
         }
         
         // Highlight current note
         this.currentHighlightedNote = notes[index];
+        console.log(`DEBUG: Playing memory note ${index+1}/${notes.length}: ${notes[index]}`);
         
         // Play current note
         window.dispatchEvent(new CustomEvent('lalumo:playnote', { 
           detail: { note: `pitch_${notes[index].toLowerCase()}` }
         }));
         
-        // Schedule next note
-        setTimeout(() => playMemory(notes, index + 1), 600);
+        // Schedule next note with tracking
+        const nextNoteTimeoutId = setTimeout(() => {
+          // Timeout aus Tracking entfernen, wenn es ausgeführt wird
+          const timeoutIndex = this.melodyTimeouts.indexOf(nextNoteTimeoutId);
+          if (timeoutIndex !== -1) {
+            this.melodyTimeouts.splice(timeoutIndex, 1);
+            console.log(`DEBUG: Memory sequence timeout executed and removed from tracking (${this.melodyTimeouts.length} remaining)`);
+          }
+          
+          playMemory(notes, index + 1);
+        }, 600);
+        
+        // Timeout im melodyTimeouts-Array tracken
+        this.melodyTimeouts.push(nextNoteTimeoutId);
+        console.log(`DEBUG: Added memory sequence timeout to tracking (${this.melodyTimeouts.length} total)`);
       };
       
       // Start playing
