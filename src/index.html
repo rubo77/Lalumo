@@ -370,30 +370,49 @@
           <button class="clear-button" @click="clearDrawing()" title="Clear & Try Again"><span style="font-size: 24px;">&#9999;&#65039;</span></button>
         </div>
         
-        <!-- Guessing Mode -->
-        <div x-show="mode === '1_4_pitches_does-it-sound-right'" class="pitch-activity">
+        <!-- Does It Sound Right? Activity -->
+        <div x-show="mode === '1_4_pitches_does-it-sound-right'" class="pitch-activity" style="background-image: url('./images/backgrounds/pitches_action1_no_frog.png'); background-size: cover; background-position: top left;">
           <div class="mode-header">
             <button class="back-to-main" @click="setMode('main')" aria-label="Back to main menu">
               <span style="font-size: 24px;">🏠</span>
             </button>
+            <h2 class="activity-title" x-text="$store.strings?.does_it_sound_right || 'Does It Sound Right?'"></h2>
           </div>
-          <button class="circular-play-button" @click="playCurrentMelody()" aria-label="Play Melody">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M8 5v14l11-7z"/>
-            </svg>
-          </button>
 
-          
-          <div class="guess-options">
-            <button class="guess-button up" @click="checkGuess('up')" data-direction="up">
-              <span>Up</span> ⬆️
+          <!-- Play Melody Button -->
+          <div class="melody-play-container">
+            <button class="circular-play-button" @click="playCurrentMelody()" aria-label="Play Melody">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M8 5v14l11-7z"/>
+              </svg>
             </button>
-            <button class="guess-button down" @click="checkGuess('down')" data-direction="down">
-              <span>Down</span> ⬇️
+            <div class="melody-name" x-show="currentMelodyName" x-text="currentMelodyName"></div>
+          </div>
+
+          <!-- Animal choice buttons -->
+          <div class="sound-judgment-options">
+            <button class="animal-button happy" @click="checkSoundJudgment(true)" aria-label="Sounds good">
+              <div class="animal-icon">🐰</div>
+              <span>Sounds Good!</span>
+            </button>
+            <button class="animal-button unhappy" @click="checkSoundJudgment(false)" aria-label="Sounds wrong">
+              <div class="animal-icon">🦊</div>
+              <span>Sounds Wrong!</span>
             </button>
           </div>
           
+          <!-- Feedback message -->
           <div x-show="showFeedback" class="feedback-message" x-text="feedback"></div>
+          
+          <!-- Mascot hint/message -->
+          <div class="mascot-container" x-show="mascotMessage !== ''">
+            <div class="mascot-image">
+              <img src="./images/mascot.png" alt="Mascot" />
+            </div>
+            <div class="mascot-message">
+              <p x-text="mascotMessage"></p>
+            </div>
+          </div>
         </div>
         
         <!-- Memory Mode -->

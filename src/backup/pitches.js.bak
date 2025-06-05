@@ -52,26 +52,6 @@ export function pitches() {
         de: 'Funkel, funkel, kleiner Stern',
         notes: ['C4', 'C4', 'G4', 'G4', 'A4', 'A4', 'G4', 'F4', 'F4', 'E4', 'E4', 'D4', 'D4', 'C4']
       },
-      'mary': {
-        en: 'Mary Had a Little Lamb',
-        de: 'Mary hatte ein kleines Lamm',
-        notes: ['E4', 'D4', 'C4', 'D4', 'E4', 'E4', 'E4', 'D4', 'D4', 'D4', 'E4', 'G4', 'G4']
-      },
-      'jingle': {
-        en: 'Jingle Bells',
-        de: 'Jingle Bells',
-        notes: ['E4', 'E4', 'E4', 'E4', 'E4', 'E4', 'E4', 'G4', 'C4', 'D4', 'E4']
-      },
-      'happy': {
-        en: 'Happy Birthday',
-        de: 'Zum Geburtstag viel Glück',
-        notes: ['C4', 'C4', 'D4', 'C4', 'F4', 'E4', 'C4', 'C4', 'D4', 'C4', 'G4', 'F4']
-      },
-      'row': {
-        en: 'Row, Row, Row Your Boat',
-        de: 'Row, Row, Row Your Boat',
-        notes: ['C4', 'C4', 'C4', 'D4', 'E4', 'E4', 'D4', 'E4', 'F4', 'G4']
-      },
       'ring-around-rosie': {
         en: 'Ring Around the Rosie',
         de: 'Ringel, Ringel, Reihe',
@@ -351,31 +331,10 @@ export function pitches() {
      * Set the current activity mode
      * @param {string} newMode - The mode to switch to
      */
-    setMode(newMode) {
-      console.log('MODSWITCH: Changing mode from', this.mode, 'to', newMode);
-      this.mode = newMode;
-      this.resetState();
-      
-      // Store the current mode in Alpine.js store for menu highlighting
-      if (window.Alpine && window.Alpine.store) {
-        window.Alpine.store('pitchMode', newMode);
-      }
-      
-      // Setup the new mode without playing any sounds
-      if (newMode === 'main') {
-        // This is the landing page with clickable image, no additional setup needed
-        console.log('Showing main selection screen with clickable image');
-      } 
-      // New ID format handlers
-      else if (newMode === '1_1_pitches_listen') {
-        // For listen mode, just show instructions
-      } else if (newMode === '1_2_pitches_match-sounds') {
-        this.gameMode = false; // Start in free play mode
-        this.setupMatchingMode(false); // Setup without playing sound
       } else if (newMode === '1_3_pitches_draw-melody') {
         this.setupDrawingMode(); // Drawing doesn't play sound by default
       } else if (newMode === '1_4_pitches_does-it-sound-right') {
-        this.setupSoundJudgmentMode(false); // Setup without playing sound
+        this.setupGuessingMode(false); // Setup without playing sound
       } else if (newMode === '1_5_pitches_memory-game') {
         this.gameMode = false; // Start in free play mode
         this.memoryFreePlay = true; // Enable free play
@@ -412,10 +371,6 @@ export function pitches() {
             'Höre zu und wähle das richtige Bild!' : 
             'Listen and choose the right picture!';
         }
-      } else if (this.mode === '1_4_pitches_does-it-sound-right') {
-        message = language === 'german' ? 
-          'Höre dir die Melodie an. Klingt sie richtig oder falsch?' : 
-          'Listen to the melody. Does it sound right or wrong?';
       } else if (this.mode === '1_5_pitches_memory-game') {
         if (this.memoryFreePlay) {
           message = language === 'german' ? 
@@ -2020,202 +1975,6 @@ export function pitches() {
           this.playMemorySequence(); // Just replay current sequence in game mode
         }
       }
-    },
-    
-    /**
-     * Setup the "Does It Sound Right?" activity
-     * @param {boolean} playSound - Whether to play a melody right away
-     */
-    setupSoundJudgmentMode(playSound = true) {
-      console.log('Setting up Sound Judgment mode');
-      
-      // Reset state variables specific to this activity
-      this.melodyHasWrongNote = false;
-      this.currentMelodyName = '';
-      this.showFeedback = false;
-      this.feedback = '';
-      this.correctAnswer = null;
-      
-      // Get the current language
-      const language = localStorage.getItem('lalumo_language') === 'german' ? 'de' : 'en';
-      
-      // Show an introductory message
-      const introMessage = language === 'de' 
-        ? 'Hör dir die Melodie an! Klingt sie richtig? Oder ist da ein falscher Ton?'
-        : 'Listen to the melody! Does it sound right? Or is there a wrong note?';
-      
-      this.showMascotMessage(introMessage);
-      
-      // Track activity usage
-      if (!this.progress['1_4_pitches_does-it-sound-right']) {
-        this.progress['1_4_pitches_does-it-sound-right'] = 0;
-      }
-      
-      // Play a melody if requested
-      if (playSound) {
-        this.playMelodyForSoundJudgment(true);
-      }
-    },
-    
-    /**
-     * Play a melody for the "Does It Sound Right?" activity
-     * @param {boolean} generateNew - Whether to generate a new melody
-     */
-    playMelodyForSoundJudgment(generateNew = true) {
-      // Get all melody keys
-      const melodyKeys = Object.keys(this.knownMelodies);
-      if (melodyKeys.length === 0) return;
-      
-      // If we should generate a new melody selection
-      if (generateNew) {
-        // Randomly decide if the melody should have a wrong note (50% chance)
-        this.melodyHasWrongNote = Math.random() < 0.5;
-        
-        // Select a random melody from our collection
-        const randomMelodyKey = melodyKeys[Math.floor(Math.random() * melodyKeys.length)];
-        const selectedMelody = this.knownMelodies[randomMelodyKey];
-        
-        // Get the current language
-        const language = localStorage.getItem('lalumo_language') === 'german' ? 'de' : 'en';
-        
-        // Set the melody name in the appropriate language
-        this.currentMelodyName = selectedMelody[language] || selectedMelody.en;
-        
-        // Create a copy of the melody notes
-        let melodyToPlay = [...selectedMelody.notes];
-        
-        // If the melody should have a wrong note, modify it
-        if (this.melodyHasWrongNote) {
-          // Make a copy of the original melody
-          const modifiedMelody = [...melodyToPlay];
-          
-          // Pick a random position to modify (not the first or last notes)
-          const noteToModifyIndex = Math.floor(Math.random() * (modifiedMelody.length - 2)) + 1;
-          
-          // Extract the note to modify
-          const noteToModify = modifiedMelody[noteToModifyIndex];
-          
-          // Extract the note letter and octave
-          const noteLetter = noteToModify.substring(0, 1);
-          const noteOctave = noteToModify.substring(1);
-          
-          // Possible note letters
-          const possibleNotes = ['C', 'D', 'E', 'F', 'G', 'A', 'B'];
-          
-          // Get the index of the current note
-          const currentNoteIndex = possibleNotes.indexOf(noteLetter);
-          
-          // Generate a wrong note that's different from the original
-          let wrongNoteIndex;
-          do {
-            // Random shift between -2 and +2 semitones, but not 0
-            const shift = Math.floor(Math.random() * 5) - 2;
-            if (shift === 0) continue;
-            wrongNoteIndex = (currentNoteIndex + shift + possibleNotes.length) % possibleNotes.length;
-          } while (wrongNoteIndex === currentNoteIndex);
-          
-          // Create the wrong note
-          const wrongNote = possibleNotes[wrongNoteIndex] + noteOctave;
-          modifiedMelody[noteToModifyIndex] = wrongNote;
-          
-          console.log(`Modified melody at position ${noteToModifyIndex}: ${noteToModify} -> ${wrongNote}`);
-          
-          // Set the modified melody as the current sequence
-          melodyToPlay = modifiedMelody;
-        }
-        
-        // Set the current sequence for playback
-        this.currentSequence = melodyToPlay;
-        
-        // Set the correct answer based on whether the melody has a wrong note
-        this.correctAnswer = this.melodyHasWrongNote;
-        
-        console.log('Generated sound judgment melody:', {
-          name: this.currentMelodyName,
-          hasWrongNote: this.melodyHasWrongNote,
-          sequence: this.currentSequence
-        });
-      }
-      
-      // Hide any previous feedback
-      this.showFeedback = false;
-      
-      // Play the melody
-      this.playMelodySequence(this.currentSequence, 'sound-judgment');
-    },
-    
-    /**
-     * Check the user's answer for the "Does It Sound Right?" activity
-     * @param {boolean} userSaysCorrect - True if the user said the melody sounds correct
-     */
-    checkSoundJudgment(userSaysCorrect) {
-      // Stop any currently playing sound
-      this.stopCurrentSound();
-      
-      // Get the current language
-      const language = localStorage.getItem('lalumo_language') === 'german' ? 'de' : 'en';
-      
-      // Check if the user's answer is correct
-      // User says "Sounds Good" (true) and the melody has no wrong note (!this.melodyHasWrongNote) OR
-      // User says "Sounds Wrong" (false) and the melody has a wrong note (this.melodyHasWrongNote)
-      const isCorrect = (userSaysCorrect && !this.melodyHasWrongNote) || (!userSaysCorrect && this.melodyHasWrongNote);
-      
-      // Prepare feedback messages based on language and result
-      let feedbackMessage;
-      if (isCorrect) {
-        feedbackMessage = language === 'de' ? 'Toll gemacht! Du hast richtig gehört!' : 'Well done! You heard correctly!';
-      } else {
-        if (this.melodyHasWrongNote) {
-          feedbackMessage = language === 'de' ? 'Hör noch mal hin! Da war ein falscher Ton.' : 'Listen again! There was a wrong note.';
-        } else {
-          feedbackMessage = language === 'de' ? 'Die Melodie war richtig. Versuche es noch einmal!' : 'The melody was correct. Try again!';
-        }
-      }
-      
-      // Display feedback message
-      this.feedback = feedbackMessage;
-      this.showFeedback = true;
-      
-      // Play feedback sound
-      window.dispatchEvent(new CustomEvent('lalumo:playnote', { 
-        detail: { note: isCorrect ? 'success' : 'try_again' } 
-      }));
-      
-      // Show visual feedback animation
-      if (isCorrect) {
-        // Create and show rainbow success animation
-        const rainbow = document.createElement('div');
-        rainbow.className = 'rainbow-success';
-        document.body.appendChild(rainbow);
-        
-        // Remove the animation element after it completes
-        setTimeout(() => {
-          if (rainbow && rainbow.parentNode) {
-            rainbow.parentNode.removeChild(rainbow);
-          }
-        }, 2000);
-        
-        // Increment progress counter
-        if (!this.progress['1_4_pitches_does-it-sound-right']) {
-          this.progress['1_4_pitches_does-it-sound-right'] = 0;
-        }
-        this.progress['1_4_pitches_does-it-sound-right']++;
-        
-        // Save progress to localStorage
-        localStorage.setItem('lalumo_progress', JSON.stringify(this.progress));
-        
-        console.log('Updated sound judgment progress:', this.progress['1_4_pitches_does-it-sound-right']);
-      }
-      
-      // After a delay, reset and prepare for the next melody
-      setTimeout(() => {
-        this.showFeedback = false;
-        
-        // If the answer was correct, generate a new melody
-        if (isCorrect) {
-          this.playMelodyForSoundJudgment(true);
-        }
-      }, 2000);
     },
 
     /**
