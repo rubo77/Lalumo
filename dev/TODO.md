@@ -69,18 +69,16 @@ unter chrome auf dem handy android 15:
     - Alle Stile in einer Datei mit klaren Abschnitten
     - Sektionenkommentare zur besseren Navigation
 
-# most important
-- mascot message:
+- mascot message
+    - die einstellungen haben erst nach einem neuladen effekt, ohne bleibt die message bleibt verscwunden
     - [x] die mascot message überall soll direkt wenn man das oeffnet kommen und nicht erst, wenn man den play button drückt
     - seltsam: Wenn man über den pith-view auswahlscreen eine activity oeffnet, dann kommt die mascot mesage auch beim start jeder activity
 
-    - @index.html#L229-238 das overlay muss von oben mittig in den screen rein ganz am rand oben mit nur runden ecken unten.
+- each activity must be reachable via a hash-anchor-link. all chapters and activities are included in the sitemap. also, if you select another activity in the nav, the hash tag should change, so you can bookmark them
 
-    - wenn man das x drückt, dann muss die display none bleiben (in der localstorage speichern) und in den einstellungen einen button "show help messages on top"
-
-    - die mascot message darf in einer activity nur einmal abgespielt werden am anfang, nicht nach jedem erfolg!
-
-    - each activity must be reachable via a hash-anchor-link. all chapters and activities are included in the sitemap. also, if you select another activity in the nav, the hash tag should change, so you can bookmark them
+# most important
+- in match melody müssen die pitch-cards doppelt so hoch sein, wenn noch keine welle und zufall freigeschaltet ist
+- wenn noch kein frosch freigeschaltet ist, dann ist die standardgrösse ok, aber die für down muss nach unten um die selbe höhe herausragen, also über zwei rows gehen
 
 - wenn man in einer activity richtig oder falsch gespielt hat, dann soll die aktuelle melodie unterbrochen werden und der kurze sound von match-sounds auch in memory-game abgespielt werden (wenn man richtig antwortet, soll die melody unterbrochen werden wenn eine neue melody generiert wird)
 

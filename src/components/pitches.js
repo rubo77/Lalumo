@@ -18,6 +18,10 @@ export function pitches() {
     showFeedback: false,
     mascotMessage: '',
     showMascot: false,
+    mascotSettings: {
+      showHelpMessages: true,     // Whether to show help messages
+      seenActivityMessages: {},   // Track which activities have shown the message
+    },
     currentHighlightedNote: null, // For highlighting piano keys during playback
     longPressTimer: null,
     longPressThreshold: 800, // milliseconds for long press
@@ -153,6 +157,18 @@ export function pitches() {
       
       // Fallback: Verzögerte Initialisierung der Web-Sprachsynthese für bessere Kompatibilität
       this.initSpeechSynthesis();
+      
+      // Load mascot message settings from localStorage
+      try {
+        const savedMascotSettings = localStorage.getItem('lalumo_mascot_settings');
+        if (savedMascotSettings) {
+          this.mascotSettings = JSON.parse(savedMascotSettings);
+          console.log('Loaded mascot settings:', this.mascotSettings);
+        }
+      } catch (error) {
+        console.error('Error loading mascot settings:', error);
+        // Keep default settings
+      }
       
       // Try to load saved progress from localStorage
       try {
@@ -587,9 +603,82 @@ export function pitches() {
     },
     
     /**
-     * Show a mascot message and speak it if text-to-speech is available
+     * Hide mascot message and save preference to not show help messages
      */
-    showMascotMessage(message) {
+    hideAndSaveMascotPreference() {
+      // Hide the mascot message
+      this.showMascot = false;
+      
+      // Update settings to not show help messages
+      this.mascotSettings.showHelpMessages = false;
+      
+      // Save the settings to localStorage
+      try {
+        localStorage.setItem('lalumo_mascot_settings', JSON.stringify(this.mascotSettings));
+        console.log('Saved mascot settings, help messages disabled');
+      } catch (error) {
+        console.error('Error saving mascot settings:', error);
+      }
+    },
+    
+    /**
+     * Toggles the display of help messages and saves the preference
+     * @param {boolean} show - Whether to show or hide help messages
+     * @return {boolean} The new help messages setting
+     */
+    toggleHelpMessages(show = null) {
+      // If no value provided, toggle the current value
+      if (show === null) {
+        this.mascotSettings.showHelpMessages = !this.mascotSettings.showHelpMessages;
+      } else {
+        this.mascotSettings.showHelpMessages = show;
+      }
+      
+      // When enabling, clear the history of seen messages to allow them to appear again
+      if (this.mascotSettings.showHelpMessages) {
+        this.mascotSettings.seenActivityMessages = {};
+      }
+      
+      // Save settings to localStorage
+      try {
+        localStorage.setItem('lalumo_mascot_settings', JSON.stringify(this.mascotSettings));
+        console.log(`Help messages ${this.mascotSettings.showHelpMessages ? 'enabled' : 'disabled'}`);
+      } catch (error) {
+        console.error('Error saving mascot settings:', error);
+      }
+      
+      return this.mascotSettings.showHelpMessages;
+    },
+    
+    /**
+     * Show a mascot message and speak it if text-to-speech is available
+     * @param {string} message - The message to display and speak
+     * @param {string} activityId - Optional ID of the current activity to prevent duplicate messages
+     */
+    showMascotMessage(message, activityId = null) {
+      // Check if we should show mascot messages based on user settings
+      if (!this.mascotSettings.showHelpMessages) {
+        console.log('Skipping mascot message - user has disabled help messages');
+        return;
+      }
+      
+      // Check if we've already shown a message for this activity
+      if (activityId && this.mascotSettings.seenActivityMessages[activityId]) {
+        console.log(`Skipping mascot message for ${activityId} - already shown once`);
+        return;
+      }
+      
+      // Mark this activity as having shown a message
+      if (activityId) {
+        this.mascotSettings.seenActivityMessages[activityId] = true;
+        // Save settings
+        try {
+          localStorage.setItem('lalumo_mascot_settings', JSON.stringify(this.mascotSettings));
+        } catch (error) {
+          console.error('Error saving mascot settings:', error);
+        }
+      }
+      
       this.mascotMessage = message;
       this.showMascot = true;
       console.log('Showing mascot message:', message, 'TTS available:', this.ttsAvailable, 'Using native TTS:', this.usingNativeAndroidTTS);
@@ -607,9 +696,6 @@ export function pitches() {
         // Fallback to Web Speech API
         this.tryWebSpeechAPI(message);
       }
-      
-      // Always show the mascot visual
-      this.showMascot = true;
     },
     
     /**
@@ -652,8 +738,10 @@ export function pitches() {
       const messages = introMessages[activityMode] || introMessages['listen'];
       const message = messages[language] || messages['en'];
       
-      // Show the message
-      this.showMascotMessage(message);
+      // Show the message with activity ID to prevent duplication
+      // Generate a unique ID for this activity using the current mode
+      const activityId = '1_' + this.mode;
+      this.showMascotMessage(message, activityId);
     },
     
     /**

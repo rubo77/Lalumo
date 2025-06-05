@@ -8,7 +8,7 @@
   transform: translateX(-50%);
   z-index: 1500;
   pointer-events: auto;
-  width: 100%;
+  width: 80%;
   max-width: 500px;
 }
 
@@ -17,10 +17,11 @@
   align-items: flex-start;
   background-color: rgba(255, 255, 255, 0.95);
   border-radius: 0 0 15px 15px;
-  padding: 15px;
+  padding: 5px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
   position: relative;
-  width: 100%;
+  width: 81%;
+  margin-left: 13%;
 }
 
 .mascot-image {
@@ -33,10 +34,14 @@
 .mascot-speech-bubble {
   background-color: white;
   border-radius: 10px;
-  padding: 10px 15px;
+  padding: 2px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   position: relative;
   flex: 1;
+}
+
+.mascot-speech-bubble p {
+  margin: 2px;
 }
 
 .mascot-speech-bubble:before {
@@ -235,6 +240,75 @@
   margin-top: 30px;
   padding-top: 20px;
   border-top: 1px solid var(--color-accent-light);
+}
+
+/* Help Messages Settings Styles */
+.help-messages-section {
+  margin-bottom: 1.5rem;
+}
+
+.help-options {
+  display: flex;
+  justify-content: center;
+  margin-top: 0.5rem;
+}
+
+.toggle-container {
+  display: inline-block;
+}
+
+.toggle-button {
+  display: flex;
+  align-items: center;
+  background-color: #f5f5f5;
+  border: none;
+  border-radius: 20px;
+  padding: 5px 15px 5px 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.toggle-button:hover {
+  background-color: #eaeaea;
+}
+
+.toggle-button.active {
+  background-color: #e6f7ff;
+}
+
+.toggle-slider {
+  display: inline-block;
+  width: 30px;
+  height: 20px;
+  background-color: #ccc;
+  border-radius: 10px;
+  position: relative;
+  margin-right: 10px;
+  transition: all 0.3s ease;
+}
+
+.toggle-slider:before {
+  content: '';
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background-color: white;
+  top: 2px;
+  left: 2px;
+  transition: all 0.3s ease;
+}
+
+.toggle-slider.active {
+  background-color: var(--primary-color);
+}
+
+.toggle-slider.active:before {
+  left: 12px;
+}
+
+.toggle-text {
+  font-size: 0.9rem;
 }
 
 .reset-buttons {
@@ -1183,15 +1257,15 @@ section h2 {
 /* Progress Display Box */
 .progress-display {
   position: absolute;
-  bottom: 1.5rem;
+  bottom: 0.5rem;
   left: 50%;
   transform: translateX(-50%);
   background-color: rgba(255, 255, 255, 0.85);
   border-radius: 1rem;
-  padding: 1rem;
+  padding: 0.5rem;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
   text-align: center;
-  width: 90%;
+  width: 93%;
   max-width: 400px;
   margin: 0 auto;
 }
