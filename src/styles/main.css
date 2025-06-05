@@ -1239,6 +1239,22 @@ section h2 {
   height: 100px;
 }
 
+/* Taller pitch cards when fewer options are unlocked */
+.pitch-grid.limited-options .pitch-card {
+  height: 200px;
+}
+
+/* Special case for 'down' card when frog is not unlocked yet */
+.pitch-grid.no-frog .pitch-card.down-extended {
+  grid-row: span 2;
+  height: 200px;
+}
+
+/* For down card, move the icon to the bottom of the card */
+.pitch-card.down-extended .pitch-icon {
+  margin-top: auto;
+}
+
 /* Play buttons in pitch cards */
 .pitch-card .play-button {
   display: block;

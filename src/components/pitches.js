@@ -2310,6 +2310,9 @@ export function pitches() {
      * Check if the user's sequence matches the original
      */
     checkMemorySequence() {
+      // First stop any currently playing melody
+      this.stopCurrentSound();
+      
       let isCorrect = true;
       let lastPressedKey = null;
       

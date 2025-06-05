@@ -261,7 +261,7 @@
             </button>
           </div>
           
-          <div class="pitch-grid">
+          <div class="pitch-grid" :class="{'limited-options': unlockedPatterns.length < 3, 'no-frog': !unlockedPatterns.includes('jump')}">
             <div class="pitch-card" :class="{ 'active': currentAnimation === 'up' }" @click="activity1_2_matchSoundsPlaySequence('up')" 
                  @mousedown="$event => startLongPress('up', $event)" @mouseup="cancelLongPress()" @mouseleave="cancelLongPress()"
                  @touchstart="$event => handleTouchStart('up', $event)" @touchend="cancelLongPress()" @touchcancel="cancelLongPress()">
@@ -270,7 +270,7 @@
               </div>
             </div>
             
-            <div class="pitch-card" :class="{ 'active': currentAnimation === 'down' }" @click="activity1_2_matchSoundsPlaySequence('down')" 
+            <div class="pitch-card" :class="{ 'active': currentAnimation === 'down', 'down-extended': !unlockedPatterns.includes('jump') }" @click="activity1_2_matchSoundsPlaySequence('down')" 
                  @mousedown="$event => startLongPress('down', $event)" @mouseup="cancelLongPress()" @mouseleave="cancelLongPress()"
                  @touchstart="$event => handleTouchStart('down', $event)" @touchend="cancelLongPress()" @touchcancel="cancelLongPress()">
               <div class="pitch-icon down">

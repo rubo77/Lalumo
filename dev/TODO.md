@@ -80,5 +80,5 @@ unter chrome auf dem handy android 15:
 - in match melody müssen die pitch-cards doppelt so hoch sein, wenn noch keine welle und zufall freigeschaltet ist
 - wenn noch kein frosch freigeschaltet ist, dann ist die standardgrösse ok, aber die für down muss nach unten um die selbe höhe herausragen, also über zwei rows gehen
 
-- wenn man in einer activity richtig oder falsch gespielt hat, dann soll die aktuelle melodie unterbrochen werden und der kurze sound von match-sounds auch in memory-game abgespielt werden (wenn man richtig antwortet, soll die melody unterbrochen werden wenn eine neue melody generiert wird)
-
+- bei memory game soll die melodie unterbrochen werden, sobald man einen falschen ton spielt.
+- bei match sounds unterbrechen, wenn man irgendeinen der buttons drückt
