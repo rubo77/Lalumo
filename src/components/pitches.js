@@ -2083,7 +2083,8 @@ export function pitches() {
           this.setupMatchingMode(true, false); // Replay current melody in game mode
         }
       } else if (this.mode === '1_4_pitches_does-it-sound-right') {
-        this.playMelodyForSoundJudgment();
+        // Pass false to indicate we want to replay the current melody, not generate a new one
+        this.playMelodyForSoundJudgment(false);
       } else if (this.mode === '1_5_pitches_memory-game') {
         if (!this.gameMode) {
           this.startMemoryGame(); // Start game mode from free play
@@ -2115,14 +2116,15 @@ export function pitches() {
         ? 'Hör dir die Melodie an! Klingt sie richtig? Oder ist da ein falscher Ton?'
         : 'Listen to the melody! Does it sound right? Or is there a wrong note?';
       
-      this.showMascotMessage(introMessage);
-      
       // Track activity usage
       if (!this.progress['1_4_pitches_does-it-sound-right']) {
         this.progress['1_4_pitches_does-it-sound-right'] = 0;
       }
       
-      // Play a melody if requested
+      // Show mascot message first (moved from playback completion)
+      this.showMascotMessage(introMessage);
+      
+      // Play a melody if requested - after showing mascot message
       if (playSound) {
         this.playMelodyForSoundJudgment(true);
       }
@@ -2199,7 +2201,8 @@ export function pitches() {
         this.currentSequence = melodyToPlay;
         
         // Set the correct answer based on whether the melody has a wrong note
-        this.correctAnswer = this.melodyHasWrongNote;
+        // If melody has wrong note, correctAnswer=false (meaning user should say it sounds wrong)
+        this.correctAnswer = !this.melodyHasWrongNote;
         
         // Play the melody using our shared audio playback system
         this.playMelodySequence(melodyToPlay, 'sound-judgment');
@@ -2264,10 +2267,8 @@ export function pitches() {
         // This helps avoid duplicate detection issues
         prepareNote: (note) => `sound_${note.toLowerCase()}`,
         
-        // After completion, show context message for sound-judgment
+        // After completion callback - no longer showing mascot message here
         onComplete: () => {
-          // Show the mascot message
-          this.showContextMessage();
           console.log(`AUDIO: Sound judgment melody playback complete`);
         }
       });
@@ -2340,9 +2341,13 @@ export function pitches() {
       setTimeout(() => {
         this.showFeedback = false;
         
-        // If the answer was correct, generate a new melody
         if (isCorrect) {
+          // If the answer was correct, generate a new melody
           this.playMelodyForSoundJudgment(true);
+        } else {
+          // If the answer was incorrect, replay the same melody
+          // Pass false to indicate not to generate a new melody
+          this.playMelodyForSoundJudgment(false);
         }
       }, 2000);
     },
