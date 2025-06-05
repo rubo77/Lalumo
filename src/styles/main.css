@@ -1452,28 +1452,20 @@ section h2 {
 .drawing-container {
   position: relative;
   margin: 1.5rem auto;
+  max-width: 96%;
   max-width: 400px;
 }
 
 .drawing-canvas {
+  width: 100%;
+  height: 280px;
+  height: 180px;
   background-color: white;
   border: 2px solid var(--secondary-color);
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   cursor: crosshair;
   touch-action: none; /* Prevent scrolling on touch devices */
-}
-
-.drawing-notes {
-  display: flex;
-  flex-direction: column;
-  position: absolute;
-  right: -60px;
-  top: 0;
-  height: 100%;
-  justify-content: space-between;
-  color: var(--text-color);
-  font-weight: bold;
 }
 
 .high-note {
@@ -1769,19 +1761,6 @@ section h2 {
   
   .mode-tabs {
     flex-direction: column;
-  }
-  
-  .drawing-container {
-    max-width: 90%;
-  }
-  
-  .drawing-canvas {
-    width: 100%;
-    height: 180px;
-  }
-  
-  .drawing-notes {
-    right: -40px;
   }
   
   .guess-options {
