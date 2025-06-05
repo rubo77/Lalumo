@@ -52,11 +52,6 @@ export function pitches() {
         de: 'Funkel, funkel, kleiner Stern',
         notes: ['C4', 'C4', 'G4', 'G4', 'A4', 'A4', 'G4', 'F4', 'F4', 'E4', 'E4', 'D4', 'D4', 'C4']
       },
-      'mary': {
-        en: 'Mary Had a Little Lamb',
-        de: 'Mary hatte ein kleines Lamm',
-        notes: ['E4', 'D4', 'C4', 'D4', 'E4', 'E4', 'E4', 'D4', 'D4', 'D4', 'E4', 'G4', 'G4']
-      },
       'jingle': {
         en: 'Jingle Bells',
         de: 'Jingle Bells',
@@ -66,16 +61,6 @@ export function pitches() {
         en: 'Happy Birthday',
         de: 'Zum Geburtstag viel Glück',
         notes: ['C4', 'C4', 'D4', 'C4', 'F4', 'E4', 'C4', 'C4', 'D4', 'C4', 'G4', 'F4']
-      },
-      'row': {
-        en: 'Row, Row, Row Your Boat',
-        de: 'Row, Row, Row Your Boat',
-        notes: ['C4', 'C4', 'C4', 'D4', 'E4', 'E4', 'D4', 'E4', 'F4', 'G4']
-      },
-      'ring-around-rosie': {
-        en: 'Ring Around the Rosie',
-        de: 'Ringel, Ringel, Reihe',
-        notes: ['E4', 'D4', 'C4', 'D4', 'E4', 'E4', 'E4', 'D4', 'D4', 'D4', 'E4', 'G4', 'G4']
       },
       'jingle-bells': {
         en: 'Jingle Bells',
@@ -2124,10 +2109,100 @@ export function pitches() {
       // Show mascot message first (moved from playback completion)
       this.showMascotMessage(introMessage);
       
-      // Play a melody if requested - after showing mascot message
-      if (playSound) {
-        this.playMelodyForSoundJudgment(true);
+      // Always generate a melody to ensure we have a current sequence even if we don't play it
+      // This way, the first play button click will have a melody to play
+      const shouldPlay = playSound;
+      // Generate new melody but only play it if shouldPlay is true
+      this.generateSoundJudgmentMelody();
+      
+      // Play the melody if requested
+      if (shouldPlay) {
+        this.playMelodySequence(this.currentSequence, 'sound-judgment');
       }
+    },
+    
+    /**
+     * Generates a melody for the "Does It Sound Right?" activity without playing it
+     * This separates the melody generation logic from playback
+     */
+    generateSoundJudgmentMelody() {
+      // Get all melody keys
+      const melodyKeys = Object.keys(this.knownMelodies);
+      if (melodyKeys.length === 0) {
+        console.error('No melodies available for sound judgment activity');
+        return false;
+      }
+        
+      // Randomly decide if the melody should have a wrong note (50% chance)
+      this.melodyHasWrongNote = Math.random() < 0.5;
+      
+      // Select a random melody from our collection
+      const randomMelodyKey = melodyKeys[Math.floor(Math.random() * melodyKeys.length)];
+      const selectedMelody = this.knownMelodies[randomMelodyKey];
+      
+      // Get the current language
+      const language = localStorage.getItem('lalumo_language') === 'german' ? 'de' : 'en';
+      
+      // Set the melody name in the appropriate language
+      this.currentMelodyName = selectedMelody[language] || selectedMelody.en;
+      
+      // Create a copy of the melody notes
+      let melodyToPlay = [...selectedMelody.notes];
+      
+      // If the melody should have a wrong note, modify it
+      if (this.melodyHasWrongNote) {
+        // Make a copy of the original melody
+        const modifiedMelody = [...melodyToPlay];
+        
+        // Pick a random position to modify (not the first or last notes)
+        const noteToModifyIndex = Math.floor(Math.random() * (modifiedMelody.length - 2)) + 1;
+        
+        // Extract the note to modify
+        const noteToModify = modifiedMelody[noteToModifyIndex];
+        
+        // Extract the note letter and octave
+        const noteLetter = noteToModify.substring(0, 1);
+        const noteOctave = noteToModify.substring(1);
+        
+        // Possible note letters
+        const possibleNotes = ['C', 'D', 'E', 'F', 'G', 'A', 'B'];
+        
+        // Get the index of the current note
+        const currentNoteIndex = possibleNotes.indexOf(noteLetter);
+        
+        // Generate a wrong note that's different from the original
+        let wrongNoteIndex;
+        do {
+          // Random shift between -2 and +2 semitones, but not 0
+          const shift = Math.floor(Math.random() * 5) - 2;
+          if (shift === 0) continue;
+          wrongNoteIndex = (currentNoteIndex + shift + possibleNotes.length) % possibleNotes.length;
+        } while (wrongNoteIndex === currentNoteIndex);
+        
+        // Create the wrong note
+        const wrongNote = possibleNotes[wrongNoteIndex] + noteOctave;
+        modifiedMelody[noteToModifyIndex] = wrongNote;
+        
+        console.log(`Modified melody at position ${noteToModifyIndex}: ${noteToModify} -> ${wrongNote}`);
+        
+        // Set the modified melody as the current sequence
+        melodyToPlay = modifiedMelody;
+      }
+      
+      // Set the current sequence for playback
+      this.currentSequence = melodyToPlay;
+      
+      // Set the correct answer based on whether the melody has a wrong note
+      // If melody has wrong note, correctAnswer=false (meaning user should say it sounds wrong)
+      this.correctAnswer = !this.melodyHasWrongNote;
+      
+      console.log('Generated sound judgment melody:', {
+        name: this.currentMelodyName,
+        hasWrongNote: this.melodyHasWrongNote,
+        sequence: this.currentSequence
+      });
+      
+      return true;
     },
     
     /**
@@ -2135,94 +2210,29 @@ export function pitches() {
      * @param {boolean} generateNew - Whether to generate a new melody
      */
     playMelodyForSoundJudgment(generateNew = true) {
-      // Get all melody keys
-      const melodyKeys = Object.keys(this.knownMelodies);
-      if (melodyKeys.length === 0) return;
-      
-      // If we should generate a new melody selection
-      if (generateNew) {
-        // Randomly decide if the melody should have a wrong note (50% chance)
-        this.melodyHasWrongNote = Math.random() < 0.5;
-        
-        // Select a random melody from our collection
-        const randomMelodyKey = melodyKeys[Math.floor(Math.random() * melodyKeys.length)];
-        const selectedMelody = this.knownMelodies[randomMelodyKey];
-        
-        // Get the current language
-        const language = localStorage.getItem('lalumo_language') === 'german' ? 'de' : 'en';
-        
-        // Set the melody name in the appropriate language
-        this.currentMelodyName = selectedMelody[language] || selectedMelody.en;
-        
-        // Create a copy of the melody notes
-        let melodyToPlay = [...selectedMelody.notes];
-        
-        // If the melody should have a wrong note, modify it
-        if (this.melodyHasWrongNote) {
-          // Make a copy of the original melody
-          const modifiedMelody = [...melodyToPlay];
-          
-          // Pick a random position to modify (not the first or last notes)
-          const noteToModifyIndex = Math.floor(Math.random() * (modifiedMelody.length - 2)) + 1;
-          
-          // Extract the note to modify
-          const noteToModify = modifiedMelody[noteToModifyIndex];
-          
-          // Extract the note letter and octave
-          const noteLetter = noteToModify.substring(0, 1);
-          const noteOctave = noteToModify.substring(1);
-          
-          // Possible note letters
-          const possibleNotes = ['C', 'D', 'E', 'F', 'G', 'A', 'B'];
-          
-          // Get the index of the current note
-          const currentNoteIndex = possibleNotes.indexOf(noteLetter);
-          
-          // Generate a wrong note that's different from the original
-          let wrongNoteIndex;
-          do {
-            // Random shift between -2 and +2 semitones, but not 0
-            const shift = Math.floor(Math.random() * 5) - 2;
-            if (shift === 0) continue;
-            wrongNoteIndex = (currentNoteIndex + shift + possibleNotes.length) % possibleNotes.length;
-          } while (wrongNoteIndex === currentNoteIndex);
-          
-          // Create the wrong note
-          const wrongNote = possibleNotes[wrongNoteIndex] + noteOctave;
-          modifiedMelody[noteToModifyIndex] = wrongNote;
-          
-          console.log(`Modified melody at position ${noteToModifyIndex}: ${noteToModify} -> ${wrongNote}`);
-          
-          // Set the modified melody as the current sequence
-          melodyToPlay = modifiedMelody;
-        }
-        
-        // Set the current sequence for playback
-        this.currentSequence = melodyToPlay;
-        
-        // Set the correct answer based on whether the melody has a wrong note
-        // If melody has wrong note, correctAnswer=false (meaning user should say it sounds wrong)
-        this.correctAnswer = !this.melodyHasWrongNote;
-        
-        // Play the melody using our shared audio playback system
-        this.playMelodySequence(melodyToPlay, 'sound-judgment');
-        
-        console.log('Generated sound judgment melody:', {
-          name: this.currentMelodyName,
-          hasWrongNote: this.melodyHasWrongNote,
-          sequence: this.currentSequence
-        });
-      }
-      
       // Hide any previous feedback
       this.showFeedback = false;
       
-      // Play the melody if we're not generating a new one
-      // (if generateNew is true, the melody is already played in the code above)
-      if (!generateNew && this.currentSequence && this.currentSequence.length > 0) {
+      // Generate a new melody if requested
+      if (generateNew) {
+        if (!this.generateSoundJudgmentMelody()) {
+          return; // Exit if melody generation failed
+        }
+        
+        // Play the newly generated melody
         this.playMelodySequence(this.currentSequence, 'sound-judgment');
-      } else if (!this.currentSequence || this.currentSequence.length === 0) {
+      } 
+      // Play the existing melody if we're not generating a new one
+      else if (this.currentSequence && this.currentSequence.length > 0) {
+        this.playMelodySequence(this.currentSequence, 'sound-judgment');
+      } 
+      // Handle case where there's no melody to play
+      else {
         console.error('No sequence to play for sound judgment activity');
+        // Try to generate a melody as fallback
+        if (this.generateSoundJudgmentMelody()) {
+          this.playMelodySequence(this.currentSequence, 'sound-judgment');
+        }
       }
     },
     
