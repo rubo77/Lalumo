@@ -1625,59 +1625,133 @@ export function pitches() {
     },
     
     /**
-     * Direct audio synthesis for Android Chrome devices
-     * This is a specialized function that plays notes for Android Chrome where event system doesn't work
+     * Direct audio synthesis for Android Chrome
+     * Bypasses the standard event-based audio system
      * @param {Array} processedNotes - Array of processed note objects with pitch, duration, and isRest properties
      * @param {string} context - Identifier for the sequence context
      */
     playAndroidDirectAudio(processedNotes, context) {
-      // Use debug logging for audio diagnostics
-      import('../utils/debug').then(({ debugLog }) => {
-        debugLog('AUDIO', `Using direct Android audio synthesis for ${processedNotes.length} notes`);
-      });
+      console.log('AUDIO: Using direct Android audio synthesis for', processedNotes.length, 'notes');
       
-      // Setup audio context if not already done
-      this.setupAndroidAudioContext();
-      
-      if (!this.androidAudioContext) {
-        console.error('ANDROID AUDIO: Failed to create audio context');
-        return;
-      }
-      
-      // Create oscillator for each note
-      let startTime = this.androidAudioContext.currentTime;
-      
-      for (let i = 0; i < processedNotes.length; i++) {
-        const { pitch, duration, isRest } = processedNotes[i];
+      // Create audio context specifically for this playback
+      try {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        const audioCtx = new AudioContext({
+          latencyHint: 'interactive',
+          sampleRate: 44100
+        });
         
-        // Convert ms to seconds for Web Audio API
-        const noteDurationSeconds = duration / 1000;
-        
-        // Skip rests (no sound, just advance time)
-        if (isRest) {
-          console.log(`ANDROID AUDIO: Rest for ${noteDurationSeconds}s`);
-          startTime += noteDurationSeconds;
-          continue;
-        }
-        
-        // Skip invalid notes
-        if (!pitch || typeof pitch !== 'string') {
-          console.warn(`ANDROID AUDIO: Skipping invalid note at index ${i}:`, pitch);
-          continue;
-        }
-        
-        // Get frequency for this note
-        const freq = this.getNoteFrequency(pitch);
-        if (!freq) {
-          console.warn(`ANDROID AUDIO: Unknown note frequency for ${pitch}`);
-          continue;
-        }
-        
-        // Create oscillator for this note
-        this.scheduleAndroidNote(freq, startTime, noteDurationSeconds);
-        
-        // Advance start time for next note
-        startTime += noteDurationSeconds;
+        // Force resume the audio context immediately
+        audioCtx.resume().then(() => {
+          console.log('AUDIO: Android audio context resumed for direct playback');
+          
+          // Schedule all notes in advance
+          let startTime = audioCtx.currentTime;
+          const oscillators = [];
+          
+          // Process each note
+          processedNotes.forEach((note, index) => {
+            const { pitch, duration, isRest } = note;
+            
+            // Convert ms to seconds for Web Audio API
+            const noteDurationSeconds = duration / 1000;
+            
+            // Skip rests (no sound, just advance time)
+            if (isRest) {
+              console.log(`AUDIO: Rest for ${noteDurationSeconds}s`);
+              startTime += noteDurationSeconds;
+              return; // Skip to next note
+            }
+            
+            // Skip invalid notes
+            if (!pitch || typeof pitch !== 'string') {
+              console.warn(`AUDIO: Skipping invalid note at index ${index}:`, pitch);
+              return; // Skip to next note
+            }
+            
+            // Get frequency for this note
+            const freq = this.getNoteFrequency(pitch);
+            if (!freq) {
+              console.warn(`AUDIO: Unknown note frequency for ${pitch}`);
+              return; // Skip to next note
+            }
+            
+            // Create oscillator for this note
+            const osc = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            
+            // Configure oscillator
+            osc.frequency.value = freq;
+            osc.type = 'sine';
+            
+            // Configure gain (volume)
+            gainNode.gain.value = 0;
+            gainNode.gain.setValueAtTime(0, startTime);
+            gainNode.gain.linearRampToValueAtTime(0.5, startTime + 0.05); // Fast attack
+            gainNode.gain.linearRampToValueAtTime(0, startTime + noteDurationSeconds - 0.05); // Release before end
+            
+            // Connect and schedule
+            osc.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            
+            // Start and stop
+            osc.start(startTime);
+            osc.stop(startTime + noteDurationSeconds);
+            
+            // Keep track for cleanup
+            oscillators.push(osc);
+            
+            // Log each note as it's scheduled
+            console.log(`AUDIO: Scheduled Android note ${pitch} at time ${startTime.toFixed(2)} for ${noteDurationSeconds.toFixed(2)}s`);
+            
+            // Schedule animation update for this note
+            setTimeout(() => {
+              // Update current highlighted note for UI
+              this.currentHighlightedNote = pitch.toLowerCase();
+              
+              // Refresh animation for context
+              if (context) {
+                this.animatePatternElement(context);
+              }
+            }, (startTime - audioCtx.currentTime) * 1000);
+            
+            // Advance start time for next note
+            startTime += noteDurationSeconds;
+          });
+          
+          // Clean up after all notes are played
+          const totalDuration = (startTime - audioCtx.currentTime) * 1000 + 500;
+          setTimeout(() => {
+            // Stop any remaining oscillators
+            oscillators.forEach(osc => {
+              try {
+                osc.stop();
+                osc.disconnect();
+              } catch (e) {
+                // Ignore errors from already stopped oscillators
+              }
+            });
+            
+            // Clean up context
+            try {
+              audioCtx.close();
+            } catch (e) {
+              console.error('AUDIO: Error closing Android audio context:', e);
+            }
+            
+            console.log('AUDIO: Android direct audio playback completed');
+          }, totalDuration);
+          
+        }).catch(err => {
+          console.error('AUDIO: Failed to resume Android audio context:', err);
+          
+          // Even if audio fails, ensure animation plays correctly
+          this.ensureAndroidAnimation(context, processedNotes.length);
+        });
+      } catch (error) {
+        console.error('AUDIO: Error creating Android audio context:', error);
+        // Fall back to animation only
+        this.ensureAndroidAnimation(context, processedNotes.length);
       }
     },
     
