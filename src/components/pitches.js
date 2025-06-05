@@ -2141,7 +2141,102 @@ export function pitches() {
       this.showFeedback = false;
       
       // Play the melody
-      this.playMelodySequence(this.currentSequence, 'sound-judgment');
+      if (this.currentSequence && this.currentSequence.length > 0) {
+        this.playMelodySequence(this.currentSequence, 'sound-judgment');
+      } else {
+        console.error('No sequence to play for sound judgment activity');
+      }
+    },
+    
+    /**
+     * Plays a sequence of notes as a melody using Web Audio API
+     * @param {Array} notes - Array of notes to play
+     * @param {string} context - The context in which this melody is played
+     */
+    playMelodySequence(notes, context = 'default') {
+      console.log(`Playing melody sequence for ${context} with ${notes.length} notes:`, notes);
+      
+      // If already playing, stop the current sound first
+      if (this.isPlaying) {
+        this.stopCurrentSound();
+      }
+      
+      this.isPlaying = true;
+      
+      // Create a copy of the notes array to avoid modification during playback
+      const noteArray = [...notes];
+      
+      // Set up variables for enhanced Android audio handling
+      const isAndroid = /Android/.test(navigator.userAgent);
+      const isChrome = /Chrome/.test(navigator.userAgent);
+      const isAndroidChrome = isAndroid && isChrome;
+      
+      // For Android Chrome, use direct audio synthesis
+      if (isAndroidChrome) {
+        // Use the existing Android-specific audio implementation
+        this.playAndroidDirectAudio(noteArray, context);
+      } else {
+        // For other browsers, use standard Web Audio API approach
+        // Create audio context for this playback
+        try {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          const audioCtx = new AudioContext({
+            latencyHint: 'interactive',
+            sampleRate: 44100
+          });
+          
+          // Force resume the audio context immediately
+          audioCtx.resume().then(() => {
+            // Set timing parameters
+            const noteDuration = 0.5; // duration of each note in seconds
+            const noteSpacing = 0.1; // pause between notes in seconds
+            
+            // Calculate total duration
+            const totalDuration = (noteDuration + noteSpacing) * noteArray.length;
+            
+            // Play each note by triggering custom events
+            let currentTime = 0;
+            
+            noteArray.forEach((note, index) => {
+              // Dispatch event to play this note after appropriate delay
+              setTimeout(() => {
+                window.dispatchEvent(new CustomEvent('lalumo:playnote', { 
+                  detail: { 
+                    note: note,
+                    sequenceIndex: index,
+                    id: `melody_${context}_${index}_${Date.now()}`
+                  } 
+                }));
+              }, currentTime * 1000);
+              
+              // Increment time for next note
+              currentTime += noteDuration + noteSpacing;
+            });
+          }).catch(err => {
+            console.error('AUDIO: Failed to resume audio context:', err);
+          });
+        } catch (error) {
+          console.error('AUDIO: Error creating audio context:', error);
+        }
+      }
+      
+      // Set timing parameters for cleanup calculation
+      const noteDuration = 0.5;
+      const noteSpacing = 0.1;
+      const totalDuration = (noteDuration + noteSpacing) * noteArray.length;
+      
+      // Clean up after playback completes
+      setTimeout(() => {
+        this.isPlaying = false;
+        
+        // Notify that playback is complete
+        if (context === 'sound-judgment') {
+          // For sound judgment activity, show the mascot message if needed
+          this.showContextMessage();
+        }
+        
+        console.log(`Melody playback complete for ${context}`);
+      }, totalDuration * 1000 + 100);
     },
     
     /**
