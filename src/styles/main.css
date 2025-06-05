@@ -646,7 +646,6 @@ body {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  z-index: 101;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
   transition: all 0.3s ease;
 }
@@ -732,6 +731,7 @@ body {
   position: relative;
   overflow: visible; /* Ensure container doesn't clip content */
   z-index: 1500; /* High enough but below lock button */
+  max-width: 20px; /* TODO: warum ist dies so klein trotzdem ok? wenn breiter, dann überlappt der immer den home button , obwohl der einen höheren z-index hat */
 }
 
 /* Ensure scrolling container properly shows all content */
@@ -1004,26 +1004,6 @@ section h2 {
   text-align: center;
   margin-top: 2rem;
   animation: fadeIn 0.5s ease;
-}
-
-/* Audio initialization message */
-.audio-init-message {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  background-color: var(--secondary-color);
-  color: white;
-  text-align: center;
-  padding: 0.8rem;
-  z-index: 1000;
-  animation: pulse 1.5s infinite alternate;
-}
-
-.audio-init-message p {
-  margin: 0;
-  font-weight: bold;
-  font-size: 1.1rem;
 }
 
 @keyframes pulse {
