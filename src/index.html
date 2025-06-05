@@ -397,15 +397,18 @@
             <div class="melody-name" x-show="currentMelodyName" x-text="currentMelodyName"></div>
           </div>
 
-          <!-- Animal choice buttons 
-           TODO: use images -->
+          <!-- Animal choice buttons -->
           <div class="sound-judgment-options">
-            <button class="animal-button happy" @click="checkSoundJudgment(true)" aria-label="Sounds good" title="Sounds good">
-              <div class="animal-icon" title="🐰 Sounds good!"><img src="./images/1_5_pitches_good_cat.png" alt="Happy cat"></div>
-            </button>
-            <button class="animal-button unhappy" @click="checkSoundJudgment(false)" aria-label="Sounds wrong" title="Sounds wrong">
-              <div class="animal-icon" title="🦊 Sounds wrong!"><img src="./images/1_5_pitches_bad_snake.png" alt="Unhappy snake"></div>
-            </button>
+            <div class="pitch-card animal-card happy" @click="checkSoundJudgment(true)" aria-label="Sounds good" title="Sounds good">
+              <div class="pitch-icon animal-icon" title="Sounds good!">
+                <img src="/images/1_5_pitches_good_cat.png" alt="Happy cat">
+              </div>
+            </div>
+            <div class="pitch-card animal-card unhappy" @click="checkSoundJudgment(false)" aria-label="Sounds wrong" title="Sounds wrong">
+              <div class="pitch-icon animal-icon" title="Sounds wrong!">
+                <img src="/images/1_5_pitches_bad_snake.png" alt="Unhappy snake">
+              </div>
+            </div>
           </div>
           
           <!-- Feedback message -->

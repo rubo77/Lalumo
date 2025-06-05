@@ -1381,6 +1381,52 @@ section h2 {
   animation: ripple 0.6s ease-out;
 }
 
+/* Animal card styles for Sound Judgment activity */
+.sound-judgment-options {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.animal-card {
+  cursor: pointer;
+  padding: 15px;
+  min-width: 120px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.animal-card .animal-icon img {
+  width: 14vw;
+  height: 14vw;
+  max-width: 120px;
+  max-height: 120px;
+  border-radius: 20%;
+  object-fit: contain;
+  margin-top: 2vh;
+}
+
+/* Special states for animal cards */
+.animal-card.happy:hover {
+  background-color: rgba(46, 213, 115, 0.1);
+}
+
+.animal-card.unhappy:hover {
+  background-color: rgba(235, 77, 75, 0.1);
+}
+
+.animal-card.happy:active {
+  background-color: rgba(46, 213, 115, 0.3);
+  transform: scale(0.95);
+}
+
+.animal-card.unhappy:active {
+  background-color: rgba(235, 77, 75, 0.3);
+  transform: scale(0.95);
+}
+
+
+
 @keyframes pulse {
   0% {
     box-shadow: 0 0 15px var(--primary-color);

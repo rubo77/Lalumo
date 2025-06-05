@@ -28,21 +28,21 @@ export function pitches() {
     
     // Arrays für die zufälligen Tierbilder
     goodAnimalImages: [
-      './images/1_5_pitches_good_bird_notes.png',
-      './images/1_5_pitches_good_bird.png',
-      './images/1_5_pitches_good_cat.png',
-      './images/1_5_pitches_good_deer.png',
-      './images/1_5_pitches_good_dog.png',
-      './images/1_5_pitches_good_hedgehog.png',
-      './images/1_5_pitches_good_pig.png',
-      './images/1_5_pitches_good_sheep.png',
+      '/images/1_5_pitches_good_bird_notes.png',
+      '/images/1_5_pitches_good_bird.png',
+      '/images/1_5_pitches_good_cat.png',
+      '/images/1_5_pitches_good_deer.png',
+      '/images/1_5_pitches_good_dog.png',
+      '/images/1_5_pitches_good_hedgehog.png',
+      '/images/1_5_pitches_good_pig.png',
+      '/images/1_5_pitches_good_sheep.png',
     ],
     badAnimalImages: [
-      './images/1_5_pitches_bad_bug.png',
-      './images/1_5_pitches_bad_cat.png',
-      './images/1_5_pitches_bad_crow.png',
-      './images/1_5_pitches_bad_rabbit.png',
-      './images/1_5_pitches_bad_snake.png'
+      '/images/1_5_pitches_bad_bug.png',
+      '/images/1_5_pitches_bad_cat.png',
+      '/images/1_5_pitches_bad_crow.png',
+      '/images/1_5_pitches_bad_rabbit.png',
+      '/images/1_5_pitches_bad_snake.png'
     ],
     currentGoodAnimalImage: null,
     currentBadAnimalImage: null,
@@ -2496,6 +2496,10 @@ export function pitches() {
     playMelodyForSoundJudgment(generateNew = true) {
       // Hide any previous feedback
       this.showFeedback = false;
+      
+      // Select new random animal images for each new melody
+      // This ensures the animals change with each new melody
+      this.selectRandomAnimalImages();
       
       // Generate a new melody if requested
       if (generateNew) {

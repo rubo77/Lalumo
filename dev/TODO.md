@@ -73,7 +73,14 @@ Listen to melodies:
  - wenn man richtig antwortet, soll die melody unterbrochen werden und eine neue melody generiert werden
  - images als buttons
  - die sound funktion playAudioSequence() um die tonlänge erweitern
- 
+
+- die CSS-Organisation ist unstrukturiert. Ich sehe das Problem mit der Aufteilung zwischen main.css und pitch-cards.css. Lass uns das besser strukturieren. Ich schlage vor, die Stile aus beiden Dateien in einem logischeren System zu organisieren. Also:
+    - Zusammenführen in einer strukturierten main.css:
+    - Alle Stile in einer Datei mit klaren Abschnitten
+    - Sektionenkommentare zur besseren Navigation
+
 # most important
 - each activity must be reachable via a hash-anchor-link. all chapters and activities are included in the sitemap.
 also, if you select another activity in the nav, the hash tag should change, so you can bookmark them
+
+
