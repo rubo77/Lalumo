@@ -1314,11 +1314,37 @@ export function pitches() {
     },
     
     /**
+     * Updates the background image based on the matching progress
+     * - Below 10 correct: pitches_action1_no_waves_and_frog.png
+     * - Between 10-19 correct: pitches_action1_no_frog.png
+     * - 20+ correct: pitches_action1.png
+     */
+    updateMatchingBackground() {
+      const progress = this.progress['1_2_pitches_match-sounds'] || 0;
+      let backgroundImage;
+      
+      if (progress < 10) {
+        backgroundImage = '/images/backgrounds/pitches_action1_no_waves_and_frog.png';
+      } else if (progress < 20) {
+        backgroundImage = '/images/backgrounds/pitches_action1_no_frog.png';
+      } else {
+        backgroundImage = '/images/backgrounds/pitches_action1.png';
+      }
+      
+      const matchingActivity = document.querySelector('[x-show="mode === \'1_2_pitches_match-sounds\'"]');
+      if (matchingActivity) {
+        matchingActivity.style.backgroundImage = `url(${backgroundImage})`;
+        console.log(`Updated background based on progress (${progress}): ${backgroundImage}`);
+      }
+    },
+    
+    /**
      * Setup for the matching mode ('1_2_pitches_match-sounds')
      */
     setupMatchingMode(playSound = false, generateNew = true) {
-      // Show intro message immediately when entering the activity
+      this.animationInProgress = false;
       this.showActivityIntroMessage('match');
+      this.updateMatchingBackground(); // Update background based on progress
       
       // If not in game mode, allow free exploration of all patterns
       if (!this.gameMode) {
@@ -1419,6 +1445,9 @@ export function pitches() {
         this.progress['1_2_pitches_match-sounds'] += 1;
         
         console.log('Updated match progress:', this.progress['1_2_pitches_match-sounds']);
+        
+        // Update background based on new progress level
+        this.updateMatchingBackground();
         
         // Save progress to localStorage
         localStorage.setItem('lalumo_progress', JSON.stringify(this.progress));
@@ -2744,6 +2773,31 @@ export function pitches() {
     /**
      * Start game mode for matching (called when play button is pressed)
      */
+    /**
+     * Updates the background image based on the matching progress
+     * - Below 10 correct: pitches_action1_no_waves_and_frog.png
+     * - Between 10-19 correct: pitches_action1_no_frog.png
+     * - 20+ correct: pitches_action1.png
+     */
+    updateMatchingBackground() {
+      const progress = this.progress['1_2_pitches_match-sounds'] || 0;
+      let backgroundImage;
+      
+      if (progress < 10) {
+        backgroundImage = '/images/backgrounds/pitches_action1_no_waves_and_frog.png';
+      } else if (progress < 20) {
+        backgroundImage = '/images/backgrounds/pitches_action1_no_frog.png';
+      } else {
+        backgroundImage = '/images/backgrounds/pitches_action1.png';
+      }
+      
+      const matchingActivity = document.querySelector('[x-show="mode === \'1_2_pitches_match-sounds\'"]');
+      if (matchingActivity) {
+        matchingActivity.style.backgroundImage = `url(${backgroundImage})`;
+        console.log(`Updated background based on progress (${progress}): ${backgroundImage}`);
+      }
+    },
+    
     startMatchGame() {
       this.gameMode = true;
       this.setupMatchingMode(true, true); // Play sound and generate new
