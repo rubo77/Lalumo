@@ -937,13 +937,131 @@ export function pitches() {
     },
     
     /**
+     * Common function to play any audio sequence - core audio playback logic
+     * @param {Array} noteArray - Array of notes to play
+     * @param {string} context - Context identifier ('up', 'down', 'wave', 'jump', 'sound-judgment', etc.)
+     * @param {Object} options - Optional configuration parameters
+     * @param {Function} options.onComplete - Function to call when sequence completes
+     * @param {Function} options.prepareNote - Function to transform note before playing (e.g. add 'pitch_' prefix)
+     * @returns {Function} Cleanup function to cancel playback if needed
+     */
+    playAudioSequence(noteArray, context, options = {}) {
+      // Ensure we have a valid context identifier
+      const sequenceContext = context || 'unknown';
+      console.log(`AUDIO: Playing sequence for context '${sequenceContext}' with ${noteArray.length} notes:`, noteArray);
+      
+      // Extract options
+      const onComplete = options.onComplete || (() => {});
+      const prepareNote = options.prepareNote || (note => note);
+      
+      // Set up variables for enhanced Android audio handling
+      const isAndroid = /Android/.test(navigator.userAgent);
+      const isChrome = /Chrome/.test(navigator.userAgent);
+      const isAndroidChrome = isAndroid && isChrome;
+      
+      // For Android Chrome, use direct audio synthesis approach
+      if (isAndroidChrome) {
+        console.log(`AUDIO: Android Chrome detected - applying direct audio for '${sequenceContext}'`);
+        
+        // Direct audio synthesis for Android Chrome
+        this.playAndroidDirectAudio(noteArray, sequenceContext);
+        
+        // Calculate animation duration based on number of notes
+        const totalDuration = noteArray.length * 600 + 500;
+        
+        // Set timeout for completion callback
+        setTimeout(() => {
+          // Sequence complete, reset state
+          this.isPlaying = false;
+          console.log(`AUDIO: Android sequence complete for '${sequenceContext}'`);
+          
+          // Call the completion handler if provided
+          onComplete();
+        }, totalDuration);
+        
+        // Return cleanup function
+        return () => {
+          console.log(`AUDIO: Cancelling Android sequence playback for '${sequenceContext}'`);
+        };
+      }
+      
+      // ======= STANDARD AUDIO PLAYBACK FOR NON-ANDROID DEVICES =======
+      
+      // Sequential note player function
+      const playNote = (noteIndex) => {
+        if (noteIndex >= noteArray.length) {
+          console.log(`AUDIO: Finished playing all notes in '${sequenceContext}' sequence`);
+          return; // Done with all notes
+        }
+        
+        // Get the current note
+        const note = noteArray[noteIndex];
+        console.log(`AUDIO: Playing note ${note} (${noteIndex + 1}/${noteArray.length}) for context ${sequenceContext}`);
+        
+        // Prepare note for playing (apply any transformations needed)
+        const preparedNote = prepareNote(note);
+        
+        // Generate a unique ID for this note event to avoid duplicate detection
+        const uniqueId = `seq_${sequenceContext}_${noteIndex}_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
+        
+        // Try to play it through the app's event system
+        try {
+          // Dispatch event with note details
+          window.dispatchEvent(new CustomEvent('lalumo:playnote', { 
+            detail: { 
+              note: preparedNote,
+              sequenceIndex: noteIndex,
+              id: uniqueId
+            }
+          }));
+        } catch (err) {
+          console.error(`AUDIO: Error dispatching note event for '${sequenceContext}':`, err);
+        }
+        
+        // Schedule the next note and store the timeout ID for potential cleanup
+        this.soundTimeoutId = setTimeout(() => playNote(noteIndex + 1), 600);
+      };
+      
+      // Start playing the sequence with the first note
+      playNote(0);
+      console.log(`AUDIO: Started sequence playback for context '${sequenceContext}'`);
+      
+      // Schedule cleanup after sequence completes
+      const resetTimeoutId = setTimeout(() => {
+        this.isPlaying = false;
+        this.soundTimeoutId = null;
+        console.log(`AUDIO: Sequence complete for '${sequenceContext}', resetting state`);
+        
+        // Call completion handler
+        onComplete();
+      }, noteArray.length * 600 + 300);
+      
+      // Store timeout ID for cleanup
+      this.resetTimeoutId = resetTimeoutId;
+      
+      // Return cleanup function
+      return () => {
+        if (this.soundTimeoutId) {
+          clearTimeout(this.soundTimeoutId);
+          this.soundTimeoutId = null;
+        }
+        if (this.resetTimeoutId) {
+          clearTimeout(this.resetTimeoutId);
+          this.resetTimeoutId = null;
+        }
+        this.isPlaying = false;
+        console.log(`AUDIO: Playback cancelled for '${sequenceContext}'`);
+      };
+    },
+    
+    /**
      * Play a sequence of notes based on the selected pattern
-     * Completely rewritten for better Android Chrome support
+     * Uses the common playAudioSequence function
      * @param {string} type - Type of pattern ('up', 'down', 'wave', 'jump')
      */
     playSequence(type) {
       // Enhanced logging for diagnosis
-      console.log('AUDIO: Sequence play requested for type:', type, 'User Agent:', navigator.userAgent);
+      console.log('AUDIO: Sequence play requested for type:', type);
       
       // If already playing, stop the current sound first
       if (this.isPlaying) {
@@ -963,11 +1081,6 @@ export function pitches() {
         console.log('AUDIO: Added active class to card for animation');
       }
       
-      // Set up variables for enhanced Android audio handling
-      const isAndroid = /Android/.test(navigator.userAgent);
-      const isChrome = /Chrome/.test(navigator.userAgent);
-      const isAndroidChrome = isAndroid && isChrome;
-      
       // Generate the requested pattern on demand - ensures fresh melodies each time
       let pattern;
       if (type === 'up') {
@@ -986,80 +1099,28 @@ export function pitches() {
       // Store the pattern for reference and visualization
       this.currentSequence = pattern;
       const noteArray = [...pattern]; // Create a copy to be safe
-      console.log('AUDIO: Will play sequence with notes:', noteArray.join(', '));
       
       // ALWAYS animate the pattern element for immediate visual feedback
       this.animatePatternElement(type);
       
-      // For Android Chrome, ensure we have a good animation even if audio fails
-      if (isAndroidChrome) {
-        console.log('AUDIO: Android Chrome detected - applying enhanced handling');
+      // Use the common audio sequence player with pattern-specific settings
+      return this.playAudioSequence(noteArray, type, {
+        // Transform notes for match-sounds pattern (prefix with pitch_)
+        prepareNote: (note) => `pitch_${note.toLowerCase()}`,
         
-        // Direct audio synthesis for Android Chrome
-        this.playAndroidDirectAudio(noteArray, type);
-        
-        // Make sure animations persist long enough
-        const animationDuration = noteArray.length * 600 + 500;
-        setTimeout(() => {
+        // Handle completion for match-sounds pattern
+        onComplete: () => {
+          this.currentAnimation = null;
+          this.currentHighlightedNote = null;
+          
+          // Remove active class from card
           if (card) {
             card.classList.remove('active');
           }
           
-          // Reset state after animation completes
-          this.isPlaying = false;
-          this.currentAnimation = null;
-          console.log('AUDIO: Animation completed for Android');
-        }, animationDuration);
-        
-        return; // Exit early, direct audio method will handle everything
-      }
-      
-      // ======= STANDARD AUDIO PLAYBACK FOR NON-ANDROID DEVICES =======
-      
-      // Play notes with timing
-      const playNote = (noteIndex) => {
-        if (noteIndex >= noteArray.length) {
-          return;  // Done with all notes
+          console.log('AUDIO: Pattern animation and playback complete');
         }
-        
-        // Get the current note
-        const note = noteArray[noteIndex];
-        console.log(`AUDIO: Playing note ${note} (${noteIndex + 1}/${noteArray.length})`);
-        
-        // Try to play it through the app component
-        try {
-          window.dispatchEvent(new CustomEvent('lalumo:playnote', { 
-            detail: { 
-              note: `pitch_${note.toLowerCase()}`,
-              id: `sequence_${type}_${noteIndex}_${Date.now()}`
-            }
-          }));
-          
-          // Visual feedback for current note
-          this.currentHighlightedNote = note.toLowerCase();
-        } catch (err) {
-          console.error('AUDIO: Error dispatching note event:', err);
-        }
-        
-        // Schedule the next note and store the timeout ID
-        this.soundTimeoutId = setTimeout(() => playNote(noteIndex + 1), 600);
-      };
-      
-      // Start playing the sequence
-      playNote(0);
-      console.log('AUDIO: Started playing melody type:', type);
-      
-      // Reset animation and playing state after sequence completes
-      const resetTimeoutId = setTimeout(() => {
-        this.isPlaying = false;
-        this.currentAnimation = null;
-        this.soundTimeoutId = null;
-        this.currentHighlightedNote = null;
-        console.log('AUDIO: Finished playing melody, ready for next');
-      }, noteArray.length * 600 + 300);
-      
-      // Store this timeout ID for cleanup
-      this.resetTimeoutId = resetTimeoutId;
+      });
     },
     
     /**
@@ -2130,6 +2191,9 @@ export function pitches() {
         // Set the correct answer based on whether the melody has a wrong note
         this.correctAnswer = this.melodyHasWrongNote;
         
+        // Play the melody using our shared audio playback system
+        this.playMelodySequence(melodyToPlay, 'sound-judgment');
+        
         console.log('Generated sound judgment melody:', {
           name: this.currentMelodyName,
           hasWrongNote: this.melodyHasWrongNote,
@@ -2140,103 +2204,62 @@ export function pitches() {
       // Hide any previous feedback
       this.showFeedback = false;
       
-      // Play the melody
-      if (this.currentSequence && this.currentSequence.length > 0) {
+      // Play the melody if we're not generating a new one
+      // (if generateNew is true, the melody is already played in the code above)
+      if (!generateNew && this.currentSequence && this.currentSequence.length > 0) {
         this.playMelodySequence(this.currentSequence, 'sound-judgment');
-      } else {
+      } else if (!this.currentSequence || this.currentSequence.length === 0) {
         console.error('No sequence to play for sound judgment activity');
       }
     },
     
     /**
-     * Plays a sequence of notes as a melody using Web Audio API
+     * Plays a melody sequence for the "Does It Sound Right?" activity
+     * Uses the shared playAudioSequence function for consistent audio behavior
      * @param {Array} notes - Array of notes to play
      * @param {string} context - The context in which this melody is played
+     * @returns {Function} Cleanup function
      */
-    playMelodySequence(notes, context = 'default') {
-      console.log(`Playing melody sequence for ${context} with ${notes.length} notes:`, notes);
+    playMelodySequence(notes, context = 'sound-judgment') {
+      console.log(`AUDIO: Playing melody sequence for '${context}' with ${notes.length} notes`)
       
-      // If already playing, stop the current sound first
+      // If already playing, stop the current sound
       if (this.isPlaying) {
         this.stopCurrentSound();
       }
       
+      // Ensure playing state is set
       this.isPlaying = true;
       
-      // Create a copy of the notes array to avoid modification during playback
-      const noteArray = [...notes];
-      
-      // Set up variables for enhanced Android audio handling
-      const isAndroid = /Android/.test(navigator.userAgent);
-      const isChrome = /Chrome/.test(navigator.userAgent);
-      const isAndroidChrome = isAndroid && isChrome;
-      
-      // For Android Chrome, use direct audio synthesis
-      if (isAndroidChrome) {
-        // Use the existing Android-specific audio implementation
-        this.playAndroidDirectAudio(noteArray, context);
-      } else {
-        // For other browsers, use standard Web Audio API approach
-        // Create audio context for this playback
-        try {
-          const AudioContext = window.AudioContext || window.webkitAudioContext;
-          const audioCtx = new AudioContext({
-            latencyHint: 'interactive',
-            sampleRate: 44100
-          });
-          
-          // Force resume the audio context immediately
-          audioCtx.resume().then(() => {
-            // Set timing parameters
-            const noteDuration = 0.5; // duration of each note in seconds
-            const noteSpacing = 0.1; // pause between notes in seconds
-            
-            // Calculate total duration
-            const totalDuration = (noteDuration + noteSpacing) * noteArray.length;
-            
-            // Play each note by triggering custom events
-            let currentTime = 0;
-            
-            noteArray.forEach((note, index) => {
-              // Dispatch event to play this note after appropriate delay
-              setTimeout(() => {
-                window.dispatchEvent(new CustomEvent('lalumo:playnote', { 
-                  detail: { 
-                    note: note,
-                    sequenceIndex: index,
-                    id: `melody_${context}_${index}_${Date.now()}`
-                  } 
-                }));
-              }, currentTime * 1000);
-              
-              // Increment time for next note
-              currentTime += noteDuration + noteSpacing;
-            });
-          }).catch(err => {
-            console.error('AUDIO: Failed to resume audio context:', err);
-          });
-        } catch (error) {
-          console.error('AUDIO: Error creating audio context:', error);
+      // Validate all notes before attempting to play - FATAL ERROR if any are invalid
+      for (let i = 0; i < notes.length; i++) {
+        const note = notes[i];
+        if (!note || typeof note !== 'string' || note.length < 2) {
+          // FATAL ERROR: invalid note detected
+          console.error(`AUDIO_ERROR: Invalid note detected at position ${i}: "${note}". Cannot play melody.`);
+          this.isPlaying = false;
+          return () => {}; // Return empty cleanup function
         }
       }
       
-      // Set timing parameters for cleanup calculation
-      const noteDuration = 0.5;
-      const noteSpacing = 0.1;
-      const totalDuration = (noteDuration + noteSpacing) * noteArray.length;
+      // Create a safe copy of the notes
+      const noteArray = [...notes];
       
-      // Clean up after playback completes
-      setTimeout(() => {
-        this.isPlaying = false;
+      // Store the sequence
+      this.currentSequence = noteArray;
+      
+      // Use the common audio sequence player with sound-judgment specific settings
+      return this.playAudioSequence(noteArray, context, {
+        // Notes in sound-judgment don't need any transformation
+        prepareNote: (note) => note,
         
-        // Notify that playback is complete
-        if (context === 'sound-judgment') {
-          // For sound judgment activity, show the mascot message if needed
+        // After completion, show context message for sound-judgment
+        onComplete: () => {
+          // Show the mascot message
           this.showContextMessage();
+          console.log(`AUDIO: Sound judgment melody playback complete`);
         }
-        
-        console.log(`Melody playback complete for ${context}`);
-      }, totalDuration * 1000 + 100);
+      });
     },
     
     /**

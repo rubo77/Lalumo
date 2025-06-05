@@ -65,6 +65,9 @@ Listen to melodies:
 
 - nach der erfolgsmeldung wird die z-index erniedrigt, das soll aber auch on top bleiben also über der box mit dem Fortschritt
 
+- playSequence-Funktion umbenennen in activity1_2_matchSoundsPlaySequence
+
+
 # most important
 - each activity must be reachable via a hash-anchor-link. all chapters and activities are included in the sitemap.
 also, if you select another activity in the nav, the hash tag should change, so you can bookmark them
