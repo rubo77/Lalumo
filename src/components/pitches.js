@@ -50,38 +50,71 @@ export function pitches() {
       'twinkle': {
         en: 'Twinkle, Twinkle, Little Star',
         de: 'Funkel, funkel, kleiner Stern',
-        notes: ['C4', 'C4', 'G4', 'G4', 'A4', 'A4', 'G4', 'F4', 'F4', 'E4', 'E4', 'D4', 'D4', 'C4']
+        quarterNoteDuration: 500, // Standardlänge für eine Viertelnote in ms
+        notes: [
+          'C4', 'C4', 'G4', 'G4', 'A4', 'A4', 'G4:h', // h = halbe Note (doppelte Länge)
+          'F4', 'F4', 'E4', 'E4', 'D4', 'D4', 'C4:h'  // Standard-Viertelnoten, außer markierte
+        ]
       },
       'jingle': {
         en: 'Jingle Bells',
         de: 'Jingle Bells',
-        notes: ['E4', 'E4', 'E4', 'E4', 'E4', 'E4', 'E4', 'G4', 'C4', 'D4', 'E4']
+        quarterNoteDuration: 450, // Etwas schneller für Jingle Bells
+        notes: ['E4', 'E4', 'E4:h', 'E4', 'E4', 'E4:h', 'E4', 'G4', 'C4', 'D4', 'E4:h']
       },
       'happy': {
         en: 'Happy Birthday',
-        de: 'Zum Geburtstag viel Glück',
-        notes: ['C4', 'C4', 'D4', 'C4', 'F4', 'E4', 'C4', 'C4', 'D4', 'C4', 'G4', 'F4']
+        de: 'Alles Gute zum Geburtstag',
+        quarterNoteDuration: 600, // Normale Geschwindigkeit für Geburtstagslied
+        notes: ['G3:e', 'G3:e', 'A3:q', 'G3:q', 'C4:q', 'B3:h', 'G3:e', 'G3:e', 'A3:q', 'G3:q', 'D4:q', 'C4:h']
       },
       'jingle-bells': {
         en: 'Jingle Bells',
         de: 'Jingle Bells',
-        notes: ['E4', 'E4', 'E4', 'E4', 'E4', 'E4', 'E4', 'G4', 'C4', 'D4', 'E4']
+        quarterNoteDuration: 450, // Etwas schneller für Jingle Bells
+        notes: ['E4', 'E4', 'E4:h', 'E4', 'E4', 'E4:h', 'E4', 'G4', 'C4', 'D4', 'E4:h']
       },
       'frere-jacques': {
         en: 'Brother John (Frère Jacques)',
         de: 'Bruder Jakob',
-        notes: ['C4', 'D4', 'E4', 'C4', 'C4', 'D4', 'E4', 'C4', 'E4', 'F4', 'G4', 'E4', 'F4', 'G4']
+        quarterNoteDuration: 500,
+        notes: [
+          'C4', 'D4', 'E4', 'C4', // Frère Jacques, Frère Jacques
+          'C4', 'D4', 'E4', 'C4', // Dormez-vous? Dormez-vous?
+          'E4', 'F4', 'G4:h', // Sonnez les matines
+          'E4', 'F4', 'G4:h'  // Sonnez les matines
+        ]
       },
       'happy-birthday': {
         en: 'Happy Birthday',
         de: 'Zum Geburtstag viel Glück',
-        notes: ['C4', 'C4', 'D4', 'C4', 'F4', 'E4', 'C4', 'C4', 'D4', 'C4', 'G4', 'F4']
+        quarterNoteDuration: 600,
+        notes: [
+          'C4:e', 'C4:e', // Happy
+          'D4:q', 'C4:q', 'F4:q', 'E4:h', // Birthday to you
+          'C4:e', 'C4:e', 'D4:q', 'C4:q', 'G4:q', 'F4:h' // Happy Birthday to you
+        ]
       },
       'are-you-sleeping': {
         en: 'Are You Sleeping?',
         de: 'Schlaf, Kindlein, schlaf',
-        notes: ['C4', 'D4', 'E4', 'C4', 'C4', 'D4', 'E4', 'C4', 'E4', 'F4', 'G4', 'E4', 'F4', 'G4']
-      }
+        quarterNoteDuration: 550,
+        notes: [
+          'C4', 'D4', 'E4', 'C4', // Frère Jacques (erster Teil)
+          'C4', 'D4', 'E4', 'C4', // Wiederholung
+          'E4', 'F4', 'G4:h', // Mittelteil
+          'E4', 'F4', 'G4:h' // Wiederholung
+        ]
+      },
+      'baa_black_sheep': {
+        en: 'Baa, Baa, Black Sheep',
+        de: 'Baa, baa, schwarzes Schaf',
+        quarterNoteDuration: 550, // Standardlänge für eine Viertelnote in ms
+        notes: [
+          'C4', 'G3', 'G3', 'A3', 'B3', 'C4:h', // Halbe Note am Ende der ersten Phrase
+          'C4', 'C4', 'A3', 'A3', 'B3', 'B3', 'A3:q.', 'G3:h' // Punktierte Viertelnote und halbe Note am Ende
+        ]
+      },
     },
     
     /**
@@ -787,10 +820,6 @@ export function pitches() {
       const elementClass = `.pitch-icon.${elementType}`;
       const elements = document.querySelectorAll(elementClass);
       
-      // Also apply animation to the parent card (especially for Android)
-      const cardClass = `.pitch-card:has(.pitch-icon.${elementType})`;
-      const cards = document.querySelectorAll(cardClass);
-      
       // If no elements found using traditional selector, try direct card selection
       if (elements.length === 0) {
         console.log('ANIM: No icon elements found, trying alternate selectors');
@@ -806,6 +835,7 @@ export function pitches() {
       }
       
       // Apply animation to cards (for Android compatibility)
+      const cards = document.querySelectorAll(cardClass);
       cards.forEach(card => {
         console.log('ANIM: Animating card for', elementType);
         card.classList.add('active');
@@ -924,13 +954,29 @@ export function pitches() {
     
     /**
      * Common function to play any audio sequence - core audio playback logic
-     * @param {Array} noteArray - Array of notes to play
+     * @param {Array} noteArray - Array of notes to play, can include duration modifiers (e.g. 'C4:h')
      * @param {string} context - logmessage Context identifier ('up', 'down', 'wave', 'jump', 'sound-judgment', etc.)
      * @param {Object} options - Optional configuration parameters
      * @param {Function} options.onComplete - Function to call when sequence completes
      * @param {Function} options.prepareNote - Function to transform note before playing (e.g. add 'pitch_' prefix)
-     * @param {number} options.noteDuration - Duration of each note in milliseconds (default: 600ms)
+     * @param {number} options.noteDuration - Base duration of a quarter note in milliseconds (default: 600ms)
      * @returns {Function} Cleanup function to cancel playback if needed
+     * 
+     * Note Duration System:
+     * - Default: Quarter note (no suffix) = 1x base duration
+     * - :w = Whole note = 4x base duration
+     * - :h = Half note = 2x base duration
+     * - :q = Quarter note (explicit) = 1x base duration
+     * - :e = Eighth note = 1/2x base duration
+     * - :s = Sixteenth note = 1/4x base duration
+     * - :q. = Dotted quarter note = 1.5x base duration
+     * - :h. = Dotted half note = 3x base duration
+     * - :e. = Dotted eighth note = 0.75x base duration
+     * 
+     * Rests:
+     * - r:q = Quarter note rest
+     * - r:h = Half note rest
+     * - etc.
      */
     playAudioSequence(noteArray, context, options = {}) {
       // Ensure we have a valid context identifier
@@ -940,7 +986,59 @@ export function pitches() {
       // Extract options
       const onComplete = options.onComplete || (() => {});
       const prepareNote = options.prepareNote || (note => note);
-      const noteDuration = options.noteDuration || 600; // ms - default note duration if not specified
+      const baseQuarterNoteDuration = options.noteDuration || 600; // ms - default quarter note duration
+      
+      /**
+       * Process the note array to extract durations from musical notation
+       * This supports notes with duration modifiers like 'C4:h' (half note)
+       * and rests like 'r:q' (quarter note rest)
+       */
+      const processedNotes = noteArray.map(note => {
+        // Default is a quarter note
+        let duration = baseQuarterNoteDuration;
+        let pitch = note;
+        let isRest = false;
+        
+        // Check if this is a rest
+        if (typeof note === 'string' && note.startsWith('r')) {
+          isRest = true;
+          pitch = null; // No pitch for rests
+        }
+        
+        // Parse note with duration modifier (e.g. 'C4:h' for half note)
+        if (typeof note === 'string' && note.includes(':')) {
+          const [notePitch, modifier] = note.split(':');
+          
+          // For rests, we only care about the duration
+          if (!isRest) {
+            pitch = notePitch;
+          }
+          
+          // Calculate duration based on musical notation
+          switch(modifier) {
+            case 'w':  duration = baseQuarterNoteDuration * 4; break;    // Whole note
+            case 'h':  duration = baseQuarterNoteDuration * 2; break;    // Half note
+            case 'q':  duration = baseQuarterNoteDuration; break;        // Quarter note (explicit)
+            case 'e':  duration = baseQuarterNoteDuration / 2; break;    // Eighth note
+            case 's':  duration = baseQuarterNoteDuration / 4; break;    // Sixteenth note
+            case 'q.': duration = baseQuarterNoteDuration * 1.5; break;  // Dotted quarter note
+            case 'h.': duration = baseQuarterNoteDuration * 3; break;    // Dotted half note
+            case 'e.': duration = baseQuarterNoteDuration * 0.75; break; // Dotted eighth note
+          }
+        }
+        
+        return {
+          originalNote: note,  // Keep original note for reference
+          pitch: pitch,        // The note pitch or null for rests
+          duration: duration,  // Duration in milliseconds
+          isRest: isRest       // Whether this is a rest
+        };
+      });
+      
+      // Calculate total sequence duration for timeouts
+      const totalSequenceDuration = processedNotes.reduce(
+        (total, note) => total + note.duration, 0
+      );
       
       // Set up variables for enhanced Android audio handling
       const isAndroid = /Android/.test(navigator.userAgent);
@@ -951,11 +1049,11 @@ export function pitches() {
       if (isAndroidChrome) {
         console.log(`AUDIO: Android Chrome detected - applying direct audio for '${sequenceContext}'`);
         
-        // Direct audio synthesis for Android Chrome
-        this.playAndroidDirectAudio(noteArray, sequenceContext);
+        // Direct audio synthesis for Android Chrome - pass the processed notes
+        this.playAndroidDirectAudio(processedNotes, sequenceContext);
         
-        // Calculate animation duration based on number of notes and note duration
-        const totalDuration = noteArray.length * noteDuration + 500;
+        // Add a small buffer to ensure all notes complete playing
+        const totalDuration = totalSequenceDuration + 500;
         
         // Set timeout for completion callback
         setTimeout(() => {
@@ -977,23 +1075,36 @@ export function pitches() {
       
       // Sequential note player function
       const playNote = (noteIndex) => {
-        if (noteIndex >= noteArray.length) {
+        if (noteIndex >= processedNotes.length) {
           console.log(`AUDIO: Finished playing all notes in '${sequenceContext}' sequence`);
           return; // Done with all notes
         }
         
-        // Get the current note
-        const note = noteArray[noteIndex];
-        console.log(`AUDIO: Playing note ${note} (${noteIndex + 1}/${noteArray.length}) for context ${sequenceContext}`);
+        // Get the current processed note object
+        const processedNote = processedNotes[noteIndex];
+        const { pitch, duration, isRest } = processedNote;
+        
+        console.log(
+          `AUDIO: ${isRest ? 'Rest' : 'Playing note'} ${isRest ? '' : pitch} ` +
+          `(${noteIndex + 1}/${processedNotes.length}) for ${duration}ms in context ${sequenceContext}`
+        );
+        
+        // For rests, we don't play a sound, just wait the duration
+        if (isRest) {
+          console.log(`AUDIO: Rest for ${duration}ms`);
+          // Schedule the next note after the rest duration
+          this.soundTimeoutId = setTimeout(() => playNote(noteIndex + 1), duration);
+          return;
+        }
         
         // Prepare note for playing (apply any transformations needed)
-        const preparedNote = prepareNote(note);
+        const preparedNote = prepareNote(pitch);
         
         // Generate a unique ID for this note event to avoid duplicate detection
         const uniqueId = `seq_${sequenceContext}_${noteIndex}_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
         
         // Debug log to track note event identifiers
-        console.log(`AUDIO_DEBUG: Generating event for note ${note} with ID: ${uniqueId} (context: ${sequenceContext})`);
+        console.log(`AUDIO_DEBUG: Generating event for note ${pitch} with ID: ${uniqueId} (context: ${sequenceContext})`);
         
         // Try to play it through the app's event system
         try {
@@ -1002,19 +1113,21 @@ export function pitches() {
             detail: { 
               note: preparedNote,
               sequenceIndex: noteIndex,
-              id: uniqueId
+              id: uniqueId,
+              duration: duration // Pass the note duration to the event system
             }
           }));
           
           // Additional logging right after dispatch
-          console.log(`AUDIO_DEBUG: Dispatched event for ${preparedNote} (raw: ${note}) at ${Date.now()}`);
+          console.log(`AUDIO_DEBUG: Dispatched event for ${preparedNote} (raw: ${pitch}) for ${duration}ms at ${Date.now()}`);
 
         } catch (err) {
           console.error(`AUDIO: Error dispatching note event for '${sequenceContext}':`, err);
         }
         
         // Schedule the next note and store the timeout ID for potential cleanup
-        this.soundTimeoutId = setTimeout(() => playNote(noteIndex + 1), noteDuration);
+        // Use the calculated duration for this specific note
+        this.soundTimeoutId = setTimeout(() => playNote(noteIndex + 1), duration);
       };
       
       // Start playing the sequence with the first note
@@ -1022,6 +1135,7 @@ export function pitches() {
       console.log(`AUDIO: Started sequence playback for context '${sequenceContext}'`);
       
       // Schedule cleanup after sequence completes
+      // Use the total sequence duration we calculated earlier
       const resetTimeoutId = setTimeout(() => {
         this.isPlaying = false;
         this.soundTimeoutId = null;
@@ -1029,7 +1143,7 @@ export function pitches() {
         
         // Call completion handler
         onComplete();
-      }, noteArray.length * noteDuration + 300);
+      }, totalSequenceDuration + 300); // Add a small buffer to ensure all notes complete
       
       // Store timeout ID for cleanup
       this.resetTimeoutId = resetTimeoutId;
@@ -1307,43 +1421,59 @@ export function pitches() {
     },
     
     /**
-     * Direct audio synthesis for Android Chrome
-     * Bypasses the standard event-based audio system
-     * @param {Array} noteArray - Array of notes to play
-     * @param {string} type - Type of pattern being played
+     * Direct audio synthesis for Android Chrome devices
+     * This is a specialized function that plays notes for Android Chrome where event system doesn't work
+     * @param {Array} processedNotes - Array of processed note objects with pitch, duration, and isRest properties
+     * @param {string} context - Identifier for the sequence context
      */
-    playAndroidDirectAudio(noteArray, type) {
+    playAndroidDirectAudio(processedNotes, context) {
       // Use debug logging for audio diagnostics
       import('../utils/debug').then(({ debugLog }) => {
-        debugLog('AUDIO', `Using direct Android audio synthesis for ${noteArray.length} notes`);
+        debugLog('AUDIO', `Using direct Android audio synthesis for ${processedNotes.length} notes`);
       });
       
-      // Create audio context specifically for this playback
-      try {
-        const AudioContext = window.AudioContext || window.webkitAudioContext;
-        const audioCtx = new AudioContext({
-          latencyHint: 'interactive',
-          sampleRate: 44100
-        });
+      // Setup audio context if not already done
+      this.setupAndroidAudioContext();
+      
+      if (!this.androidAudioContext) {
+        console.error('ANDROID AUDIO: Failed to create audio context');
+        return;
+      }
+      
+      // Create oscillator for each note
+      let startTime = this.androidAudioContext.currentTime;
+      
+      for (let i = 0; i < processedNotes.length; i++) {
+        const { pitch, duration, isRest } = processedNotes[i];
         
-        // Force resume the audio context immediately
-        audioCtx.resume().then(() => {
-          // Use debug logging
-          import('../utils/debug').then(({ debugLog }) => {
-            debugLog('AUDIO', 'Android audio context resumed for direct playback');
-            // Schedule all notes in advance
-            this.scheduleAndroidNotes(audioCtx, noteArray, type);
-          });
-        }).catch(err => {
-          console.error('AUDIO: Failed to resume Android audio context:', err);
-          
-          // Even if audio fails, ensure animation plays correctly
-          this.ensureAndroidAnimation(type, noteArray.length);
-        });
-      } catch (error) {
-        console.error('AUDIO: Error creating Android audio context:', error);
-        // Fall back to animation only
-        this.ensureAndroidAnimation(type, noteArray.length);
+        // Convert ms to seconds for Web Audio API
+        const noteDurationSeconds = duration / 1000;
+        
+        // Skip rests (no sound, just advance time)
+        if (isRest) {
+          console.log(`ANDROID AUDIO: Rest for ${noteDurationSeconds}s`);
+          startTime += noteDurationSeconds;
+          continue;
+        }
+        
+        // Skip invalid notes
+        if (!pitch || typeof pitch !== 'string') {
+          console.warn(`ANDROID AUDIO: Skipping invalid note at index ${i}:`, pitch);
+          continue;
+        }
+        
+        // Get frequency for this note
+        const freq = this.getNoteFrequency(pitch);
+        if (!freq) {
+          console.warn(`ANDROID AUDIO: Unknown note frequency for ${pitch}`);
+          continue;
+        }
+        
+        // Create oscillator for this note
+        this.scheduleAndroidNote(freq, startTime, noteDurationSeconds);
+        
+        // Advance start time for next note
+        startTime += noteDurationSeconds;
       }
     },
     
@@ -1723,13 +1853,10 @@ export function pitches() {
         debugLog('GAME', `User guessed ${guess}, correct answer was ${this.correctAnswer}, result: ${isCorrect ? 'correct' : 'incorrect'}`);
       });
       
-      // Play the full sequence including the correct next note
-      const fullSequence = [...this.currentSequence];
-      if (this.correctAnswer === 'up') {
-        fullSequence.push(this.getHigherNote(fullSequence[fullSequence.length - 1]));
-      } else {
-        fullSequence.push(this.getLowerNote(fullSequence[fullSequence.length - 1]));
-      }
+      // Play feedback sound using the event system
+      window.dispatchEvent(new CustomEvent('lalumo:playnote', { 
+        detail: { note: isCorrect ? 'success' : 'try_again' }
+      }));
       
       // Show appropriate animation based on result
       if (isCorrect) {
@@ -1753,6 +1880,14 @@ export function pitches() {
       }
       
       // Play the full sequence with the correct answer
+      const fullSequence = [...this.currentSequence];
+      if (this.correctAnswer === 'up') {
+        fullSequence.push(this.getHigherNote(fullSequence[fullSequence.length - 1]));
+      } else {
+        fullSequence.push(this.getLowerNote(fullSequence[fullSequence.length - 1]));
+      }
+      
+      // Play the sequence
       const playFull = (notes, index = 0) => {
         if (index >= notes.length) return;
         
@@ -2043,6 +2178,7 @@ export function pitches() {
       // Reset after feedback
       setTimeout(() => {
         this.showFeedback = false;
+        
         if (isCorrect) {
           // Play the new melody automatically after 2 seconds
           this.setupMemoryMode();
@@ -2084,7 +2220,7 @@ export function pitches() {
     },
     
     /**
-     * Setup the "Does It Sound Right?" activity
+     * Setup for the "Does It Sound Right?" activity
      * @param {boolean} playSound - Whether to play a melody right away
      */
     setupSoundJudgmentMode(playSound = true) {
@@ -2093,6 +2229,7 @@ export function pitches() {
       // Reset state variables specific to this activity
       this.melodyHasWrongNote = false;
       this.currentMelodyName = '';
+      this.currentMelodyId = null;
       this.showFeedback = false;
       this.feedback = '';
       this.correctAnswer = null;
@@ -2121,7 +2258,7 @@ export function pitches() {
       
       // Play the melody if requested
       if (shouldPlay) {
-        this.playMelodySequence(this.currentSequence, 'sound-judgment');
+        this.playMelodySequence(this.currentSequence, 'sound-judgment', this.currentMelodyId);
       }
     },
     
@@ -2144,6 +2281,9 @@ export function pitches() {
       const randomMelodyKey = melodyKeys[Math.floor(Math.random() * melodyKeys.length)];
       const selectedMelody = this.knownMelodies[randomMelodyKey];
       
+      // Store the melody ID for later reference
+      this.currentMelodyId = randomMelodyKey;
+      
       // Get the current language
       const language = localStorage.getItem('lalumo_language') === 'german' ? 'de' : 'en';
       
@@ -2164,9 +2304,18 @@ export function pitches() {
         // Extract the note to modify
         const noteToModify = modifiedMelody[noteToModifyIndex];
         
-        // Extract the note letter and octave
-        const noteLetter = noteToModify.substring(0, 1);
-        const noteOctave = noteToModify.substring(1);
+        // Handle notes with duration modifiers, e.g., 'C4:h'
+        let noteLetter, noteOctave, durationModifier = '';
+        
+        if (noteToModify.includes(':')) {
+          const [notePart, modifier] = noteToModify.split(':');
+          noteLetter = notePart.substring(0, 1);
+          noteOctave = notePart.substring(1);
+          durationModifier = ':' + modifier; // Save duration modifier to reapply later
+        } else {
+          noteLetter = noteToModify.substring(0, 1);
+          noteOctave = noteToModify.substring(1);
+        }
         
         // Possible note letters
         const possibleNotes = ['C', 'D', 'E', 'F', 'G', 'A', 'B'];
@@ -2183,8 +2332,8 @@ export function pitches() {
           wrongNoteIndex = (currentNoteIndex + shift + possibleNotes.length) % possibleNotes.length;
         } while (wrongNoteIndex === currentNoteIndex);
         
-        // Create the wrong note
-        const wrongNote = possibleNotes[wrongNoteIndex] + noteOctave;
+        // Create the wrong note, preserving any duration modifier
+        const wrongNote = possibleNotes[wrongNoteIndex] + noteOctave + durationModifier;
         modifiedMelody[noteToModifyIndex] = wrongNote;
         
         console.log(`Modified melody at position ${noteToModifyIndex}: ${noteToModify} -> ${wrongNote}`);
@@ -2223,19 +2372,19 @@ export function pitches() {
           return; // Exit if melody generation failed
         }
         
-        // Play the newly generated melody
-        this.playMelodySequence(this.currentSequence, 'sound-judgment');
+        // Play the newly generated melody with the melody ID
+        this.playMelodySequence(this.currentSequence, 'sound-judgment', this.currentMelodyId);
       } 
       // Play the existing melody if we're not generating a new one
       else if (this.currentSequence && this.currentSequence.length > 0) {
-        this.playMelodySequence(this.currentSequence, 'sound-judgment');
+        this.playMelodySequence(this.currentSequence, 'sound-judgment', this.currentMelodyId);
       } 
       // Handle case where there's no melody to play
       else {
         console.error('No sequence to play for sound judgment activity');
         // Try to generate a melody as fallback
         if (this.generateSoundJudgmentMelody()) {
-          this.playMelodySequence(this.currentSequence, 'sound-judgment');
+          this.playMelodySequence(this.currentSequence, 'sound-judgment', this.currentMelodyId);
         }
       }
     },
@@ -2243,29 +2392,41 @@ export function pitches() {
     /**
      * Plays a melody sequence for the "Does It Sound Right?" activity
      * Uses the shared playAudioSequence function for consistent audio behavior
-     * @param {Array} notes - Array of notes to play
+     * @param {Array} notes - Array of notes to play, can include duration modifiers (e.g. 'C4:h')
      * @param {string} context - The context in which this melody is played
+     * @param {string} melodyId - Optional ID of the melody being played (to get quarterNoteDuration)
      * @returns {Function} Cleanup function
      */
-    playMelodySequence(notes, context = 'sound-judgment') {
-      console.log(`AUDIO: Playing melody sequence for '${context}' with ${notes.length} notes`)
+    playMelodySequence(notes, context = 'sound-judgment', melodyId = null) {
+      console.log(`AUDIO: Playing melody sequence for '${context}' with ${notes.length} notes`);
       
       // If already playing, stop the current sound
       if (this.isPlaying) {
+        console.log(`AUDIO: Cancelling previous playback before starting new melody`);
         this.stopCurrentSound();
       }
       
-      // Ensure playing state is set
       this.isPlaying = true;
       
-      // Validate all notes before attempting to play - FATAL ERROR if any are invalid
+      // Validate all notes before attempting to play
       for (let i = 0; i < notes.length; i++) {
         const note = notes[i];
-        if (!note || typeof note !== 'string' || note.length < 2) {
+        if (!note || typeof note !== 'string') {
           // FATAL ERROR: invalid note detected
           console.error(`AUDIO_ERROR: Invalid note detected at position ${i}: "${note}". Cannot play melody.`);
           this.isPlaying = false;
           return () => {}; // Return empty cleanup function
+        }
+        
+        // For notes with modifiers (e.g. 'C4:h'), validate the base note part
+        if (note.includes(':')) {
+          const basePitch = note.split(':')[0];
+          // Skip validation for rests
+          if (!basePitch.startsWith('r') && (basePitch.length < 2)) {
+            console.error(`AUDIO_ERROR: Invalid modified note at position ${i}: "${note}". Base pitch "${basePitch}" is invalid.`);
+            this.isPlaying = false;
+            return () => {};
+          }
         }
       }
       
@@ -2275,17 +2436,31 @@ export function pitches() {
       // Store the sequence
       this.currentSequence = noteArray;
       
+      // Determine the base quarter note duration
+      let baseQuarterNoteDuration = 700; // Default
+      
+      // If we have a melodyId, try to get the specific quarterNoteDuration for this melody
+      if (melodyId && this.knownMelodies[melodyId] && this.knownMelodies[melodyId].quarterNoteDuration) {
+        baseQuarterNoteDuration = this.knownMelodies[melodyId].quarterNoteDuration;
+        console.log(`AUDIO: Using melody-specific quarter note duration: ${baseQuarterNoteDuration}ms for ${melodyId}`);
+      }
+      
       // Use the common audio sequence player with sound-judgment specific settings
       return this.playAudioSequence(noteArray, context, {
         // Transform notes for sound-judgment - add 'sound_' prefix to differentiate from match-sounds
         // This helps avoid duplicate detection issues
-        prepareNote: (note) => `sound_${note.toLowerCase()}`,
+        prepareNote: (note) => {
+          // For notes with modifiers (e.g. 'C4:h'), extract just the pitch part
+          if (typeof note === 'string' && note.includes(':')) {
+            note = note.split(':')[0];
+          }
+          return `sound_${note.toLowerCase()}`;
+        },
         
-        // Use a slightly longer note duration for melodies (700ms) to make them more musical
-        // This allows melodies to have more distinct, separate notes compared to the default 600ms
-        noteDuration: 700,
+        // Use our determined quarter note duration for this melody
+        noteDuration: baseQuarterNoteDuration,
         
-        // After completion callback - no longer showing mascot message here
+        // After completion callback
         onComplete: () => {
           console.log(`AUDIO: Sound judgment melody playback complete`);
         }
