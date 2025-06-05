@@ -14,7 +14,15 @@ export function app() {
     showUsernamePrompt: false,
     isAudioEnabled: false,
     audioContext: null,
-    oscillators: {},
+    isSpeaking: false,
+    ttsAvailable: false,
+    currentVoice: null,
+    voicesByLanguage: {},
+    preferredVoice: null,
+    isMuted: false,
+    activeOscillators: [],
+    currentToneTimeout: null,
+    sequenceTimeouts: [], // Array für Sequenz-Timeouts
     exportedData: null,
     importData: '',
     preferredLanguage: 'english',
@@ -269,10 +277,9 @@ export function app() {
       
       // Set up event listener for stopping all sounds
       window.addEventListener('lalumo:stopallsounds', () => {
-        // We don't need to do anything with the audio context
-        // The individual oscillators will be stopped in playTone
-        // Just log that we received the stop request
-        console.log('Received request to stop sounds');
+        // Aktiv alle Oszillatoren stoppen, wenn das Event ausgelöst wird
+        console.log('Received request to stop sounds - stopping all oscillators');
+        this.stopAllOscillators();
       });
       
       // Special iOS audio check on page load
@@ -519,23 +526,33 @@ export function app() {
      * Stoppt alle aktiven Oszillatoren, um Audio-Konflikte zu vermeiden
      */
     stopAllOscillators() {
+      // Stop all active oscillators
       if (this.activeOscillators && this.activeOscillators.length > 0) {
         console.log(`Stopping ${this.activeOscillators.length} active oscillators`);
         
-        // Stoppe alle aktiven Oszillatoren sofort
+        // Stop all active oscillators immediately
         this.activeOscillators.forEach(osc => {
           try {
-            osc.stop(0); // Sofort stoppen
+            osc.stop(0); // Stop immediately
             osc.disconnect();
           } catch (e) {
-            // Ignoriere Fehler von bereits gestoppten Oszillatoren
+            // Ignore errors from already stopped oscillators
             console.log('Error stopping oscillator, may already be stopped');
           }
         });
         
-        // Liste leeren
+        // Clear the list
         this.activeOscillators = [];
       }
+      
+      // Also clear current tone timeout
+      if (this.currentToneTimeout) {
+        clearTimeout(this.currentToneTimeout);
+        this.currentToneTimeout = null;
+      }
+      
+      // Also clear all sequence timeouts
+      this.clearSequenceTimeouts();
     },
     
     /**
@@ -1052,7 +1069,12 @@ export function app() {
      * Play a sequence of tones
      */
     playToneSequence(frequencies, durations = [], interval = 0.3) {
+      console.log('DEBUG: playToneSequence called with', frequencies.length, 'frequencies');
       if (!this.audioContext) return;
+      
+      // Zuerst alle aktiven Sequenz-Timeouts löschen
+      console.log('DEBUG: Calling clearSequenceTimeouts before creating new sequence');
+      this.clearSequenceTimeouts();
       
       // Use default duration if not provided
       if (!durations.length) {
@@ -1061,10 +1083,43 @@ export function app() {
       
       // Play each tone with timing
       frequencies.forEach((freq, index) => {
-        setTimeout(() => {
+        // Timeout-ID speichern, um es später löschen zu können
+        console.log(`DEBUG: Creating timeout for tone ${index} at ${index * interval * 1000}ms`);
+        const timeoutId = setTimeout(() => {
+          console.log(`DEBUG: Playing tone ${index} after timeout`);
           this.playTone(freq, durations[index] || 0.3);
+          
+          // Timeout aus der Liste entfernen, wenn es ausgeführt wurde
+          const timeoutIndex = this.sequenceTimeouts.indexOf(timeoutId);
+          if (timeoutIndex !== -1) {
+            console.log(`DEBUG: Removing executed timeout ${timeoutId} from tracking list`);
+            this.sequenceTimeouts.splice(timeoutIndex, 1);
+          }
         }, index * interval * 1000);
+        
+        // Timeout-ID zum Array hinzufügen
+        this.sequenceTimeouts.push(timeoutId);
+        console.log(`DEBUG: Added timeout ${timeoutId} to tracking list, now tracking ${this.sequenceTimeouts.length} timeouts`);
       });
+    },
+    
+    /**
+     * Löscht alle aktiven Sequenz-Timeouts
+     */
+    clearSequenceTimeouts() {
+      console.log('DEBUG: clearSequenceTimeouts called - trace:', new Error().stack);
+      // Alle Timeout-IDs durchlaufen und löschen
+      if (this.sequenceTimeouts && this.sequenceTimeouts.length > 0) {
+        console.log(`DEBUG: Clearing ${this.sequenceTimeouts.length} sequence timeouts with IDs:`, JSON.stringify(this.sequenceTimeouts));
+        this.sequenceTimeouts.forEach(timeoutId => {
+          console.log(`DEBUG: Clearing timeout ID ${timeoutId}`);
+          clearTimeout(timeoutId);
+        });
+        this.sequenceTimeouts = [];
+        console.log('DEBUG: Sequence timeouts array cleared');
+      } else {
+        console.log('DEBUG: No sequence timeouts to clear');
+      }
     },
     
     /**

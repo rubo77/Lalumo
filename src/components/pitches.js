@@ -18,6 +18,7 @@ export function pitches() {
     showFeedback: false,
     mascotMessage: '',
     showMascot: false,
+    melodyTimeouts: [], // Array für Timeout-IDs der Melodiesequenzen
     mascotSettings: {
       showHelpMessages: true,     // Whether to show help messages
       seenActivityMessages: {},   // Track which activities have shown the message
@@ -926,8 +927,11 @@ export function pitches() {
      * @param {number} index - Aktuelle Position im Array
      */
     playNoteSequence(noteArray, index) {
+      console.log(`DEBUG: playNoteSequence called with index ${index}/${noteArray.length}`);
+      
       if (index >= noteArray.length) {
         // Am Ende der Sequenz angekommen, Wiedergabe beenden
+        console.log('DEBUG: End of note sequence reached, stopping playback');
         this.isPlaying = false;
         this.currentAnimation = null;
         return;
@@ -956,9 +960,23 @@ export function pitches() {
       
       // Etwas längere Pause zwischen den Noten für bessere Unterscheidbarkeit
       // Nächste Note mit Verzögerung abspielen
-      setTimeout(() => {
+      console.log('DEBUG: Scheduling next note with 750ms delay');
+      const timeoutId = setTimeout(() => {
+        console.log(`DEBUG: Executing scheduled playback of next note ${index + 1}`);
+        
+        // Timeout aus Liste entfernen, sobald er ausgeführt wurde
+        const timeoutIndex = this.melodyTimeouts.indexOf(timeoutId);
+        if (timeoutIndex !== -1) {
+          this.melodyTimeouts.splice(timeoutIndex, 1);
+          console.log(`DEBUG: Removed executed timeout from melodyTimeouts, ${this.melodyTimeouts.length} remaining`);
+        }
+        
         this.playNoteSequence(noteArray, index + 1);
       }, 750); // 750ms zwischen den Noten für klarere Trennung
+      
+      // Timeout-ID im Array speichern, damit es bei stopCurrentSound gelöscht werden kann
+      this.melodyTimeouts.push(timeoutId);
+      console.log(`DEBUG: Added timeout ID ${timeoutId} to melodyTimeouts, now tracking ${this.melodyTimeouts.length} timeouts`);
     },
     
     /**
@@ -1337,10 +1355,8 @@ export function pitches() {
       // Enhanced logging for diagnosis
       console.log('AUDIO: Sequence play requested for type:', type);
       
-      // If already playing, stop the current sound first
-      if (this.isPlaying) {
-        this.stopCurrentSound();
-      }
+      // Always stop any currently playing sound first
+      this.stopCurrentSound();
       
       // Start animation immediately regardless of audio status
       this.currentAnimation = type;
@@ -1570,15 +1586,26 @@ export function pitches() {
      * Stop any currently playing sound
      */
     stopCurrentSound() {
-      // Cancel any pending timeouts
+      console.log('DEBUG: stopCurrentSound called in pitches.js - trace:', new Error().stack);
+      
+      // Cancel any pending timeouts in this component
       if (this.soundTimeoutId) {
+        console.log('DEBUG: Clearing soundTimeoutId:', this.soundTimeoutId);
         clearTimeout(this.soundTimeoutId);
         this.soundTimeoutId = null;
       }
       
       if (this.resetTimeoutId) {
+        console.log('DEBUG: Clearing resetTimeoutId:', this.resetTimeoutId);
         clearTimeout(this.resetTimeoutId);
         this.resetTimeoutId = null;
+      }
+      
+      // Stop melody playback timeouts
+      if (this.melodyTimeouts && this.melodyTimeouts.length > 0) {
+        console.log(`DEBUG: Clearing ${this.melodyTimeouts.length} melody timeouts`);
+        this.melodyTimeouts.forEach(timeoutId => clearTimeout(timeoutId));
+        this.melodyTimeouts = [];
       }
       
       // Stop animations and reset flags
@@ -1587,9 +1614,11 @@ export function pitches() {
       
       // Remove active classes from all pitch cards
       const activeCards = document.querySelectorAll('.pitch-card.active');
+      console.log('DEBUG: Removing active class from', activeCards.length, 'pitch cards');
       activeCards.forEach(card => card.classList.remove('active'));
       
       // Stop all active oscillators via global event
+      console.log('DEBUG: Dispatching lalumo:stopallsounds event');
       window.dispatchEvent(new CustomEvent('lalumo:stopallsounds'));
       console.log('AUDIO: Stopped all sounds');
     },
@@ -2241,6 +2270,9 @@ export function pitches() {
      * @param {string} note - The note to add
      */
     addToSequence(note) {
+      // Stop any currently playing melody first
+      this.stopCurrentSound();
+      
       // Highlight the key when pressed
       this.currentHighlightedNote = note;
       
@@ -2895,33 +2927,9 @@ export function pitches() {
       this.showContextMessage(); // Update instructions
     },
 
-    /**
-     * Stop any currently playing sound
-     */
-    stopCurrentSound() {
-      // Cancel any pending timeouts
-      if (this.soundTimeoutId) {
-        clearTimeout(this.soundTimeoutId);
-        this.soundTimeoutId = null;
-      }
-      
-      if (this.resetTimeoutId) {
-        clearTimeout(this.resetTimeoutId);
-        this.resetTimeoutId = null;
-      }
-      
-      // Stop animations and reset flags
-      this.isPlaying = false;
-      this.currentAnimation = null;
-      
-      // Remove active classes from all pitch cards
-      const activeCards = document.querySelectorAll('.pitch-card.active');
-      activeCards.forEach(card => card.classList.remove('active'));
-      
-      // Stop all active oscillators via global event
-      window.dispatchEvent(new CustomEvent('lalumo:stopallsounds'));
-      console.log('AUDIO: Stopped all sounds');
-    },
+    // ENTFERNT: Doppelte Definition von stopCurrentSound wurde entfernt, 
+    // da sie ein Duplikat der Methode in Zeile ~1570 war und zu unerwünschtem Verhalten führte.
+    // Die ursprüngliche Methode wird stattdessen für alle Aufrufe verwendet.
 
     /**
      * Reset all progress for this component (can be called after global reset)

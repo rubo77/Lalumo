@@ -1217,7 +1217,8 @@ section h2 {
 /* Pitch Grid - for listen and match modes */
 .pitch-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  grid-template-columns: repeat(2, 1fr);
+  grid-auto-rows: 100px;
   gap: 1rem;
   margin: 1.5rem 0;
 }
@@ -1247,13 +1248,10 @@ section h2 {
 /* Special case for 'down' card when frog is not unlocked yet */
 .pitch-grid.no-frog .pitch-card.down-extended {
   grid-row: span 2;
-  height: 200px;
+  height: 210px; /* Etwas höher als 2 Zeilen für bessere Sichtbarkeit */
 }
 
-/* For down card, move the icon to the bottom of the card */
-.pitch-card.down-extended .pitch-icon {
-  margin-top: auto;
-}
+/* Erfordert keine Icon-Positionierung mehr */
 
 /* Play buttons in pitch cards */
 .pitch-card .play-button {
