@@ -1,3 +1,73 @@
+Lalumo
+======
+
+Learn music with animal friends, melodies, and puzzles – playful and colorful!
+
+# Description
+
+Lalumo – Discover Music with Heart and Ear
+
+With Lalumo, children dive into the colorful world of music! In a playful way and with lovingly designed animal characters, they learn about pitch, melody, timbre, and rhythm – all without any prior knowledge.
+
+What can your child expect in Lalumo?
+
+- Chapter 1: Pitch & Melody
+  This is where it all begins! Children recognize pitches by listening and playing them back.
+
+- Child-friendly activities
+  - Listen to familiar children's songs and decide whether they sound right or "off"
+  - Choose animal friends for good or strange-sounding tones
+  - Play back simple melodies
+  - Explore rising, falling, or jumping melodies
+
+- Visuals that support understanding Colors, shapes, and motion help children intuitively grasp musical concepts.
+
+Intuitive navigation
+Lalumo is specially designed for young children – no complex menus, just a clear, image-based interface with a bird as the play button and more.
+
+Beautiful illustrations
+The scenes resemble hand-painted picture books: warm, calm, and full of charm.
+
+No ads, no in-app purchases
+Fully usable offline, with no distractions – just music, play, and joy.
+
+Perfect for preschool-aged children, parents who want to support early musical learning, and educators looking to make sound worlds accessible to kids.
+
+
+# Kurzbeschreibung
+
+Lerne Musik mit Tierfreunden, Melodien und Rätseln – spielerisch & bunt!
+
+# Beschreibung
+
+Lalumo – Musik entdecken mit Herz und Ohr
+Mit Lalumo tauchen Kinder ab in die bunte Welt der Musik! Spielerisch und mit liebevoll gestalteten Tiercharakteren lernen sie Tonhöhen, Melodien, Klangfarben und Rhythmen kennen – ganz ohne Vorkenntnisse.
+
+🎶 Was erwartet dein Kind in Lalumo?
+
+- Kapitel 1: Tonhöhen & Melodien
+- Hier beginnt alles! Kinder erkennen Tonhöhen durch Hören, und Nachspielen.
+
+- Kindgerechte Übungen
+    ➤ Höre bekannte Kinderlieder und finde heraus, ob sie richtig oder „schräg“ gespielt wurden
+    ➤ Wähle passende Tierfreunde für gute oder schräge Töne
+    ➤ Spiele Melodien nach
+    ➤ Erforsche aufsteigende, absteigende oder hüpfende Melodien
+
+- Visualisierungen helfen beim Verstehen
+- Farben, Formen und Bewegungen machen Musik intuitiv begreifbar.
+
+🐦 Intuitive Bedienung
+Lalumo ist speziell für kleine Kinder entwickelt – keine komplizierten Menüs, sondern eine klare, bildgestützte Navigation mit Play-Button-Vogel und Co.
+
+🌸 Wunderschöne Illustrationen. Die Szenen erinnern an handgemalte Bilderbücher: liebevoll, ruhig, warm.
+
+🎵 Keine Werbung, keine In-App-Käufe
+Vollständig offline nutzbar, keine Ablenkung – nur Musik, Spiel und Freude.
+
+Ideal für Kinder im Vorschulalter, für Eltern, die musikalische Früherziehung spielerisch begleiten möchten, und für Pädagog:innen, die Klangwelten zugänglich machen wollen.
+
+
 # Requirements
 
 * Node >= 12
