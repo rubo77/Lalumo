@@ -57,7 +57,7 @@
 .close-mascot-button {
   position: absolute;
   top: 5px;
-  right: 5px;
+  right: -4px;
   background-color: #ff5a5a;
   color: white;
   border: none;
@@ -1250,6 +1250,41 @@ section h2 {
   grid-row: span 2;
   height: 210px; /* Etwas höher als 2 Zeilen für bessere Sichtbarkeit */
 }
+
+/* Match Sounds Activity (1_2) specific styles */
+.match-sounds-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto auto;
+  gap: 10px;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Standard-Höhe für Pitch-Cards */
+.match-sounds-container .pitch-card {
+  height: 100px;
+  margin: 0;
+}
+
+/* Wenn weder Welle noch Frosch freigeschaltet: alle Karten höher */
+.match-sounds-container.no-unlocks .pitch-card {
+  height: 200px; /* Alle Cards doppelt so hoch wenn nichts freigeschaltet ist */
+}
+
+/* Nur Rutsche über zwei Zeilen, wenn Frosch nicht freigeschaltet */
+.match-sounds-container.no-frog .pitch-card.down-card {
+  grid-row: span 2; /* Über zwei Reihen erstrecken */
+  height: 210px; /* Etwas höher für bessere Sichtbarkeit */
+}
+
+/* Spezifische Positionierung der Cards */
+.match-sounds-container .up-card { grid-column: 1; grid-row: 1; }
+.match-sounds-container .down-card { grid-column: 2; grid-row: 1 / span 1; } /* Standard 1 Zeile */
+.match-sounds-container.no-frog .down-card { grid-row: 1 / span 2; } /* Mit Frosch 2 Zeilen */
+.match-sounds-container .wave-card { grid-column: 1; grid-row: 2; }
+.match-sounds-container .jump-card { grid-column: 2; grid-row: 2; }
 
 /* Erfordert keine Icon-Positionierung mehr */
 

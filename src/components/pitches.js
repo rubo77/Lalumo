@@ -1424,6 +1424,7 @@ export function pitches() {
       this.animationInProgress = false;
       this.showActivityIntroMessage('match');
       this.updateMatchingBackground(); // Update background based on progress
+      this.updateMatchSoundsPitchCardLayout(); // Aktualisiere Pitch-Card-Layout basierend auf Freischaltungsstatus
       
       // If not in game mode, allow free exploration of all patterns
       if (!this.gameMode) {
@@ -2884,6 +2885,13 @@ export function pitches() {
         this.showMascotMessage(message);
       }
       
+      // Wenn ein neues Pattern freigeschaltet wurde und wir im Match-Sounds-Modus sind,
+      // aktualisieren wir das Layout der Pitch-Cards
+      if (unlocked && this.mode === '1_2_pitches_match-sounds') {
+        console.log('Pattern unlocked, updating Match Sounds layout');
+        this.updateMatchSoundsPitchCardLayout();
+      }
+      
       if (unlocked) {
         this.saveDifficultyProgress();
       }
@@ -2924,6 +2932,43 @@ export function pitches() {
       if (matchingActivity) {
         matchingActivity.style.backgroundImage = `url(${backgroundImage})`;
         console.log(`Updated background based on progress (${progress}): ${backgroundImage}`);
+      }
+    },
+    
+    /**
+     * Adjusts the size and layout of pitch cards in Match-Sounds Activity (1_2)
+     * based on the unlocked patterns status.
+     */
+    updateMatchSoundsPitchCardLayout() {
+      console.log('Updating Match Sounds pitch card layout based on unlocked patterns');
+      
+      // Identify the Match-Sounds activity container
+      const matchingActivity = document.querySelector('[x-show="mode === \'1_2_pitches_match-sounds\'"]');
+      if (!matchingActivity) return;
+      
+      // Find the container that holds the pitch cards in a grid
+      const gridContainer = matchingActivity.querySelector('.match-sounds-container');
+      if (!gridContainer) {
+        console.log('No match-sounds-container found in match sounds activity');
+        return;
+      }
+      
+      // Check which patterns are unlocked
+      const hasWave = this.unlockedPatterns.includes('wave');
+      const hasJump = this.unlockedPatterns.includes('jump');
+      
+      // Remove existing state classes
+      gridContainer.classList.remove('no-unlocks', 'no-frog');
+      
+      // Case 1: Neither wave nor frog patterns are unlocked (all cards are taller)
+      if (!hasWave && !hasJump) {
+        gridContainer.classList.add('no-unlocks');
+        console.log('Applied no-unlocks class: all cards will be double height');
+      }
+      // Case 2: No frog unlocked (down card spans two rows)
+      else if (!hasJump) {
+        gridContainer.classList.add('no-frog');
+        console.log('Applied no-frog class: down card will span two rows');
       }
     },
     

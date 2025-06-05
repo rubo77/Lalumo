@@ -313,32 +313,31 @@
           <button x-show="gameMode" class="circular-play-button" @click="playCurrentMelody()" aria-label="Play Melody" title="Play">
           </button>
 
-          <div class="pitch-grid">
-            <!-- Always show up pattern -->
-            <div class="pitch-card" @click="checkMatch('up')" @mousedown="startLongPress('up')" @mouseup="cancelLongPress()" @mouseleave="cancelLongPress()">
+          <!-- Grid-Container für Match-Sounds mit richtigem rowspan-Verhalten -->
+          <div class="match-sounds-container">
+            <!-- Up pattern (immer sichtbar) - oben links -->
+            <div class="pitch-card up-card" @click="checkMatch('up')" @mousedown="startLongPress('up')" @mouseup="cancelLongPress()" @mouseleave="cancelLongPress()">
               <div class="pitch-icon up">
                 <img src="/images/1x1.gif" alt="Rocket going up" />
               </div>
             </div>
             
-            <!-- Always show down pattern -->
-            <div class="pitch-card" @click="checkMatch('down')" @mousedown="startLongPress('down')" @mouseup="cancelLongPress()" @mouseleave="cancelLongPress()">
+            <!-- Down pattern (immer sichtbar) - rechts mit möglichem rowspan -->
+            <div class="pitch-card down-card" @click="checkMatch('down')" @mousedown="startLongPress('down')" @mouseup="cancelLongPress()" @mouseleave="cancelLongPress()">
               <div class="pitch-icon down">
                 <img src="/images/1x1.gif" alt="Slide going down" />
               </div>
             </div>
-          </div>
-
-          <div class="pitch-grid">
-            <!-- Show wave pattern only if unlocked -->
-            <div x-show="unlockedPatterns.includes('wave')" class="pitch-card" @click="checkMatch('wave')" @mousedown="startLongPress('wave')" @mouseup="cancelLongPress()" @mouseleave="cancelLongPress()">
+            
+            <!-- Wave pattern (wenn freigeschaltet) - unten links -->
+            <div x-show="unlockedPatterns.includes('wave')" class="pitch-card wave-card" @click="checkMatch('wave')" @mousedown="startLongPress('wave')" @mouseup="cancelLongPress()" @mouseleave="cancelLongPress()">
               <div class="pitch-icon wave">
                 <img src="/images/1x1.gif" alt="Wave pattern" />
               </div>
             </div>
             
-            <!-- Show jump pattern only if unlocked -->
-            <div x-show="unlockedPatterns.includes('jump')" class="pitch-card" @click="checkMatch('jump')" @mousedown="startLongPress('jump')" @mouseup="cancelLongPress()" @mouseleave="cancelLongPress()">
+            <!-- Jump pattern (wenn freigeschaltet) - unten rechts -->
+            <div x-show="unlockedPatterns.includes('jump')" class="pitch-card jump-card" @click="checkMatch('jump')" @mousedown="startLongPress('jump')" @mouseup="cancelLongPress()" @mouseleave="cancelLongPress()">
               <div class="pitch-icon jump">
                 <img src="/images/1x1.gif" alt="Jumping frog" />
               </div>
