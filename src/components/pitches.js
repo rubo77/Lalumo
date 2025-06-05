@@ -954,6 +954,9 @@ export function pitches() {
       const onComplete = options.onComplete || (() => {});
       const prepareNote = options.prepareNote || (note => note);
       
+      // Set timing based on context (slower for sound-judgment to avoid duplicate detection)
+      const noteDelay = sequenceContext === 'sound-judgment' ? 700 : 600; // ms
+      
       // Set up variables for enhanced Android audio handling
       const isAndroid = /Android/.test(navigator.userAgent);
       const isChrome = /Chrome/.test(navigator.userAgent);
@@ -967,7 +970,7 @@ export function pitches() {
         this.playAndroidDirectAudio(noteArray, sequenceContext);
         
         // Calculate animation duration based on number of notes
-        const totalDuration = noteArray.length * 600 + 500;
+        const totalDuration = noteArray.length * noteDelay + 500;
         
         // Set timeout for completion callback
         setTimeout(() => {
@@ -1004,6 +1007,9 @@ export function pitches() {
         // Generate a unique ID for this note event to avoid duplicate detection
         const uniqueId = `seq_${sequenceContext}_${noteIndex}_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
         
+        // Debug log to track note event identifiers
+        console.log(`AUDIO_DEBUG: Generating event for note ${note} with ID: ${uniqueId} (context: ${sequenceContext})`);
+        
         // Try to play it through the app's event system
         try {
           // Dispatch event with note details
@@ -1014,6 +1020,10 @@ export function pitches() {
               id: uniqueId
             }
           }));
+          
+          // Additional logging right after dispatch
+          console.log(`AUDIO_DEBUG: Dispatched event for ${preparedNote} (raw: ${note}) at ${Date.now()}`);
+
         } catch (err) {
           console.error(`AUDIO: Error dispatching note event for '${sequenceContext}':`, err);
         }
@@ -2250,8 +2260,9 @@ export function pitches() {
       
       // Use the common audio sequence player with sound-judgment specific settings
       return this.playAudioSequence(noteArray, context, {
-        // Notes in sound-judgment don't need any transformation
-        prepareNote: (note) => note,
+        // Transform notes for sound-judgment - add 'sound_' prefix to differentiate from match-sounds
+        // This helps avoid duplicate detection issues
+        prepareNote: (note) => `sound_${note.toLowerCase()}`,
         
         // After completion, show context message for sound-judgment
         onComplete: () => {

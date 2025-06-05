@@ -295,11 +295,11 @@
           
           <!-- Play button - only show when not in game mode -->
           <button x-show="!gameMode" class="circular-play-button" 
-          @click="playCurrentMelody()" aria-label="Start Game">
+          @click="playCurrentMelody()" aria-label="Start Game" title="Play">
           </button>
           
           <!-- Game mode play button - only show when in game mode -->
-          <button x-show="gameMode" class="circular-play-button" @click="playCurrentMelody()" aria-label="Play Melody">
+          <button x-show="gameMode" class="circular-play-button" @click="playCurrentMelody()" aria-label="Play Melody" title="Play">
           </button>
 
           <div class="pitch-grid">
@@ -376,26 +376,24 @@
             <button class="back-to-main" @click="setMode('main')" aria-label="Back to main menu">
               <span style="font-size: 24px;">🏠</span>
             </button>
-            <h2 class="activity-title" x-text="$store.strings?.does_it_sound_right || 'Does It Sound Right?'"></h2>
           </div>
 
           <!-- Play Melody Button -->
           <div class="melody-play-container">
-            <button class="circular-play-button" @click="playCurrentMelody()" aria-label="Play Melody">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M8 5v14l11-7z"/>
-              </svg>
+            <button class="circular-play-button" @click="playCurrentMelody()" aria-label="Play Melody" title="Play Melody">
+              
             </button>
             <div class="melody-name" x-show="currentMelodyName" x-text="currentMelodyName"></div>
           </div>
 
-          <!-- Animal choice buttons -->
+          <!-- Animal choice buttons 
+           TODO: use images -->
           <div class="sound-judgment-options">
-            <button class="animal-button happy" @click="checkSoundJudgment(true)" aria-label="Sounds good">
+            <button class="animal-button happy" @click="checkSoundJudgment(true)" aria-label="Sounds good" title="Sounds good">
               <div class="animal-icon">🐰</div>
               <span>Sounds Good!</span>
             </button>
-            <button class="animal-button unhappy" @click="checkSoundJudgment(false)" aria-label="Sounds wrong">
+            <button class="animal-button unhappy" @click="checkSoundJudgment(false)" aria-label="Sounds wrong" title="Sounds wrong">
               <div class="animal-icon">🦊</div>
               <span>Sounds Wrong!</span>
             </button>
@@ -404,15 +402,6 @@
           <!-- Feedback message -->
           <div x-show="showFeedback" class="feedback-message" x-text="feedback"></div>
           
-          <!-- Mascot hint/message -->
-          <div class="mascot-container" x-show="mascotMessage !== ''">
-            <div class="mascot-image">
-              <img src="./images/mascot.png" alt="Mascot" />
-            </div>
-            <div class="mascot-message">
-              <p x-text="mascotMessage"></p>
-            </div>
-          </div>
         </div>
         
         <!-- Memory Mode -->
@@ -422,7 +411,7 @@
               <span style="font-size: 24px;">🏠</span>
             </button>
           </div>
-          <button class="circular-play-button" @click="playCurrentMelody()" aria-label="Play Melody">
+          <button class="circular-play-button" @click="playCurrentMelody()" aria-label="Play Melody" title="Play Melody">
             
           </button>
 

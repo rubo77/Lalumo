@@ -203,19 +203,43 @@ export function app() {
       // Tracking für Events zur Vermeidung von Duplikaten
       this.lastNoteEventId = null;
       this.lastNoteEventTime = 0;
+      this.processedEventIds = new Set(); // Set zum Speichern bereits verarbeiteter Event-IDs
       
-      // Set up event listener for playing notes from other components
-      window.addEventListener('lalumo:playnote', (event) => {
+      // Event-Listener entfernen, falls er bereits existiert (verhindert mehrfache Registrierung)
+      if (this.handlePlayNoteEvent) {
+        window.removeEventListener('lalumo:playnote', this.handlePlayNoteEvent);
+      }
+      
+      // Event-Handler-Funktion als Eigenschaft definieren
+      this.handlePlayNoteEvent = (event) => {
         if (event.detail && event.detail.note) {
           // Event-ID generieren, falls keine vorhanden
           const eventId = event.detail.id || `${event.detail.note}_${Date.now()}`;
           const currentTime = Date.now();
           
-          // Doppelte Events verhindern: Ignoriere Events mit gleicher ID oder zu kurzen Abständen
-          if (eventId === this.lastNoteEventId || (currentTime - this.lastNoteEventTime < 50)) {
-            console.log(`Skipping duplicate event: ${event.detail.note}`);
+          // Prüfen, ob wir dieses Event bereits verarbeitet haben
+          if (this.processedEventIds.has(eventId)) {
+            console.log(`AUDIO_APP: Already processed event ID: ${eventId}, note: ${event.detail.note}`);
             return;
           }
+          
+          // Debug logs zu Event-IDs und Timing
+          console.log(`AUDIO_APP: Received note event: ${event.detail.note}, ID: ${eventId}`);
+          console.log(`AUDIO_APP: Last ID: ${this.lastNoteEventId}, Time diff: ${currentTime - this.lastNoteEventTime}ms`);
+          
+          // Doppelte Events verhindern: Ignoriere Events mit gleicher ID oder zu kurzen Abständen
+          if (eventId === this.lastNoteEventId) {
+            console.log(`AUDIO_APP: Skipping due to IDENTICAL ID: ${event.detail.note}`);
+            return;
+          } 
+          
+          if (currentTime - this.lastNoteEventTime < 50) {
+            console.log(`AUDIO_APP: Skipping due to TOO SOON (${currentTime - this.lastNoteEventTime}ms): ${event.detail.note}`);
+            return;
+          }
+          
+          // Event zu verarbeiteten Events hinzufügen
+          this.processedEventIds.add(eventId);
           
           // Event-Tracking aktualisieren
           this.lastNoteEventId = eventId;
@@ -238,7 +262,10 @@ export function app() {
             this.playSound(event.detail.note);
           }, 10);
         }
-      });
+      };
+      
+      // Jetzt den Event-Listener mit der Handler-Funktion registrieren
+      window.addEventListener('lalumo:playnote', this.handlePlayNoteEvent);
       
       // Set up event listener for stopping all sounds
       window.addEventListener('lalumo:stopallsounds', () => {
@@ -747,30 +774,13 @@ export function app() {
         this.unlockAudio();
         if (!this.isAudioEnabled) {
           console.log('AUDIOTROUBLE: Still cannot enable audio. User may need to interact with the page first');
-          // Try to get user attention with a visible message
-          this.showMascotMessage('Tap anywhere on the screen to enable sound!');
-          
-          // On Android Chrome, try to force start the audio context anyway
-          if (isAndroid && isChrome && this.audioContext) {
-            console.log('AUDIODEBUG: Forcing audio context resume for Android Chrome');
-            this.audioContext.resume().then(() => {
-              console.log('AUDIODEBUG: Forced audio context resume successful');
-              // Try to play the sound again after a short delay
-              setTimeout(() => {
-                this.isAudioEnabled = true;
-                this.playSound(sound);
-              }, 100);
-            }).catch(err => {
-              console.error('AUDIODEBUG: Failed to force audio context resume:', err);
-            });
-          }
           return;
         }
       }
       
-      // Always try to resume suspended audio context for all browsers
+      // Resume audio context if it's suspended (needed for Chrome on Android)
       if (this.audioContext && this.audioContext.state === 'suspended') {
-        console.log('AUDIOTROUBLE: Resuming suspended audio context');
+        console.log('AUDIODEBUG: Audio context suspended in playSound, attempting to resume');
         this.audioContext.resume().then(() => {
           console.log('AUDIODEBUG: Audio context resumed successfully in playSound');
         });
@@ -778,9 +788,10 @@ export function app() {
       
       try {
         // Parse the sound identifier
-        if (sound.startsWith('pitch_')) {
-          // Extract the note name and play it
+        if (sound.startsWith('pitch_') || sound.startsWith('sound_')) {
+          // Extract the note name and play it with consistent sound for both pitch_ and sound_ prefixes
           const noteName = sound.split('_')[1].toUpperCase();
+          console.log(`AUDIODEBUG: Playing ${sound} as tone with frequency for ${noteName}`);
           this.playTone(this.getNoteFrequency(noteName), 0.5);
         } else if (sound === 'success') {
           // Play a simple success sound
