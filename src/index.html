@@ -226,6 +226,17 @@
     <section x-show="active === 'pitches'" x-transition class="pitch-chapters-view" style="background-image: url('./images/backgrounds/pitches_bird_sings.png'); background-size: cover; background-position: top center; border-radius: 0;">
       <div x-data="pitches()" x-init="init()">
         
+        <!-- Mascot Message Overlay -->
+        <div class="mascot-message-overlay" x-show="showMascot" x-transition>
+          <div class="mascot-message-container">
+            <img src="/images/mascot.png" alt="Lalumo Mascot" class="mascot-image" />
+            <div class="mascot-speech-bubble">
+              <p x-text="mascotMessage || ''"></p>
+            </div>
+            <button class="close-mascot-button" @click="showMascot = false">&times;</button>
+          </div>
+        </div>
+        
         <!-- Main landing with clickable image -->
         <div x-show="!mode || mode === 'main'" class="pitch-landing">
           <div class="image-map-container">
@@ -390,12 +401,10 @@
            TODO: use images -->
           <div class="sound-judgment-options">
             <button class="animal-button happy" @click="checkSoundJudgment(true)" aria-label="Sounds good" title="Sounds good">
-              <div class="animal-icon">🐰</div>
-              <span>Sounds Good!</span>
+              <div class="animal-icon" title="🐰 Sounds good!"><img src="./images/1_5_pitches_good_cat.png" alt="Happy cat"></div>
             </button>
             <button class="animal-button unhappy" @click="checkSoundJudgment(false)" aria-label="Sounds wrong" title="Sounds wrong">
-              <div class="animal-icon">🦊</div>
-              <span>Sounds Wrong!</span>
+              <div class="animal-icon" title="🦊 Sounds wrong!"><img src="./images/1_5_pitches_bad_snake.png" alt="Unhappy snake"></div>
             </button>
           </div>
           
@@ -909,6 +918,7 @@
         </div>
       </div>
     </section>
+
   </main>
 
 </body>

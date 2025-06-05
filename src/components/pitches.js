@@ -584,6 +584,53 @@ export function pitches() {
         // Fallback to Web Speech API
         this.tryWebSpeechAPI(message);
       }
+      
+      // Always show the mascot visual
+      this.showMascot = true;
+    },
+    
+    /**
+     * Shows the appropriate introduction message for an activity
+     * @param {string} activityMode - The identifier of the activity
+     */
+    showActivityIntroMessage(activityMode) {
+      // Get the current language
+      const language = localStorage.getItem('lalumo_language') === 'german' ? 'de' : 'en';
+      
+      // Define all intro messages for different activities
+      const introMessages = {
+        'listen': {
+          'en': 'Listen to the melodies! Do they go up, down, or make waves?',
+          'de': 'Höre dir die Melodien an! Gehen sie nach oben, unten oder machen sie Wellen?'
+        },
+        'match': {
+          'en': 'Listen to the melody and choose what it sounds like!',
+          'de': 'Höre dir die Melodie an und wähle, wonach sie klingt!'
+        },
+        'draw': {
+          'en': 'Draw your own melody! Where does your line go?',
+          'de': 'Zeichne deine eigene Melodie! Wohin geht deine Linie?'
+        },
+        'does-it-sound-right': {
+          'en': 'Listen to the melody! Does it sound right? Or is there a wrong note?',
+          'de': 'Hör dir die Melodie an! Klingt sie richtig? Oder ist da ein falscher Ton?'
+        },
+        'memory': {
+          'en': 'Listen carefully and remember the melody! Can you play it back?',
+          'de': 'Höre genau hin und merke dir die Melodie! Kannst du sie nachspielen?'
+        },
+        'guess': {
+          'en': 'Listen and guess which melody was played!',
+          'de': 'Höre zu und rate, welche Melodie gespielt wurde!'
+        }
+      };
+      
+      // Find the right message for the activity and language
+      const messages = introMessages[activityMode] || introMessages['listen'];
+      const message = messages[language] || messages['en'];
+      
+      // Show the message
+      this.showMascotMessage(message);
     },
     
     /**
@@ -647,6 +694,9 @@ export function pitches() {
     setupListeningMode() {
       // All patterns (up, down, wave, jump) will be generated on-demand when buttons are clicked
       console.log('Listening mode ready with', this.availableNotes.length, 'available notes');
+      
+      // Show intro message immediately when entering the activity
+      this.showActivityIntroMessage('listen');
     },
     
     /**
@@ -833,6 +883,10 @@ export function pitches() {
           }
         });
       }
+      
+      // Define card class selector based on element type
+      const cardClass = `.pitch-card:has(.pitch-icon.${elementType}), .pitch-card.${elementType}`;
+      console.log('ANIM: Using card selector:', cardClass);
       
       // Apply animation to cards (for Android compatibility)
       const cards = document.querySelectorAll(cardClass);
@@ -1240,6 +1294,9 @@ export function pitches() {
      * Setup for the matching mode ('1_2_pitches_match-sounds')
      */
     setupMatchingMode(playSound = false, generateNew = true) {
+      // Show intro message immediately when entering the activity
+      this.showActivityIntroMessage('match');
+      
       // If not in game mode, allow free exploration of all patterns
       if (!this.gameMode) {
         // In free play mode, do nothing special - user can click any pattern
@@ -1610,6 +1667,9 @@ export function pitches() {
     
     setupDrawingMode() {
       this.drawPath = [];
+      
+      // Show intro message immediately when entering the activity
+      this.showActivityIntroMessage('draw');
     },
     
     /**
