@@ -17,6 +17,7 @@ export function pitches() {
     feedback: '',
     showFeedback: false,
     mascotMessage: '',
+    showMascot: false,
     currentHighlightedNote: null, // For highlighting piano keys during playback
     longPressTimer: null,
     longPressThreshold: 800, // milliseconds for long press
@@ -590,6 +591,7 @@ export function pitches() {
      */
     showMascotMessage(message) {
       this.mascotMessage = message;
+      this.showMascot = true;
       console.log('Showing mascot message:', message, 'TTS available:', this.ttsAvailable, 'Using native TTS:', this.usingNativeAndroidTTS);
       
       // Check if we can use the native Android TTS bridge
