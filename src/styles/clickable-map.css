@@ -72,11 +72,12 @@
   cursor: pointer;
   transition: background-color 0.2s;
   z-index: 2500; /* Highest z-index to appear above absolutely everything */
+  margin-left: calc(38px - 6vw);
+  margin-top: -10px;
 }
 
 .back-to-main:hover {
-  background-color: #888;
-  color: white;
+  background-color: #d9d082;
 }
 
 .back-to-main.disabled {

@@ -551,6 +551,7 @@ body {
   padding: 0.5rem;
   margin-right: 0.75rem;
   margin-top: 60px;
+  margin-left: 0.4rem;
   z-index: 2500; /* Highest z-index to appear above absolutely everything */
   transition: all 0.3s ease;
 }
@@ -1567,13 +1568,16 @@ section h2 {
   display: flex;
   justify-content: center;
   width: 100%;
-  max-width: 500px;
+  max-width: 90%;
   height: 120px;
   margin: 1.5rem auto;
   position: relative;
-  background-color: transparent;
-  padding: 10px;
-  /* Removed border, border-radius, and box-shadow */
+  background-color: antiquewhite;
+  padding: 21px;
+  border:#333;
+  border-radius:22px;
+  box-shadow:0 5px 6px rgba(0, 0, 0, 0.2);
+  
 }
 
 .piano-key {
@@ -1592,7 +1596,7 @@ section h2 {
 
 .piano-key.white {
   background-color: white;
-  width: 9%;
+  width: 15%;
   color: #333;
   z-index: 1;
   border-radius: 0 0 5px 5px;
