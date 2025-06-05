@@ -57,6 +57,8 @@ Listen to melodies:
 
 - die mascot message in match melody soll direkt wenn man das oeffnet kommen und nicht erst, wenn man den play button drückt
 
+- es kann passieren, dass der lock nicht merh unlockbar ist, wenn man irgendwie den screen breiter zieht, dann lockt und dann wieder schmaler und dann den screen reloaded. ich weis aber noch n icht genau welche combo dazu führt. in dem fall kann man: localStorage.clear();
+
 # most important
 - each activity must be reachable via a hash-anchor-link. all chapters and activities are included in the sitemap.
 also, if you select another activity in the nav, the hash tag should change, so you can bookmark them

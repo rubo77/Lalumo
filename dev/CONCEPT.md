@@ -19,7 +19,7 @@ The app playfully teaches preschool children a basic understanding of music – 
  - disabled: Listen to Melodies: (1_1_pitches_listen)
  - Match Sounds: (1_2_pitches_match-sounds)
  - Draw a Melody: (1_3_pitches_draw-melody)
- - disabled: Guess Next Note: (1_4_pitches_guess-next-note)
+ - "Does It Sound Right?": (1_4_pitches_does-it-sound-right)
  - Memory Game: (1_5_pitches_memory-game)
 
 - disabled: Chords Kapitel (2_chords):
@@ -51,8 +51,36 @@ Tones going up, down, waves, jumps: Children recognize tone movements and assign
   Children can “draw” a melody by dragging their finger or mouse, creating a visual curve. The app plays back a melody that follows the drawn curve, reinforcing the connection between visual movement and pitch. the progress is saved.
 [x] **1.3. "Memory Game":**
   Simple “repeat the melody” exercises: the app plays a short melody, and the child tries to reproduce it by tapping virtual keys or buttons. Visual aids (like colored steps or animated animals) help guide the sequence. the progress is saved. when the child has repeated the melody correctly 3 times, the melody is one note longer, ...
-[ ] **"1.4. Guess the Next Note":**
-  The app plays a sequence and pauses at a point. Children are given a choice (e.g., up or down) to guess what comes next, with immediate playful feedback.
+[ ] **1.4. "Does It Sound Right?":**
+  Children listen to a well-known melody. Sometimes a wrong note sneaks in! Kids decide if the tune sounds right or wrong – with the help of friendly animals.
+
+  Goal:
+  Develop auditory discrimination by identifying whether a melody is correct or contains a "silly" (off-key) note.
+
+  How It Works:
+    - A familiar children’s melody is played.
+    - Sometimes the melody is correct, sometimes it contains one wrong (dissonant) note.
+    - The child hears the melody once and then chooses:
+     - Happy animal (e.g. cat, rabbit): “Sounds good!”
+     - Silly or angry animal (e.g. skunk, spider): “Sounds wrong!”
+    - If the answer is correct, the same default positive feedback like in "melody game".
+    - If incorrect, the melody is repeated, and the child can try again.
+
+  Melodies:
+
+  |Englisch	                      |Deutsch
+  |Twinkle, Twinkle, Little Star	|Funkel, funkel, kleiner Stern
+  |Ring Around the Rosie	        |Ringel, Ringel, Reihe
+  |Jingle Bells	                  |Jingle Bells (auch im Deutschen oft so genannt)
+  |Brother John (Frère Jacques)	  |Bruder Jakob
+  |Happy Birthday	                |Zum Geburtstag viel Glück
+  |Are You Sleeping?	            |Schlaf, Kindlein, schlaf
+
+Learning Outcome:
+Children start developing musical ear and confidence by noticing when something doesn’t sound “quite right.” It’s fun and silly, not about being perfect!
+
+Tips for Parents:
+Encourage your child to sing along! Even if they guess wrong, let them enjoy the process of listening and reacting to music.
 
 
 ### 2. Feeling Chords

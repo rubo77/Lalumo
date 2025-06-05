@@ -45,6 +45,7 @@
     <string name="listen_to_melody">Listen to melodies</string>
     <string name="draw_melody">Draw a melody</string>
     <string name="create_melody">Create a melody</string>
+    <string name="does_it_sound_right">Does It Sound Right?</string>
     
     <!-- Success & Error Messages -->
     <string name="success_message">Great job! That's correct!</string>

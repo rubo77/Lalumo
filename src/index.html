@@ -114,12 +114,11 @@
               ✏️ <span x-text="$store.strings?.draw_melody || 'Draw a Melody'"></span>
             </button>
             <button 
-              @click="$dispatch('set-pitch-mode', '1_4_pitches_guess-next-note'); window.innerWidth < 1024 ? menuOpen = false : null"
+              @click="$dispatch('set-pitch-mode', '1_4_pitches_does-it-sound-right'); window.innerWidth < 1024 ? menuOpen = false : null"
               x-data="{ isActive: false }"
-              x-init="$watch('$store.pitchMode', value => isActive = value === '1_4_pitches_guess-next-note')"
-              :class="{ 'active': isActive }"
-              style="display: none;">
-              👉 <span x-text="$store.strings?.guess_next_note || 'Guess Next Note'"></span>
+              x-init="$watch('$store.pitchMode', value => isActive = value === '1_4_pitches_does-it-sound-right')"
+              :class="{ 'active': isActive }">
+              👉 <span x-text="$store.strings?.does_it_sound_right || 'Does It Sound Right?'"></span>
             </button>
             <button 
               @click="$dispatch('set-pitch-mode', '1_5_pitches_memory-game'); window.innerWidth < 1024 ? menuOpen = false : null"
@@ -372,7 +371,7 @@
         </div>
         
         <!-- Guessing Mode -->
-        <div x-show="mode === '1_4_pitches_guess-next-note'" class="pitch-activity">
+        <div x-show="mode === '1_4_pitches_does-it-sound-right'" class="pitch-activity">
           <div class="mode-header">
             <button class="back-to-main" @click="setMode('main')" aria-label="Back to main menu">
               <span style="font-size: 24px;">🏠</span>

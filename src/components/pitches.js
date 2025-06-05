@@ -68,7 +68,7 @@ export function pitches() {
           if (!this.progress['1_1_pitches_listen']) this.progress['1_1_pitches_listen'] = 0;
           if (!this.progress['1_2_pitches_match-sounds']) this.progress['1_2_pitches_match-sounds'] = 0;
           if (!this.progress['1_3_pitches_draw-melody']) this.progress['1_3_pitches_draw-melody'] = 0;
-          if (!this.progress['1_4_pitches_guess-next-note']) this.progress['1_4_pitches_guess-next-note'] = 0;
+          if (!this.progress['1_4_pitches_does-it-sound-right']) this.progress['1_4_pitches_does-it-sound-right'] = 0;
           if (!this.progress['1_5_pitches_memory-game']) this.progress['1_5_pitches_memory-game'] = 0;
           
           console.log('Loaded progress data with new IDs:', this.progress);
@@ -78,7 +78,7 @@ export function pitches() {
             '1_1_pitches_listen': 0,
             '1_2_pitches_match-sounds': 0,
             '1_3_pitches_draw-melody': 0,
-            '1_4_pitches_guess-next-note': 0,
+            '1_4_pitches_does-it-sound-right': 0,
             '1_5_pitches_memory-game': 0
           };
         }
@@ -318,7 +318,7 @@ export function pitches() {
         this.setupMatchingMode(false); // Setup without playing sound
       } else if (newMode === '1_3_pitches_draw-melody') {
         this.setupDrawingMode(); // Drawing doesn't play sound by default
-      } else if (newMode === '1_4_pitches_guess-next-note') {
+      } else if (newMode === '1_4_pitches_does-it-sound-right') {
         this.setupGuessingMode(false); // Setup without playing sound
       } else if (newMode === '1_5_pitches_memory-game') {
         this.gameMode = false; // Start in free play mode
@@ -550,7 +550,7 @@ export function pitches() {
         this.progress['1_1_pitches_listen'] || 0,
         this.progress['1_2_pitches_match-sounds'] || 0,
         this.progress['1_3_pitches_draw-melody'] || 0,
-        this.progress['1_4_pitches_guess-next-note'] || 0,
+        this.progress['1_4_pitches_does-it-sound-right'] || 0,
         this.progress['1_5_pitches_memory-game'] || 0
       ];
       
@@ -1951,7 +1951,7 @@ export function pitches() {
         } else {
           this.setupMatchingMode(true, false); // Replay current melody in game mode
         }
-      } else if (this.mode === '1_4_pitches_guess-next-note') {
+      } else if (this.mode === '1_4_pitches_does-it-sound-right') {
         this.setupGuessingMode(true, false);
       } else if (this.mode === '1_5_pitches_memory-game') {
         if (!this.gameMode) {

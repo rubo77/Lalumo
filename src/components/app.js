@@ -30,7 +30,7 @@ export function app() {
           '1_1_pitches_listen': 'Listen to Melodies',
           '1_2_pitches_match-sounds': 'Match Sounds',
           '1_3_pitches_draw-melody': 'Draw a Melody',
-          '1_4_pitches_guess-next-note': 'Guess Next Note',
+          '1_4_pitches_does-it-sound-right': 'Does It Sound Right?',
           '1_5_pitches_memory-game': 'Memory Game'
         },
         // Mapping von alten zu neuen IDs
@@ -38,7 +38,7 @@ export function app() {
           'listen': '1_1_pitches_listen',
           'match': '1_2_pitches_match-sounds',
           'draw': '1_3_pitches_draw-melody',
-          'guess': '1_4_pitches_guess-next-note',
+          'guess': '1_4_pitches_does-it-sound-right',
           'memory': '1_5_pitches_memory-game'
         }
       },

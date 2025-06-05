@@ -72,3 +72,38 @@ This app uses Android XML files as the single source of truth for all translatio
 
 **Mobile builds:**
 Use the XML files directly (no sync needed).
+
+# Known bugs:
+
+In certain scenarios, the menu lock button may become stuck in the locked state, especially when changing screen width, locking the menu, changing the width again, and then reloading the page. If this happens, you can fix it by opening the browser console and running: `localStorage.clear();`
+
+# Development scripts
+
+The following scripts are available to streamline development:
+
+- `run.sh`: Starts the development server with hot reloading and updates mobile apps
+  ```bash
+  bash run.sh
+  ```
+
+- `mobile-build.sh`: Builds and deploys the app to connected Android/iOS devices
+  ```bash
+  bash mobile-build.sh
+  ```
+
+# Testing
+
+This project uses Playwright for automated testing. Test files are located in the `tests/` directory.
+
+To run the tests:
+
+```bash
+# Install Playwright if not already installed
+npm install -D @playwright/test
+
+# Run the tests
+npx playwright test
+```
+
+The main test files include:
+- `hash-navigation.spec.js`: Tests navigation between activities using URL hash changes
