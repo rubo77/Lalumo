@@ -70,31 +70,13 @@ unter chrome auf dem handy android 15:
     - Sektionenkommentare zur besseren Navigation
 
 - mascot message
-    - die einstellungen haben erst nach einem neuladen effekt, ohne bleibt die message bleibt verschwunden
-    - die richtige zugehörige mascot message überall soll direkt wenn man das oeffnet kommen. im moment kommt die alte, wo man vorher war in dem mascot message container
+    - die richtige zugehörige mascot message überall soll direkt wenn man die activity öffnet kommen. im moment kommt die alte message, wo man vorher war in dem mascot message container
     - es soll niemals eine mascot message starten, wenn man in irgendeiner activity auf den play button drückt
-    - seltsam: Wenn man über den pith-view auswahlscreen eine activity oeffnet, dann kommt die mascot mesage auch beim start jeder activity
+    - die einstellungen haben erst nach einem neuladen effekt, ohne bleibt die message bleibt verschwunden
 
 - each activity must be reachable via a hash-anchor-link. all chapters and activities are included in the sitemap. also, if you select another activity in the nav, the hash tag should change, so you can bookmark them
 
+- Activity 1_1 ist obsolet
+
 # most important
 - Es ist notwendig, dass sich die Größe der Pitch-Cards in Activity 1_2 dynamisch an den Freischaltungs-Fortschritt des Spielers anpasst.
-
-Spezifische Anforderungen
-- Wenn weder Welle noch Zufall-Frosch freigeschaltet sind:
-    - ALLE Pitch-Cards müssen doppelt so hoch sein
-    - Insbesondere die Rutsche ("down" Pitch-Card) muss sich über zwei Zeilen erstrecken
-- Wenn der Frosch noch nicht freigeschaltet ist:
-    - Die Rutsche ("down" Pitch-Card) muss über zwei Zeilen gehen, also nach unten um die volle Höhe herausragen. Die Rutsche (down-Card) soll einen rowspan von 2 bekommen, damit sie sich über zwei Zeilen erstreckt, ohne die Wave-Karte nach unten zu schieben.
-    - Die anderen Pitch-Cards müssen normale Größe haben
-- Implementierung:
-    - Die CSS-Klassen müssen abhängig vom Freischaltungs-Status im Spiel zugewiesen werden
-    - Der Fortschritt muss korrekt ausgelesen werden
-    - Die Anpassung muss nur in der Match Sounds Activity (1_2) funktionieren
-Technische Vorgaben:
-    - Keine Failsafes hinzufügen
-    - Code sollte gut kommentiert sein
-    - Konsistent mit dem bestehenden Stil der Anwendung
-
-Activity 1_1 ist obsolet.
-die Größenanpassung, die in Activity 1_1 implementiert wurde ist komplett falsch und wird später durch das Muster für Activity 1_2 ausgetauscht

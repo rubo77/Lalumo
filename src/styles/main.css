@@ -1286,6 +1286,12 @@ section h2 {
 .match-sounds-container .wave-card { grid-column: 1; grid-row: 2; }
 .match-sounds-container .jump-card { grid-column: 2; grid-row: 2; }
 
+/* Wenn alle Patterns freigeschaltet sind: Untere Zeile (Wave & Jump) um 50% höher */
+.match-sounds-container.all-unlocked .wave-card,
+.match-sounds-container.all-unlocked .jump-card {
+  height: 150px; /* 50% höher als Standard (100px) */
+}
+
 /* Erfordert keine Icon-Positionierung mehr */
 
 /* Play buttons in pitch cards */

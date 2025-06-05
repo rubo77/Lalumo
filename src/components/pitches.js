@@ -2958,7 +2958,7 @@ export function pitches() {
       const hasJump = this.unlockedPatterns.includes('jump');
       
       // Remove existing state classes
-      gridContainer.classList.remove('no-unlocks', 'no-frog');
+      gridContainer.classList.remove('no-unlocks', 'no-frog', 'all-unlocked');
       
       // Case 1: Neither wave nor frog patterns are unlocked (all cards are taller)
       if (!hasWave && !hasJump) {
@@ -2969,6 +2969,11 @@ export function pitches() {
       else if (!hasJump) {
         gridContainer.classList.add('no-frog');
         console.log('Applied no-frog class: down card will span two rows');
+      }
+      // Case 3: All patterns are unlocked (bottom row buttons are 50% taller)
+      else if (hasWave && hasJump) {
+        gridContainer.classList.add('all-unlocked');
+        console.log('Applied all-unlocked class: bottom row cards will be 50% taller');
       }
     },
     
