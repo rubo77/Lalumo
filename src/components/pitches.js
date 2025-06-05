@@ -929,6 +929,7 @@ export function pitches() {
      * @param {Object} options - Optional configuration parameters
      * @param {Function} options.onComplete - Function to call when sequence completes
      * @param {Function} options.prepareNote - Function to transform note before playing (e.g. add 'pitch_' prefix)
+     * @param {number} options.noteDuration - Duration of each note in milliseconds (default: 600ms)
      * @returns {Function} Cleanup function to cancel playback if needed
      */
     playAudioSequence(noteArray, context, options = {}) {
@@ -939,8 +940,7 @@ export function pitches() {
       // Extract options
       const onComplete = options.onComplete || (() => {});
       const prepareNote = options.prepareNote || (note => note);
-      
-      const noteDelay = 600; // ms
+      const noteDuration = options.noteDuration || 600; // ms - default note duration if not specified
       
       // Set up variables for enhanced Android audio handling
       const isAndroid = /Android/.test(navigator.userAgent);
@@ -954,8 +954,8 @@ export function pitches() {
         // Direct audio synthesis for Android Chrome
         this.playAndroidDirectAudio(noteArray, sequenceContext);
         
-        // Calculate animation duration based on number of notes
-        const totalDuration = noteArray.length * noteDelay + 500;
+        // Calculate animation duration based on number of notes and note duration
+        const totalDuration = noteArray.length * noteDuration + 500;
         
         // Set timeout for completion callback
         setTimeout(() => {
@@ -1014,7 +1014,7 @@ export function pitches() {
         }
         
         // Schedule the next note and store the timeout ID for potential cleanup
-        this.soundTimeoutId = setTimeout(() => playNote(noteIndex + 1), 600);
+        this.soundTimeoutId = setTimeout(() => playNote(noteIndex + 1), noteDuration);
       };
       
       // Start playing the sequence with the first note
@@ -1029,7 +1029,7 @@ export function pitches() {
         
         // Call completion handler
         onComplete();
-      }, noteArray.length * 600 + 300);
+      }, noteArray.length * noteDuration + 300);
       
       // Store timeout ID for cleanup
       this.resetTimeoutId = resetTimeoutId;
@@ -1102,6 +1102,10 @@ export function pitches() {
       return this.playAudioSequence(noteArray, type, {
         // Transform notes for match-sounds pattern (prefix with pitch_)
         prepareNote: (note) => `pitch_${note.toLowerCase()}`,
+        
+        // Match sounds patterns use quicker note duration (550ms)
+        // This makes the patterns sound more distinct and appropriate for the activity
+        noteDuration: 550,
         
         // Handle completion for match-sounds pattern
         onComplete: () => {
@@ -2276,6 +2280,10 @@ export function pitches() {
         // Transform notes for sound-judgment - add 'sound_' prefix to differentiate from match-sounds
         // This helps avoid duplicate detection issues
         prepareNote: (note) => `sound_${note.toLowerCase()}`,
+        
+        // Use a slightly longer note duration for melodies (700ms) to make them more musical
+        // This allows melodies to have more distinct, separate notes compared to the default 600ms
+        noteDuration: 700,
         
         // After completion callback - no longer showing mascot message here
         onComplete: () => {
