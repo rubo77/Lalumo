@@ -24,6 +24,27 @@ export function pitches() {
     // Progressive difficulty tracking
     correctAnswersCount: 0,
     unlockedPatterns: ['up', 'down'], // Start with only up and down
+    
+    // Arrays für die zufälligen Tierbilder
+    goodAnimalImages: [
+      './images/1_5_pitches_good_bird_notes.png',
+      './images/1_5_pitches_good_bird.png',
+      './images/1_5_pitches_good_cat.png',
+      './images/1_5_pitches_good_deer.png',
+      './images/1_5_pitches_good_dog.png',
+      './images/1_5_pitches_good_hedgehog.png',
+      './images/1_5_pitches_good_pig.png',
+      './images/1_5_pitches_good_sheep.png',
+    ],
+    badAnimalImages: [
+      './images/1_5_pitches_bad_bug.png',
+      './images/1_5_pitches_bad_cat.png',
+      './images/1_5_pitches_bad_crow.png',
+      './images/1_5_pitches_bad_rabbit.png',
+      './images/1_5_pitches_bad_snake.png'
+    ],
+    currentGoodAnimalImage: null,
+    currentBadAnimalImage: null,
     gameMode: false, // For match and memory modes - false = free play, true = game mode
     memoryFreePlay: false, // Track if memory is in free play mode
     
@@ -2283,6 +2304,51 @@ export function pitches() {
      * Setup for the "Does It Sound Right?" activity
      * @param {boolean} playSound - Whether to play a melody right away
      */
+    /**
+     * Selects random animal images from the available arrays
+     * Updates currentGoodAnimalImage and currentBadAnimalImage
+     */
+    selectRandomAnimalImages() {
+      console.log('ANIMALS: Selecting random animal images');
+      // Pick a random good animal image
+      const goodIndex = Math.floor(Math.random() * this.goodAnimalImages.length);
+      this.currentGoodAnimalImage = this.goodAnimalImages[goodIndex];
+      
+      // Pick a random bad animal image
+      const badIndex = Math.floor(Math.random() * this.badAnimalImages.length);
+      this.currentBadAnimalImage = this.badAnimalImages[badIndex];
+      
+      console.log('ANIMALS: Selected', this.currentGoodAnimalImage, this.currentBadAnimalImage);
+      
+      // Update the image sources in the DOM
+      this.updateAnimalImages();
+    },
+    
+    /**
+     * Updates the DOM with the current animal images
+     */
+    updateAnimalImages() {
+      console.log('ANIMALS: Updating animal images in DOM');
+      // Find the image elements
+      const goodAnimalImg = document.querySelector('.animal-button.happy .animal-icon img');
+      const badAnimalImg = document.querySelector('.animal-button.unhappy .animal-icon img');
+      
+      // Update the sources if the elements exist
+      if (goodAnimalImg && this.currentGoodAnimalImage) {
+        goodAnimalImg.src = this.currentGoodAnimalImage;
+        // Extract animal name from filename for better accessibility
+        const goodAnimalName = this.currentGoodAnimalImage.split('_').pop().split('.')[0];
+        goodAnimalImg.alt = `Happy ${goodAnimalName}`;
+      }
+      
+      if (badAnimalImg && this.currentBadAnimalImage) {
+        badAnimalImg.src = this.currentBadAnimalImage;
+        // Extract animal name from filename for better accessibility
+        const badAnimalName = this.currentBadAnimalImage.split('_').pop().split('.')[0];
+        badAnimalImg.alt = `Unhappy ${badAnimalName}`;
+      }
+    },
+    
     setupSoundJudgmentMode(playSound = true) {
       console.log('Setting up Sound Judgment mode');
       
@@ -2293,6 +2359,9 @@ export function pitches() {
       this.showFeedback = false;
       this.feedback = '';
       this.correctAnswer = null;
+      
+      // Select random animal images for this round
+      this.selectRandomAnimalImages();
       
       // Get the current language
       const language = localStorage.getItem('lalumo_language') === 'german' ? 'de' : 'en';
