@@ -40,10 +40,12 @@ export function pitches() {
       '/images/1_5_pitches_good_dog.png',
       '/images/1_5_pitches_good_hedgehog.png',
       '/images/1_5_pitches_good_pig.png',
+      '/images/1_5_pitches_good_ladybug.png',
       '/images/1_5_pitches_good_sheep.png',
     ],
     badAnimalImages: [
       '/images/1_5_pitches_bad_bug.png',
+      '/images/1_5_pitches_bad_crab.png',
       '/images/1_5_pitches_bad_cat.png',
       '/images/1_5_pitches_bad_crow.png',
       '/images/1_5_pitches_bad_rabbit.png',
