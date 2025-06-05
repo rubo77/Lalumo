@@ -296,13 +296,11 @@
           
           <!-- Play button - only show when not in game mode -->
           <button x-show="!gameMode" class="circular-play-button" 
-          style="height: calc(32vw + (100vw - 360px) * 0.3);width:100%;"
           @click="playCurrentMelody()" aria-label="Start Game">
           </button>
           
           <!-- Game mode play button - only show when in game mode -->
-          <button x-show="gameMode" class="circular-play-button" @click="playCurrentMelody()" aria-label="Play Melody"
-          style="height: calc(32vw + (100vw - 360px) * 0.3);width:100%;">
+          <button x-show="gameMode" class="circular-play-button" @click="playCurrentMelody()" aria-label="Play Melody">
           </button>
 
           <div class="pitch-grid">
@@ -319,7 +317,9 @@
                 <img src="/images/1x1.gif" alt="Slide going down" />
               </div>
             </div>
-            
+          </div>
+
+          <div class="pitch-grid">
             <!-- Show wave pattern only if unlocked -->
             <div x-show="unlockedPatterns.includes('wave')" class="pitch-card" @click="checkMatch('wave')" @mousedown="startLongPress('wave')" @mouseup="cancelLongPress()" @mouseleave="cancelLongPress()">
               <div class="pitch-icon wave">
