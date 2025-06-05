@@ -59,6 +59,12 @@ Listen to melodies:
 
 - es kann passieren, dass der lock nicht merh unlockbar ist, wenn man irgendwie den screen breiter zieht, dann lockt und dann wieder schmaler und dann den screen reloaded. ich weis aber noch n icht genau welche combo dazu führt. in dem fall kann man: localStorage.clear();
 
+- neue Action; Eine Melodie nachzeichnen mit Progress
+
+- die fläche muss , wenn die höhe des screens kleiner wird auch in der breite kleiner werden, so dass immer das ganze bild zu sehen ist
+
+- nach der erfolgsmeldung wird die z-index erniedrigt, das soll aber auch on top bleiben also über der box mit dem Fortschritt
+
 # most important
 - each activity must be reachable via a hash-anchor-link. all chapters and activities are included in the sitemap.
 also, if you select another activity in the nav, the hash tag should change, so you can bookmark them
