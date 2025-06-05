@@ -1418,31 +1418,6 @@ export function pitches() {
     },
     
     /**
-     * Updates the background image based on the matching progress
-     * - Below 10 correct: pitches_action1_no_waves_and_frog.png
-     * - Between 10-19 correct: pitches_action1_no_frog.png
-     * - 20+ correct: pitches_action1.png
-     */
-    updateMatchingBackground() {
-      const progress = this.progress['1_2_pitches_match-sounds'] || 0;
-      let backgroundImage;
-      
-      if (progress < 10) {
-        backgroundImage = '/images/backgrounds/pitches_action1_no_waves_and_frog.png';
-      } else if (progress < 20) {
-        backgroundImage = '/images/backgrounds/pitches_action1_no_frog.png';
-      } else {
-        backgroundImage = '/images/backgrounds/pitches_action1.png';
-      }
-      
-      const matchingActivity = document.querySelector('[x-show="mode === \'1_2_pitches_match-sounds\'"]');
-      if (matchingActivity) {
-        matchingActivity.style.backgroundImage = `url(${backgroundImage})`;
-        console.log(`Updated background based on progress (${progress}): ${backgroundImage}`);
-      }
-    },
-    
-    /**
      * Setup for the matching mode ('1_2_pitches_match-sounds')
      */
     setupMatchingMode(playSound = false, generateNew = true) {
@@ -2896,6 +2871,7 @@ export function pitches() {
     /**
      * Start game mode for matching (called when play button is pressed)
      */
+    
     /**
      * Updates the background image based on the matching progress
      * - Below 10 correct: pitches_action1_no_waves_and_frog.png
