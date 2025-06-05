@@ -7,8 +7,12 @@ android {
         applicationId "com.lalumo.app"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 2
-        versionName "1.1"
+        // HINWEIS: Diese Versionseinstellungen werden automatisch durch mobile-build.sh verwaltet:
+        // - versionCode wird bei jedem Build inkrementiert
+        // - versionName wird aus package.json übernommen (mit erhöhter Patch-Version x.y.z)
+        // Manuelle Änderungen hier werden beim nächsten Build überschrieben
+        versionCode 11
+        versionName "1.1.3"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.

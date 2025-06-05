@@ -37,6 +37,76 @@ else
   echo "Warnung: Android Studio nicht gefunden. Das Öffnen des Android-Projekts könnte fehlschlagen."
 fi
 
+# Update version in package.json and sync to build.gradle
+update_version() {
+  PACKAGE_FILE="package.json"
+  GRADLE_FILE="android/app/build.gradle"
+  
+  if [ ! -f "$PACKAGE_FILE" ]; then
+    echo "Error: package.json not found!"
+    return 1
+  fi
+  
+  # Extrahiere aktuelle Version aus package.json
+  CURRENT_VERSION=$(grep -oP '"version":\s*"\K[^"]+' "$PACKAGE_FILE")
+  
+  if [ -z "$CURRENT_VERSION" ]; then
+    echo "Error: Could not find version in package.json"
+    return 1
+  fi
+  
+  # Version in Major.Minor.Patch aufteilen
+  MAJOR=$(echo "$CURRENT_VERSION" | cut -d. -f1)
+  MINOR=$(echo "$CURRENT_VERSION" | cut -d. -f2)
+  PATCH=$(echo "$CURRENT_VERSION" | cut -d. -f3)
+  
+  # Patch-Version erhöhen
+  NEW_PATCH=$((PATCH + 1))
+  NEW_VERSION="$MAJOR.$MINOR.$NEW_PATCH"
+  
+  echo "Updating version in package.json: $CURRENT_VERSION → $NEW_VERSION"
+  
+  # Version in package.json aktualisieren
+  sed -i "s/\"version\":\s*\"$CURRENT_VERSION\"/\"version\": \"$NEW_VERSION\"/" "$PACKAGE_FILE"
+  
+  # package-lock.json mit aktualisierter Version synchronisieren
+  echo "Updating package-lock.json..."
+  npm install --package-lock-only --quiet
+  
+  # Version für Android vorbereiten (Format x.y oder x.y.z)
+  if [ "$NEW_PATCH" -eq "0" ]; then
+    ANDROID_VERSION="$MAJOR.$MINOR"
+  else
+    ANDROID_VERSION="$NEW_VERSION"
+  fi
+  
+  # Version in build.gradle aktualisieren
+  if [ -f "$GRADLE_FILE" ]; then
+    # Extrahiere aktuelle versionCode
+    CURRENT_CODE=$(grep -oP 'versionCode\s+\K\d+' "$GRADLE_FILE")
+    
+    if [ -n "$CURRENT_CODE" ]; then
+      # versionCode inkrementieren
+      NEW_CODE=$((CURRENT_CODE + 1))
+      echo "Updating Android versionCode: $CURRENT_CODE → $NEW_CODE"
+      
+      # versionCode in gradle file ersetzen
+      sed -i "s/versionCode $CURRENT_CODE/versionCode $NEW_CODE/" "$GRADLE_FILE"
+      
+      # versionName mit neuer Version aus package.json synchronisieren
+      echo "Updating Android versionName: $ANDROID_VERSION"
+      sed -i "s/versionName \"[^\"]*\"/versionName \"$ANDROID_VERSION\"/" "$GRADLE_FILE"
+    else
+      echo "Could not find versionCode in $GRADLE_FILE"
+    fi
+  else
+    echo "Android gradle file not found at $GRADLE_FILE"
+  fi
+}
+
+# Version aktualisieren bei jedem Build
+update_version
+
 # Build the web app
 echo "Building web application..."
 npm run build
