@@ -8,8 +8,6 @@ First finish pitches and melodies completely:
     - Add friendly character animations
     - Ensure rewarding visual feedback for all interactions
 
-- das mascot soll immer beim öffnen einer activity den text vorlesen
-
 - Rules aus concept.md generieren
 
 - Add Child-Friendly Guidance
@@ -30,17 +28,6 @@ First finish pitches and melodies completely:
 - Cookie Banner
 
 
-Dies soll in allen aktionen:
-- immer bei Misserfolg: das element, auf das man gedrückt hat etwas hin und her-wackeln
-
-Listen to melodies:
-- nix
-
-Draw a melody:
-- beim zeichnen ist in android der Strich zu weit links
-- die box soll grösser sein (steht schon im TODO)
-- ev. ein spiel draus machen: eine Melodie nachzeichnen
-
 unter chrome auf dem handy android 15:
 -Multi Touch: wenn mulititouch bemerkt wird, alle anderen touchs ignorieren und trotzdem den knopf drücken
 
@@ -60,9 +47,6 @@ unter chrome auf dem handy android 15:
 
 - nach der erfolgsmeldung wird die z-index erniedrigt, das soll aber auch on top bleiben also über der box mit dem Fortschritt
 
-- does this sound right:
- - es darf nicht 2x hintereinander die selbe melodie kommen
- - die animals sind zu klein in der pitch-card
 
 - die CSS-Organisation ist unstrukturiert. Ich sehe das Problem mit der Aufteilung zwischen main.css und pitch-cards.css. Lass uns das besser strukturieren. Ich schlage vor, die Stile aus beiden Dateien in einem logischeren System zu organisieren. Also:
     - Zusammenführen in einer strukturierten main.css:
@@ -73,10 +57,24 @@ unter chrome auf dem handy android 15:
     - die richtige zugehörige mascot message überall soll direkt wenn man die activity öffnet kommen. im moment kommt die alte message, wo man vorher war in dem mascot message container
     - es soll niemals eine mascot message starten, wenn man in irgendeiner activity auf den play button drückt
     - die einstellungen haben erst nach einem neuladen effekt, ohne bleibt die message bleibt verschwunden
-
+    - in preferences ein kleines mascot bild neben die einstellung zum hiden
+    
 - each activity must be reachable via a hash-anchor-link. all chapters and activities are included in the sitemap. also, if you select another activity in the nav, the hash tag should change, so you can bookmark them
 
-- Activity 1_1 ist obsolet
+Dies soll in allen aktionen:
+- immer bei Misserfolg: das element, auf das man gedrückt hat etwas hin und her-wackeln
+
+1_1 Listen to melodies:
+- obsolet
+
+1_4 Draw a melody:
+- beim zeichnen ist in android der Strich zu weit links
+- die box soll grösser sein (steht schon im TODO)
+- ev. ein spiel draus machen: eine Melodie nachzeichnen
+
+1_5 does this sound right:
+ - es darf nicht 2x hintereinander die selbe melodie kommen
+ - die animals sind zu klein in der pitch-card
 
 # most important
-- Es ist notwendig, dass sich die Größe der Pitch-Cards in Activity 1_2 dynamisch an den Freischaltungs-Fortschritt des Spielers anpasst.
+- the sounds of notes does not work in adroid at all . only the tts sound works fine. in git commit 52d266a5 it all worked, analyze, what was different especially in the activity 1_2, which was just match sounds in the old commit. show me what was the difference in the sound generation, and why it worked in the old commit and not now

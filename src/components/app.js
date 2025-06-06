@@ -551,8 +551,7 @@ export function app() {
         this.currentToneTimeout = null;
       }
       
-      // Also clear all sequence timeouts
-      this.clearSequenceTimeouts();
+      // Sequence timeouts handling removed (reverted to pre-e5a7f41f version)
     },
     
     /**
@@ -1069,12 +1068,7 @@ export function app() {
      * Play a sequence of tones
      */
     playToneSequence(frequencies, durations = [], interval = 0.3) {
-      console.log('DEBUG: playToneSequence called with', frequencies.length, 'frequencies');
       if (!this.audioContext) return;
-      
-      // Zuerst alle aktiven Sequenz-Timeouts löschen
-      console.log('DEBUG: Calling clearSequenceTimeouts before creating new sequence');
-      this.clearSequenceTimeouts();
       
       // Use default duration if not provided
       if (!durations.length) {
@@ -1083,52 +1077,16 @@ export function app() {
       
       // Play each tone with timing
       frequencies.forEach((freq, index) => {
-        // Timeout-ID speichern, um es später löschen zu können
-        console.log(`DEBUG: Creating timeout for tone ${index} at ${index * interval * 1000}ms`);
-        const timeoutId = setTimeout(() => {
-          console.log(`DEBUG: Playing tone ${index} after timeout`);
+        setTimeout(() => {
           this.playTone(freq, durations[index] || 0.3);
-          
-          // Timeout aus der Liste entfernen, wenn es ausgeführt wurde
-          const timeoutIndex = this.sequenceTimeouts.indexOf(timeoutId);
-          if (timeoutIndex !== -1) {
-            console.log(`DEBUG: Removing executed timeout ${timeoutId} from tracking list`);
-            this.sequenceTimeouts.splice(timeoutIndex, 1);
-          }
         }, index * interval * 1000);
-        
-        // Timeout-ID zum Array hinzufügen
-        this.sequenceTimeouts.push(timeoutId);
-        console.log(`DEBUG: Added timeout ${timeoutId} to tracking list, now tracking ${this.sequenceTimeouts.length} timeouts`);
       });
-    },
-    
-    /**
-     * Löscht alle aktiven Sequenz-Timeouts
-     */
-    clearSequenceTimeouts() {
-      console.log('DEBUG: clearSequenceTimeouts called - trace:', new Error().stack);
-      // Alle Timeout-IDs durchlaufen und löschen
-      if (this.sequenceTimeouts && this.sequenceTimeouts.length > 0) {
-        console.log(`DEBUG: Clearing ${this.sequenceTimeouts.length} sequence timeouts with IDs:`, JSON.stringify(this.sequenceTimeouts));
-        this.sequenceTimeouts.forEach(timeoutId => {
-          console.log(`DEBUG: Clearing timeout ID ${timeoutId}`);
-          clearTimeout(timeoutId);
-        });
-        this.sequenceTimeouts = [];
-        console.log('DEBUG: Sequence timeouts array cleared');
-      } else {
-        console.log('DEBUG: No sequence timeouts to clear');
-      }
     },
     
     /**
      * Play a success sound (ascending arpeggio)
      */
     playSuccessSound() {
-      console.log('AUDIO: Playing success sound');
-      
-      // Verwende die bewährte direkte Implementierung
       const frequencies = [261.63, 329.63, 392.00, 523.25]; // C4, E4, G4, C5
       this.playToneSequence(frequencies, [0.2, 0.2, 0.2, 0.3], 0.15);
     },
@@ -1137,9 +1095,6 @@ export function app() {
      * Play an error sound (descending minor third)
      */
     playErrorSound() {
-      console.log('AUDIO: Playing error sound');
-      
-      // Verwende die bewährte direkte Implementierung
       const frequencies = [329.63, 261.63]; // E4, C4
       this.playToneSequence(frequencies, [0.3, 0.5], 0.3);
     },
