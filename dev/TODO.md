@@ -58,12 +58,16 @@ unter chrome auf dem handy android 15:
     - es soll niemals eine mascot message starten, wenn man in irgendeiner activity auf den play button drückt
     - die einstellungen haben erst nach einem neuladen effekt, ohne bleibt die message bleibt verschwunden
     - in preferences ein kleines mascot bild neben die einstellung zum hiden
-    
+
 - each activity must be reachable via a hash-anchor-link. all chapters and activities are included in the sitemap. also, if you select another activity in the nav, the hash tag should change, so you can bookmark them
 
 Dies soll in allen aktionen:
 - immer bei Misserfolg: das element, auf das man gedrückt hat etwas hin und her-wackeln
 
+- mobile-build.sh:
+ - soll keinen patch ebene haben, nur 1.1, 1.2, 2.0, 2.1, ....
+ 
+# nach kapitel
 1_1 Listen to melodies:
 - obsolet
 

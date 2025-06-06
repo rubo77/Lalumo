@@ -55,14 +55,13 @@ update_version() {
     return 1
   fi
   
-  # Version in Major.Minor.Patch aufteilen
+  # Version in Major.Minor aufteilen
   MAJOR=$(echo "$CURRENT_VERSION" | cut -d. -f1)
   MINOR=$(echo "$CURRENT_VERSION" | cut -d. -f2)
-  PATCH=$(echo "$CURRENT_VERSION" | cut -d. -f3)
   
-  # Patch-Version erhöhen
-  NEW_PATCH=$((PATCH + 1))
-  NEW_VERSION="$MAJOR.$MINOR.$NEW_PATCH"
+  # Minor-Version erhöhen (keine Patch-Version mehr)
+  NEW_MINOR=$((MINOR + 1))
+  NEW_VERSION="$MAJOR.$NEW_MINOR"
   
   echo "Updating version in package.json: $CURRENT_VERSION → $NEW_VERSION"
   
@@ -73,12 +72,8 @@ update_version() {
   echo "Updating package-lock.json..."
   npm install --package-lock-only --quiet
   
-  # Version für Android vorbereiten (Format x.y oder x.y.z)
-  if [ "$NEW_PATCH" -eq "0" ]; then
-    ANDROID_VERSION="$MAJOR.$MINOR"
-  else
-    ANDROID_VERSION="$NEW_VERSION"
-  fi
+  # Version für Android verwenden (immer nur Major.Minor Format)
+  ANDROID_VERSION="$NEW_VERSION"
   
   # Version in build.gradle aktualisieren
   if [ -f "$GRADLE_FILE" ]; then
