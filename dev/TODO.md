@@ -81,4 +81,7 @@ Dies soll in allen aktionen:
  - die animals sind zu klein in der pitch-card
 
 # most important
-- the sounds of notes does not work in adroid at all . only the tts sound works fine. in git commit 52d266a5 it all worked, analyze, what was different especially in the activity 1_2, which was just match sounds in the old commit. show me what was the difference in the sound generation, and why it worked in the old commit and not now
+- the sounds of notes does not work in adroid in any pitches activity but 1_4_does_this_sound_right does this sound right. the tts sound works fine. analyze the difference of 1_4 to the other, 1_2, 1_3 and 1_5 and extract the fix, that seems to exist iin 1_5 into a functin, that can be used by all the others
+
+- the sounds of notes does not work in adroid in any pitches activity in git commit 52d266a5 it all worked, analyze, what was different especially in the activity 1_2, which was just match sounds in the old commit. show me what was the difference in the sound generation, and why it worked in the old commit and not now
+
