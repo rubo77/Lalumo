@@ -2,7 +2,27 @@
  * Pitches component
  * Implements interactive pitch and melody learning for children
  */
+
+// Importiere die zentrale Audio-Engine für alle Audiofunktionen
+import audioEngine from './audio-engine.js';
+
+// Importiere Debug-Utilities
+import { debugLog } from '../utils/debug.js';
+
 export function pitches() {
+  // Audio-Engine initialisieren, wenn die Komponente geladen wird
+  const initAudio = async () => {
+    try {
+      await audioEngine.initialize();
+      debugLog('PITCHES', 'Audio engine successfully initialized');
+    } catch (error) {
+      console.error('PITCHES: Error initializing audio engine', error);
+    }
+  };
+  
+  // Initialisierung beim Start ausführen
+  initAudio();
+  
   return {
     // State variables
     mode: 'listen', // listen, match, draw, guess, memory
@@ -921,10 +941,9 @@ export function pitches() {
      * Animiert ein Muster-Element (Rakete, Rutsche, usw.) während die Melodie abgespielt wird
      * Extrahiert, um Codeduplizierung zu vermeiden und an mehreren Stellen verwendbar zu sein
      * @param {string} elementType - Typ des zu animierenden Elements ('up', 'down', 'wave', 'jump')
-     * @param {boolean} inMatchMode - Gibt an, ob die Animation im Match-Modus verwendet wird
      */
     /**
-     * Spielt eine Sequenz von Noten mit Timing ab
+     * Spielt eine Sequenz von Noten mit Timing ab - verwendet die zentrale Audio-Engine
      * @param {Array} noteArray - Array mit Noten, die abgespielt werden sollen
      * @param {number} index - Aktuelle Position im Array
      */
@@ -939,7 +958,7 @@ export function pitches() {
         return;
       }
       
-      // Audio-Wiedergabe verbessern, um Konflikte zu vermeiden
+      // Audio-Wiedergabe über die zentrale Audio-Engine
       // Aktuelle Note abspielen
       const note = noteArray[index];
       
@@ -947,15 +966,8 @@ export function pitches() {
       console.log(`Playing note ${index+1}/${noteArray.length}: ${note}`);
       
       try {
-        // Event-Verarbeitung durch klare ID verbessern
-        const uniqueId = Date.now() + '-' + index;
-        window.dispatchEvent(new CustomEvent('lalumo:playnote', { 
-          detail: { 
-            note: `pitch_${note.toLowerCase()}`,
-            id: uniqueId, // Eindeutige ID zur Unterscheidung paralleler Events
-            sequenceIndex: index // Position in der Sequenz
-          }
-        }));
+        // Direkt über die Audio-Engine abspielen anstatt Events zu verwenden
+        audioEngine.playNote(note, 0.75);
       } catch (err) {
         console.error('Error playing note:', err);
       }
@@ -1144,206 +1156,6 @@ export function pitches() {
      * @param {Object} options - Optional configuration parameters
      * @param {Function} options.onComplete - Function to call when sequence completes
      * @param {Function} options.prepareNote - Function to transform note before playing (e.g. add 'pitch_' prefix)
-     * @param {number} options.noteDuration - Base duration of a quarter note in milliseconds (default: 600ms)
-     * @returns {Function} Cleanup function to cancel playback if needed
-     * 
-     * Note Duration System:
-     * - Default: Quarter note (no suffix) = 1x base duration
-     * - :w = Whole note = 4x base duration
-     * - :h = Half note = 2x base duration
-     * - :q = Quarter note (explicit) = 1x base duration
-     * - :e = Eighth note = 1/2x base duration
-     * - :s = Sixteenth note = 1/4x base duration
-     * - :q. = Dotted quarter note = 1.5x base duration
-     * - :h. = Dotted half note = 3x base duration
-     * - :e. = Dotted eighth note = 0.75x base duration
-     * 
-     * Rests:
-     * - r:q = Quarter note rest
-     * - r:h = Half note rest
-     * - etc.
-     */
-    playAudioSequence(noteArray, context, options = {}) {
-      // Ensure we have a valid context identifier
-      const sequenceContext = context || 'unknown';
-      console.log(`AUDIO: Playing sequence for context '${sequenceContext}' with ${noteArray.length} notes:`, noteArray);
-      
-      // Extract options
-      const onComplete = options.onComplete || (() => {});
-      const prepareNote = options.prepareNote || (note => note);
-      const baseQuarterNoteDuration = options.noteDuration || 600; // ms - default quarter note duration
-      
-      /**
-       * Process the note array to extract durations from musical notation
-       * This supports notes with duration modifiers like 'C4:h' (half note)
-       * and rests like 'r:q' (quarter note rest)
-       */
-      const processedNotes = noteArray.map(note => {
-        // Default is a quarter note
-        let duration = baseQuarterNoteDuration;
-        let pitch = note;
-        let isRest = false;
-        
-        // Check if this is a rest
-        if (typeof note === 'string' && note.startsWith('r')) {
-          isRest = true;
-          pitch = null; // No pitch for rests
-        }
-        
-        // Parse note with duration modifier (e.g. 'C4:h' for half note)
-        if (typeof note === 'string' && note.includes(':')) {
-          const [notePitch, modifier] = note.split(':');
-          
-          // For rests, we only care about the duration
-          if (!isRest) {
-            pitch = notePitch;
-          }
-          
-          // Calculate duration based on musical notation
-          switch(modifier) {
-            case 'w':  duration = baseQuarterNoteDuration * 4; break;    // Whole note
-            case 'h':  duration = baseQuarterNoteDuration * 2; break;    // Half note
-            case 'q':  duration = baseQuarterNoteDuration; break;        // Quarter note (explicit)
-            case 'e':  duration = baseQuarterNoteDuration / 2; break;    // Eighth note
-            case 's':  duration = baseQuarterNoteDuration / 4; break;    // Sixteenth note
-            case 'q.': duration = baseQuarterNoteDuration * 1.5; break;  // Dotted quarter note
-            case 'h.': duration = baseQuarterNoteDuration * 3; break;    // Dotted half note
-            case 'e.': duration = baseQuarterNoteDuration * 0.75; break; // Dotted eighth note
-          }
-        }
-        
-        return {
-          originalNote: note,  // Keep original note for reference
-          pitch: pitch,        // The note pitch or null for rests
-          duration: duration,  // Duration in milliseconds
-          isRest: isRest       // Whether this is a rest
-        };
-      });
-      
-      // Calculate total sequence duration for timeouts
-      const totalSequenceDuration = processedNotes.reduce(
-        (total, note) => total + note.duration, 0
-      );
-      
-      // Set up variables for enhanced Android audio handling
-      const isAndroid = /Android/.test(navigator.userAgent);
-      const isChrome = /Chrome/.test(navigator.userAgent);
-      const isAndroidChrome = isAndroid && isChrome;
-      
-      // For Android Chrome, use direct audio synthesis approach
-      if (isAndroidChrome) {
-        console.log(`AUDIO: Android Chrome detected - applying direct audio for '${sequenceContext}'`);
-        
-        // Direct audio synthesis for Android Chrome - pass the processed notes
-        this.playAndroidDirectAudio(processedNotes, sequenceContext);
-        
-        // Add a small buffer to ensure all notes complete playing
-        const totalDuration = totalSequenceDuration + 500;
-        
-        // Set timeout for completion callback
-        setTimeout(() => {
-          // Sequence complete, reset state
-          this.isPlaying = false;
-          console.log(`AUDIO: Android sequence complete for '${sequenceContext}'`);
-          
-          // Call the completion handler if provided
-          onComplete();
-        }, totalDuration);
-        
-        // Return cleanup function
-        return () => {
-          console.log(`AUDIO: Cancelling Android sequence playback for '${sequenceContext}'`);
-        };
-      }
-      
-      // ======= STANDARD AUDIO PLAYBACK FOR NON-ANDROID DEVICES =======
-      
-      // Sequential note player function
-      const playNote = (noteIndex) => {
-        if (noteIndex >= processedNotes.length) {
-          console.log(`AUDIO: Finished playing all notes in '${sequenceContext}' sequence`);
-          return; // Done with all notes
-        }
-        
-        // Get the current processed note object
-        const processedNote = processedNotes[noteIndex];
-        const { pitch, duration, isRest } = processedNote;
-        
-        console.log(
-          `AUDIO: ${isRest ? 'Rest' : 'Playing note'} ${isRest ? '' : pitch} ` +
-          `(${noteIndex + 1}/${processedNotes.length}) for ${duration}ms in context ${sequenceContext}`
-        );
-        
-        // For rests, we don't play a sound, just wait the duration
-        if (isRest) {
-          console.log(`AUDIO: Rest for ${duration}ms`);
-          // Schedule the next note after the rest duration
-          this.soundTimeoutId = setTimeout(() => playNote(noteIndex + 1), duration);
-          return;
-        }
-        
-        // Prepare note for playing (apply any transformations needed)
-        const preparedNote = prepareNote(pitch);
-        
-        // Generate a unique ID for this note event to avoid duplicate detection
-        const uniqueId = `seq_${sequenceContext}_${noteIndex}_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
-        
-        // Debug log to track note event identifiers
-        console.log(`AUDIO_DEBUG: Generating event for note ${pitch} with ID: ${uniqueId} (context: ${sequenceContext})`);
-        
-        // Try to play it through the app's event system
-        try {
-          // Dispatch event with note details
-          window.dispatchEvent(new CustomEvent('lalumo:playnote', { 
-            detail: { 
-              note: preparedNote,
-              sequenceIndex: noteIndex,
-              id: uniqueId,
-              duration: duration // Pass the note duration to the event system
-            }
-          }));
-          
-          // Additional logging right after dispatch
-          console.log(`AUDIO_DEBUG: Dispatched event for ${preparedNote} (raw: ${pitch}) for ${duration}ms at ${Date.now()}`);
-
-        } catch (err) {
-          console.error(`AUDIO: Error dispatching note event for '${sequenceContext}':`, err);
-        }
-        
-        // Schedule the next note and store the timeout ID for potential cleanup
-        // Use the calculated duration for this specific note
-        this.soundTimeoutId = setTimeout(() => playNote(noteIndex + 1), duration);
-      };
-      
-      // Start playing the sequence with the first note
-      playNote(0);
-      console.log(`AUDIO: Started sequence playback for context '${sequenceContext}'`);
-      
-      // Schedule cleanup after sequence completes
-      // Use the total sequence duration we calculated earlier
-      const resetTimeoutId = setTimeout(() => {
-        this.isPlaying = false;
-        this.soundTimeoutId = null;
-        console.log(`AUDIO: Sequence complete for '${sequenceContext}', resetting state`);
-        
-        // Call completion handler
-        onComplete();
-      }, totalSequenceDuration + 300); // Add a small buffer to ensure all notes complete
-      
-      // Store timeout ID for cleanup
-      this.resetTimeoutId = resetTimeoutId;
-      
-      // Return cleanup function
-      return () => {
-        if (this.soundTimeoutId) {
-          clearTimeout(this.soundTimeoutId);
-          this.soundTimeoutId = null;
-        }
-        if (this.resetTimeoutId) {
-          clearTimeout(this.resetTimeoutId);
-          this.resetTimeoutId = null;
-        }
-        this.isPlaying = false;
         console.log(`AUDIO: Playback cancelled for '${sequenceContext}'`);
       };
     },
@@ -1493,10 +1305,9 @@ export function pitches() {
         'Great job! That\'s correct!' : 
         'Not quite. Let\'s try again!';
       
-      // Trigger sound feedback
-      window.dispatchEvent(new CustomEvent('lalumo:playnote', { 
-        detail: { note: isCorrect ? 'success' : 'try_again' }
-      }));
+      // Trigger sound feedback using the central audio engine
+      audioEngine.playNote(isCorrect ? 'success' : 'try_again', 1.0);
+      console.log(`AUDIO: Playing ${isCorrect ? 'success' : 'try_again'} feedback sound using audio engine`);
       
       // Show appropriate animation based on result
       if (isCorrect) {
@@ -1590,10 +1401,9 @@ export function pitches() {
       console.log('DEBUG: Removing active class from', activeCards.length, 'pitch cards');
       activeCards.forEach(card => card.classList.remove('active'));
       
-      // Stop all active oscillators via global event
-      console.log('DEBUG: Dispatching lalumo:stopallsounds event');
-      window.dispatchEvent(new CustomEvent('lalumo:stopallsounds'));
-      console.log('AUDIO: Stopped all sounds');
+      // Stop all active audio directly via the central audio engine
+      audioEngine.stopAll();
+      console.log('AUDIO: Stopped all sounds using central audio engine');
     },
     
     /**
@@ -1620,213 +1430,6 @@ export function pitches() {
     },
     
     /**
-     * Direct audio synthesis for Android Chrome
-     * Bypasses the standard event-based audio system
-     * @param {Array} processedNotes - Array of processed note objects with pitch, duration, and isRest properties
-     * @param {string} context - Identifier for the sequence context
-     */
-    playAndroidDirectAudio(processedNotes, context) {
-      console.log('AUDIO: Using direct Android audio synthesis for', processedNotes.length, 'notes');
-      
-      // Create audio context specifically for this playback
-      try {
-        const AudioContext = window.AudioContext || window.webkitAudioContext;
-        const audioCtx = new AudioContext({
-          latencyHint: 'interactive',
-          sampleRate: 44100
-        });
-        
-        // Force resume the audio context immediately
-        audioCtx.resume().then(() => {
-          console.log('AUDIO: Android audio context resumed for direct playback');
-          
-          // Schedule all notes in advance
-          let startTime = audioCtx.currentTime;
-          const oscillators = [];
-          
-          // Process each note
-          processedNotes.forEach((note, index) => {
-            const { pitch, duration, isRest } = note;
-            
-            // Convert ms to seconds for Web Audio API
-            const noteDurationSeconds = duration / 1000;
-            
-            // Skip rests (no sound, just advance time)
-            if (isRest) {
-              console.log(`AUDIO: Rest for ${noteDurationSeconds}s`);
-              startTime += noteDurationSeconds;
-              return; // Skip to next note
-            }
-            
-            // Skip invalid notes
-            if (!pitch || typeof pitch !== 'string') {
-              console.warn(`AUDIO: Skipping invalid note at index ${index}:`, pitch);
-              return; // Skip to next note
-            }
-            
-            // Get frequency for this note
-            const freq = this.getNoteFrequency(pitch);
-            if (!freq) {
-              console.warn(`AUDIO: Unknown note frequency for ${pitch}`);
-              return; // Skip to next note
-            }
-            
-            // Create oscillator for this note
-            const osc = audioCtx.createOscillator();
-            const gainNode = audioCtx.createGain();
-            
-            // Configure oscillator
-            osc.frequency.value = freq;
-            osc.type = 'sine';
-            
-            // Configure gain (volume)
-            gainNode.gain.value = 0;
-            gainNode.gain.setValueAtTime(0, startTime);
-            gainNode.gain.linearRampToValueAtTime(0.5, startTime + 0.05); // Fast attack
-            gainNode.gain.linearRampToValueAtTime(0, startTime + noteDurationSeconds - 0.05); // Release before end
-            
-            // Connect and schedule
-            osc.connect(gainNode);
-            gainNode.connect(audioCtx.destination);
-            
-            // Start and stop
-            osc.start(startTime);
-            osc.stop(startTime + noteDurationSeconds);
-            
-            // Keep track for cleanup
-            oscillators.push(osc);
-            
-            // Log each note as it's scheduled
-            console.log(`AUDIO: Scheduled Android note ${pitch} at time ${startTime.toFixed(2)} for ${noteDurationSeconds.toFixed(2)}s`);
-            
-            // Schedule animation update for this note
-            setTimeout(() => {
-              // Update current highlighted note for UI
-              this.currentHighlightedNote = pitch.toLowerCase();
-              
-              // Refresh animation for context
-              if (context) {
-                this.animatePatternElement(context);
-              }
-            }, (startTime - audioCtx.currentTime) * 1000);
-            
-            // Advance start time for next note
-            startTime += noteDurationSeconds;
-          });
-          
-          // Clean up after all notes are played
-          const totalDuration = (startTime - audioCtx.currentTime) * 1000 + 500;
-          setTimeout(() => {
-            // Stop any remaining oscillators
-            oscillators.forEach(osc => {
-              try {
-                osc.stop();
-                osc.disconnect();
-              } catch (e) {
-                // Ignore errors from already stopped oscillators
-              }
-            });
-            
-            // Clean up context
-            try {
-              audioCtx.close();
-            } catch (e) {
-              console.error('AUDIO: Error closing Android audio context:', e);
-            }
-            
-            console.log('AUDIO: Android direct audio playback completed');
-          }, totalDuration);
-          
-        }).catch(err => {
-          console.error('AUDIO: Failed to resume Android audio context:', err);
-          
-          // Even if audio fails, ensure animation plays correctly
-          this.ensureAndroidAnimation(context, processedNotes.length);
-        });
-      } catch (error) {
-        console.error('AUDIO: Error creating Android audio context:', error);
-        // Fall back to animation only
-        this.ensureAndroidAnimation(context, processedNotes.length);
-      }
-    },
-    
-    /**
-     * Schedule all notes for direct Android audio playback
-     */
-    scheduleAndroidNotes(audioCtx, noteArray, type) {
-      // Keep track of oscillators for cleanup
-      const oscillators = [];
-      
-      // Schedule each note
-      noteArray.forEach((note, index) => {
-        // Calculate timing
-        const startTime = audioCtx.currentTime + (index * 0.6); // 600ms per note
-        
-        // Create oscillator
-        const osc = audioCtx.createOscillator();
-        const gainNode = audioCtx.createGain();
-        
-        // Get frequency from note name
-        const frequency = this.getNoteFrequency(note);
-        osc.frequency.value = frequency;
-        osc.type = 'sine';
-        
-        // Configure gain (volume)
-        gainNode.gain.value = 0;
-        gainNode.gain.setValueAtTime(0, startTime);
-        gainNode.gain.linearRampToValueAtTime(0.5, startTime + 0.1); // 100ms attack
-        gainNode.gain.linearRampToValueAtTime(0, startTime + 0.5); // 400ms release
-        
-        // Connect and schedule
-        osc.connect(gainNode);
-        gainNode.connect(audioCtx.destination);
-        
-        // Start and stop
-        osc.start(startTime);
-        osc.stop(startTime + 0.6);
-        
-        // Keep track for cleanup
-        oscillators.push(osc);
-        
-        // Log each note as it's scheduled
-        console.log(`AUDIO: Scheduled Android note ${note} (${index + 1}/${noteArray.length}) at time ${startTime}`);
-        
-        // Schedule animation update for this note
-        setTimeout(() => {
-          // Highlight the current note in the UI
-          this.currentHighlightedNote = note.toLowerCase();
-          console.log(`AUDIO: Playing Android note ${note} (${index + 1}/${noteArray.length})`);
-          
-          // Refresh animation
-          this.refreshAnimation(type);
-        }, index * 600);
-      });
-      
-      // Clean up after all notes are played
-      const totalDuration = noteArray.length * 600 + 300;
-      setTimeout(() => {
-        // Stop any remaining oscillators
-        oscillators.forEach(osc => {
-          try {
-            osc.stop();
-            osc.disconnect();
-          } catch (e) {
-            // Ignore errors from already stopped oscillators
-          }
-        });
-        
-        // Clean up context
-        try {
-          audioCtx.close();
-        } catch (e) {
-          console.error('AUDIO: Error closing Android audio context:', e);
-        }
-        
-        console.log('AUDIO: Android direct audio playback completed');
-      }, totalDuration);
-    },
-    
-    /**
      * Get frequency for a note name
      */
     getNoteFrequency(noteName) {
@@ -1841,22 +1444,9 @@ export function pitches() {
       return noteFrequencies[noteName] || 440; // Default to A4 if note not found
     },
     
-    /**
-     * Ensure animation plays correctly on Android even if audio fails
-     */
-    ensureAndroidAnimation(type, noteCount) {
-      console.log('AUDIO: Ensuring animation plays for Android pattern:', type);
-      
-      // Make sure animation is visible
-      this.refreshAnimation(type);
-      
-      // Schedule animation updates to simulate note playing
-      for (let i = 0; i < noteCount; i++) {
-        setTimeout(() => {
-          this.refreshAnimation(type);
-        }, i * 600);
-      }
-    },
+    // Removed: Android-specific animation fallback method
+    // No longer needed with the centralized audioEngine approach
+    // which handles animation updates consistently across platforms
     
     /**
      * Refresh the animation for a pattern
@@ -2041,20 +1631,16 @@ export function pitches() {
     
     /**
      * Spielt eine Sequenz von Noten nacheinander ab
-     * Diese Methode funktioniert zuverlässiger auf Android
+     * Verwendet die zentrale Audio-Engine für konsistente Audiowiedergabe auf allen Plattformen
      */
     playDrawnNoteSequence(notes, index = 0) {
       if (index >= notes.length) return;
       
-      // Versuche zuerst native Android TTS (wenn verfügbar)
       const note = notes[index];
-      const soundId = `pitch_${note}`;
       
       try {
-        // Sound abspielen
-        window.dispatchEvent(new CustomEvent('lalumo:playnote', { 
-          detail: { note: soundId }
-        }));
+        // Sound über die zentrale Audio-Engine abspielen
+        audioEngine.playNote(note, 0.3);
         
         console.log(`Playing note ${index + 1}/${notes.length}: ${note}`);
         
@@ -2091,13 +1677,11 @@ export function pitches() {
         this.correctAnswer = selected.next;
         this.choices = ['up', 'down'];
       }
-      // Play the partial sequence
+      // Play the partial sequence using the central audio engine
       const playPartial = (notes, index = 0) => {
         if (index >= notes.length) return;
-        // Play current note
-        window.dispatchEvent(new CustomEvent('lalumo:playnote', { 
-          detail: { note: `pitch_${notes[index].toLowerCase()}` }
-        }));
+        // Play current note using the central audio engine
+        audioEngine.playNote(notes[index].toLowerCase(), 0.6);
         // Schedule next note
         setTimeout(() => playPartial(notes, index + 1), 600);
       };
@@ -2129,10 +1713,9 @@ export function pitches() {
         debugLog('GAME', `User guessed ${guess}, correct answer was ${this.correctAnswer}, result: ${isCorrect ? 'correct' : 'incorrect'}`);
       });
       
-      // Play feedback sound using the event system
-      window.dispatchEvent(new CustomEvent('lalumo:playnote', { 
-        detail: { note: isCorrect ? 'success' : 'try_again' }
-      }));
+      // Play feedback sound using the central audio engine
+      audioEngine.playNote(isCorrect ? 'success' : 'try_again', 1.0);
+      console.log(`AUDIO: Playing ${isCorrect ? 'success' : 'try_again'} feedback sound with audio engine`);
       
       // Show appropriate animation based on result
       if (isCorrect) {
@@ -2163,14 +1746,12 @@ export function pitches() {
         fullSequence.push(this.getLowerNote(fullSequence[fullSequence.length - 1]));
       }
       
-      // Play the sequence
+      // Play the sequence using the central audio engine
       const playFull = (notes, index = 0) => {
         if (index >= notes.length) return;
         
-        // Play current note
-        window.dispatchEvent(new CustomEvent('lalumo:playnote', { 
-          detail: { note: `pitch_${notes[index].toLowerCase()}` }
-        }));
+        // Play current note using the central audio engine
+        audioEngine.playNote(notes[index].toLowerCase(), 0.6);
         
         // Schedule next note after a delay
         setTimeout(() => playFull(notes, index + 1), 600);
@@ -2179,10 +1760,8 @@ export function pitches() {
       // Play the sequence
       playFull(fullSequence);
       
-      // Play feedback sound
-      window.dispatchEvent(new CustomEvent('lalumo:playnote', { 
-        detail: { note: isCorrect ? 'success' : 'try_again' }
-      }));
+      // Play feedback sound using the central audio engine
+      audioEngine.playNote(isCorrect ? 'success' : 'try_again', 1.0);
       
       // Reset after feedback
       setTimeout(() => {
@@ -2316,10 +1895,8 @@ export function pitches() {
         this.currentHighlightedNote = notes[index];
         console.log(`DEBUG: Playing memory note ${index+1}/${notes.length}: ${notes[index]}`);
         
-        // Play current note
-        window.dispatchEvent(new CustomEvent('lalumo:playnote', { 
-          detail: { note: `pitch_${notes[index].toLowerCase()}` }
-        }));
+        // Play current note using the central audio engine
+        audioEngine.playNote(notes[index].toLowerCase(), 0.6);
         
         // Schedule next note with tracking
         const nextNoteTimeoutId = setTimeout(() => {
@@ -2353,10 +1930,8 @@ export function pitches() {
       // Highlight the key when pressed
       this.currentHighlightedNote = note;
       
-      // Play the note using event
-      window.dispatchEvent(new CustomEvent('lalumo:playnote', { 
-        detail: { note: `pitch_${note.toLowerCase()}` }
-      }));
+      // Play the note using the central audio engine
+      audioEngine.playNote(note.toLowerCase(), 0.6);
       
       // Remove highlighting after a short delay
       setTimeout(() => {
@@ -2391,10 +1966,8 @@ export function pitches() {
           }, 500);
         }
         
-        // Play error sound and show feedback
-        window.dispatchEvent(new CustomEvent('lalumo:playnote', { 
-          detail: { note: 'try_again' }
-        }));
+        // Play error sound using the central audio engine
+        audioEngine.playNote('try_again', 1.0);
         
         this.showFeedback = true;
         this.feedback = 'Let\'s try again. Listen carefully!';
@@ -2443,10 +2016,9 @@ export function pitches() {
         'Amazing memory! You got it right!' : 
         'Let\'s try again. Listen carefully!';
       
-      // Play feedback sound using the event system
-      window.dispatchEvent(new CustomEvent('lalumo:playnote', { 
-        detail: { note: isCorrect ? 'success' : 'try_again' }
-      }));
+      // Play feedback sound using the central audio engine
+      audioEngine.playNote(isCorrect ? 'success' : 'try_again', 1.0);
+      console.log(`AUDIO: Playing ${isCorrect ? 'success' : 'try_again'} feedback sound with audio engine`);
       
       // Show appropriate animation based on result
       if (isCorrect) {
@@ -2761,6 +2333,76 @@ export function pitches() {
      * @param {string} melodyId - Optional ID of the melody being played (to get quarterNoteDuration)
      * @returns {Function} Cleanup function
      */
+    playAudioSequence(notes, sequenceContext = 'general', options = {}) {
+      if (!notes || notes.length === 0) {
+        console.warn(`AUDIO: Attempted to play empty sequence for '${sequenceContext}'`);
+        return () => {}; // Return empty cleanup function
+      }
+      
+      // If already playing, stop the previous sound
+      if (this.isPlaying) {
+        this.stopCurrentSound();
+      }
+      
+      this.isPlaying = true;
+      this.currentSequenceContext = sequenceContext;
+      
+      // Default callback when complete
+      const onComplete = options.onComplete || function() {};
+      
+      // Merge default options with provided options
+      const mergedOptions = {
+        ...{
+          tempo: 120,
+          loop: false,
+          highlightKeys: false,
+          transpose: 0,
+        },
+        ...options
+      };
+      
+      // For sequence playback, we need to know the base quarter note duration
+      // This helps us calculate the actual duration for modified notes like half notes, eighth notes, etc.
+      const baseQuarterNoteDuration = options.noteDuration || 600; // Default 600ms for a quarter note
+      
+      // Create a clone of the notes array to avoid modifying the original
+      const noteArray = [...notes];
+      
+      // Set up options for the central audio engine
+      const audioEngineOptions = {
+        tempo: mergedOptions.tempo,
+        noteDuration: baseQuarterNoteDuration / 1000, // Convert from ms to seconds for the audio engine
+        onNoteStart: (note, time, index) => {
+          // Handle note highlighting or animations if needed
+          if (mergedOptions.highlightKeys && this.highlightPianoKey) {
+            this.highlightPianoKey(note);
+          }
+          
+          // Log the note playback for debugging
+          console.log(`AUDIO: Playing note ${index + 1}/${noteArray.length}: ${note} in context ${sequenceContext}`);
+        },
+        onSequenceEnd: () => {
+          // Sequence playback completed
+          this.isPlaying = false;
+          console.log(`AUDIO: Sequence complete for '${sequenceContext}', resetting state`);
+          
+          // Call the completion handler
+          onComplete();
+        }
+      };
+      
+      // Play the sequence using the central audio engine
+      console.log(`AUDIO: Starting sequence playback for '${sequenceContext}' with audio engine`);
+      const sequenceController = audioEngine.playNoteSequence(noteArray, audioEngineOptions);
+      
+      // Return a cleanup function that can be called to cancel the sequence
+      return () => {
+        console.log(`AUDIO: Externally canceling sequence for ${sequenceContext}`);
+        sequenceController.stop();
+        this.isPlaying = false;
+      };
+    },
+    
     playMelodySequence(notes, context = 'sound-judgment', melodyId = null) {
       console.log(`AUDIO: Playing melody sequence for '${context}' with ${notes.length} notes`);
       
@@ -2863,10 +2505,9 @@ export function pitches() {
       this.feedback = feedbackMessage;
       this.showFeedback = true;
       
-      // Play feedback sound
-      window.dispatchEvent(new CustomEvent('lalumo:playnote', { 
-        detail: { note: isCorrect ? 'success' : 'try_again' } 
-      }));
+      // Play feedback sound using the central audio engine
+      audioEngine.playNote(isCorrect ? 'success' : 'try_again', 1.0);
+      console.log(`AUDIO: Playing ${isCorrect ? 'success' : 'try_again'} feedback sound with audio engine`);
       
       // Show visual feedback animation
       if (isCorrect) {

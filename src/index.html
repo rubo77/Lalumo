@@ -9,7 +9,7 @@
 </head>
 <body>
 
-  <main x-data="app()" x-init="init()" @click="initAudio(); unlockAudio()" @touchstart="unlockAudio()" class="container">
+  <main x-data="app()" x-init="init()" @click="unlockAudio()" @touchstart="unlockAudio()" class="container">
     
     <!-- Username Prompt Modal -->
     <div class="modal-overlay" x-show="showUsernamePrompt" x-transition>
@@ -69,7 +69,8 @@
           </button>
 
           <!-- chords started developed-->
-          <button @click="$data.active = 'chords'; $dispatch('set-chord-mode', 'main')" :class="{ 'active': active === 'chords' }" style="display: none;">
+          <button @click="$data.active = 'chords'; $dispatch('set-chord-mode', 'main')" :class="{ 'active': active === 'chords' }"
+           style="display: none;">
             <span x-text="$store.strings?.menu_chords || 'Chords'"></span>
           </button>
 

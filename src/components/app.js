@@ -644,35 +644,32 @@ export function app() {
           debugLog('AUDIO', `Created new AudioContext, state: ${this.audioContext.state}`);
         }
         
-        // Resume the audio context (needed for both iOS and newer Android Chrome)
+        // Resume the audio context (mobile browsers often start in 'suspended' state)
         if (this.audioContext.state === 'suspended') {
-          debugLog('AUDIO', 'Resuming suspended audio context');
-          this.audioContext.resume().then(() => {
-            debugLog('AUDIO', `AudioContext resumed successfully, new state: ${this.audioContext.state}`);
-          }).catch(err => {
-            console.error('Failed to resume AudioContext:', err);
-          });
+          await this.audioContext.resume();
         }
         
-        // Create and play a silent buffer to unlock audio - critical for Chrome on Android
+        // Play a silent buffer to unlock audio
         const buffer = this.audioContext.createBuffer(1, 1, 22050);
         const source = this.audioContext.createBufferSource();
         source.buffer = buffer;
         source.connect(this.audioContext.destination);
+        source.start(0);
         
-        // Use try-catch specifically for the start call which can sometimes fail
+        // Initialize the central audio engine
+        debugLog('AUDIO', 'Initializing the central audio engine...');
         try {
-          source.start(0);
-          console.log('Started silent audio buffer');
-        } catch (startError) {
-          console.warn('Could not start audio buffer source:', startError);
+          const audioEngine = (await import('./audio-engine.js')).default;
+          await audioEngine.initialize();
+          debugLog('AUDIO', 'Central audio engine initialized successfully');
+        } catch (engineError) {
+          console.error('Failed to initialize central audio engine:', engineError);
         }
         
-        // Mark audio as enabled
         this.isAudioEnabled = true;
-        console.log('Audio unlock attempt complete, context state:', this.audioContext.state);
+        debugLog('AUDIO', 'Audio unlocked successfully');
         
-        // Check if we're on Android and Chrome
+        // Special handling for Android Chrome
         const isAndroid = /Android/.test(navigator.userAgent);
         const isChrome = /Chrome/.test(navigator.userAgent);
         
@@ -686,6 +683,9 @@ export function app() {
               });
             }
           });
+          
+          // Apply Android-specific optimizations
+          this.initAndroidAudio();
         }
         
         // Only remove listeners if we're confident audio is working
@@ -699,77 +699,45 @@ export function app() {
       }
     },
     
-    /**
-     * Initialize Web Audio API - simpler than Tone.js
-     */
-    initAudio() {
-      // Now just call the unlock function since it handles everything
-      this.unlockAudio();
-      
-      // For Android Chrome, use the specialized initialization
-      if (this.isAndroidChrome) {
-        this.initAndroidAudio();
-      }
-    },
+    // initAudio method removed - functionality moved into unlockAudio
+    
     
     /**
-     * Specialized audio initialization for Android Chrome
-     * Addresses specific issues with audio playback on Android devices
+     * Special handling for Android Chrome
+     * No longer creates a separate audio context but ensures the central audio engine works well on Android
      */
     async initAndroidAudio() {
       // Import debug utils for consistent logging
       const { debugLog } = await import('../utils/debug');
-      debugLog('AUDIO', 'Initializing specialized Android audio handling');
+      debugLog('AUDIO', 'Applying Android-specific audio optimizations');
       
-      if (!this.audioContext) {
-        try {
-          // Create audio context with explicit options for Android
-          const AudioContext = window.AudioContext || window.webkitAudioContext;
-          this.audioContext = new AudioContext({
-            latencyHint: 'interactive',
-            sampleRate: 44100 // Standard sample rate that works well on most devices
-          });
-          debugLog('AUDIO', 'Created Android-optimized audio context');
-        } catch (e) {
-          console.error('Failed to create Android audio context:', e);
-          return;
+      try {
+        // Import the central audio engine and Tone.js dynamically
+        const [audioEngineModule, ToneModule] = await Promise.all([
+          import('./audio-engine.js'),
+          import('tone')
+        ]);
+        const audioEngine = audioEngineModule.default;
+        const Tone = ToneModule;
+        
+        // Make sure Tone.js is initialized and running on Android
+        const toneContext = Tone.getContext().rawContext;
+        debugLog('AUDIO', `Tone.js audio context state: ${toneContext.state}`);
+        
+        // Force resume the Tone.js context if needed
+        if (toneContext.state === 'suspended') {
+          debugLog('AUDIO', 'Attempting to resume Tone.js audio context for Android');
+          await toneContext.resume();
+          debugLog('AUDIO', 'Tone.js audio context resumed for Android');
         }
-      }
-      
-      // Force the audio context to resume
-      if (this.audioContext.state === 'suspended') {
-        // Create and play a very short beep to force audio activation
-        try {
-          const oscillator = this.audioContext.createOscillator();
-          const gainNode = this.audioContext.createGain();
-          
-          // Configure a very quiet, short beep
-          oscillator.type = 'sine';
-          oscillator.frequency.value = 440; // A4 note
-          gainNode.gain.value = 0.01; // Very quiet
-          
-          // Connect and start
-          oscillator.connect(gainNode);
-          gainNode.connect(this.audioContext.destination);
-          
-          // Play for just 10ms
-          oscillator.start();
-          oscillator.stop(this.audioContext.currentTime + 0.01);
-          
-          // Force resume in parallel
-          this.audioContext.resume().then(() => {
-            console.log('AUDIODEBUG: Android audio context resumed');
-            this.isAudioEnabled = true;
-          }).catch(err => {
-            console.error('AUDIODEBUG: Failed to resume Android audio context:', err);
-          });
-          
-          console.log('AUDIODEBUG: Android audio initialization completed');
-        } catch (e) {
-          console.error('AUDIODEBUG: Error during Android audio initialization:', e);
-        }
-      } else {
-        console.log('AUDIODEBUG: Android audio context already running');
+        
+        // Additional Android-specific settings can be applied here if needed
+        // For example, lower latency settings for Tone.js on Android
+        
+        debugLog('AUDIO', 'Android audio optimizations applied successfully');
+        this.isAudioEnabled = true;
+      } catch (error) {
+        console.error('Failed to apply Android audio optimizations:', error);
       }
     },
     

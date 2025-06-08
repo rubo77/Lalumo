@@ -78,19 +78,29 @@ export function chords() {
     /**
      * Initialize audio context on user interaction
      */
-    initAudio() {
-      if (this.audioContext) return;
-      
+    /**
+     * Initialize the central audio engine for chord playback
+     */
+    async initAudio() {
       try {
-        const AudioContext = window.AudioContext || window.webkitAudioContext;
-        this.audioContext = new AudioContext();
+        // Import debug utils for consistent logging
+        const { debugLog } = await import('../utils/debug');
         
-        // Import debug utils
-        import('../utils/debug').then(({ debugLog }) => {
-          debugLog('CHORDS', 'Audio context initialized');
-        });
+        // Import and initialize the central audio engine
+        const audioEngine = (await import('./audio-engine.js')).default;
+        
+        if (!audioEngine._isInitialized) {
+          debugLog('CHORDS', 'Initializing central audio engine for chord playback');
+          await audioEngine.initialize();
+          debugLog('CHORDS', 'Central audio engine initialized for chord playback');
+        } else {
+          debugLog('CHORDS', 'Audio engine already initialized');
+        }
+        
+        // Set audioContext reference for legacy compatibility
+        this.audioContext = true; // Just a flag since we don't need the actual context anymore
       } catch (error) {
-        console.error('Failed to create audio context:', error);
+        console.error('Failed to initialize audio for chords:', error);
       }
     },
     
@@ -99,115 +109,171 @@ export function chords() {
      * @param {string} chordType - The type of chord (major, minor, etc.)
      * @param {string} rootNote - The root note of the chord (e.g., 'C4')
      */
-    playChord(chordType, rootNote = 'C4') {
+    async playChord(chordType, rootNote = 'C4') {
       this.stopAllSounds();
       
-      if (!this.audioContext) {
-        this.initAudio();
-        if (!this.audioContext) return; // Still not available
-      }
-      
-      // Resume audio context if suspended
-      if (this.audioContext.state === 'suspended') {
-        this.audioContext.resume();
-      }
-      
-      // Get chord definition
-      const chord = this.chords[chordType];
-      if (!chord) {
-        console.error(`Unknown chord type: ${chordType}`);
+      try {
+        // Import debug utils for logging
+        const { debugLog } = await import('../utils/debug');
+        
+        // Get and initialize audioEngine if needed
+        const audioEngine = (await import('./audio-engine.js')).default;
+        if (!audioEngine._isInitialized) {
+          await this.initAudio();
+        }
+        
+        // Get chord definition
+        const chord = this.chords[chordType];
+        if (!chord) {
+          console.error(`Unknown chord type: ${chordType}`);
+          return;
+        }
+        
+        debugLog('CHORDS', `Playing ${chordType} chord with root ${rootNote}`);
+      } catch (error) {
+        console.error('Error preparing chord playback:', error);
         return;
       }
       
       this.currentChordType = chordType;
       this.activeChord = [];
       
-      // Get root note frequency
-      const rootFreq = this.baseNotes[rootNote];
-      if (!rootFreq) {
-        console.error(`Unknown root note: ${rootNote}`);
-        return;
+      try {
+        // Get the audio engine
+        const audioEngine = (await import('./audio-engine.js')).default;
+        const { debugLog } = await import('../utils/debug');
+        
+        // Get root note frequency and validate
+        const rootFreq = this.baseNotes[rootNote];
+        if (!rootFreq) {
+          console.error(`Unknown root note: ${rootNote}`);
+          return;
+        }
+        
+        // Convert chord intervals to actual notes for the audio engine
+        const noteNames = [];
+        
+        // Parse the root note to get the letter and octave
+        const rootMatch = rootNote.match(/([A-G][#b]?)([0-9])/);
+        if (!rootMatch) {
+          console.error(`Cannot parse root note format: ${rootNote}`);
+          return;
+        }
+        
+        const rootLetter = rootMatch[1];
+        const octave = parseInt(rootMatch[2]);
+        
+        // Define all notes in chromatic order for calculating intervals
+        const chromaticScale = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+        
+        // Find root note index in chromatic scale
+        let rootIndex = chromaticScale.indexOf(rootLetter);
+        if (rootIndex === -1) {
+          // Try with equivalent enharmonic spelling (e.g., Bb = A#)
+          if (rootLetter === 'Bb') rootIndex = chromaticScale.indexOf('A#');
+          else if (rootLetter === 'Eb') rootIndex = chromaticScale.indexOf('D#');
+          // Add other equivalents as needed
+          
+          if (rootIndex === -1) {
+            console.error(`Cannot find note ${rootLetter} in chromatic scale`);
+            return;
+          }
+        }
+        
+        // Calculate all note names in the chord based on intervals
+        chord.intervals.forEach((interval) => {
+          // Calculate the note within the chromatic scale
+          const noteIndex = (rootIndex + interval) % 12;
+          let noteOctave = octave + Math.floor((rootIndex + interval) / 12);
+          
+          // Create the full note name (e.g., 'C4')
+          const noteName = `${chromaticScale[noteIndex]}${noteOctave}`;
+          noteNames.push(noteName);
+        });
+        
+        debugLog('CHORDS', `Playing chord notes: ${noteNames.join(', ')}`);
+        
+        // Play all notes together as a chord with the audio engine
+        audioEngine.playChord(noteNames, { duration: 2 });
+        
+        this.isPlaying = true;
+        debugLog('CHORDS', `Playing ${chord.name} chord on ${rootNote} using central audio engine`);
+      } catch (error) {
+        console.error('Error playing chord:', error);
       }
-      
-      // Play each note in the chord
-      chord.intervals.forEach((interval, index) => {
-        // Calculate frequency using equal temperament
-        // Each semitone is the 12th root of 2 higher than the previous
-        const freq = rootFreq * Math.pow(2, interval / 12);
-        this.playNote(freq, index * 0.02); // Slight staggering for more natural sound
-      });
-      
-      this.isPlaying = true;
-      
-      // Import debug utils
-      import('../utils/debug').then(({ debugLog }) => {
-        debugLog('CHORDS', `Playing ${chord.name} chord on ${rootNote}`);
-      });
     },
     
     /**
-     * Play a single note at the specified frequency
+     * Play a single note at the specified frequency using the central audio engine
      * @param {number} frequency - The frequency in Hz
      * @param {number} delay - Delay before playing, in seconds
      */
-    playNote(frequency, delay = 0) {
-      if (!this.audioContext) return;
-      
-      // Create oscillator
-      const oscillator = this.audioContext.createOscillator();
-      const gainNode = this.audioContext.createGain();
-      
-      oscillator.type = 'sine';
-      oscillator.frequency.value = frequency;
-      
-      // Apply envelope
-      gainNode.gain.value = 0;
-      
-      // Connect nodes
-      oscillator.connect(gainNode);
-      gainNode.connect(this.audioContext.destination);
-      
-      // Start oscillator
-      oscillator.start(this.audioContext.currentTime + delay);
-      
-      // Ramp up gain
-      gainNode.gain.setValueAtTime(0, this.audioContext.currentTime + delay);
-      gainNode.gain.linearRampToValueAtTime(0.2, this.audioContext.currentTime + delay + 0.05);
-      
-      // Store oscillator
-      const id = Date.now() + Math.random();
-      this.oscillators[id] = { oscillator, gainNode };
-      this.activeChord.push(id);
+    async playNote(frequency, delay = 0) {
+      try {
+        // Import the central audio engine
+        const audioEngine = (await import('./audio-engine.js')).default;
+        
+        if (!audioEngine._isInitialized) {
+          await this.initAudio();
+        }
+        
+        // Convert frequency to closest note name
+        // A4 = 440Hz, and each semitone is the 12th root of 2 higher
+        const a4 = 440;
+        const semitoneOffset = 12 * Math.log2(frequency / a4);
+        const semitoneRounded = Math.round(semitoneOffset);
+        
+        // A4 is note 69 in MIDI standard
+        const midiNoteNumber = 69 + semitoneRounded;
+        
+        // Convert MIDI note to note name
+        // MIDI notes: C-1 = 0, C0 = 12, C1 = 24, ... C4 = 60, A4 = 69
+        const octave = Math.floor((midiNoteNumber - 12) / 12);
+        const noteNames = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+        const noteName = noteNames[midiNoteNumber % 12];
+        const fullNoteName = `${noteName}${octave}`;
+        
+        // Schedule note with delay
+        setTimeout(() => {
+          audioEngine.playNote(fullNoteName, 1.0); // Standard duration of 1 second
+        }, delay * 1000); // Convert delay to milliseconds
+        
+        // Store for tracking (still useful for UI updates)
+        const id = Date.now() + Math.random();
+        this.activeChord.push(id);
+        return id;
+      } catch (error) {
+        console.error('Error playing note:', error);
+        return null;
+      }
     },
     
     /**
-     * Stop all currently playing sounds
+     * Stop all currently playing sounds using the central audio engine
      */
-    stopAllSounds() {
-      if (!this.audioContext) return;
-      
-      // Release all oscillators
-      const currentTime = this.audioContext ? this.audioContext.currentTime : 0;
-      
-      Object.keys(this.oscillators).forEach(id => {
-        const { oscillator, gainNode } = this.oscillators[id];
+    async stopAllSounds() {
+      try {
+        // Import the central audio engine
+        const audioEngine = (await import('./audio-engine.js')).default;
         
-        // Fade out
-        try {
-          gainNode.gain.linearRampToValueAtTime(0, currentTime + 0.1);
-          setTimeout(() => {
-            try {
-              oscillator.stop();
-              oscillator.disconnect();
-              gainNode.disconnect();
-              delete this.oscillators[id];
-            } catch (e) { /* Ignore errors from already stopped oscillators */ }
-          }, 200);
-        } catch (e) { /* Ignore errors from already stopped oscillators */ }
-      });
-      
-      this.isPlaying = false;
-      this.activeChord = null;
+        if (!audioEngine._isInitialized) {
+          console.warn('Audio engine not initialized, cannot stop sounds');
+          return;
+        }
+        
+        // Use the audio engine's stopAll method
+        audioEngine.stopAll();
+        
+        // Reset active chord tracking
+        this.activeChord = [];
+        this.isPlaying = false;
+        
+        // Import debug utils
+        const { debugLog } = await import('../utils/debug');
+        debugLog('CHORDS', 'Stopped all sounds using central audio engine');
+      } catch (error) {
+        console.error('Error stopping sounds:', error);
+      }
     },
     
     /**
