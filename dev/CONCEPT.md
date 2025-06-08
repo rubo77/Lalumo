@@ -89,23 +89,67 @@ Simple triads are translated into colors, moods, or figures. Children can guess,
 
 #### in details:
 
-[ ] **Chord Color Matching:**
+[ ] **Chord Color Matching: (2_1_chords_color-matching)**
   Major chords are represented by bright colors, minor chords by cooler or darker colors. Children listen to a chord and select which color best matches what they hear, developing emotional understanding of harmony.
+    - sound geht noch nicht
 
-[ ] **Mood Landscapes:**
+[ ] **Mood Landscapes: (2_2_chords_mood-landscapes)**
   Different chord progressions create changing landscapes in a visual scene (sunny fields for major chords, misty forests for minor ones). Children explore how harmony affects mood and atmosphere.
+    - sound geht noch nicht
 
-[ ] **Chord Building:**
+[ ] **Chord Building: (2_3_chords_chord-building)**
   Children stack blocks representing different notes to build their own chords. As they add each note, the sound plays, teaching how chords are constructed from individual tones.
+    - sound geht, aber biher nur der letzte Ton. Es fehlt ein Button um den gebauten Akkord zu hören
 
-[ ] **Guess the Missing Note:**
+[ ] **Guess the Missing Note: (2_4_chords_missing-note)**
   A chord is played with one note missing. Children must identify which note completes the chord by selecting from options, developing their ear for harmony.
+    - Geht schon, aber viel zu schwer für kleine Kinder
 
-[ ] **Chord Story Characters:**
+[ ] **Chord Story Characters: (2_5_chords_characters)**
   Different chord types are represented by distinct characters with matching personalities (e.g., happy character for major, mysterious character for diminished). Children match characters to the chords they hear.
+    - sound geht noch nicht
 
-[ ] **Harmony Gardens:**
+[ ] **Harmony Gardens: (2_6_chords_harmony-gardens)**
   Children plant and grow virtual flowers by selecting chord sequences. Different chord combinations create different garden patterns, visualizing how harmonies work together in music.
+    - sound geht noch nicht
+
+### 2.7 Implementation of Chord Sounds with Tone.js
+
+Die klangliche Umsetzung der Akkord-Module basiert auf der zentralen Audio-Engine mit Tone.js, die folgende Features bietet:
+
+#### Zentrale Audio-Engine-Architektur
+- **Singleton Audio-Engine**: Alle Klangmodule nutzen dieselbe zentrale Audio-Engine-Instanz
+- **Asynchrone Initialisierung**: Audio-Engine wird nur bei Bedarf initialisiert und vermeidet multiple AudioContext-Instanzen
+- **Plattformübergreifende Kompabilität**: Einheitliche API für PC (Firefox/Chrome) und mobile Geräte (Android/iOS)
+
+#### Akkord-spezifische Funktionen
+- **playChord(notes, options)**: Spielt mehrere Töne gleichzeitig als Akkord ab
+  - Unterstützt dynamische Zusammenstellung von Akkorden aus Einzeltönen
+  - Erlaubt Steuerung von Dauer, Lautstärke und Anschlag pro Akkord
+  - Ermöglicht visuelle Rückkopplung durch Callback-Funktionen
+
+- **stopAll()**: Stoppt alle aktiven Töne und Akkorde sofort
+  - Wichtig für Aktivitätswechsel und Benutzerinteraktionen
+
+#### Technische Implementierungsdetails
+- **Akkordaufbau**: Töne werden dynamisch aus der Grundtonhöhe und Intervallen berechnet
+  - Beispiel: C-Dur = ["C4", "E4", "G4"] durch Root "C4" + Intervalle [0, 4, 7]
+  
+- **Klangfarben-Variation**: Verschiedene Instrumentenklänge für unterschiedliche Akkordtypen
+  - Major-Akkorde: Heller, wärmerer Klang (z.B. Piano oder Vibraphone)
+  - Minor-Akkorde: Weicherer, dunklerer Klang 
+  - Verminderte/übermäßige Akkorde: Charakteristische Klangfarben für bessere Wiedererkennung
+
+- **Visuelle Synchronisation**: Farbgebung und Animation synchron zur Akkordwiedergabe
+  - Timing-Events für Beginn und Ende der Klangwiedergabe
+  - Nahtlose Integration von Audio und visuellen Effekten
+
+#### Kindgerechte Audio-Features
+- **Adaptive Klangstärke**: Automatische Anpassung der Lautstärke an Gerät und Umgebung
+- **Sicherheit**: Automatische Lautstärkebegrenzung zum Gehörschutz
+- **Fehlertoleranz**: Robuste Fehlerbehandlung bei fehlenden Audio-Ressourcen oder Browser-Beschränkungen
+
+Diese Implementierung stellt sicher, dass alle sechs Chord-Module konsistent klingen, auf allen Zielplattformen funktionieren und ein kindgerechtes Audioerlebnis bieten.
 
 ### 3. Discovering Timbres
 
@@ -113,22 +157,22 @@ Children hear different sounds (e.g., warm, cold, sharp, soft) and learn to dist
 
 #### in details:
 
-[ ] **Sound Character Matching:**
+[ ] **Sound Character Matching: (3_1_timbres_sound-character-matching)**
   Children listen to different instrument sounds and match them to descriptive characters (e.g., "warm" for cello, "bright" for trumpet, "soft" for flute). Visual aids show expressive animals or elements representing each timbre quality.
 
-[ ] **Find the Odd Sound Out:**
+[ ] **Find the Odd Sound Out: (3_2_timbres_find-the-odd-sound-out)**
   A sequence of similar sounds is played with one contrasting sound. Children must identify which one doesn't belong in the group (e.g., a sharp sound among soft ones).
 
-[ ] **Sound Story Adventures:**
+[ ] **Sound Story Adventures: (3_3_timbres_sound-story-adventures)**
   Short animated stories where different sound timbres represent characters or actions. Children must select the right sound for specific story moments (e.g., soft sounds for sleeping characters, metallic sounds for robots).
 
-[ ] **Sound Layering Exploration:**
+[ ] **Sound Layering Exploration: (3_4_timbres_sound-layering-exploration)**
   Children combine different instrument sounds to create a unique soundscape. Visual representation shows layers building up, teaching how timbres blend together.
 
-[ ] **Timbre Memory Game:**
+[ ] **Timbre Memory Game: (3_5_timbres_timbre-memory-game)**
   Pairs of matching sound timbres are hidden behind visual icons. Children tap to hear the sound and find matching pairs, strengthening their auditory memory and timbre recognition.
 
-[ ] **Sound Source Guessing:**
+[ ] **Sound Source Guessing: (3_6_timbres_sound-source-guessing)**
   Children hear everyday sounds (water splashing, door closing, animal sounds) and must guess what makes the sound, developing awareness of how different materials and actions create distinct timbres.
 
 ### 4. Experiencing Rhythm
@@ -137,22 +181,22 @@ Children tap, jump, or tap along. The app recognizes how well the rhythm was mat
 
 #### in details:
 
-[ ] **Rhythm Echo Game:**
+[ ] **Rhythm Echo Game: (4_1_rhythm_rhythm-echo-game)**
   The app plays a simple rhythmic pattern using friendly animal sounds. Children repeat the pattern by tapping the screen, with visual feedback showing how accurately they matched the rhythm.
 
-[ ] **Moving to the Beat:**
+[ ] **Moving to the Beat: (4_2_rhythm_moving-to-the-beat)**
   Animated characters demonstrate different movements (walking, jumping, hopping) that match varying rhythms. Children are encouraged to physically move along, developing embodied rhythm understanding.
 
-[ ] **Pattern Building Blocks:**
+[ ] **Pattern Building Blocks: (4_3_rhythm_pattern-building-blocks)**
   Children create rhythms by arranging visual blocks of different lengths. When they press play, their pattern comes to life with sounds and animations, teaching rhythm notation in an intuitive way.
 
-[ ] **Rhythm Safari Adventure:**
+[ ] **Rhythm Safari Adventure: (4_4_rhythm_rhythm-safari-adventure)**
   Different animals represent different rhythmic values (e.g., elephant for whole notes, rabbit for eighth notes). Children follow a path by tapping the rhythm correctly to help the animals reach their destination.
 
-[ ] **Rhythm Conductor:**
+[ ] **Rhythm Conductor: (4_5_rhythm_rhythm-conductor)**
   Children become the conductor of a small animated orchestra. By maintaining a steady beat with tapping, they keep the music going. The animation responds to their tempo, teaching rhythm consistency.
 
-[ ] **Musical Storytelling:**
+[ ] **Musical Storytelling: (4_6_rhythm_musical-storytelling)**
   Simple stories where rhythm changes represent different events (fast for chasing, slow for sleeping). Children control the story pace by tapping the appropriate rhythm.
 
 
@@ -163,22 +207,22 @@ A space for free discovery: Children can paint tones, let figures dance to pitch
 
 #### in details:
 
-[ ] **Sound Painting:**
+[ ] **Sound Painting: (5_1_free_sound_play_sound-painting)**
   Children use different colors and brush strokes on a digital canvas, with each color and movement producing different sounds. The painting becomes both a visual and musical creation.
 
-[ ] **Musical Puppet Theater:**
+[ ] **Musical Puppet Theater: (5_2_free_sound_play_musical-puppet-theater)**
   Animated characters dance and move according to the sounds children create by tapping different areas of the screen. Higher pitches make characters jump, lower ones make them crouch, teaching sound-movement relationships.
 
-[ ] **Sound Story Creator:**
+[ ] **Sound Story Creator: (5_3_free_sound_play_sound-story-creator)**
   Children select background scenes and characters, then add sound effects and musical elements to tell their own stories. The app records these creations so they can be played back and shared.
 
-[ ] **Voice Transformer Play:**
+[ ] **Voice Transformer Play: (5_4_free_sound_play_voice-transformer-play)**
   Children record short sounds or words and transform them with playful effects (echo, robot voice, animal sounds). This encourages vocal experimentation and understanding of sound manipulation.
 
-[ ] **Music Machine Builder:**
+[ ] **Music Machine Builder: (5_5_free_sound_play_music-machine-builder)**
   Children arrange virtual gears, tubes, and buttons that each make different sounds. When activated, their contraption plays a sequence, teaching cause-and-effect in sound creation.
 
-[ ] **Sound Treasure Hunt:**
+[ ] **Sound Treasure Hunt: (5_6_free_sound_play_sound-treasure-hunt)**
   Children explore an interactive scene to discover hidden sound elements. Each discovery adds to a collective soundscape, encouraging exploration and auditory attention.
 
 ## 3. User Guidance for Young Children

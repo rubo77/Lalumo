@@ -1,6 +1,26 @@
 TODO
 ====
 
+## Chord Chapter Implementation
+
+- Fix Audio in Chord Activities
+  - **2_1_chords_color-matching**: Implementiere Audio-Engine-Integration für Akkord-Wiedergabe
+  - **2_2_chords_mood-landscapes**: Aktiviere Audio-Wiedergabe für Akkordprogressionen
+  - **2_3_chords_chord-building**: Füge Button hinzu, um den vollständigen gebauten Akkord abzuspielen
+  - **2_5_chords_characters**: Implementiere Audio-Engine-Integration für Akkord-Wiedergabe
+  - **2_6_chords_harmony-gardens**: Aktiviere Audio-Wiedergabe für Akkordsequenzen
+
+- Optimize Chord User Experience
+  - Alle activities sollen bei erfolg den Regenbogen anzeigen
+  - **2_4_chords_missing-note**: Vereinfache die Aktivität für jüngere Kinder
+  - Stelle sicher, dass alle Akkordaktivitäten eine konsistente UI haben
+  - Implementiere kindgerechtes visuelles Feedback bei Akkordwiedergabe
+
+- Allgemeine Audio-Engine-Optimierungen für Chord-Kapitel
+  - Überprüfe korrekte Initialisierung der Audio-Engine vor Akkordwiedergabe
+  - Implementiere visuelle Anzeige, wenn Audio geladen/bereit ist
+  - Verbessere Fehlerbehandlung bei Audio-Problemen
+
 First finish pitches and melodies completely:
 
 - Enhance Visual Experience

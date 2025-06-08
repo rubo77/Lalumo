@@ -70,18 +70,24 @@
 
           <!-- chords started developed-->
           <button @click="$data.active = 'chords'; $dispatch('set-chord-mode', 'main')" :class="{ 'active': active === 'chords' }"
-           style="display: none;">
+          >
             <span x-text="$store.strings?.menu_chords || 'Chords'"></span>
           </button>
 
           <!-- later -->
-          <button @click="$data.active = 'tonecolors'; window.innerWidth < 1024 ? menuOpen = false : null" :class="{ 'active': active === 'tonecolors' }" style="display: none;">
+          <button @click="$data.active = 'tonecolors'; window.innerWidth < 1024 ? menuOpen = false : null" :class="{ 'active': active === 'tonecolors' }"
+          style="display: none;"
+          >
             🎨 <span x-text="$store.strings?.menu_tonecolors || 'Tone Colors'"></span>
           </button>
-          <button @click="$data.active = 'rhythms'; window.innerWidth < 1024 ? menuOpen = false : null" :class="{ 'active': active === 'rhythms' }" style="display: none;">
+          <button @click="$data.active = 'rhythms'; window.innerWidth < 1024 ? menuOpen = false : null" :class="{ 'active': active === 'rhythms' }"
+          style="display: none;"
+          >
             ⏱️ <span x-text="$store.strings?.menu_rhythm || 'Rhythm'"></span>
           </button>
-          <button @click="$data.active = 'freeplay'; window.innerWidth < 1024 ? menuOpen = false : null" :class="{ 'active': active === 'freeplay' }" style="display: none;">
+          <button @click="$data.active = 'freeplay'; window.innerWidth < 1024 ? menuOpen = false : null" :class="{ 'active': active === 'freeplay' }"
+          style="display: none;"
+          >
             🎮 <span x-text="$store.strings?.menu_freeplay || 'Free Play'"></span>
           </button>
         </div>
