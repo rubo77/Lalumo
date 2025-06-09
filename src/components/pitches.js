@@ -1369,41 +1369,71 @@ export function pitches() {
     /**
      * Stop any currently playing sound
      */
+    /**
+     * Stops all currently playing sounds and resets UI state
+     * This is a critical method for preventing sound overlap issues
+     */
     stopCurrentSound() {
-      console.log('DEBUG: stopCurrentSound called in pitches.js - trace:', new Error().stack);
+      console.log('AUDIO: stopCurrentSound called in pitches.js');
+      
+      // WICHTIG: Zuerst alle Flags zurücksetzen vor dem Löschen der Timeouts,
+      // damit keine neuen Timeouts erstellt werden können während des Stoppvorgangs
+      this.isPlaying = false;
       
       // Cancel any pending timeouts in this component
       if (this.soundTimeoutId) {
-        console.log('DEBUG: Clearing soundTimeoutId:', this.soundTimeoutId);
+        console.log('AUDIO: Clearing soundTimeoutId:', this.soundTimeoutId);
         clearTimeout(this.soundTimeoutId);
         this.soundTimeoutId = null;
       }
       
       if (this.resetTimeoutId) {
-        console.log('DEBUG: Clearing resetTimeoutId:', this.resetTimeoutId);
+        console.log('AUDIO: Clearing resetTimeoutId:', this.resetTimeoutId);
         clearTimeout(this.resetTimeoutId);
         this.resetTimeoutId = null;
       }
       
-      // Stop melody playback timeouts
+      // Stop melody playback timeouts - besonders wichtig für die Sound-Judgment-Aktivität
       if (this.melodyTimeouts && this.melodyTimeouts.length > 0) {
-        console.log(`DEBUG: Clearing ${this.melodyTimeouts.length} melody timeouts`);
-        this.melodyTimeouts.forEach(timeoutId => clearTimeout(timeoutId));
+        console.log(`AUDIO: Clearing ${this.melodyTimeouts.length} melody timeouts`);
+        this.melodyTimeouts.forEach(timeoutId => {
+          try {
+            clearTimeout(timeoutId);
+          } catch (e) {
+            console.error('AUDIO_ERROR: Failed to clear timeout:', e);
+          }
+        });
+        // Array vollständig zurücksetzen
         this.melodyTimeouts = [];
       }
       
-      // Stop animations and reset flags
-      this.isPlaying = false;
+      // Reset animation state
       this.currentAnimation = null;
       
       // Remove active classes from all pitch cards
       const activeCards = document.querySelectorAll('.pitch-card.active');
-      console.log('DEBUG: Removing active class from', activeCards.length, 'pitch cards');
+      console.log('AUDIO: Removing active class from', activeCards.length, 'pitch cards');
       activeCards.forEach(card => card.classList.remove('active'));
       
+      // Aktualisiere UI-Status
+      document.querySelectorAll('.play-button').forEach(btn => {
+        btn.classList.remove('playing');
+        btn.disabled = false;
+      });
+      
+      // Status-Anzeige zurücksetzen
+      document.querySelectorAll('.sound-status').forEach(el => {
+        el.textContent = '';
+      });
+      
       // Stop all active audio directly via the central audio engine
-      audioEngine.stopAll();
-      console.log('AUDIO: Stopped all sounds using central audio engine');
+      // Dies ist der wichtigste Schritt, um alle Töne sofort zu beenden
+      try {
+        audioEngine.stopAll();
+        console.log('AUDIO: Stopped all sounds using central audio engine');
+      } catch (e) {
+        console.error('AUDIO_ERROR: Failed to stop audio engine:', e);
+      }
     },
     
     /**
@@ -2295,34 +2325,69 @@ export function pitches() {
      * @param {boolean} generateNew - Whether to generate a new melody
      */
     playMelodyForSoundJudgment(generateNew = true) {
+      console.log(`AUDIO: playMelodyForSoundJudgment called with generateNew=${generateNew}`);
+      
+      // Stoppe zuerst alle aktuellen Sounds, um Überlagerungen zu vermeiden
+      this.stopCurrentSound();
+      
       // Hide any previous feedback
       this.showFeedback = false;
+      
+      // Aktualisiere UI-Status: Buttons deaktivieren während der Wiedergabe
+      document.querySelectorAll('.play-button').forEach(btn => {
+        btn.classList.add('playing');
+        btn.disabled = true;
+      });
       
       // Select new random animal images for each new melody
       // This ensures the animals change with each new melody
       this.selectRandomAnimalImages();
       
-      // Generate a new melody if requested
-      if (generateNew) {
-        if (!this.generateSoundJudgmentMelody()) {
-          return; // Exit if melody generation failed
+      // Kurze Pause einfügen, um sicherzustellen, dass vorherige Sounds gestoppt wurden
+      setTimeout(() => {
+        // Generate a new melody if requested
+        if (generateNew) {
+          if (!this.generateSoundJudgmentMelody()) {
+            console.error('AUDIO_ERROR: Failed to generate sound judgment melody');
+            
+            // UI-Status zurücksetzen
+            document.querySelectorAll('.play-button').forEach(btn => {
+              btn.classList.remove('playing');
+              btn.disabled = false;
+            });
+            return;
+          }
+          
+          console.log('AUDIO: Generated new melody with ID:', this.currentMelodyId);
+          // Play the newly generated melody with the melody ID
+          this.playMelodySequence(this.currentSequence, 'sound-judgment', this.currentMelodyId);
+        } 
+        // Play the existing melody if we're not generating a new one
+        else if (this.currentSequence && this.currentSequence.length > 0) {
+          console.log('AUDIO: Replaying existing melody with ID:', this.currentMelodyId);
+          this.playMelodySequence(this.currentSequence, 'sound-judgment', this.currentMelodyId);
+        } 
+        // Handle case where there's no melody to play
+        else {
+          console.error('AUDIO_ERROR: No sequence to play for sound judgment activity');
+          
+          // Try to generate a melody as fallback
+          if (this.generateSoundJudgmentMelody()) {
+            this.playMelodySequence(this.currentSequence, 'sound-judgment', this.currentMelodyId);
+          } else {
+            // Reset UI if we can't play anything
+            document.querySelectorAll('.play-button').forEach(btn => {
+              btn.classList.remove('playing');
+              btn.disabled = false;
+            });
+          }
         }
         
-        // Play the newly generated melody with the melody ID
-        this.playMelodySequence(this.currentSequence, 'sound-judgment', this.currentMelodyId);
-      } 
-      // Play the existing melody if we're not generating a new one
-      else if (this.currentSequence && this.currentSequence.length > 0) {
-        this.playMelodySequence(this.currentSequence, 'sound-judgment', this.currentMelodyId);
-      } 
-      // Handle case where there's no melody to play
-      else {
-        console.error('No sequence to play for sound judgment activity');
-        // Try to generate a melody as fallback
-        if (this.generateSoundJudgmentMelody()) {
-          this.playMelodySequence(this.currentSequence, 'sound-judgment', this.currentMelodyId);
-        }
-      }
+        // Aktualisiere Melodie-Name in der UI
+        document.querySelectorAll('.sound-status').forEach(el => {
+          el.textContent = this.currentMelodyName || 'Melodie wird abgespielt...';
+        });
+      }, 50); // Kurze Verzögerung, um sicherzustellen, dass stopCurrentSound vollständig ausgeführt wurde
     },
     
     /**
@@ -2451,26 +2516,131 @@ export function pitches() {
         console.log(`AUDIO: Using melody-specific quarter note duration: ${baseQuarterNoteDuration}ms for ${melodyId}`);
       }
       
-      // Use the common audio sequence player with sound-judgment specific settings
-      return this.playAudioSequence(noteArray, context, {
-        // Transform notes for sound-judgment - add 'sound_' prefix to differentiate from match-sounds
-        // This helps avoid duplicate detection issues
-        prepareNote: (note) => {
-          // For notes with modifiers (e.g. 'C4:h'), extract just the pitch part
-          if (typeof note === 'string' && note.includes(':')) {
-            note = note.split(':')[0];
+      // Prepare notes array with duration information
+      // Process each note to separate note name and duration modifier
+      const processedNotes = noteArray.map(note => {
+        // Default is quarter note duration
+        let duration = baseQuarterNoteDuration;
+        let noteName = note;
+        
+        // If the note has a duration modifier (e.g. C4:h)
+        if (typeof note === 'string' && note.includes(':')) {
+          const [name, modifier] = note.split(':');
+          noteName = name;
+          
+          // Calculate actual duration based on modifier
+          switch(modifier) {
+            case 'w': // whole note
+              duration = baseQuarterNoteDuration * 4;
+              break;
+            case 'h': // half note
+              duration = baseQuarterNoteDuration * 2;
+              break;
+            case 'q': // quarter note (default)
+              duration = baseQuarterNoteDuration;
+              break;
+            case 'e': // eighth note
+              duration = baseQuarterNoteDuration / 2;
+              break;
+            case 's': // sixteenth note
+              duration = baseQuarterNoteDuration / 4;
+              break;
+            default:
+              // For unknown modifiers, use default duration
+              console.warn(`AUDIO: Unknown duration modifier '${modifier}' in note ${note}`);
+              duration = baseQuarterNoteDuration;
           }
-          return `sound_${note.toLowerCase()}`;
-        },
+        }
         
-        // Use our determined quarter note duration for this melody
-        noteDuration: baseQuarterNoteDuration,
-        
-        // After completion callback
+        return {
+          name: noteName,
+          duration: duration
+        };
+      });
+      
+      console.log('AUDIO: Processed notes with durations:', processedNotes);
+      
+      // Prepare melody timeouts if not already initialized
+      if (!this.melodyTimeouts) {
+        this.melodyTimeouts = [];
+      }
+      
+      // Start playing notes sequentially
+      this.playProcessedNoteSequence(processedNotes, 0, context, {
+        melodyId: melodyId,
         onComplete: () => {
           console.log(`AUDIO: Sound judgment melody playback complete`);
+          // Safely reset isPlaying flag and ensure UI is updated
+          this.isPlaying = false;
+          
+          // Enable play buttons
+          document.querySelectorAll('.play-button').forEach(btn => {
+            btn.classList.remove('playing');
+            btn.disabled = false;
+          });
         }
       });
+      
+      // Return a cleanup function
+      return () => {
+        console.log(`AUDIO: External call to stop melody playback`);
+        this.stopCurrentSound();
+      };
+    },
+    
+    /**
+     * Helper method to play a sequence of processed notes with custom durations
+     * @param {Array} notes - Array of {name, duration} objects
+     * @param {number} index - Current index to play
+     * @param {string} context - Context of playback
+     * @param {Object} options - Additional options
+     */
+    playProcessedNoteSequence(notes, index, context = 'general', options = {}) {
+      // If we've reached the end of the sequence or playback was stopped
+      if (!this.isPlaying || index >= notes.length) {
+        if (this.isPlaying) { // Make sure we only call onComplete if we didn't stop manually
+          console.log(`AUDIO: End of note sequence reached for ${context}`);
+          this.isPlaying = false;
+          if (options.onComplete) {
+            options.onComplete();
+          }
+        }
+        return;
+      }
+      
+      const currentNote = notes[index];
+      const { name, duration } = currentNote;
+      
+      // Play the note using the audio engine
+      try {
+        console.log(`AUDIO: Playing note ${index+1}/${notes.length}: ${name} with duration ${duration}ms`);
+        // For sound judgment notes, add the prefix
+        const processedName = (context === 'sound-judgment') ? `sound_${name.toLowerCase()}` : name;
+        audioEngine.playNote(processedName, 0.75);
+        
+        // Schedule the next note
+        const timeoutId = setTimeout(() => {
+          // Remove this timeout from the tracking array once executed
+          const idx = this.melodyTimeouts.indexOf(timeoutId);
+          if (idx !== -1) {
+            this.melodyTimeouts.splice(idx, 1);
+          }
+          
+          // Play the next note
+          this.playProcessedNoteSequence(notes, index + 1, context, options);
+        }, duration);
+        
+        // Track this timeout for potential stopping
+        this.melodyTimeouts.push(timeoutId);
+        
+      } catch (err) {
+        console.error(`AUDIO_ERROR: Failed to play note ${name}:`, err);
+        // Try to continue with next note despite error
+        const timeoutId = setTimeout(() => {
+          this.playProcessedNoteSequence(notes, index + 1, context, options);
+        }, 500); // Use a short safety delay
+        this.melodyTimeouts.push(timeoutId);
+      }
     },
     
     /**

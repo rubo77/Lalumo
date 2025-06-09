@@ -51,7 +51,7 @@ Tones going up, down, waves, jumps: Children recognize tone movements and assign
   Children can “draw” a melody by dragging their finger or mouse, creating a visual curve. The app plays back a melody that follows the drawn curve, reinforcing the connection between visual movement and pitch. the progress is saved.
 [x] **1.3. "Memory Game":**
   Simple “repeat the melody” exercises: the app plays a short melody, and the child tries to reproduce it by tapping virtual keys or buttons. Visual aids (like colored steps or animated animals) help guide the sequence. the progress is saved. when the child has repeated the melody correctly 3 times, the melody is one note longer, ...
-[ ] **1.4. "Does It Sound Right?":**
+[ ] **1.4. "Does It Sound Right?": (1_4_does-it-sound-right)**
   Children listen to a well-known melody. Sometimes a wrong note sneaks in! Kids decide if the tune sounds right or wrong – with the help of friendly animals.
 
   Goal:
@@ -81,6 +81,10 @@ Children start developing musical ear and confidence by noticing when something 
 
 Tips for Parents:
 Encourage your child to sing along! Even if they guess wrong, let them enjoy the process of listening and reacting to music.
+
+#### technical details:
+
+[x] Die Wiedergabe verwendet die ältere, aber zuverlässige playNoteSequence-Methode statt der neueren playMelodySequence
 
 
 ### 2. Feeling Chords
@@ -113,16 +117,16 @@ Simple triads are translated into colors, moods, or figures. Children can guess,
   Children plant and grow virtual flowers by selecting chord sequences. Different chord combinations create different garden patterns, visualizing how harmonies work together in music.
     - sound geht noch nicht
 
-### 2.7 Implementation of Chord Sounds with Tone.js
+##### 2.7 Implementation of Chord Sounds with Tone.js
 
 Die klangliche Umsetzung der Akkord-Module basiert auf der zentralen Audio-Engine mit Tone.js, die folgende Features bietet:
 
-#### Zentrale Audio-Engine-Architektur
+###### Zentrale Audio-Engine-Architektur
 - **Singleton Audio-Engine**: Alle Klangmodule nutzen dieselbe zentrale Audio-Engine-Instanz
 - **Asynchrone Initialisierung**: Audio-Engine wird nur bei Bedarf initialisiert und vermeidet multiple AudioContext-Instanzen
 - **Plattformübergreifende Kompabilität**: Einheitliche API für PC (Firefox/Chrome) und mobile Geräte (Android/iOS)
 
-#### Akkord-spezifische Funktionen
+###### Akkord-spezifische Funktionen
 - **playChord(notes, options)**: Spielt mehrere Töne gleichzeitig als Akkord ab
   - Unterstützt dynamische Zusammenstellung von Akkorden aus Einzeltönen
   - Erlaubt Steuerung von Dauer, Lautstärke und Anschlag pro Akkord
@@ -131,7 +135,7 @@ Die klangliche Umsetzung der Akkord-Module basiert auf der zentralen Audio-Engin
 - **stopAll()**: Stoppt alle aktiven Töne und Akkorde sofort
   - Wichtig für Aktivitätswechsel und Benutzerinteraktionen
 
-#### Technische Implementierungsdetails
+###### Technische Implementierungsdetails
 - **Akkordaufbau**: Töne werden dynamisch aus der Grundtonhöhe und Intervallen berechnet
   - Beispiel: C-Dur = ["C4", "E4", "G4"] durch Root "C4" + Intervalle [0, 4, 7]
   
@@ -144,7 +148,7 @@ Die klangliche Umsetzung der Akkord-Module basiert auf der zentralen Audio-Engin
   - Timing-Events für Beginn und Ende der Klangwiedergabe
   - Nahtlose Integration von Audio und visuellen Effekten
 
-#### Kindgerechte Audio-Features
+###### Kindgerechte Audio-Features
 - **Adaptive Klangstärke**: Automatische Anpassung der Lautstärke an Gerät und Umgebung
 - **Sicherheit**: Automatische Lautstärkebegrenzung zum Gehörschutz
 - **Fehlertoleranz**: Robuste Fehlerbehandlung bei fehlenden Audio-Ressourcen oder Browser-Beschränkungen
