@@ -100,9 +100,7 @@ Dies soll in allen aktionen:
 - ev. ein spiel draus machen: eine Melodie nachzeichnen
 
 1_5 does this sound right:
- - es darf nicht 2x hintereinander die selbe melodie kommen
  - die animals sind zu klein in der pitch-card
- - einen neuen kleinen button für nächsten song
  - Die tonlängen stimmen noch nicht. eine 8tel note fängt zwar korrekt nach einer 8tel nte an, aber die vorige note klingt noch weiter, bis ein viertel vorbei ist
 
 # most important

@@ -139,11 +139,11 @@ export class AudioEngine {
   /**
    * Spielt eine einzelne Note oder einen speziellen Sound-Effekt
    * @param {string} note - Die zu spielende Note (z.B. 'C4', 'D#4', etc.) oder ein spezieller Sound ('success', 'try_again')
-   * @param {number} duration - Notendauer in Sekunden (wird für spezielle Sounds ignoriert)
-   * @param {number} [time] - Zeitpunkt in Sekunden, zu dem die Note abgespielt werden soll (optional)
+   * @param {string|number} duration - Notendauer als Tone.js-Notation ('4n', '8n', '16n', etc.) oder in Sekunden
+   * @param {*} [time] - Zeitpunkt, zu dem die Note abgespielt werden soll (optional)
    * @param {number} [velocity] - Lautstärke der Note (0-1)
    */
-  playNote(note, duration = 0.5, time = undefined, velocity = 0.7) {
+  playNote(note, duration = '4n', time = undefined, velocity = 0.7) {
     if (!this._isInitialized) {
       console.warn('Audio-Engine nicht initialisiert. Initialisiere zuerst mit initialize()');
       return;
@@ -164,19 +164,65 @@ export class AudioEngine {
       return;
     }
     
-    // Note spielen
+    // Note spielen mit musikalischer Zeitnotation
     this._synth.triggerAttackRelease(parsedNote, duration, time, velocity);
     
     // Note als aktiv markieren
     this._notesPlaying.add(parsedNote);
     
+    // Berechne die tatsächliche Dauer in Sekunden für das Cleanup
+    let durationInSeconds;
+    if (typeof duration === 'string') {
+      // Wenn es eine musikalische Notation wie '4n', '8n', etc. ist
+      durationInSeconds = Tone.Time(duration).toSeconds();
+    } else {
+      // Wenn es bereits eine Zahl in Sekunden ist
+      durationInSeconds = duration;
+    }
+    
     // Nach Ablauf der Note aus der aktiven Liste entfernen
-    const cleanupTime = time !== undefined ? time + duration : Tone.now() + duration;
+    const cleanupTime = time !== undefined ? 
+      (typeof time === 'number' ? time + durationInSeconds : Tone.Time(time).toSeconds() + durationInSeconds) : 
+      Tone.now() + durationInSeconds;
+    
     Tone.Transport.scheduleOnce(() => {
       this._notesPlaying.delete(parsedNote);
     }, cleanupTime);
     
-    console.log(`Note gespielt: ${parsedNote}, Dauer: ${duration}s`);
+    console.log(`Note gespielt: ${parsedNote}, Dauer: ${duration} (${durationInSeconds.toFixed(3)}s)`);
+  }
+  
+  /**
+   * Stoppt eine aktiv spielende Note sofort
+   * @param {string} note - Die zu stoppende Note (z.B. 'C4', 'D#4', etc.)
+   */
+  stopNote(note) {
+    if (!this._isInitialized) {
+      console.warn('Audio-Engine nicht initialisiert. Initialisiere zuerst mit initialize()');
+      return;
+    }
+    
+    // Spezielle Sounds können nicht gestoppt werden
+    if (this._specialSounds[note]) {
+      console.log(`AUDIO: Kann speziellen Sound nicht stoppen: ${note}`);
+      return;
+    }
+    
+    // Noten-Format überprüfen und ggf. korrigieren
+    const parsedNote = this._parseNoteString(note);
+    
+    if (!parsedNote) {
+      console.error(`Ungültige Note zum Stoppen: ${note}`);
+      return;
+    }
+    
+    // Note sofort stoppen mit triggerRelease
+    this._synth.triggerRelease(parsedNote);
+    
+    // Note aus der Liste aktiver Noten entfernen
+    this._notesPlaying.delete(parsedNote);
+    
+    console.log(`Note gestoppt: ${parsedNote}`);
   }
   
   /**

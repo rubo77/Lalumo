@@ -2635,7 +2635,27 @@ export function pitches() {
       
       // Play the note using the audio engine
       try {
-        console.log(`AUDIO: Playing note ${index+1}/${notes.length}: ${name} with duration ${duration}ms in context "${context}"`);
+        // Konvertiere Millisekunden zu Tone.js-Notation
+        let noteDuration;
+        if (duration) {
+          // Detektiere Notenwerte basierend auf Dauer in ms
+          if (duration <= 125) { // 16tel Note (sehr kurz)
+            noteDuration = '16n';
+          } else if (duration <= 250) { // 8tel Note
+            noteDuration = '8n';
+          } else if (duration <= 500) { // Viertel Note
+            noteDuration = '4n';
+          } else if (duration <= 1000) { // Halbe Note
+            noteDuration = '2n';
+          } else { // Ganze Note oder länger
+            noteDuration = '1n';
+          }
+        } else {
+          // Standardwert, falls duration nicht definiert ist
+          noteDuration = '4n';
+        }
+        
+        console.log(`AUDIO: Playing note ${index+1}/${notes.length}: ${name} with notation ${noteDuration} (${duration}ms) in context "${context}"`);
         
         // Verarbeite den Notennamen je nach Kontext
         let processedName = name;
@@ -2651,16 +2671,19 @@ export function pitches() {
         
         // Explizit die vorige Note stoppen, wenn wir eine neue spielen
         if (this.lastPlayedNote) {
-          // Wir senden null-Werte für duration und time, um einen sofortigen Release zu erzwingen
           audioEngine.stopNote(this.lastPlayedNote);
           this.lastPlayedNote = null;
         }
         
-        // Spiele die Note mit dem passenden Kontext
-        audioEngine.playNote(processedName, duration / 1000, undefined, volume); // Konvertiere ms zu Sekunden
+        // Spiele die Note mit musikalischer Notation
+        audioEngine.playNote(processedName, noteDuration, undefined, volume);
         
         // Speichere die aktuelle Note für zukünftige Stops
         this.lastPlayedNote = processedName;
+        
+        // Berechne die tatsächliche Dauer in Millisekunden für das Timing des nächsten Tons
+        // Für die Zeitplanung verwenden wir weiterhin die originale Dauer in ms
+        const nextNoteTiming = duration || Tone.Time(noteDuration).toSeconds() * 1000;
         
         // Schedule the next note
         const timeoutId = setTimeout(() => {
@@ -2672,7 +2695,7 @@ export function pitches() {
           
           // Play the next note
           this.playProcessedNoteSequence(notes, index + 1, context, options);
-        }, duration);
+        }, nextNoteTiming);
         
         // Track this timeout for potential stopping
         this.melodyTimeouts.push(timeoutId);
