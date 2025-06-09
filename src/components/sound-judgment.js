@@ -3,6 +3,7 @@
  * Implementation for the "Does It Sound Right?" activity
  * This is a helper module for the main pitches.js component
  */
+import audioEngine from './audio-engine.js';
 export function initSoundJudgmentMode(component) {
   // Get the current language
   const languageSetting = localStorage.getItem('lalumo_language') || 'english';
@@ -25,13 +26,67 @@ export function initSoundJudgmentMode(component) {
   if (!component.stopCurrentSound) {
     component.stopCurrentSound = function() {
       console.log('AUDIO: Stopping all current sounds in Sound Judgment');
-      if (this.soundTimeoutId) clearTimeout(this.soundTimeoutId);
-      if (this.resetTimeoutId) clearTimeout(this.resetTimeoutId);
-      if (this.melodyTimeouts) this.melodyTimeouts.forEach(clearTimeout);
-      this.melodyTimeouts = []; // Array leeren
+      
+      // WICHTIG: Zuerst alle Flags zurücksetzen vor dem Löschen der Timeouts
       this.isPlaying = false;
-      document.querySelectorAll('.pitch-card.active').forEach(card => card.classList.remove('active'));
-      window.audioEngine.stopAll(); // Zentrale Audio-Engine nutzen
+      
+      // Timeouts löschen mit Fehlerbehandlung
+      if (this.soundTimeoutId) {
+        try {
+          clearTimeout(this.soundTimeoutId);
+          console.log('AUDIO: Cleared sound timeout');
+        } catch (e) {
+          console.error('AUDIO_ERROR: Failed to clear sound timeout:', e);
+        }
+        this.soundTimeoutId = null;
+      }
+      
+      if (this.resetTimeoutId) {
+        try {
+          clearTimeout(this.resetTimeoutId);
+          console.log('AUDIO: Cleared reset timeout');
+        } catch (e) {
+          console.error('AUDIO_ERROR: Failed to clear reset timeout:', e);
+        }
+        this.resetTimeoutId = null;
+      }
+      
+      // Melodie-Timeouts sicher löschen
+      if (this.melodyTimeouts && this.melodyTimeouts.length > 0) {
+        console.log(`AUDIO: Clearing ${this.melodyTimeouts.length} melody timeouts`);
+        this.melodyTimeouts.forEach(timeoutId => {
+          try {
+            clearTimeout(timeoutId);
+          } catch (e) {
+            console.error('AUDIO_ERROR: Failed to clear melody timeout:', e);
+          }
+        });
+        this.melodyTimeouts = []; // Array leeren
+      }
+      
+      // UI-Elemente aktualisieren
+      document.querySelectorAll('.pitch-card.active').forEach(card => {
+        card.classList.remove('active');
+      });
+      
+      // Play-Buttons zurücksetzen
+      document.querySelectorAll('.play-button').forEach(btn => {
+        btn.classList.remove('playing');
+        btn.disabled = false;
+      });
+      
+      // Status-Anzeigen zurücksetzen
+      document.querySelectorAll('.sound-status').forEach(el => {
+        el.textContent = '';
+      });
+      
+      // Zentrale Audio-Engine nutzen zum Stoppen aller Sounds
+      try {
+        window.audioEngine.stopAll();
+        console.log('AUDIO: Stopped all sounds using central audio engine');
+      } catch (e) {
+        console.error('AUDIO_ERROR: Failed to stop audio engine:', e);
+      }
     };
   }
   
@@ -357,8 +412,9 @@ function createWrongMelody(originalMelody) {
  * Check the user's sound judgment answer
  * @param {Object} component - The Alpine.js component instance
  * @param {boolean} userAnswer - User's answer (true = sounds good, false = sounds wrong)
+ * @param {string} language - Language of the user's interface
  */
-export function checkSoundJudgment(component, userAnswer) {
+export function checkSoundJudgment(component, userAnswer, language = 'de') {
   // Get the current language
   const languageSetting = localStorage.getItem('lalumo_language') || 'english';
   const language = languageSetting === 'german' ? 'de' : 'en';
@@ -379,26 +435,21 @@ export function checkSoundJudgment(component, userAnswer) {
     
     // Play success sound
     if (!component.playSuccessSound) {
-      // Implementiere die Erfolgs-Sound-Methode, falls nicht vorhanden
       component.playSuccessSound = function() {
-        console.log('AUDIO: Playing success sound using audio engine');
-        try {
-          // Erfolgs-Melodie: aufsteigendes Arpeggio (C-Dur)
-          const successNotes = ['C4', 'E4', 'G4', 'C5'];
-          const successDurations = [150, 150, 150, 400];
-          
-          // Stoppe zuerst alle laufenden Sounds
-          window.audioEngine.stopAll();
-          
-          // Spiele die Erfolgs-Sequenz
-          successNotes.forEach((note, index) => {
-            setTimeout(() => {
-              window.audioEngine.playNote(note, 0.7);
-            }, successDurations.slice(0, index).reduce((a, b) => a + b, 0));
-          });
-        } catch (err) {
-          console.error('Error playing success sound:', err);
-        }
+        console.log('AUDIO: Playing success sound');
+        
+        // Stoppe zuerst alle laufenden Sounds
+        this.stopCurrentSound();
+        
+        // Kleine Verzögerung, um sicherzustellen, dass vorherige Sounds gestoppt wurden
+        setTimeout(() => {
+          try {
+            // Erfolgs-Sound direkt über die Audio-Engine abspielen
+            audioEngine.playNote('success', 0.9);
+          } catch (err) {
+            console.error('AUDIO_ERROR: Error playing success sound:', err);
+          }
+        }, 50);
       };
     }
     component.playSuccessSound();
@@ -418,26 +469,21 @@ export function checkSoundJudgment(component, userAnswer) {
     
     // Play error sound
     if (!component.playErrorSound) {
-      // Implementiere die Fehler-Sound-Methode, falls nicht vorhanden
       component.playErrorSound = function() {
-        console.log('AUDIO: Playing error sound using audio engine');
-        try {
-          // Fehler-Melodie: absteigende kleine Terz
-          const errorNotes = ['E4', 'C4'];
-          const errorDurations = [200, 400];
-          
-          // Stoppe zuerst alle laufenden Sounds
-          window.audioEngine.stopAll();
-          
-          // Spiele die Fehler-Sequenz
-          errorNotes.forEach((note, index) => {
-            setTimeout(() => {
-              window.audioEngine.playNote(note, 0.7);
-            }, errorDurations.slice(0, index).reduce((a, b) => a + b, 0));
-          });
-        } catch (err) {
-          console.error('Error playing error sound:', err);
-        }
+        console.log('AUDIO: Playing error sound');
+        
+        // Stoppe zuerst alle laufenden Sounds
+        this.stopCurrentSound();
+        
+        // Kleine Verzögerung, um sicherzustellen, dass vorherige Sounds gestoppt wurden
+        setTimeout(() => {
+          try {
+            // Fehler-Sound direkt über die Audio-Engine abspielen
+            audioEngine.playNote('try_again', 0.9);
+          } catch (err) {
+            console.error('AUDIO_ERROR: Error playing error sound:', err);
+          }
+        }, 50);
       };
     }
     component.playErrorSound();

@@ -10,20 +10,27 @@ import audioEngine from './audio-engine.js';
 import { debugLog } from '../utils/debug.js';
 
 export function pitches() {
-  // Audio-Engine initialisieren, wenn die Komponente geladen wird
-  const initAudio = async () => {
-    try {
-      await audioEngine.initialize();
-      debugLog('PITCHES', 'Audio engine successfully initialized');
-    } catch (error) {
-      console.error('PITCHES: Error initializing audio engine', error);
-    }
-  };
-  
-  // Initialisierung beim Start ausführen
-  initAudio();
-  
+  // Audio-Engine-Initialisierung wird in afterInit durchgeführt
   return {
+    /**
+     * Wird automatisch nach der Komponenteninitialisierung aufgerufen
+     * Initialisiert die Audio-Engine und registriert die Komponente global
+     */
+    async afterInit() {
+      try {
+        // Initialisiere die Audio-Engine
+        await audioEngine.initialize();
+        debugLog('PITCHES', 'Audio engine successfully initialized');
+        
+        // Registriere diese Komponente im globalen Kontext
+        // Dies erlaubt anderen Komponenten, auf die robuste Wiedergabemethode zuzugreifen
+        console.log('AUDIO: Registering pitches component globally');
+        window.pitchesComponent = this;
+      } catch (error) {
+        console.error('PITCHES: Error initializing audio engine', error);
+      }
+    },
+    
     // State variables
     mode: 'listen', // listen, match, draw, guess, memory
     currentSequence: [],
@@ -2613,10 +2620,22 @@ export function pitches() {
       
       // Play the note using the audio engine
       try {
-        console.log(`AUDIO: Playing note ${index+1}/${notes.length}: ${name} with duration ${duration}ms`);
-        // For sound judgment notes, add the prefix
-        const processedName = (context === 'sound-judgment') ? `sound_${name.toLowerCase()}` : name;
-        audioEngine.playNote(processedName, 0.75);
+        console.log(`AUDIO: Playing note ${index+1}/${notes.length}: ${name} with duration ${duration}ms in context "${context}"`);
+        
+        // Verarbeite den Notennamen je nach Kontext
+        let processedName = name;
+        let volume = 0.75;
+        
+        if (context === 'sound-judgment') {
+          // Für die "Does It Sound Right?"-Aktivität: Präfix hinzufügen
+          processedName = `sound_${name.toLowerCase()}`;
+        } else if (context === 'feedback') {
+          // Für Feedback-Sounds: Keine Modifikation des Notennamens, aber höhere Lautstärke
+          volume = 0.85;
+        }
+        
+        // Spiele die Note mit dem passenden Kontext
+        audioEngine.playNote(processedName, volume);
         
         // Schedule the next note
         const timeoutId = setTimeout(() => {
