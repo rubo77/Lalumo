@@ -2649,8 +2649,18 @@ export function pitches() {
           volume = 0.85;
         }
         
+        // Explizit die vorige Note stoppen, wenn wir eine neue spielen
+        if (this.lastPlayedNote) {
+          // Wir senden null-Werte für duration und time, um einen sofortigen Release zu erzwingen
+          audioEngine.stopNote(this.lastPlayedNote);
+          this.lastPlayedNote = null;
+        }
+        
         // Spiele die Note mit dem passenden Kontext
-        audioEngine.playNote(processedName, volume);
+        audioEngine.playNote(processedName, duration / 1000, undefined, volume); // Konvertiere ms zu Sekunden
+        
+        // Speichere die aktuelle Note für zukünftige Stops
+        this.lastPlayedNote = processedName;
         
         // Schedule the next note
         const timeoutId = setTimeout(() => {
