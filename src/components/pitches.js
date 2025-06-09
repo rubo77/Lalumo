@@ -2246,8 +2246,23 @@ export function pitches() {
       // Randomly decide if the melody should have a wrong note (50% chance)
       this.melodyHasWrongNote = Math.random() < 0.5;
       
-      // Select a random melody from our collection
-      const randomMelodyKey = melodyKeys[Math.floor(Math.random() * melodyKeys.length)];
+      // Wähle eine Melodie aus, die nicht dieselbe wie die vorherige ist
+      let randomMelodyKey;
+      let attempts = 0;
+      const maxAttempts = 10; // Sicherheitsgrenze, um unendliche Schleifen zu vermeiden
+      
+      do {
+        randomMelodyKey = melodyKeys[Math.floor(Math.random() * melodyKeys.length)];
+        attempts++;
+      } while (randomMelodyKey === this.currentMelodyId && melodyKeys.length > 1 && attempts < maxAttempts);
+      
+      if (randomMelodyKey === this.currentMelodyId && melodyKeys.length > 1) {
+        console.warn('Couldn\'t find a different melody after max attempts, using a different one anyway');
+        // Explizit eine andere Melodie wählen
+        const currentIndex = melodyKeys.indexOf(this.currentMelodyId);
+        randomMelodyKey = melodyKeys[(currentIndex + 1) % melodyKeys.length];
+      }
+      
       const selectedMelody = this.knownMelodies[randomMelodyKey];
       
       // Store the melody ID for later reference
