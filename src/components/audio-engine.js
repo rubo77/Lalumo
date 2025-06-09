@@ -18,6 +18,20 @@ export class AudioEngine {
     this._activeSequences = new Map();
     this._notesPlaying = new Set();
     
+    // Spezielle Sound-Effekte definieren
+    this._specialSounds = {
+      'success': {
+        notes: ['C4', 'E4', 'G4', 'C5'], 
+        durations: [0.15, 0.15, 0.15, 0.4],
+        velocity: 0.9
+      },
+      'try_again': {
+        notes: ['E4', 'C4'], 
+        durations: [0.25, 0.5],
+        velocity: 0.8
+      }
+    };
+    
     // Instrument-Typen, die verwendet werden können
     this._instrumentTypes = {
       default: () => new Tone.PolySynth(Tone.Synth),
@@ -123,15 +137,22 @@ export class AudioEngine {
   }
   
   /**
-   * Spielt eine einzelne Note
-   * @param {string} note - Die zu spielende Note (z.B. 'C4', 'D#4', etc.)
-   * @param {number} duration - Notendauer in Sekunden
+   * Spielt eine einzelne Note oder einen speziellen Sound-Effekt
+   * @param {string} note - Die zu spielende Note (z.B. 'C4', 'D#4', etc.) oder ein spezieller Sound ('success', 'try_again')
+   * @param {number} duration - Notendauer in Sekunden (wird für spezielle Sounds ignoriert)
    * @param {number} [time] - Zeitpunkt in Sekunden, zu dem die Note abgespielt werden soll (optional)
    * @param {number} [velocity] - Lautstärke der Note (0-1)
    */
   playNote(note, duration = 0.5, time = undefined, velocity = 0.7) {
     if (!this._isInitialized) {
       console.warn('Audio-Engine nicht initialisiert. Initialisiere zuerst mit initialize()');
+      return;
+    }
+    
+    // Prüfen, ob es sich um einen speziellen Sound handelt
+    if (this._specialSounds[note]) {
+      console.log(`AUDIO: Spiele speziellen Sound-Effekt: ${note}`);
+      this._playSpecialSound(note, velocity);
       return;
     }
     
@@ -368,6 +389,42 @@ export class AudioEngine {
       
       return processedNote;
     });
+  }
+  
+  /**
+   * Spielt einen speziellen Sound-Effekt ab
+   * @param {string} soundName - Name des speziellen Sound-Effekts ('success', 'try_again')
+   * @param {number} velocity - Lautstärke (0-1)
+   * @private
+   */
+  _playSpecialSound(soundName, velocity = 0.8) {
+    const sound = this._specialSounds[soundName];
+    if (!sound) return;
+    
+    // Bisherige Sounds stoppen
+    this.stopAll();
+    
+    // Aktuelle Zeit ermitteln
+    let currentTime = Tone.now();
+    
+    // Alle Noten der Sequenz nacheinander abspielen
+    sound.notes.forEach((note, index) => {
+      const duration = sound.durations[index] || 0.25;
+      const noteVelocity = sound.velocity || velocity;
+      
+      // Note zum richtigen Zeitpunkt abspielen
+      this._synth.triggerAttackRelease(
+        note, 
+        duration, 
+        currentTime, 
+        noteVelocity
+      );
+      
+      // Zeit für nächste Note berechnen
+      currentTime += duration;
+    });
+    
+    console.log(`AUDIO: Speziellen Sound '${soundName}' abgespielt`);
   }
   
   /**

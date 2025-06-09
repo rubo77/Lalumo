@@ -103,7 +103,7 @@ Dies soll in allen aktionen:
  - es darf nicht 2x hintereinander die selbe melodie kommen
  - die animals sind zu klein in der pitch-card
  - einen neuen kleinen button für nächsten song
- - Die tonlängen stimmen noch nicht
+ - Die tonlängen stimmen noch nicht. eine 8tel note fängt zwar korrekt nach einer 8tel nte an, aber die vorige note klingt noch weiter, bis ein viertel vorbei ist
 
 # most important
 - die erfolgs- und fehler-sounds gehen noch nicht
