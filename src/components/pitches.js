@@ -6,6 +6,9 @@
 // Importiere die zentrale Audio-Engine für alle Audiofunktionen
 import audioEngine from './audio-engine.js';
 
+// Import Tone.js library for audio synthesis
+import * as Tone from 'tone';
+
 // Importiere Debug-Utilities
 import { debugLog } from '../utils/debug.js';
 
@@ -556,76 +559,98 @@ export function pitches() {
     },
     
     /**
+     * Saves the current progress to localStorage
+     */
+    saveProgress() {
+      try {
+        // Save the progress object to localStorage
+        localStorage.setItem('lalumo_progress', JSON.stringify(this.progress));
+        console.log('Progress saved successfully');
+      } catch (error) {
+        console.error('Error saving progress:', error);
+      }
+    },
+    
+    /**
      * Plays a tone or sequence of tones for the High or Low activity
      * Called when the play button is clicked
      */
-    playHighOrLowTone() {
+    async playHighOrLowTone() {
       if (this.isPlaying) return; // Prevent multiple plays
       
       this.isPlaying = true;
       const stage = this.currentHighOrLowStage();
       console.log('Playing High or Low tone for stage:', stage);
       
-      // Define tone ranges for different stages
-      const lowTones = {
-        1: ['C2', 'C#2', 'D2', 'D#2', 'E2', 'F2'],
-        2: ['C2', 'C#2', 'D2', 'D#2', 'E2', 'F2', 'F#2', 'G2'],
-        3: ['C2', 'C#2', 'D2', 'D#2', 'E2', 'F2', 'F#2', 'G2'],
-        4: ['D2', 'D#2', 'E2', 'F2', 'F#2', 'G2', 'G#2', 'A2'],
-        5: ['E2', 'F2', 'F#2', 'G2', 'G#2', 'A2', 'A#2', 'B2']
-      };
-      
-      const highTones = {
-        1: ['C5', 'C#5', 'D5', 'D#5', 'E5', 'F5'],
-        2: ['C5', 'C#5', 'D5', 'D#5', 'E5', 'F5', 'F#5', 'G5'],
-        3: ['C5', 'C#5', 'D5', 'D#5', 'E5', 'F5', 'F#5', 'G5'],
-        4: ['B4', 'C5', 'C#5', 'D5', 'D#5', 'E5', 'F5', 'F#5'],
-        5: ['A4', 'A#4', 'B4', 'C5', 'C#5', 'D5', 'D#5', 'E5']
-      };
-      
-      // Get appropriate tone arrays based on current stage
-      const currentLowTones = lowTones[stage] || lowTones[1];
-      const currentHighTones = highTones[stage] || highTones[1];
-      
-      // Pick a random tone from the array
-      const randomLowTone = currentLowTones[Math.floor(Math.random() * currentLowTones.length)];
-      const randomHighTone = currentHighTones[Math.floor(Math.random() * currentHighTones.length)];
-      
-      // For two-tone stages (3 and above)
-      if (stage >= 3) {
-        // Play two tones in sequence with the second one being higher or lower
-        // First tone is always in the middle register (around C4)
-        const middleTones = ['A3', 'A#3', 'B3', 'C4', 'C#4', 'D4', 'D#4', 'E4'];
-        const firstTone = middleTones[Math.floor(Math.random() * middleTones.length)];
+      try {
+        // First, ensure the audio engine is initialized
+        await audioEngine.initialize();
         
-        // Second tone is either high or low based on highOrLowSecondTone
-        const secondTone = this.highOrLowSecondTone === 'higher' ? randomHighTone : randomLowTone;
+        // Define tone ranges for different stages
+        const lowTones = {
+          1: ['C2', 'C#2', 'D2', 'D#2', 'E2', 'F2'],
+          2: ['C2', 'C#2', 'D2', 'D#2', 'E2', 'F2', 'F#2', 'G2'],
+          3: ['C2', 'C#2', 'D2', 'D#2', 'E2', 'F2', 'F#2', 'G2'],
+          4: ['D2', 'D#2', 'E2', 'F2', 'F#2', 'G2', 'G#2', 'A2'],
+          5: ['E2', 'F2', 'F#2', 'G2', 'G#2', 'A2', 'A#2', 'B2']
+        };
         
-        console.log('Playing first tone:', firstTone, 'followed by', this.highOrLowSecondTone, 'tone:', secondTone);
+        const highTones = {
+          1: ['C5', 'C#5', 'D5', 'D#5', 'E5', 'F5'],
+          2: ['C5', 'C#5', 'D5', 'D#5', 'E5', 'F5', 'F#5', 'G5'],
+          3: ['C5', 'C#5', 'D5', 'D#5', 'E5', 'F5', 'F#5', 'G5'],
+          4: ['B4', 'C5', 'C#5', 'D5', 'D#5', 'E5', 'F5', 'F#5'],
+          5: ['A4', 'A#4', 'B4', 'C5', 'C#5', 'D5', 'D#5', 'E5']
+        };
         
-        // Play the first tone
-        this.playTone(firstTone, 800); // Longer duration for first tone
+        // Get appropriate tone arrays based on current stage
+        const currentLowTones = lowTones[stage] || lowTones[1];
+        const currentHighTones = highTones[stage] || highTones[1];
         
-        // Then play the second tone after a short pause
-        setTimeout(() => {
-          this.playTone(secondTone, 800);
+        // Pick a random tone from the array
+        const randomLowTone = currentLowTones[Math.floor(Math.random() * currentLowTones.length)];
+        const randomHighTone = currentHighTones[Math.floor(Math.random() * currentHighTones.length)];
+        
+        // For two-tone stages (3 and above)
+        if (stage >= 3) {
+          // Play two tones in sequence with the second one being higher or lower
+          // First tone is always in the middle register (around C4)
+          const middleTones = ['A3', 'A#3', 'B3', 'C4', 'C#4', 'D4', 'D#4', 'E4'];
+          const firstTone = middleTones[Math.floor(Math.random() * middleTones.length)];
+          
+          // Second tone is either high or low based on highOrLowSecondTone
+          const secondTone = this.highOrLowSecondTone === 'higher' ? randomHighTone : randomLowTone;
+          
+          console.log('Playing first tone:', firstTone, 'followed by', this.highOrLowSecondTone, 'tone:', secondTone);
+          
+          // Play the first tone and await it
+          await this.playTone(firstTone, 800); // Longer duration for first tone
+          
+          // Then play the second tone after a short pause
+          setTimeout(async () => {
+            await this.playTone(secondTone, 800);
+            
+            setTimeout(() => {
+              this.isPlaying = false;
+              this.highOrLowPlayed = true;
+            }, 900);
+          }, 1000);  
+        } else {
+          // For single tone stages, just play the selected tone
+          const toneToPlay = this.currentHighOrLowTone === 'high' ? randomHighTone : randomLowTone;
+          console.log('Playing single tone:', toneToPlay);
+          
+          // Play the tone and await it
+          await this.playTone(toneToPlay, 800); // Longer duration for single tone
           
           setTimeout(() => {
             this.isPlaying = false;
             this.highOrLowPlayed = true;
           }, 900);
-        }, 1000);  
-      } else {
-        // For single tone stages, just play the selected tone
-        const toneToPlay = this.currentHighOrLowTone === 'high' ? randomHighTone : randomLowTone;
-        console.log('Playing single tone:', toneToPlay);
-        
-        this.playTone(toneToPlay, 800); // Longer duration for single tone
-        
-        setTimeout(() => {
-          this.isPlaying = false;
-          this.highOrLowPlayed = true;
-        }, 900);
+        }
+      } catch (error) {
+        console.error('Error in playHighOrLowTone:', error);
+        this.isPlaying = false;
       }
     },
     
@@ -794,6 +819,97 @@ export function pitches() {
     /**
      * Show a mascot message that's context-aware based on current activity
      */
+    /**
+     * Play a tone using the central audio engine
+     * @param {string} note - Note name (e.g., 'C4', 'D#3')
+     * @param {number} duration - Duration in milliseconds
+     */
+    async playTone(note, duration = 800) {
+      try {
+        console.log(`Playing tone ${note} for ${duration}ms`);
+        
+        // Make sure audio engine is initialized
+        await audioEngine.initialize();
+        
+        // Convert duration from milliseconds to seconds for Tone.js
+        const durationSeconds = duration / 1000;
+        
+        // Play the note with the central audio engine
+        audioEngine.playNote(note, durationSeconds);
+        
+        return true;
+      } catch (error) {
+        console.error('Error playing tone:', error);
+        return false;
+      }
+    },
+    
+    /**
+     * Play a tone using Tone.js
+     * @param {string} note - Note name (e.g., 'C4', 'D#3')
+     * @param {number} duration - Duration in milliseconds
+     */
+    async playToneWithToneJs(note, duration = 800) {
+      try {
+        console.log(`TONE: Playing note ${note} for ${duration}ms`);
+        
+        // Make sure audio is initialized
+        await this.ensureToneStarted();
+        
+        // Use the singleton synth instead of creating a new one each time
+        // Convert duration from milliseconds to seconds for Tone.js
+        const durationSeconds = duration / 1000;
+        
+        // Explicitly set the volume for this note
+        this.synth.volume.value = -6; // in dB
+        
+        // Play the note with precise timing
+        const now = Tone.now();
+        this.synth.triggerAttackRelease(note, durationSeconds, now);
+        
+        // Log success
+        console.log(`TONE: Successfully triggered note ${note} at time ${now}`);
+        return true;
+      } catch (error) {
+        console.error('TONE: Error playing note with Tone.js:', error);
+        return false;
+      }
+    },
+    
+    /**
+     * Play a sequence of tones using Tone.js
+     * @param {string[]} notes - Array of note names
+     * @param {number[]} durations - Array of durations in milliseconds
+     * @param {number} interval - Time between notes in seconds
+     */
+    async playToneSequenceWithToneJs(notes, durations, interval = 0.5) {
+      try {
+        console.log(`TONE: Playing sequence of ${notes.length} notes`);
+        
+        // Make sure audio is initialized
+        await this.ensureToneStarted();
+        
+        // Schedule each note using the singleton synth
+        const now = Tone.now();
+        
+        // For better timing and performance
+        Tone.Transport.bpm.value = 120;
+        
+        notes.forEach((note, i) => {
+          const duration = durations[i] / 1000 || 0.5; // Convert ms to seconds
+          const startTime = now + (i * interval);
+          
+          this.synth.triggerAttackRelease(note, duration, startTime);
+          console.log(`TONE: Scheduled note ${note} with duration ${duration} at time ${startTime}`);
+        });
+        
+        return true;
+      } catch (error) {
+        console.error('TONE: Error playing sequence with Tone.js:', error);
+        return false;
+      }
+    },
+    
     /**
      * Shows context-specific messages based on current activity and stage
      * Displays instructions and guidance to the user via the mascot
