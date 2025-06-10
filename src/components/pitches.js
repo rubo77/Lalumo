@@ -177,18 +177,18 @@ export function pitches() {
         ]
       },
 
-      // de=Häschen Hüpf /  en=Bunny Foo
-      'bunny-foo': {
-        en: 'Bunny Foo',
-        de: 'Häschen Hüpf',
-        quarterNoteDuration: 550,
-        notes: [
-          'G', 'E4', 'G4', 'E4', 'C4', 'E4', 'G4:h', // Häschen in der Grube
-          'G4', 'E4', 'G4', 'E4', 'C4', 'E4', 'G4:h', // sass und weinte
-          'F4', 'F4', 'F4', 'F4', 'E4', 'E4', 'E4:h', // Armes Häschen bist du krank
-          'F4', 'F4', 'F4', 'F4', 'E4', 'E4', 'E4:h'  // dass du nicht mehr hüpfen kannst
-        ]
-      },
+      // TODO:
+      // 'bunny-foo': {
+      //   en: 'Bunny Foo',
+      //   de: 'Häschen Hüpf',
+      //   quarterNoteDuration: 550,
+      //   notes: [
+      //     'G', 'E4', 'G4', 'E4', 'C4', 'E4', 'G4:h', // Häschen in der Grube
+      //     'G4', 'E4', 'G4', 'E4', 'C4', 'E4', 'G4:h', // sass und weinte
+      //     'F4', 'F4', 'F4', 'F4', 'E4', 'E4', 'E4:h', // Armes Häschen bist du krank
+      //     'F4', 'F4', 'F4', 'F4', 'E4', 'E4', 'E4:h'  // dass du nicht mehr hüpfen kannst
+      //   ]
+      // },
       // Old McDonald Had a Farm
       'old-mcdonald': {
         en: 'Old McDonald Had a Farm',

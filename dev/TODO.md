@@ -89,28 +89,31 @@ Dies soll in allen aktionen:
  
 # nach kapitel
 1_1 Listen to melodies:
-- wird 1_1_high_o
+- wird 1_1_high_or_low
 
 1_2_match_sounds
 - Der Hintergrund wechselt erst nach elf erfolgen, soll aber auch schon nach 10 erfolgen
 
-1_4 Draw a melody:
+1_3 Draw a melody:
 - beim zeichnen ist in android der Strich zu weit links
 - ev- einen vogel zum spiel starteen oben hin
 - die noten werden eierig im breiten screen
 
-1_5 does this sound right:
- - die animals sind zu klein in der pitch-card
+1_4 does this sound right:
+ - Manchmal zeigt er am anfang das falsche Lied an, die ton. Länger Stimmen noch nicht alle. 
+ - die animals dürfen sich nciht wiederholen, also es muss sich das letzte tier gemerkt werden, damit es nicht erneut ausgewählt wird im zufall
+ - fix gebogenen text
+ - es kommt mehrmals in log "Generated sound judgment melody:..."
+
+1_5 memory game:
+ - fertig
+
+- Background-Bilder Lazy load testen
+
+- im Browser global den back-button abfangauch auf deutsch
+ - back button in android gesondert handeln: der back-button soll da zurück ins menu gehen, aber nur, wenn die navigation nicht gelockt ist.
 
 
 # most important
- - Bei jeder Melodie sollen neue Tiere kommen: selectRandomAnimalImages() reparieren
- - Manchmal zeigt er das falsche Lied an, die ton. Länger Stimmen noch nicht alle. 
-
-
-- Alle Background-Bilder der activities sollen Lazy load bekommen
-
-- im Browser global den back-button abfangen, da man im browser dann das spiel verlassen kann, oder falls das nicht geht, eine frage, ob mn die seite verlassen will
- - in android gesondert handeln: der back-button soll da zurück ins menu gehen, aber nur, wenn die navigation nicht gelockt ist.
 
 - Die Bilder müssen nach unten weiter expandet werden

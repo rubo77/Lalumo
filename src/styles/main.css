@@ -132,7 +132,7 @@
 /* Styling für den Next-Melody-Button */
 .next-melody-button {
   position: absolute;
-  right: -50px;
+  right: -10px;
   top: 50%;
   transform: translateY(-50%);
   width: 40px;
@@ -147,6 +147,7 @@
   cursor: pointer;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
   transition: all 0.2s ease;
+  opacity: 0.3;
 }
 
 .next-melody-button:hover {
