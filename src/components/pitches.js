@@ -1510,9 +1510,192 @@ export function pitches() {
     
     setupDrawingMode() {
       this.drawPath = [];
+      this.isDrawing = false;
+      this.melodyChallengeMode = false;
+      this.referenceSequence = null;
       
-      // Show intro message immediately when entering the activity
+      // Show intro message when entering the activity
       this.showActivityIntroMessage('draw');
+      
+      // Make sure the canvas is clear when entering drawing mode
+      const canvas = document.querySelector('.drawing-canvas');
+      if (canvas) {
+        const ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        // Füge UI für den Challenge-Modus hinzu
+        this.setupDrawingModeUI();
+      }
+    },
+    
+    /**
+     * Fügt UI-Elemente für den Zeichenmodus hinzu, inklusive Challenge-Modus-Toggle
+     */
+    setupDrawingModeUI() {
+      const container = document.querySelector('.drawing-container');
+      if (!container) return;
+      
+      // Entferne eventuell bereits vorhandene UI-Elemente
+      let challengeToggle = document.querySelector('.challenge-toggle');
+      if (challengeToggle) {
+        challengeToggle.remove();
+      }
+      
+      // Erstelle Challenge-Toggle
+      challengeToggle = document.createElement('div');
+      challengeToggle.className = 'challenge-toggle';
+      challengeToggle.innerHTML = `
+        <button id="challenge-button" class="${this.melodyChallengeMode ? 'active' : ''}">
+          🎵 Melodie nachzeichnen
+        </button>
+        <button id="new-melody-button">
+          🔄 Neue Melodie
+        </button>
+      `;
+      
+      // Füge Toggle unter dem Canvas ein
+      const canvas = document.querySelector('.drawing-canvas');
+      canvas.parentNode.insertBefore(challengeToggle, canvas.nextSibling);
+      
+      // Event-Listener hinzufügen
+      document.getElementById('challenge-button').addEventListener('click', () => {
+        this.toggleMelodyChallenge();
+      });
+      
+      document.getElementById('new-melody-button').addEventListener('click', () => {
+        if (this.melodyChallengeMode) {
+          this.generateReferenceSequence();
+          this.updateDrawingModeUI();
+        }
+      });
+    },
+    
+    /**
+     * Schaltet den Melodie-Challenge-Modus ein oder aus
+     */
+    toggleMelodyChallenge() {
+      this.melodyChallengeMode = !this.melodyChallengeMode;
+      
+      if (this.melodyChallengeMode) {
+        // Generiere eine Referenzmelodie für den Challenge-Modus
+        this.generateReferenceSequence();
+      } else {
+        // Lösche die Referenzmelodie im freien Modus
+        this.referenceSequence = null;
+      }
+      
+      // Aktualisiere die UI
+      this.updateDrawingModeUI();
+    },
+    
+    /**
+     * Aktualisiert die UI für den Zeichenmodus mit der Referenzmelodie
+     */
+    updateDrawingModeUI() {
+      // Entferne bestehende Referenzmelodie-Anzeige
+      let referenceContainer = document.querySelector('.reference-melody');
+      if (referenceContainer) {
+        referenceContainer.remove();
+      }
+      
+      // Aktualisiere Button-Status
+      const challengeButton = document.getElementById('challenge-button');
+      if (challengeButton) {
+        if (this.melodyChallengeMode) {
+          challengeButton.classList.add('active');
+        } else {
+          challengeButton.classList.remove('active');
+        }
+      }
+      
+      // Wenn wir im Challenge-Modus sind und eine Referenzmelodie haben
+      if (this.melodyChallengeMode && this.referenceSequence) {
+        // Erstelle Container für die Referenzmelodie
+        referenceContainer = document.createElement('div');
+        referenceContainer.className = 'reference-melody';
+        
+        // Erstelle visuelle Darstellung der Referenzmelodie
+        const notes = ['C3', 'D3', 'E3', 'F3', 'G3', 'A3', 'B3', 'C4', 'D4', 'E4', 'F4', 'G4'];
+        
+        this.referenceSequence.forEach(note => {
+          const noteElement = document.createElement('div');
+          noteElement.className = 'reference-note';
+          
+          // Positioniere die Note entsprechend ihrer Höhe
+          const noteIndex = notes.indexOf(note);
+          const heightPercentage = noteIndex / (notes.length - 1);
+          
+          // Y-Position umkehren - höhere Noten haben niedrigere Y-Werte
+          noteElement.style.transform = `translateY(${(1 - heightPercentage) * 80}px)`;
+          referenceContainer.appendChild(noteElement);
+        });
+        
+        // Füge die Referenzmelodie vor dem Canvas ein
+        const canvas = document.querySelector('.drawing-canvas');
+        canvas.parentNode.insertBefore(referenceContainer, canvas);
+        
+        // Spiele die Referenzmelodie ab
+        this.playReferenceSequence();
+      }
+    },
+    
+    /**
+     * Generiert eine zufällige Referenzmelodie für den Challenge-Modus
+     */
+    generateReferenceSequence() {
+      const notes = ['C3', 'D3', 'E3', 'F3', 'G3', 'A3', 'B3', 'C4', 'D4', 'E4', 'F4', 'G4'];
+      const sequenceLength = 6; // 6 Noten in der Melodie
+      
+      // Generiere eine zufällige Melodie mit einer einfachen musikalischen Struktur
+      this.referenceSequence = [];
+      
+      // Wähle einen zufälligen Startton
+      let lastIndex = Math.floor(Math.random() * (notes.length - 4)) + 2; // Beginne in der Mitte des Bereichs
+      this.referenceSequence.push(notes[lastIndex]);
+      
+      // Generiere den Rest der Sequenz mit sinnvollen Schritten
+      for (let i = 1; i < sequenceLength; i++) {
+        // Entscheide zufällig über die Richtung und Größe des nächsten Schritts
+        const step = Math.floor(Math.random() * 5) - 2; // -2 bis +2 Schritte
+        
+        // Berechne den neuen Index und halte ihn im gültigen Bereich
+        lastIndex = Math.max(0, Math.min(notes.length - 1, lastIndex + step));
+        
+        this.referenceSequence.push(notes[lastIndex]);
+      }
+      
+      console.log('Generated reference melody:', this.referenceSequence);
+      return this.referenceSequence;
+    },
+    
+    /**
+     * Spielt die Referenzmelodie ab
+     */
+    playReferenceSequence() {
+      if (!this.referenceSequence || this.referenceSequence.length === 0) return;
+      
+      console.log('Playing reference melody:', this.referenceSequence);
+      
+      // Sequentielles Abspielen der Noten
+      const playNote = (index) => {
+        if (index >= this.referenceSequence.length) return;
+        
+        const note = this.referenceSequence[index];
+        audioEngine.playNote(note.toLowerCase(), 0.3);
+        
+        // Hervorhebung der aktuell gespielten Note
+        const noteElements = document.querySelectorAll('.reference-note');
+        if (noteElements[index]) {
+          noteElements[index].classList.add('playing');
+          setTimeout(() => noteElements[index].classList.remove('playing'), 300);
+        }
+        
+        // Nächste Note mit Verzögerung abspielen
+        setTimeout(() => playNote(index + 1), 500);
+      };
+      
+      // Starte das Abspielen mit der ersten Note
+      playNote(0);
     },
     
     /**
@@ -1587,9 +1770,13 @@ export function pitches() {
         clientY = e.clientY;
       }
       
-      // Berechne die Position relativ zum Canvas
-      const x = clientX - rect.left;
-      const y = clientY - rect.top;
+      // Berechne die Position relativ zum Canvas und berücksichtige das Skalierungsverhältnis
+      // Dies korrigiert das Problem mit verschobenen Strichen auf Android
+      const scaleX = canvas.width / canvas.offsetWidth;
+      const scaleY = canvas.height / canvas.offsetHeight;
+      
+      const x = (clientX - rect.left) * scaleX;
+      const y = (clientY - rect.top) * scaleY;
       
       this.drawPath.push({ x, y });
     },

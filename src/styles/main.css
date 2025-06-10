@@ -1736,29 +1736,92 @@ section h2 {
 /* Drawing mode */
 .drawing-container {
   position: relative;
-  margin: 1.5rem auto;
+  margin: 2rem auto;
   max-width: 96%;
-  max-width: 400px;
+  max-width: 600px;
+  display: flex;
+  justify-content: center;
 }
 
 .drawing-canvas {
   width: 100%;
-  height: 280px;
-  height: 180px;
+  height: 300px;
   background-color: white;
-  border: 2px solid var(--secondary-color);
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border: 3px solid var(--secondary-color);
+  border-radius: 12px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
   cursor: crosshair;
   touch-action: none; /* Prevent scrolling on touch devices */
 }
 
-.high-note {
-  transform: translateY(10px);
+/* Styles für die Melodie-Nachzeichnen-Funktion */
+.reference-melody {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  width: 100%;
+  height: 100px;
+  margin-bottom: 1rem;
+  padding: 10px;
+  background-color: rgba(255, 255, 255, 0.85);
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
-.low-note {
-  transform: translateY(-10px);
+.reference-note {
+  width: 22px;
+  height: 22px;
+  margin: 0 5px;
+  border-radius: 50%;
+  background-color: var(--primary-color);
+  transition: transform 0.2s, background-color 0.2s;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.reference-note.playing {
+  background-color: var(--secondary-color);
+  transform: scale(1.2);
+  box-shadow: 0 0 12px rgba(52, 152, 219, 0.8);
+}
+
+.challenge-toggle {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+  width: 100%;
+  gap: 1rem;
+}
+
+.challenge-toggle button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 20px;
+  background-color: #f0f0f0;
+  color: #333;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.challenge-toggle button:hover {
+  background-color: #e0e0e0;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+}
+
+.challenge-toggle button.active {
+  background-color: var(--primary-color);
+  color: white;
+  box-shadow: 0 3px 8px rgba(52, 152, 219, 0.4);
+}
+
+#new-melody-button {
+  background-color: #4CAF50;
+  color: white;
+}
+
+#new-melody-button:hover {
+  background-color: #388E3C;
 }
 
 .clear-button {
