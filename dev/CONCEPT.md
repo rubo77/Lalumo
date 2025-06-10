@@ -45,13 +45,53 @@ Tones going up, down, waves, jumps: Children recognize tone movements and assign
 [x] the available notes should be 3 octaves
 [x] the up and down melodies should start at a random note
 
-[x] **1.1. "Match Sounds" to Images and listening to Pitch Movements:**
+[ ] **1.1. "High or low?":** (1_1_pitches_up_or_down)
+    Kinder sollen den Unterschied zwischen einer hohen und einer tiefen Note durch Hören erkennen – ohne musikalische Vorkenntnisse, rein intuitiv.
+
+    🧠 **Pädagogisches Prinzip**
+    - Kinder hören einen sehr hohen oder einen sehr tiefen Ton
+    - Die Töne stammen aus unterschiedlichen Lagen (z.B. C2 und C5)
+    - Sie wählen, ob der Ton höch oder tief war
+
+    🧩 **Ablauf**
+    - Vogel mit Play-Button zwitschert den Ton als halbe Note (wie in 1_2_match_sounds)
+    - Zwei große Tier-Buttons sind auf dem hintergrund zu sehen, darüber sollen zwei pitch-cards für "hoch" und für "tief"
+      - Schmetterling (hoch, fliegt nach oben)
+      - Maulwurf (tief, taucht nach unten)
+    - Kind wählt eines der Tiere
+    - Feedback:
+      - Richtig und falsch, "wie bei 1_2_match_sounds"
+
+    🎶 **Technische Umsetzung**
+    - Tonerzeugung über Tone.js (triggerAttackRelease)
+    - Ton per Zufall aus vordefinierten Höhenbereichen generiert:
+      - Tief: C2–F2
+      - Hoch: C5–F6
+    - Erweiterbar für kleinere Tonabstände (z.B. C4 vs D4)
+
+    🧩 **Varianten für spätere Schwierigkeitsstufen**
+    - Tonunterschiede werden kleiner (nur ein Ganzton) dabei werden dann 2 töne gespielt: der basiston C4 und dann ein höherer oder ein tieferer
+    - Drei statt zwei Auswahlmöglichkeiten (hoch – gleich – tief)
+
+    🐦 **High Note Animals** | 🐢 **Low Note Animals**
+    --------------------------|-------------------------
+    Hummingbird               | Tortoise
+    Butterfly                 | Mole
+    Bird (canary/sparrow)     | Bear
+    Squirrel (jumping)        | Elephant
+    Mouse (on tiptoes)        | Hippo
+    Cat (meowing/leaping)     | Crocodile
+    Frog (mid-jump)           | Sloth
+    Monkey (swinging) | Buffalo
+    Deer (alert, upright) | Ox
+    Owl (flying) | Whale
+[x] **1.2. "Match Sounds" to Images and listening to Pitch Movements:**
   Children listen to short melodic sequences where tones move upwards, downwards, in waves, or make jumps. Each movement is represented visually (a rocket for up, a slide for down, waves for undulating patterns, a frog or spring for jumps). when play is pressed, the child must select the one that matches the direction or character of the melody they just heard. The progress is saved. when the child has selected the correct image 10 times, the next image is unlocked (first waves, then frog).
-[x] **1.2. "Draw a Melody":**
+[x] **1.3. "Draw a Melody":**
   Children can “draw” a melody by dragging their finger or mouse, creating a visual curve. The app plays back a melody that follows the drawn curve, reinforcing the connection between visual movement and pitch. the progress is saved.
-[x] **1.3. "Memory Game":**
+[x] **1.4. "Memory Game":**
   Simple “repeat the melody” exercises: the app plays a short melody, and the child tries to reproduce it by tapping virtual keys or buttons. Visual aids (like colored steps or animated animals) help guide the sequence. the progress is saved. when the child has repeated the melody correctly 3 times, the melody is one note longer, ...
-[ ] **1.4. "Does It Sound Right?": (1_4_does-it-sound-right)**
+[x] **1.5. "Does It Sound Right?": (1_4_does-it-sound-right)**
   Children listen to a well-known melody. Sometimes a wrong note sneaks in! Kids decide if the tune sounds right or wrong – with the help of friendly animals.
 
   Goal:
@@ -75,6 +115,9 @@ Tones going up, down, waves, jumps: Children recognize tone movements and assign
   |Brother John (Frère Jacques)	  |Bruder Jakob
   |Happy Birthday	                |Zum Geburtstag viel Glück
   |Are You Sleeping?	            |Schlaf, Kindlein, schlaf
+  |Hänschen klein
+  |All my ducklings               |Alle meine Entchen
+  |Old MacDonald	                |Alte Macdonald
 
 Learning Outcome:
 Children start developing musical ear and confidence by noticing when something doesn’t sound “quite right.” It’s fun and silly, not about being perfect!
