@@ -728,6 +728,18 @@ export function pitches() {
         this.progress['1_1_pitches_high_or_low'] = this.highOrLowProgress;
         this.saveProgress();
         
+        // Create and show rainbow success animation
+        const rainbow = document.createElement('div');
+        rainbow.className = 'rainbow-success';
+        document.body.appendChild(rainbow);
+        
+        // Remove rainbow element after animation completes
+        setTimeout(() => {
+          if (rainbow && rainbow.parentNode) {
+            rainbow.parentNode.removeChild(rainbow);
+          }
+        }, 2000);
+        
         // Clear the current sequence so a new one will be generated next time
         this.currentHighOrLowSequence = null;
         
