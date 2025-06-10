@@ -261,7 +261,7 @@
         </div>
         
         <!-- Listening Mode -->
-        <div x-show="mode === '1_1_pitches_listen'" class="pitch-activity">
+        <div id="1_1_pitches" x-show="mode === '1_1_pitches_listen'" class="pitch-activity">
           <div class="mode-header">
             <button class="back-to-main" @click="setMode('main')" aria-label="Back to main menu">
               <span style="font-size: 24px;">🏠</span>
@@ -304,7 +304,7 @@
         </div>
                 
         <!-- Matching Mode -->
-        <div x-show="mode === '1_2_pitches_match-sounds'" class="pitch-activity" style="background-image: url('./images/backgrounds/pitches_action1.png'); background-size: cover; background-position: top left;">
+        <div id="1_2_pitches" x-show="mode === '1_2_pitches_match-sounds'" class="pitch-activity" style="background-image: url('./images/backgrounds/pitches_action1.png'); background-size: cover; background-position: top left;">
           <div class="mode-header">
             <button class="back-to-main" @click="setMode('main')" aria-label="Back to main menu">
               <span style="font-size: 24px;">🏠</span>
@@ -363,14 +363,14 @@
         </div>
         
         <!-- Drawing Mode -->
-        <div x-show="mode === '1_3_pitches_draw-melody'" class="pitch-activity" style="background-image: url('./images/backgrounds/pitches_action1_3.png'); background-size: cover; background-position: top left;">
+        <div id="1_3_pitches" x-show="mode === '1_3_pitches_draw-melody'" class="pitch-activity" style="background-image: url('./images/backgrounds/pitches_action1_3.png'); background-size: cover; background-position: top left;">
           <div class="mode-header">
             <button class="back-to-main" @click="setMode('main')" aria-label="Back to main menu">
               <span style="font-size: 24px;">🏠</span>
             </button>
           </div>
           
-          <div style="height:40vw"></div>
+          <div style="height:52vw"></div>
 
           <div class="drawing-container">
             <canvas class="drawing-canvas" width="600" height="300"
@@ -381,14 +381,11 @@
                    @touchmove="draw" 
                    @touchend="endDrawing">
             </canvas>
-            
           </div>
-          
-          <button class="clear-button" @click="clearDrawing()" title="Clear & Try Again"><span style="font-size: 24px;">&#9999;&#65039;</span></button>
         </div>
         
         <!-- Does It Sound Right? Activity -->
-        <div x-show="mode === '1_4_pitches_does-it-sound-right'" class="pitch-activity" style="background-image: url('./images/backgrounds/pitches_action1_4.png'); background-size: cover; background-position: top left;">
+        <div id="1_4_pitches" x-show="mode === '1_4_pitches_does-it-sound-right'" class="pitch-activity" style="background-image: url('./images/backgrounds/pitches_action1_4.png'); background-size: cover; background-position: top left;">
           <div class="mode-header">
             <button class="back-to-main" @click="setMode('main')" aria-label="Back to main menu">
               <span style="font-size: 24px;">🏠</span>
@@ -427,7 +424,7 @@
         </div>
         
         <!-- Memory Mode -->
-        <div x-show="mode === '1_5_pitches_memory-game'" class="pitch-activity" style="background-image: url('./images/backgrounds/pitches_action1_5.png'); background-size: cover; background-position: top left;">
+        <div id="1_5_pitches" x-show="mode === '1_5_pitches_memory-game'" class="pitch-activity" style="background-image: url('./images/backgrounds/pitches_action1_5.png'); background-size: cover; background-position: top left;">
           <div class="mode-header">
             <button class="back-to-main" @click="setMode('main')" aria-label="Back to main menu">
               <span style="font-size: 24px;">🏠</span>

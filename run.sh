@@ -19,5 +19,5 @@ echo "
 Application should be available at: http://localhost:9091"
 echo "If the browser doesn't open automatically, please visit the URL manually."
 
-echo "Starting mobile app update..."
-./mobile-build.sh update
+#echo "Starting mobile app update..."
+#./mobile-build.sh update

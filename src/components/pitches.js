@@ -1517,14 +1517,77 @@ export function pitches() {
       // Show intro message when entering the activity
       this.showActivityIntroMessage('draw');
       
-      // Make sure the canvas is clear when entering drawing mode
-      const canvas = document.querySelector('.drawing-canvas');
-      if (canvas) {
-        const ctx = canvas.getContext('2d');
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      // Clear any existing drawing when switching to this mode
+      this.clearDrawing();
+      
+      // Create challenge toggle if not already present
+      if (!document.querySelector('.challenge-toggle')) {
+        const challengeToggle = document.createElement('div');
+        challengeToggle.className = 'challenge-toggle';
         
-        // Füge UI für den Challenge-Modus hinzu
-        this.setupDrawingModeUI();
+        // Get current language
+        const isGerman = document.documentElement.lang === 'de';
+        
+        // Create transparent buttons with accessibility attributes but no text
+        challengeToggle.innerHTML = `
+          <button id="challenge-button" 
+            class="pitch-card-style"
+            title="${isGerman ? 'Melodie-Challenge-Modus aktivieren' : 'Activate melody challenge mode'}" 
+            alt="${isGerman ? 'Challenge-Modus' : 'Challenge mode'}_a11y">
+          </button>
+          <button id="new-melody-button" 
+            class="pitch-card-style"
+            title="${isGerman ? 'Neue zufällige Melodie generieren' : 'Generate a new random melody'}" 
+            alt="${isGerman ? 'Neue Melodie' : 'New melody'}_a11y">
+          </button>
+        `;
+        
+        // Add the toggle to the pitch-activity container
+        const pitchActivity = document.querySelector('.pitch-activity[x-show="mode === \'1_3_pitches_draw-melody\'"]');
+        if (pitchActivity) {
+          pitchActivity.appendChild(challengeToggle);
+          
+          // Position the buttons 200px from the top with direct inline styles
+          challengeToggle.style.position = 'absolute';
+          challengeToggle.style.top = '132px';
+          challengeToggle.style.left = '0';
+          challengeToggle.style.right = '0';
+        } else {
+          // Fallback wenn das Element noch nicht existiert
+          console.error('Could not find pitch-activity element for drawing mode');
+          document.body.appendChild(challengeToggle);
+        }
+        
+        // Create the transparent clear button without text, pitch-card-style
+        const clearButton = document.createElement('button');
+        clearButton.className = 'clear-drawing-button pitch-card-style';
+        clearButton.title = isGerman ? 'Zeichnung löschen' : 'Clear drawing';
+        clearButton.setAttribute('alt', `${isGerman ? 'Löschen' : 'Clear'}_a11y`);
+        clearButton.setAttribute('aria-label', isGerman ? 'Zeichnung löschen' : 'Clear drawing');
+        const canvas = document.querySelector('.drawing-canvas');
+        canvas.parentNode.appendChild(clearButton);
+        
+        // Event-Listener hinzufügen
+        document.getElementById('challenge-button').addEventListener('click', () => {
+          this.toggleMelodyChallenge();
+        });
+        
+        document.getElementById('new-melody-button').addEventListener('click', () => {
+          if (this.melodyChallengeMode) {
+            this.generateReferenceSequence();
+            this.updateDrawingModeUI();
+          }
+        });
+        
+        // Löschen-Button Event-Handler
+        document.querySelector('.clear-drawing-button').addEventListener('click', () => {
+          this.clearDrawing();
+          
+          // Im Challenge-Modus, spiele die Referenzmelodie erneut ab
+          if (this.melodyChallengeMode && this.referenceSequence) {
+            setTimeout(() => this.playReferenceSequence(), 300);
+          }
+        });
       }
     },
     
@@ -1598,13 +1661,17 @@ export function pitches() {
         referenceContainer.remove();
       }
       
-      // Aktualisiere Button-Status
+      // Update button status
       const challengeButton = document.getElementById('challenge-button');
+      const newMelodyButton = document.getElementById('new-melody-button');
+      
       if (challengeButton) {
         if (this.melodyChallengeMode) {
           challengeButton.classList.add('active');
+          newMelodyButton.style.visibility = 'visible';
         } else {
           challengeButton.classList.remove('active');
+          newMelodyButton.style.visibility = 'hidden';
         }
       }
       
@@ -1775,8 +1842,17 @@ export function pitches() {
       const scaleX = canvas.width / canvas.offsetWidth;
       const scaleY = canvas.height / canvas.offsetHeight;
       
-      const x = (clientX - rect.left) * scaleX;
+      let x = (clientX - rect.left) * scaleX;
       const y = (clientY - rect.top) * scaleY;
+      
+      // Wenn im Challenge-Modus, erlaube nur Bewegungen von links nach rechts
+      if (this.melodyChallengeMode && this.drawPath.length > 0) {
+        const lastPoint = this.drawPath[this.drawPath.length - 1];
+        // Wenn der neue x-Wert kleiner ist als der vorherige, behalte den vorherigen x-Wert bei plus 0.1
+        if (x < lastPoint.x) {
+          x = lastPoint.x + 0.1;
+        }
+      }
       
       this.drawPath.push({ x, y });
     },
