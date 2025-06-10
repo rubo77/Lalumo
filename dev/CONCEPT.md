@@ -16,7 +16,7 @@ The app playfully teaches preschool children a basic understanding of music – 
 
 - Pitches Kapitel (1_pitches):
 
- - disabled: Listen to Melodies: (1_1_pitches_listen)
+ - High or Low: (1_1_pitches_high_or_low)
  - Match Sounds: (1_2_pitches_match-sounds)
  - Draw a Melody: (1_3_pitches_draw-melody)
  - "Does It Sound Right?": (1_4_pitches_does-it-sound-right)
@@ -45,7 +45,7 @@ Tones going up, down, waves, jumps: Children recognize tone movements and assign
 [x] the available notes should be 3 octaves
 [x] the up and down melodies should start at a random note
 
-[ ] **1.1. "High or low?":** (1_1_pitches_up_or_down)
+[ ] **1.1. "High or low?":** (1_1_pitches_high_or_low)
     Kinder sollen den Unterschied zwischen einer hohen und einer tiefen Note durch Hören erkennen – ohne musikalische Vorkenntnisse, rein intuitiv.
 
     🧠 **Pädagogisches Prinzip**
@@ -67,7 +67,11 @@ Tones going up, down, waves, jumps: Children recognize tone movements and assign
     - Ton per Zufall aus vordefinierten Höhenbereichen generiert:
       - Tief: C2–F2
       - Hoch: C5–F6
-    - Erweiterbar für kleinere Tonabstände (z.B. C4 vs D4)
+    - Erweiterbar für kleinere Tonabstände :
+      - wenn man 10x richtig hat, sollen die töne näher beieinander liegen: lage 3 und 5
+      - wenn man 20x richtig hat, soll ein zusätzlicher ton als erstes gespielt werden: C3, erst danach der zweite, für den man dann entscheinden soll ob höher oder tiefer
+      - wenn man 30x richtig hat, sollen die töne näher an C3 liegen
+      - wenn man 40x richtig hat, sollder erste ton zufällig sein und von dort aus dann ob der zweite ton höher oder tiefer ist
 
     🧩 **Varianten für spätere Schwierigkeitsstufen**
     - Tonunterschiede werden kleiner (nur ein Ganzton) dabei werden dann 2 töne gespielt: der basiston C4 und dann ein höherer oder ein tieferer

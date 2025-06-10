@@ -42,7 +42,7 @@
     <!-- Melodies & Pitches -->
     <string name="play_melody">Play melody</string>
     <string name="guess_direction">Guess if the melody goes up or down</string>
-    <string name="listen_to_melody">Listen to melodies</string>
+    <string name="high_or_low">High or low</string>
     <string name="draw_melody">Draw a melody</string>
     <string name="create_melody">Create a melody</string>
     <string name="does_it_sound_right">Does It Sound Right?</string>

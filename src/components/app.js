@@ -35,7 +35,7 @@ export function app() {
       '1_pitches': {
         name: 'Pitches & Melodies',
         activities: {
-          '1_1_pitches_listen': 'Listen to Melodies',
+          '1_1_pitches_high_or_low': 'high_or_lowlodies',
           '1_2_pitches_match-sounds': 'Match Sounds',
           '1_3_pitches_draw-melody': 'Draw a Melody',
           '1_4_pitches_does-it-sound-right': 'Does It Sound Right?',
@@ -43,7 +43,7 @@ export function app() {
         },
         // Mapping von alten zu neuen IDs
         legacyMapping: {
-          'listen': '1_1_pitches_listen',
+          '1_1_pitches_high_or_low': '1_1_pitches_high_or_low',
           'match': '1_2_pitches_match-sounds',
           'draw': '1_3_pitches_draw-melody',
           'guess': '1_4_pitches_does-it-sound-right',
@@ -154,7 +154,7 @@ export function app() {
       
       // Initialize Alpine.js store immediately to prevent undefined errors
       window.Alpine.store('strings', {});
-      window.Alpine.store('pitchMode', 'listen');
+      window.Alpine.store('pitchMode', '1_1_pitches_high_or_low');
       
       // Load user data (including language) from localStorage
       this.loadUserData();

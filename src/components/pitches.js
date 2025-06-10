@@ -32,7 +32,7 @@ export function pitches() {
     },
     
     // State variables
-    mode: 'listen', // listen, match, draw, guess, memory
+    mode: '1_1_pitches_high_or_low', // listen, match, draw, guess, memory
     currentSequence: [],
     userSequence: [],
     currentAnimation: null,
@@ -235,7 +235,7 @@ export function pitches() {
           this.progress = JSON.parse(savedProgress);
           
           // Ensure all activity progress fields exist with the new ID format
-          if (!this.progress['1_1_pitches_listen']) this.progress['1_1_pitches_listen'] = 0;
+          if (!this.progress['1_1_pitches_high_or_low']) this.progress['1_1_pitches_high_or_low'] = 0;
           if (!this.progress['1_2_pitches_match-sounds']) this.progress['1_2_pitches_match-sounds'] = 0;
           if (!this.progress['1_3_pitches_draw-melody']) this.progress['1_3_pitches_draw-melody'] = 0;
           if (!this.progress['1_4_pitches_does-it-sound-right']) this.progress['1_4_pitches_does-it-sound-right'] = 0;
@@ -245,7 +245,7 @@ export function pitches() {
         } else {
           // Initialize with empty progress object using new IDs
           this.progress = {
-            '1_1_pitches_listen': 0,
+            '1_1_pitches_high_or_low': 0,
             '1_2_pitches_match-sounds': 0,
             '1_3_pitches_draw-melody': 0,
             '1_4_pitches_does-it-sound-right': 0,
@@ -274,8 +274,8 @@ export function pitches() {
       if (this.$store.pitchMode) {
         this.mode = this.$store.pitchMode;
       } else {
-        // Default to 'listen' and update the store
-        this.$store.pitchMode = 'listen';
+        // Default to '1_1_pitches_high_or_low' and update the store
+        this.$store.pitchMode = '1_1_pitches_high_or_low';
       }
       
       // Add a global event listener for the home button
@@ -481,7 +481,7 @@ export function pitches() {
         console.log('Showing main selection screen with clickable image');
       } 
       // New ID format handlers
-      else if (newMode === '1_1_pitches_listen') {
+      else if (newMode === '1_1_pitches_high_or_low') {
         // For listen mode, just show instructions
       } else if (newMode === '1_2_pitches_match-sounds') {
         this.gameMode = false; // Start in free play mode
@@ -513,7 +513,7 @@ export function pitches() {
       
       // Provide context-specific instructions based on current mode
       // TODO: move to strings.xml
-      if (this.mode === 'listen') {
+      if (this.mode === '1_1_pitches_high_or_low') {
         message = language === 'german' ? 
           'Klicke auf jedes Bild, um zu hören, wie diese Melodie klingt!' : 
           'Click on each picture to hear what that melody sounds like!';
@@ -766,9 +766,9 @@ export function pitches() {
       
       // Define all intro messages for different activities
       const introMessages = {
-        'listen': {
-          'en': 'Listen to the melodies! Do they go up, down, or make waves?',
-          'de': 'Höre dir die Melodien an! Gehen sie nach oben, unten oder machen sie Wellen?'
+        '1_1_pitches_high_or_low': {
+          'en': 'High or low?',
+          'de': 'Hoch oder tief?'
         },
         'match': {
           'en': 'Listen to the melody and choose what it sounds like!',
@@ -793,7 +793,7 @@ export function pitches() {
       };
       
       // Find the right message for the activity and language
-      const messages = introMessages[activityMode] || introMessages['listen'];
+      const messages = introMessages[activityMode] || introMessages['1_1_pitches_high_or_low'];
       const message = messages[language] || messages['en'];
       
       // Show the message with activity ID to prevent duplication
@@ -842,7 +842,7 @@ export function pitches() {
     updateProgressGarden() {
       // Get progress values from the new activity IDs
       const progressValues = [
-        this.progress['1_1_pitches_listen'] || 0,
+        this.progress['1_1_pitches_high_or_low'] || 0,
         this.progress['1_2_pitches_match-sounds'] || 0,
         this.progress['1_3_pitches_draw-melody'] || 0,
         this.progress['1_4_pitches_does-it-sound-right'] || 0,
@@ -865,7 +865,7 @@ export function pitches() {
       console.log('Listening mode ready with', this.availableNotes.length, 'available notes');
       
       // Show intro message immediately when entering the activity
-      this.showActivityIntroMessage('listen');
+      this.showActivityIntroMessage('1_1_pitches_high_or_low');
     },
     
     /**

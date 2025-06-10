@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Wait 2 seconds after success then move to next melody
     setTimeout(() => {
       const mode = e.detail?.mode;
-      if (['listen', 'match', 'guess', 'memory'].includes(mode)) {
+      if (['1_1_pitches_high_or_low', 'match', 'guess', 'memory'].includes(mode)) {
         // Find the active pitch component
         const pitchComponent = Alpine.data.pitches;
         if (pitchComponent) {

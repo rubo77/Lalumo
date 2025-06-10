@@ -42,7 +42,7 @@
     <!-- Melodies & Pitches -->
     <string name="play_melody">Melodie abspielen</string>
     <string name="guess_direction">Rate, ob die Melodie nach oben oder unten geht</string>
-    <string name="listen_to_melody">Höre Melodien an</string>
+    <string name="high_or_low">Hoch oder tief</string>
     <string name="draw_melody">Zeichne eine Melodie</string>
     <string name="create_melody">Erstelle eine Melodie</string>
     <string name="does_it_sound_right">Klingt es richtig?</string>

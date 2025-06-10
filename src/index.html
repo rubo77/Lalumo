@@ -96,13 +96,13 @@
         <template x-if="active === 'pitches'">
           <div class="menu-activities">
             <button 
-              @click="$dispatch('set-pitch-mode', '1_1_pitches_listen'); window.innerWidth < 1024 ? menuOpen = false : null"
+              @click="$dispatch('set-pitch-mode', '1_1_pitches_high_or_low'); window.innerWidth < 1024 ? menuOpen = false : null"
               x-data="{ isActive: false }"
-              x-init="$watch('$store.pitchMode', value => isActive = value === '1_1_pitches_listen')"
+              x-init="$watch('$store.pitchMode', value => isActive = value === '1_1_pitches_high_or_low')"
               :class="{ 'active': isActive }"
               style="display: auto;"
             >
-              🔊 <span x-text="$store.strings?.listen_to_melody || 'Listen to Melodies'"></span>
+              🔊 <span x-text="$store.strings?.high_or_low || 'high_or_lowlodies'"></span>
             </button>
             <button 
               @click="$dispatch('set-pitch-mode', '1_2_pitches_match-sounds'); window.innerWidth < 1024 ? menuOpen = false : null"
@@ -261,7 +261,7 @@
         </div>
         
         <!-- Listening Mode -->
-        <div id="1_1_pitches" x-show="mode === '1_1_pitches_listen'" class="pitch-activity">
+        <div id="1_1_pitches" x-show="mode === '1_1_pitches_high_or_low'" class="pitch-activity lazyload-bg" data-background-image="./images/backgrounds/pitches_action1_1_butterfly_mule.png" style="background-size: cover; background-position: top left;">
           <div class="mode-header">
             <button class="back-to-main" @click="setMode('main')" aria-label="Back to main menu">
               <span style="font-size: 24px;">🏠</span>
