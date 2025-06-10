@@ -2121,6 +2121,10 @@ export function pitches() {
       }
       
       if (generateNew) {
+        // Bei jeder neuen Sequenz auch neue Tierbilder anzeigen
+        console.log('ANIMALS: Selecting new animals for memory game');
+        this.selectRandomAnimalImages();
+        
         this.currentSequence = [];
         // Determine sequence length based on success count
         let length;
@@ -2396,8 +2400,12 @@ export function pitches() {
         this.playMelodyForSoundJudgment(false);
       } else if (this.mode === '1_5_pitches_memory-game') {
         if (!this.gameMode) {
+          // Neue Tiere beim Start des Memory-Spiels anzeigen
+          console.log('ANIMALS: Selecting new animals for starting memory game');
+          this.selectRandomAnimalImages();
           this.startMemoryGame(); // Start game mode from free play
         } else {
+          // Replay sollte keine neuen Tiere anzeigen, nur bei neuen Spielen/Sequenzen
           this.playMemorySequence(); // Just replay current sequence in game mode
         }
       }
@@ -2431,10 +2439,10 @@ export function pitches() {
      * Updates the DOM with the current animal images
      */
     updateAnimalImages() {
-      console.log('ANIMALS: Updating animal images in DOM');
+      console.log('ANIMALS: Updating animal images in DOM with ' + this.currentGoodAnimalImage + ' and ' + this.currentBadAnimalImage);
       // Find the image elements
-      const goodAnimalImg = document.querySelector('.animal-button.happy .animal-icon img');
-      const badAnimalImg = document.querySelector('.animal-button.unhappy .animal-icon img');
+      const goodAnimalImg = document.querySelector('.pitch-card.animal-card.happy .animal-icon img');
+      const badAnimalImg = document.querySelector('.pitch-card.animal-card.unhappy .animal-icon img');
       
       // Update the sources if the elements exist
       if (goodAnimalImg && this.currentGoodAnimalImage) {
@@ -2442,6 +2450,9 @@ export function pitches() {
         // Extract animal name from filename for better accessibility
         const goodAnimalName = this.currentGoodAnimalImage.split('_').pop().split('.')[0];
         goodAnimalImg.alt = `Happy ${goodAnimalName}`;
+        console.log('ANIMALS: Updated good animal image in DOM with ' + goodAnimalName);
+      } else {
+        console.log('ANIMALS: Good animal button or image not found in DOM');
       }
       
       if (badAnimalImg && this.currentBadAnimalImage) {
@@ -2449,6 +2460,9 @@ export function pitches() {
         // Extract animal name from filename for better accessibility
         const badAnimalName = this.currentBadAnimalImage.split('_').pop().split('.')[0];
         badAnimalImg.alt = `Unhappy ${badAnimalName}`;
+        console.log('ANIMALS: Updated bad animal image in DOM with ' + badAnimalName);
+      } else {
+        console.log('ANIMALS: Bad animal button or image not found in DOM');
       }
     },
     

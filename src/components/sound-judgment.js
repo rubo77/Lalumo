@@ -285,6 +285,12 @@ export async function playMelodyForSoundJudgment(component, generateNew = true) 
   
   // If we should generate a new melody selection
   if (generateNew) {
+    // WICHTIG: Bei jeder neuen Melodie neue Tiere anzeigen
+    if (typeof component.selectRandomAnimalImages === 'function') {
+      console.log('ANIMALS: Generating new animal images for new melody');
+      component.selectRandomAnimalImages();
+    }
+    
     // Randomly decide if the melody should have a wrong note (50% chance)
     component.melodyHasWrongNote = Math.random() < 0.5;
     

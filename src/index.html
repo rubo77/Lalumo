@@ -9,7 +9,7 @@
 </head>
 <body>
 
-  <main x-data="app()" x-init="init()" @click="unlockAudio()" @touchstart="unlockAudio()" class="container">
+  <main x-data="app()" x-init="init(); initLazyLoading();" @click="unlockAudio()" @touchstart="unlockAudio()" class="container">
     
     <!-- Username Prompt Modal -->
     <div class="modal-overlay" x-show="showUsernamePrompt" x-transition>
@@ -230,7 +230,7 @@
     </div>
 
     <!-- Chapter: Pitch Chapters View -->
-    <section x-show="active === 'pitches'" x-transition class="pitch-chapters-view" style="background-image: url('./images/backgrounds/pitches_bird_sings.png'); background-size: cover; background-position: top center; border-radius: 0;">
+    <section x-show="active === 'pitches'" x-transition class="pitch-chapters-view lazyload-bg" data-background-image="./images/backgrounds/pitches_bird_sings.png" style="background-size: cover; background-position: top center; border-radius: 0;">
       <div x-data="pitches()" x-init="init()">
         
         <!-- Mascot Message Overlay -->
@@ -304,7 +304,7 @@
         </div>
                 
         <!-- Matching Mode -->
-        <div id="1_2_pitches" x-show="mode === '1_2_pitches_match-sounds'" class="pitch-activity" style="background-image: url('./images/backgrounds/pitches_action1.png'); background-size: cover; background-position: top left;">
+        <div id="1_2_pitches" x-show="mode === '1_2_pitches_match-sounds'" class="pitch-activity lazyload-bg" data-background-image="./images/backgrounds/pitches_action1.png" style="background-size: cover; background-position: top left;">
           <div class="mode-header">
             <button class="back-to-main" @click="setMode('main')" aria-label="Back to main menu">
               <span style="font-size: 24px;">🏠</span>
@@ -363,7 +363,7 @@
         </div>
         
         <!-- Drawing Mode -->
-        <div id="1_3_pitches" x-show="mode === '1_3_pitches_draw-melody'" class="pitch-activity" style="background-image: url('./images/backgrounds/pitches_action1_3.png'); background-size: cover; background-position: top left;">
+        <div id="1_3_pitches" x-show="mode === '1_3_pitches_draw-melody'" class="pitch-activity lazyload-bg" data-background-image="./images/backgrounds/pitches_action1_3.png" style="background-size: cover; background-position: top left;">
           <div class="mode-header">
             <button class="back-to-main" @click="setMode('main')" aria-label="Back to main menu">
               <span style="font-size: 24px;">🏠</span>
@@ -385,7 +385,7 @@
         </div>
         
         <!-- Does It Sound Right? Activity -->
-        <div id="1_4_pitches" x-show="mode === '1_4_pitches_does-it-sound-right'" class="pitch-activity" style="background-image: url('./images/backgrounds/pitches_action1_4.png'); background-size: cover; background-position: top left;">
+        <div id="1_4_pitches" x-show="mode === '1_4_pitches_does-it-sound-right'" class="pitch-activity lazyload-bg" data-background-image="./images/backgrounds/pitches_action1_4.png" style="background-size: cover; background-position: top left;">
           <div class="mode-header">
             <button class="back-to-main" @click="setMode('main')" aria-label="Back to main menu">
               <span style="font-size: 24px;">🏠</span>
@@ -424,7 +424,7 @@
         </div>
         
         <!-- Memory Mode -->
-        <div id="1_5_pitches" x-show="mode === '1_5_pitches_memory-game'" class="pitch-activity" style="background-image: url('./images/backgrounds/pitches_action1_5.png'); background-size: cover; background-position: top left;">
+        <div id="1_5_pitches" x-show="mode === '1_5_pitches_memory-game'" class="pitch-activity lazyload-bg" data-background-image="./images/backgrounds/pitches_action1_5.png" style="background-size: cover; background-position: top left;">
           <div class="mode-header">
             <button class="back-to-main" @click="setMode('main')" aria-label="Back to main menu">
               <span style="font-size: 24px;">🏠</span>
@@ -490,7 +490,7 @@
     </section>
     
     <!-- Chapter: Chords -->
-    <section x-show="active === 'chords'" x-transition class="chord-chapters-view" style="background-image: url('./images/backgrounds/pitches_bird_sings.png'); background-size: cover; background-position: top center; border-radius: 0;">
+    <section x-show="active === 'chords'" x-transition class="chord-chapters-view lazyload-bg" data-background-image="./images/backgrounds/pitches_bird_sings.png" style="background-size: cover; background-position: top center; border-radius: 0;">
       <div x-data="chords()" x-init="init()">
         
         <!-- Main chord activity selection screen -->
@@ -951,5 +951,120 @@
 
   </main>
 
+<script>
+  // Globale Funktionen für Lazy Loading und Back-Button-Handling
+  function initLazyLoading() {
+    // Initial alle Lazy-Load-Elemente laden
+    loadBackgroundImages();
+
+    // Beobachter erstellen, der neue Elemente überprüft
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
+          loadBackgroundImages();
+        }
+        
+        if (mutation.addedNodes.length) {
+          loadBackgroundImages();
+        }
+      });
+    });
+
+    // Beobachter auf den Container anwenden
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ['style', 'x-show']
+    });
+
+    // Handler für Browser-Back-Button einrichten
+    setupBackButtonHandler();
+  }
+
+  // Lädt Hintergrundbilder für sichtbare Elemente
+  function loadBackgroundImages() {
+    document.querySelectorAll('.lazyload-bg').forEach(element => {
+      // Überprüfen, ob das Element sichtbar ist
+      const rect = element.getBoundingClientRect();
+      const isVisible = (
+        rect.top <= (window.innerHeight || document.documentElement.clientHeight) &&
+        rect.bottom >= 0 &&
+        rect.left <= (window.innerWidth || document.documentElement.clientWidth) &&
+        rect.right >= 0 &&
+        window.getComputedStyle(element).display !== 'none'
+      );
+
+      if (isVisible && element.dataset.backgroundImage) {
+        // Nur laden, wenn das Element sichtbar ist und noch kein Hintergrundbild hat
+        if (!element.style.backgroundImage || element.style.backgroundImage === 'none') {
+          element.style.backgroundImage = `url('${element.dataset.backgroundImage}')`;
+        }
+      }
+    });
+  }
+
+  // Behandlung des Browser-Back-Buttons
+  function setupBackButtonHandler() {
+    // Erkennen der Plattform
+    const isAndroid = /Android/i.test(navigator.userAgent);
+    
+    // Definitionen für verschiedene Back-Button-Verhalten
+    let currentConfirmMessage = 'Do you really want to leave this page?';
+    
+    // String-Aktualisierungsfunktion - wird aufgerufen, wenn Alpine.store aktualisiert wird
+    function updateBackButtonStrings() {
+      // Aktualisiere die lokale Nachrichtenvariable aus dem Store
+      if (Alpine.store('strings')?.back_button_confirm_exit) {
+        currentConfirmMessage = Alpine.store('strings').back_button_confirm_exit;
+        console.log('Updated back button confirm message: ' + currentConfirmMessage);
+      }
+    }
+    
+    // Initial versuchen, Strings zu laden
+    updateBackButtonStrings();
+    
+    // Event-Listener für Store-Änderungen (wird ausgelöst, sobald Strings geladen sind)
+    document.addEventListener('alpine:initialized', function() {
+      if (window.Alpine && window.Alpine.effect) {
+        window.Alpine.effect(() => {
+          // Diese Funktion wird automatisch aufgerufen, wenn sich Alpine.store('strings') ändert
+          updateBackButtonStrings();
+        });
+      }
+    });
+    
+    // Behandlung für Browser-History (web)
+    window.addEventListener('popstate', function(event) {
+      // Testen, ob wir in einer App sind oder im Browser
+      if (isAndroid) {
+        // In Android: Zurück zum Menü, wenn nicht gesperrt
+        const app = Alpine.getScope(document.querySelector('[x-data="app()"]'));
+        if (app && !app.menuLocked) {
+          // Wenn nicht im Hauptmenü, zurück zum Hauptmenü gehen
+          if (app.active !== 'main') {
+            app.setActive('main');
+            // Verhindern des Verlassens der App
+            history.pushState(null, null, window.location.pathname);
+            event.preventDefault();
+          }
+        }
+      } else {
+        // Im Browser: Nachfragen, ob die Seite wirklich verlassen werden soll
+        // Verwende die aktualisierte Nachrichtenvariable
+        if (confirm(currentConfirmMessage)) {
+          // Benutzer will die Seite verlassen -> nichts tun
+        } else {
+          // Benutzer will auf der Seite bleiben -> Zustand wiederherstellen
+          history.pushState(null, null, window.location.pathname);
+          event.preventDefault();
+        }
+      }
+    });
+
+    // Verhindert, dass der Benutzer die Seite verlässt, indem wir einen History-Eintrag hinzufügen
+    history.pushState(null, null, window.location.pathname);
+  }
+</script>
 </body>
 </html>

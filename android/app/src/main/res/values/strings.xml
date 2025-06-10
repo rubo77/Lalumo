@@ -113,4 +113,7 @@
     <string name="reset_progress">Reset Progress</string>
     <string name="reset_progress_desc">Reset all your game progress and start fresh:</string>
     <string name="reset_confirm">Are you sure? This cannot be undone.</string>
+    
+    <!-- Back Button Messages -->
+    <string name="back_button_confirm_exit">Do you really want to leave this page? Your session progress might be lost.</string>
 </resources>

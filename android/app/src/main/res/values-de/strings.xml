@@ -113,4 +113,7 @@
     <string name="reset_progress">Fortschritt zurücksetzen</string>
     <string name="reset_progress_desc">Setze deinen gesamten Spielfortschritt zurück und starte neu:</string>
     <string name="reset_confirm">Bist du sicher? Dies kann nicht rückgängig gemacht werden.</string>
+
+    <!-- Back Button Messages -->
+    <string name="back_button_confirm_exit">Möchtest du die Seite wirklich verlassen? Dein Fortschritt dieser Sitzung könnte verloren gehen.</string>
 </resources>
