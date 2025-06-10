@@ -1066,5 +1066,16 @@
     history.pushState(null, null, window.location.pathname);
   }
 </script>
+
+<!-- UI-Effekte laden und initialisieren -->
+<script type="module">
+  import { initUIEffects } from './components/ui-effects.js';
+  
+  // Alle UI-Effekte initialisieren, sobald DOM geladen ist
+  document.addEventListener('DOMContentLoaded', () => {
+    initUIEffects();
+    console.log('UI-Effekte initialisiert');
+  });
+</script>
 </body>
 </html>

@@ -108,7 +108,7 @@ export function pitches() {
         de: 'Funkel, funkel, kleiner Stern',
         quarterNoteDuration: 500, // Standardlänge für eine Viertelnote in ms
         notes: [
-          'C4', 'C4', 'G4', 'G4', 'A4', 'A4', 'G4:h', // h = halbe Note (doppelte Länge)
+          'C', 'C4', 'G4', 'G4', 'A4', 'A4', 'G4:h', // h = halbe Note (doppelte Länge)
           'F4', 'F4', 'E4', 'E4', 'D4', 'D4', 'C4:h'  // Standard-Viertelnoten, außer markierte
         ]
       },
@@ -116,39 +116,33 @@ export function pitches() {
         en: 'Jingle Bells',
         de: 'Jingle Bells',
         quarterNoteDuration: 450, // Etwas schneller für Jingle Bells
-        notes: ['E4', 'E4', 'E4:h', 'E4', 'E4', 'E4:h', 'E4', 'G4', 'C4', 'D4', 'E4:h']
+        notes: ['E', 'E4', 'E4:h', 'E4', 'E4', 'E4:h', 'E4', 'G4', 'C4', 'D4', 'E4:h']
       },
-      'happy': {
+      'happy': { // höher
         en: 'Happy Birthday',
         de: 'Alles Gute zum Geburtstag',
         quarterNoteDuration: 600, // Normale Geschwindigkeit für Geburtstagslied
         notes: ['G3:e', 'G3:e', 'A3:q', 'G3:q', 'C4:q', 'B3:h', 'G3:e', 'G3:e', 'A3:q', 'G3:q', 'D4:q', 'C4:h']
       },
-      'jingle-bells': {
-        en: 'Jingle Bells',
-        de: 'Jingle Bells',
-        quarterNoteDuration: 450, // Etwas schneller für Jingle Bells
-        notes: ['E4', 'E4', 'E4:h', 'E4', 'E4', 'E4:h', 'E4', 'G4', 'C4', 'D4', 'E4:h']
+      'happy-birthday': { // tiefer
+        en: 'Happy Birthday To You',
+        de: 'Zum Geburtstag viel Glück',
+        quarterNoteDuration: 600,
+        notes: [
+          'C:e', 'C4:e', // Happy
+          'D4:q', 'C4:q', 'F4:q', 'E4:h', // Birthday to you
+          'C4:e', 'C4:e', 'D4:q', 'C4:q', 'G4:q', 'F4:h' // Happy Birthday to you
+        ]
       },
       'frere-jacques': {
         en: 'Brother John (Frère Jacques)',
         de: 'Bruder Jakob',
         quarterNoteDuration: 500,
         notes: [
-          'C4', 'D4', 'E4', 'C4', // Frère Jacques, Frère Jacques
+          'C', 'D4', 'E4', 'C4', // Frère Jacques, Frère Jacques
           'C4', 'D4', 'E4', 'C4', // Dormez-vous? Dormez-vous?
           'E4', 'F4', 'G4:h', // Sonnez les matines
           'E4', 'F4', 'G4:h'  // Sonnez les matines
-        ]
-      },
-      'happy-birthday': {
-        en: 'Happy Birthday',
-        de: 'Zum Geburtstag viel Glück',
-        quarterNoteDuration: 600,
-        notes: [
-          'C4:e', 'C4:e', // Happy
-          'D4:q', 'C4:q', 'F4:q', 'E4:h', // Birthday to you
-          'C4:e', 'C4:e', 'D4:q', 'C4:q', 'G4:q', 'F4:h' // Happy Birthday to you
         ]
       },
       'are-you-sleeping': {
@@ -156,21 +150,55 @@ export function pitches() {
         de: 'Schlaf, Kindlein, schlaf',
         quarterNoteDuration: 550,
         notes: [
-          'C4', 'D4', 'E4', 'C4', // Frère Jacques (erster Teil)
+          'C', 'D4', 'E4', 'C4', // Frère Jacques (erster Teil)
           'C4', 'D4', 'E4', 'C4', // Wiederholung
           'E4', 'F4', 'G4:h', // Mittelteil
           'E4', 'F4', 'G4:h' // Wiederholung
         ]
       },
-      'baa_black_sheep': {
-        en: 'Baa, Baa, Black Sheep',
-        de: 'Baa, baa, schwarzes Schaf',
-        quarterNoteDuration: 550, // Standardlänge für eine Viertelnote in ms
+      'little-hans': { // Hänschen klein
+        en: 'Little Hans',
+        de: 'Hänschen klein',
+        quarterNoteDuration: 550,
         notes: [
-          'C4', 'G3', 'G3', 'A3', 'B3', 'C4:h', // Halbe Note am Ende der ersten Phrase
-          'C4', 'C4', 'A3', 'A3', 'B3', 'B3', 'A3:q.', 'G3:h' // Punktierte Viertelnote und halbe Note am Ende
+          'G', 'E4', 'E4:h', 'A4', 'D4', 'D4:h',
+          // cdefggg
+          'C4', 'D4', 'E4', 'F4', 'G4', 'G4', 'G4:h'          
         ]
       },
+      // de=Alle meine Entchen /  en=All My Little Ducklings
+      'all-my-little-ducklings': {
+        en: 'All My Little Ducklings',
+        de: 'Alle meine Entchen',
+        quarterNoteDuration: 550,
+        notes: [
+          // cdefg:hg:haaaag:h
+          'C', 'D4', 'E4', 'F4', 'G4:h', 'G4:h', 'A', 'A', 'A', 'A', 'G:h'
+        ]
+      },
+
+      // de=Häschen Hüpf /  en=Bunny Foo
+      'bunny-foo': {
+        en: 'Bunny Foo',
+        de: 'Häschen Hüpf',
+        quarterNoteDuration: 550,
+        notes: [
+          'G', 'E4', 'G4', 'E4', 'C4', 'E4', 'G4:h', // Häschen in der Grube
+          'G4', 'E4', 'G4', 'E4', 'C4', 'E4', 'G4:h', // sass und weinte
+          'F4', 'F4', 'F4', 'F4', 'E4', 'E4', 'E4:h', // Armes Häschen bist du krank
+          'F4', 'F4', 'F4', 'F4', 'E4', 'E4', 'E4:h'  // dass du nicht mehr hüpfen kannst
+        ]
+      },
+      // Old McDonald Had a Farm
+      'old-mcdonald': {
+        en: 'Old McDonald Had a Farm',
+        de: 'Old MacDonald hat ne Farm',
+        quarterNoteDuration: 500,
+        notes: [
+          // 'FFCCDDC:hAAGGF:h', // Old McDonald had a farm
+          'F', 'F4', 'C4', 'C4', 'D4', 'D4', 'C4:h', 'A4', 'A4', 'G4', 'G4', 'F4:h'
+        ]
+      }
     },
     
     /**
@@ -2792,10 +2820,17 @@ export function pitches() {
         if (note.includes(':')) {
           const basePitch = note.split(':')[0];
           // Skip validation for rests
-          if (!basePitch.startsWith('r') && (basePitch.length < 2)) {
-            console.error(`AUDIO_ERROR: Invalid modified note at position ${i}: "${note}". Base pitch "${basePitch}" is invalid.`);
-            this.isPlaying = false;
-            return () => {};
+          if (!basePitch.startsWith('r')) {
+            // Erlaubt einzelne Notennamen (A-G) ohne Lage - diese werden später mit Lage 4 ergänzt
+            const validSingleNote = /^[A-Ga-g]$/.test(basePitch);
+            // Normale Validierung für andere Noten (müssen Lage haben, z.B. C4)
+            const validWithOctave = basePitch.length >= 2;
+            
+            if (!validSingleNote && !validWithOctave) {
+              console.error(`AUDIO_ERROR: Invalid modified note at position ${i}: "${note}". Base pitch "${basePitch}" is invalid.`);
+              this.isPlaying = false;
+              return () => {};
+            }
           }
         }
       }
@@ -2815,40 +2850,92 @@ export function pitches() {
         console.log(`AUDIO: Using melody-specific quarter note duration: ${baseQuarterNoteDuration}ms for ${melodyId}`);
       }
       
+      /**
+       * Notenformat-Dokumentation:
+       * 
+       * Notennamen & Lagen:
+       * - Notennamen: C, D, E, F, G, A, B (H wird als B interpretiert)
+       * - Lageangabe: Zahl nach dem Notennamen, z.B. C4 (mittleres C)
+       * - Ohne Lagenangabe wird standardmäßig Lage 4 angenommen, z.B. A = A4
+       * 
+       * Notenlängen werden durch Doppelpunkt + Modifikator angegeben:
+       * - :w = Ganze Note (4 × Viertelnote)
+       * - :h = Halbe Note (2 × Viertelnote)
+       * - :q = Viertelnote (Standard, kann weggelassen werden)
+       * - :e = Achtelnote (1/2 × Viertelnote)
+       * - :s = Sechzehntelnote (1/4 × Viertelnote)
+       * 
+       * Beispiele: 
+       * - C4   = Mittleres C als Viertelnote
+       * - D:h  = D in Lage 4 als halbe Note
+       * - E5:e = E in Lage 5 als Achtelnote
+       * - G:s  = G in Lage 4 als Sechzehntelnote
+       * - A3:w = A in Lage 3 als ganze Note
+       */
+      
       // Prepare notes array with duration information
       // Process each note to separate note name and duration modifier
       const processedNotes = noteArray.map(note => {
         // Default is quarter note duration
         let duration = baseQuarterNoteDuration;
         let noteName = note;
+        let durationModifier = null;
         
-        // If the note has a duration modifier (e.g. C4:h)
-        if (typeof note === 'string' && note.includes(':')) {
-          const [name, modifier] = note.split(':');
+        // Zuerst prüfen, ob es eine reine Note ohne Lage ist, und falls ja, Standardlage 4 hinzufügen
+        if (typeof note === 'string') {
+          // Check if a duration modifier exists
+          if (note.includes(':')) {
+            const [basePart, modifier] = note.split(':');
+            // Check if the base part is just a letter without octave
+            if (/^[A-Ga-g]$/.test(basePart)) {
+              const withOctave = basePart + '4';
+              noteName = withOctave + ':' + modifier;
+              console.log(`AUDIO: Note with duration but without octave, adding default octave 4: ${note} → ${noteName}`);
+            }
+          } 
+          // Check for note without duration and without octave
+          else if (/^[A-Ga-g]$/.test(note)) {
+            noteName = note + '4';
+            console.log(`AUDIO: Note without octave, adding default octave 4: ${note} → ${noteName}`);
+          }
+        }
+        
+        // Jetzt Dauer verarbeiten, falls vorhanden
+        if (typeof noteName === 'string' && noteName.includes(':')) {
+          const [name, modifier] = noteName.split(':');
           noteName = name;
+          durationModifier = modifier;
           
           // Calculate actual duration based on modifier
-          switch(modifier) {
-            case 'w': // whole note
+          switch(durationModifier) {
+            case 'w': // whole note :w
               duration = baseQuarterNoteDuration * 4;
               break;
-            case 'h': // half note
+            case 'h': // half note :h
               duration = baseQuarterNoteDuration * 2;
               break;
-            case 'q': // quarter note (default)
+            case 'q': // quarter note (default) :q
               duration = baseQuarterNoteDuration;
               break;
-            case 'e': // eighth note
+            case 'e': // eighth note :e
               duration = baseQuarterNoteDuration / 2;
               break;
-            case 's': // sixteenth note
+            case 's': // sixteenth note :s
               duration = baseQuarterNoteDuration / 4;
               break;
             default:
               // For unknown modifiers, use default duration
-              console.warn(`AUDIO: Unknown duration modifier '${modifier}' in note ${note}`);
+              console.warn(`AUDIO: Unknown duration modifier '${durationModifier}' in note ${noteName}`);
               duration = baseQuarterNoteDuration;
           }
+        }
+        
+        // Check if note has no octave specified, add default octave 4
+        // Look for notes that are just a letter (A-G) without a number
+        if (typeof noteName === 'string' && /^[A-Ga-g]$/.test(noteName)) {
+          const originalNote = noteName;
+          noteName = noteName + '4';
+          console.log(`AUDIO: Note without octave specified, using default octave 4: ${originalNote} → ${noteName}`);
         }
         
         return {
