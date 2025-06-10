@@ -260,7 +260,7 @@
 
         </div>
         
-        <!-- Listening Mode -->
+        <!-- High or Low Activity -->
         <div id="1_1_pitches" x-show="mode === '1_1_pitches_high_or_low'" class="pitch-activity lazyload-bg" data-background-image="./images/backgrounds/pitches_action1_1_butterfly_mule.png" style="background-size: cover; background-position: top left;">
           <div class="mode-header">
             <button class="back-to-main" @click="setMode('main')" aria-label="Back to main menu">
@@ -268,39 +268,53 @@
             </button>
           </div>
           
-          <div class="pitch-grid" :class="{'limited-options': unlockedPatterns.length < 3, 'no-frog': !unlockedPatterns.includes('jump')}">
-            <div class="pitch-card" :class="{ 'active': currentAnimation === 'up' }" @click="activity1_2_matchSoundsPlaySequence('up')" 
-                 @mousedown="$event => startLongPress('up', $event)" @mouseup="cancelLongPress()" @mouseleave="cancelLongPress()"
-                 @touchstart="$event => handleTouchStart('up', $event)" @touchend="cancelLongPress()" @touchcancel="cancelLongPress()">
-              <div class="pitch-icon up">
-                <img src="/images/rocket.png" alt="Rocket going up" />
+          <!-- Play button - bird in background -->
+          <button class="circular-play-button" 
+                  @click="playHighOrLowTone()" 
+                  :aria-label="$store.strings?.play_tone_a11y || 'Play tone'" 
+                  :title="$store.strings?.play_tone_a11y || 'Play tone'">
+          </button>
+          
+          <!-- High or Low choice buttons -->
+          <div class="high-low-choices">
+            <div class="pitch-card high-choice" 
+                 @click="checkHighOrLowAnswer('high')" 
+                 :aria-label="currentHighOrLowStage >= 3 ? ($store.strings?.second_tone_higher_a11y || 'The second tone is higher') : ($store.strings?.high_choice_a11y || 'High tone')"
+                 :title="currentHighOrLowStage >= 3 ? ($store.strings?.second_tone_higher_a11y || 'The second tone is higher') : ($store.strings?.high_choice_a11y || 'High tone')">
+              <div class="pitch-icon high-icon">
+                <img src="/images/rocket.png" alt="High pitch" />
+                <span class="choice-label" 
+                      x-text="currentHighOrLowStage >= 3 ? 
+                        ($store.strings?.high_choice || 'Höher') : 
+                        ($store.strings?.high_choice || 'Hoch')"></span>
               </div>
             </div>
-            
-            <div class="pitch-card" :class="{ 'active': currentAnimation === 'down', 'down-extended': !unlockedPatterns.includes('jump') }" @click="activity1_2_matchSoundsPlaySequence('down')" 
-                 @mousedown="$event => startLongPress('down', $event)" @mouseup="cancelLongPress()" @mouseleave="cancelLongPress()"
-                 @touchstart="$event => handleTouchStart('down', $event)" @touchend="cancelLongPress()" @touchcancel="cancelLongPress()">
-              <div class="pitch-icon down">
-                <img src="/images/slide.png" alt="Slide going down" />
-              </div>
-            </div>
-            
-            <div class="pitch-card" :class="{ 'active': currentAnimation === 'wave' }" @click="activity1_2_matchSoundsPlaySequence('wave')" 
-                 @mousedown="$event => startLongPress('wave', $event)" @mouseup="cancelLongPress()" @mouseleave="cancelLongPress()"
-                 @touchstart="$event => handleTouchStart('wave', $event)" @touchend="cancelLongPress()" @touchcancel="cancelLongPress()">
-              <div class="pitch-icon wave">
-                <img src="/images/waves.png" alt="Wave pattern" />
-              </div>
-            </div>
-            
-            <div class="pitch-card" :class="{ 'active': currentAnimation === 'jump' }" @click="activity1_2_matchSoundsPlaySequence('jump')" 
-                 @mousedown="$event => startLongPress('jump', $event)" @mouseup="cancelLongPress()" @mouseleave="cancelLongPress()"
-                 @touchstart="$event => handleTouchStart('jump', $event)" @touchend="cancelLongPress()" @touchcancel="cancelLongPress()">
-              <div class="pitch-icon jump">
-                <img src="/images/frog.png" alt="Jumping frog" />
+            <div class="pitch-card low-choice" 
+                 @click="checkHighOrLowAnswer('low')" 
+                 :aria-label="currentHighOrLowStage >= 3 ? ($store.strings?.second_tone_lower_a11y || 'The second tone is lower') : ($store.strings?.low_choice_a11y || 'Low tone')"
+                 :title="currentHighOrLowStage >= 3 ? ($store.strings?.second_tone_lower_a11y || 'The second tone is lower') : ($store.strings?.low_choice_a11y || 'Low tone')">
+              <div class="pitch-icon low-icon">
+                <img src="/images/slide.png" alt="Low pitch" />
+                <span class="choice-label" 
+                      x-text="currentHighOrLowStage >= 3 ? 
+                        ($store.strings?.low_choice || 'Tiefer') : 
+                        ($store.strings?.low_choice || 'Tief')"></span>
               </div>
             </div>
           </div>
+          
+          <!-- Progress display -->
+          <div class="progress-display high-low-progress">
+            <p x-text="($store.strings?.correct_answers_count || 'Correct answers: {0}').replace('{0}', highOrLowProgress || 0)"></p>
+            <p x-show="(highOrLowProgress || 0) < 10" x-text="$store.strings?.high_low_stage1 || 'Get 10 correct to make the tones closer!'"></p>
+            <p x-show="(highOrLowProgress || 0) >= 10 && (highOrLowProgress || 0) < 20" x-text="$store.strings?.high_low_stage2 || 'Get 20 correct to hear two tones!'"></p>
+            <p x-show="(highOrLowProgress || 0) >= 20 && (highOrLowProgress || 0) < 30" x-text="$store.strings?.high_low_stage3 || 'Get 30 correct to make it harder!'"></p>
+            <p x-show="(highOrLowProgress || 0) >= 30 && (highOrLowProgress || 0) < 40" x-text="$store.strings?.high_low_stage4 || 'Get 40 correct for the ultimate challenge!'"></p>
+            <p x-show="(highOrLowProgress || 0) >= 40" x-text="$store.strings?.high_low_master || 'Master level achieved! 🎉'"></p>
+          </div>
+          
+          <!-- Feedback message -->
+          <div x-show="showFeedback" class="feedback-message" x-text="feedback"></div>
         </div>
                 
         <!-- Matching Mode -->
@@ -355,7 +369,7 @@
           <div x-show="mode === '1_2_pitches_match-sounds'" class="progress-display">
             <p x-text="($store.strings?.correct_answers_count || 'Correct answers: {0}').replace('{0}', correctAnswersCount)"></p>
             <p x-show="correctAnswersCount < 10" x-text="$store.strings?.unlock_wave_message || 'Get 10 correct to unlock wavy patterns! 🌊'"></p>
-            <p x-show="correctAnswersCount >= 10 && correctAnswersCount < 20" x-text="$store.strings?.unlock_jump_message || 'Get 20 correct to unlock random patterns! 🐸'"></p>
+            <p x-show="correctAnswersCount >= 10 && correctAnswersCount < 20" x-text="$store.strings?.unlock_jump_message || 'Get 20 correct to unlock random patterns! ��'"></p>
             <p x-show="correctAnswersCount >= 20" x-text="$store.strings?.all_patterns_unlocked || 'All patterns unlocked! 🎉'"></p>
           </div>
           

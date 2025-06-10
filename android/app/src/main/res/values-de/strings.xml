@@ -116,4 +116,46 @@
 
     <!-- Back Button Messages -->
     <string name="back_button_confirm_exit">Möchtest du die Seite wirklich verlassen? Dein Fortschritt dieser Sitzung könnte verloren gehen.</string>
+
+    <!-- High or Low Activity -->
+    <string name="high_choice">Hoch</string>
+    <string name="low_choice">Tief</string>
+    <string name="high_choice_a11y">Hoher Ton</string>
+    <string name="low_choice_a11y">Tiefer Ton</string>
+    <string name="second_tone_higher_a11y">Der zweite Ton ist höher</string>
+    <string name="second_tone_lower_a11y">Der zweite Ton ist tiefer</string>
+    <string name="play_tone_a11y">Ton abspielen</string>
+    
+    <!-- High or Low Feedback Messages -->
+    <string name="high_or_low_correct_single">Richtig! Der Ton war {0}!</string>
+    <string name="high_or_low_correct_comparison">Richtig! Der zweite Ton war {0}!</string>
+    <string name="high_or_low_wrong_single">Versuche es nochmal. Der Ton war {0}.</string>
+    <string name="high_or_low_wrong_comparison">Versuche es nochmal. Der zweite Ton war {0}.</string>
+    
+    <!-- High or Low Stage Messages -->
+    <string name="high_low_stage1">Schaffe 10 richtige für nähere Töne!</string>
+    <string name="high_low_stage2">Schaffe 20 richtige für zwei Töne!</string>
+    <string name="high_low_stage3">Schaffe 30 richtige für mehr Schwierigkeit!</string>
+    <string name="high_low_stage4">Schaffe 40 richtige für die ultimative Herausforderung!</string>
+    <string name="high_low_master">Meisterstufe erreicht! 🎉</string>
+    
+    <!-- High or Low Stage Progression Messages -->
+    <string name="high_low_stage2_unlocked">🎉 Stufe 2 erreicht! Die Töne liegen jetzt näher beieinander!</string>
+    <string name="high_low_stage3_unlocked">🎵 Stufe 3 erreicht! Du hörst jetzt zwei Töne nacheinander!</string>
+    <string name="high_low_stage4_unlocked">🚀 Stufe 4 erreicht! Die Töne sind jetzt noch näher beieinander!</string>
+    <string name="high_low_stage5_unlocked">🏆 Meisterstufe erreicht! Ultimative Herausforderung freigeschaltet!</string>
+    
+    <!-- High or Low Introduction Messages -->
+    <string name="high_or_low_intro_stage1">Höre den Ton! Ist er hoch oder tief?</string>
+    <string name="high_or_low_intro_stage2">Höre den Ton! Ist er hoch oder tief?</string>
+    <string name="high_or_low_intro_stage3">Höre beide Töne! Ist der zweite höher oder tiefer?</string>
+    <string name="high_or_low_intro_stage4">Höre den Ton! Ist er hoch oder tief?</string>
+    <string name="high_or_low_intro_stage5">Höre beide Töne! Ist der zweite höher oder tiefer?</string>
+
+    <!-- Activity Introduction Messages -->
+    <string name="match_sounds_practice">Klicke auf die Bilder zum Üben. Drücke ▶️ für das Spiel!</string>
+    <string name="match_sounds_game">Höre zu und wähle das richtige Bild!</string>
+    <string name="does_it_sound_right_intro">Hör dir die Melodie an! Klingt sie richtig? Oder ist da ein falscher Ton?</string>
+    <string name="memory_practice">Drücke frei auf die Tasten zum Üben. Drücke ▶️ für das Spiel!</string>
+    <string name="memory_game_intro">Höre dir die Melodie an und tippe dann auf die farbigen Knöpfe in der gleichen Reihenfolge!</string>
 </resources>

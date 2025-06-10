@@ -114,6 +114,48 @@
     <string name="reset_progress_desc">Reset all your game progress and start fresh:</string>
     <string name="reset_confirm">Are you sure? This cannot be undone.</string>
     
+    <!-- High or Low Activity -->
+    <string name="high_choice">High</string>
+    <string name="low_choice">Low</string>
+    <string name="high_choice_a11y">High tone</string>
+    <string name="low_choice_a11y">Low tone</string>
+    <string name="second_tone_higher_a11y">The second tone is higher</string>
+    <string name="second_tone_lower_a11y">The second tone is lower</string>
+    <string name="play_tone_a11y">Play tone</string>
+    
+    <!-- High or Low Feedback Messages -->
+    <string name="high_or_low_correct_single">Correct! The tone was {0}!</string>
+    <string name="high_or_low_correct_comparison">Correct! The second tone was {0}!</string>
+    <string name="high_or_low_wrong_single">Try again. The tone was {0}.</string>
+    <string name="high_or_low_wrong_comparison">Try again. The second tone was {0}.</string>
+    
+    <!-- High or Low Stage Messages -->
+    <string name="high_low_stage1">Get 10 correct to make the tones closer!</string>
+    <string name="high_low_stage2">Get 20 correct to hear two tones!</string>
+    <string name="high_low_stage3">Get 30 correct to make it harder!</string>
+    <string name="high_low_stage4">Get 40 correct for the ultimate challenge!</string>
+    <string name="high_low_master">Master level achieved! 🎉</string>
+    
+    <!-- High or Low Stage Progression Messages -->
+    <string name="high_low_stage2_unlocked">🎉 Stage 2 reached! The tones are now closer together!</string>
+    <string name="high_low_stage3_unlocked">🎵 Stage 3 reached! You now hear two tones in sequence!</string>
+    <string name="high_low_stage4_unlocked">🚀 Stage 4 reached! The tones are even closer together!</string>
+    <string name="high_low_stage5_unlocked">🏆 Master level reached! Ultimate challenge unlocked!</string>
+    
+    <!-- High or Low Introduction Messages -->
+    <string name="high_or_low_intro_stage1">Listen to the tone! Is it high or low?</string>
+    <string name="high_or_low_intro_stage2">Listen to the tone! Is it high or low?</string>
+    <string name="high_or_low_intro_stage3">Listen to both tones! Is the second one higher or lower?</string>
+    <string name="high_or_low_intro_stage4">Listen to the tone! Is it high or low?</string>
+    <string name="high_or_low_intro_stage5">Listen to both tones! Is the second one higher or lower?</string>
+
+    <!-- Activity Introduction Messages -->
+    <string name="match_sounds_practice">Click on pictures to practice. Press ▶️ for the game!</string>
+    <string name="match_sounds_game">Listen and choose the right picture!</string>
+    <string name="does_it_sound_right_intro">Listen to the melody! Does it sound right? Or is there a wrong note?</string>
+    <string name="memory_practice">Press keys freely to practice. Press ▶️ for the game!</string>
+    <string name="memory_game_intro">Listen to the melody, then tap the colored buttons in the same order!</string>
+
     <!-- Back Button Messages -->
     <string name="back_button_confirm_exit">Do you really want to leave this page? Your session progress might be lost.</string>
 </resources>

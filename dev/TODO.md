@@ -142,8 +142,8 @@ Implementiere die neue Aktivität "High or Low?" (1_1_pitches_high_or_low) als k
    - wenn man 40x richtig hat, sollder erste ton zufällig sein und von dort aus dann ob der zweite ton höher oder tiefer ist
 
 4. Erstelle das UI mit wiederverwendbaren Komponenten:
-   - Vogel mit Play-Button zum Abspielen des Tons ist im hintergrund oben mittig (wie bei 1_2_match_sounds)
-   - Zwei durchsichtige buttons als Auswahlmöglichkeiten: Pitch-Cards mit "Hoch"/"Tief" Beschriftungen im title und alt tag; bei spaterem fortschritt mit 2 töntn "Der zweite ton ist Höher/Tiefer" im alt tag
+   - Vogel ist im BG, mit transparentem Play-Button zum Abspielen des Tons ist im hintergrund oben mittig (wie bei 1_2_match_sounds)
+   - Zwei TRANSPARENTE buttons als Auswahlmöglichkeiten: Pitch-Cards mit "Hoch"/"Tief" Beschriftungen im title und alt tag; bei spaterem fortschritt mit 2 tönen "Der zweite ton ist Höher/Tiefer" im alt tag
 
 5. Implementiere den Spielablauf:
    - Abspielen von halben Noten (längere Dauer) 

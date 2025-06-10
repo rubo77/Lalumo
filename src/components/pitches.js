@@ -54,6 +54,13 @@ export function pitches() {
     longPressTimer: null,
     longPressThreshold: 800, // milliseconds for long press
     
+    // High or Low activity state variables
+    highOrLowProgress: 0, // Number of correct answers in High or Low activity
+    currentHighOrLowTone: null, // Current tone type (high/low)
+    highOrLowSecondTone: null, // For comparison stages
+    highOrLowPlayed: false, // Whether the tone has been played
+    highOrLowFeedbackTimer: null, // Timer for hiding feedback
+    
     // Progressive difficulty tracking
     correctAnswersCount: 0,
     unlockedPatterns: ['up', 'down'], // Start with only up and down
@@ -462,6 +469,282 @@ export function pitches() {
     },
     
     /**
+     * Determines the current difficulty stage for the High or Low activity
+     * based on the number of correct answers.
+     * @returns {number} The current stage (1-5)
+     */
+    currentHighOrLowStage() {
+      // Get the progress count (number of correct answers)
+      const progress = this.highOrLowProgress || 0;
+      
+      // Stage 1: 0-9 correct answers (basic)
+      // Stage 2: 10-19 correct answers (closer tones)
+      // Stage 3: 20-29 correct answers (two tones)
+      // Stage 4: 30-39 correct answers (even closer tones)
+      // Stage 5: 40+ correct answers (ultimate challenge)
+      
+      if (progress >= 40) return 5;
+      if (progress >= 30) return 4;
+      if (progress >= 20) return 3;
+      if (progress >= 10) return 2;
+      return 1;
+    },
+    
+    /**
+     * Sets up the High or Low activity with appropriate difficulty
+     */
+    setupHighOrLowMode() {
+      const stage = this.currentHighOrLowStage();
+      console.log('Setting up High or Low mode with stage:', stage);
+      
+      // Initialize properties for high-or-low activity
+      this.currentHighOrLowTone = null; // Will store the current tone (high/low)
+      this.highOrLowSecondTone = null; // For stages with two tones
+      this.highOrLowPlayed = false; // Flag to track if the tone has been played
+      this.highOrLowFeedbackTimer = null; // Timer for feedback messages
+      
+      // Generate a new tone based on the current stage
+      this.generateHighOrLowTone();
+    },
+    
+    /**
+     * Generates a tone (or pair of tones) for the High or Low activity
+     * based on the current difficulty stage
+     */
+    generateHighOrLowTone() {
+      const stage = this.currentHighOrLowStage();
+      console.log('Generating High or Low tone for stage:', stage);
+      
+      // Define tone ranges for different stages
+      const lowTones = {
+        1: ['C2', 'C#2', 'D2', 'D#2', 'E2', 'F2'], // Stage 1: Basic low tones
+        2: ['C2', 'C#2', 'D2', 'D#2', 'E2', 'F2', 'F#2', 'G2'], // Stage 2: Expanded low tones
+        3: ['C2', 'C#2', 'D2', 'D#2', 'E2', 'F2', 'F#2', 'G2'], // Stage 3: Same as stage 2
+        4: ['D2', 'D#2', 'E2', 'F2', 'F#2', 'G2', 'G#2', 'A2'], // Stage 4: Higher low tones
+        5: ['E2', 'F2', 'F#2', 'G2', 'G#2', 'A2', 'A#2', 'B2']  // Stage 5: Highest low tones
+      };
+      
+      const highTones = {
+        1: ['C5', 'C#5', 'D5', 'D#5', 'E5', 'F5'], // Stage 1: Basic high tones
+        2: ['C5', 'C#5', 'D5', 'D#5', 'E5', 'F5', 'F#5', 'G5'], // Stage 2: Expanded high tones
+        3: ['C5', 'C#5', 'D5', 'D#5', 'E5', 'F5', 'F#5', 'G5'], // Stage 3: Same as stage 2
+        4: ['B4', 'C5', 'C#5', 'D5', 'D#5', 'E5', 'F5', 'F#5'], // Stage 4: Lower high tones
+        5: ['A4', 'A#4', 'B4', 'C5', 'C#5', 'D5', 'D#5', 'E5']  // Stage 5: Lowest high tones
+      };
+      
+      // Don't play the same tone twice in a row
+      let newTone;
+      do {
+        // Randomly choose high or low
+        newTone = Math.random() < 0.5 ? 'high' : 'low';
+      } while (newTone === this.currentHighOrLowTone && stage < 3);
+      
+      this.currentHighOrLowTone = newTone;
+      console.log('Selected tone type:', newTone);
+      
+      // For stages 3 and above, we need two tones with the second one being higher or lower
+      if (stage >= 3) {
+        // For two-tone stages, we'll decide if the second tone is higher or lower than the first
+        this.highOrLowSecondTone = Math.random() < 0.5 ? 'higher' : 'lower';
+        console.log('Second tone will be:', this.highOrLowSecondTone);
+      } else {
+        this.highOrLowSecondTone = null;
+      }
+      
+      // Reset the played flag
+      this.highOrLowPlayed = false;
+    },
+    
+    /**
+     * Plays a tone or sequence of tones for the High or Low activity
+     * Called when the play button is clicked
+     */
+    playHighOrLowTone() {
+      if (this.isPlaying) return; // Prevent multiple plays
+      
+      this.isPlaying = true;
+      const stage = this.currentHighOrLowStage();
+      console.log('Playing High or Low tone for stage:', stage);
+      
+      // Define tone ranges for different stages
+      const lowTones = {
+        1: ['C2', 'C#2', 'D2', 'D#2', 'E2', 'F2'],
+        2: ['C2', 'C#2', 'D2', 'D#2', 'E2', 'F2', 'F#2', 'G2'],
+        3: ['C2', 'C#2', 'D2', 'D#2', 'E2', 'F2', 'F#2', 'G2'],
+        4: ['D2', 'D#2', 'E2', 'F2', 'F#2', 'G2', 'G#2', 'A2'],
+        5: ['E2', 'F2', 'F#2', 'G2', 'G#2', 'A2', 'A#2', 'B2']
+      };
+      
+      const highTones = {
+        1: ['C5', 'C#5', 'D5', 'D#5', 'E5', 'F5'],
+        2: ['C5', 'C#5', 'D5', 'D#5', 'E5', 'F5', 'F#5', 'G5'],
+        3: ['C5', 'C#5', 'D5', 'D#5', 'E5', 'F5', 'F#5', 'G5'],
+        4: ['B4', 'C5', 'C#5', 'D5', 'D#5', 'E5', 'F5', 'F#5'],
+        5: ['A4', 'A#4', 'B4', 'C5', 'C#5', 'D5', 'D#5', 'E5']
+      };
+      
+      // Get appropriate tone arrays based on current stage
+      const currentLowTones = lowTones[stage] || lowTones[1];
+      const currentHighTones = highTones[stage] || highTones[1];
+      
+      // Pick a random tone from the array
+      const randomLowTone = currentLowTones[Math.floor(Math.random() * currentLowTones.length)];
+      const randomHighTone = currentHighTones[Math.floor(Math.random() * currentHighTones.length)];
+      
+      // For two-tone stages (3 and above)
+      if (stage >= 3) {
+        // Play two tones in sequence with the second one being higher or lower
+        // First tone is always in the middle register (around C4)
+        const middleTones = ['A3', 'A#3', 'B3', 'C4', 'C#4', 'D4', 'D#4', 'E4'];
+        const firstTone = middleTones[Math.floor(Math.random() * middleTones.length)];
+        
+        // Second tone is either high or low based on highOrLowSecondTone
+        const secondTone = this.highOrLowSecondTone === 'higher' ? randomHighTone : randomLowTone;
+        
+        console.log('Playing first tone:', firstTone, 'followed by', this.highOrLowSecondTone, 'tone:', secondTone);
+        
+        // Play the first tone
+        this.playTone(firstTone, 800); // Longer duration for first tone
+        
+        // Then play the second tone after a short pause
+        setTimeout(() => {
+          this.playTone(secondTone, 800);
+          
+          setTimeout(() => {
+            this.isPlaying = false;
+            this.highOrLowPlayed = true;
+          }, 900);
+        }, 1000);  
+      } else {
+        // For single tone stages, just play the selected tone
+        const toneToPlay = this.currentHighOrLowTone === 'high' ? randomHighTone : randomLowTone;
+        console.log('Playing single tone:', toneToPlay);
+        
+        this.playTone(toneToPlay, 800); // Longer duration for single tone
+        
+        setTimeout(() => {
+          this.isPlaying = false;
+          this.highOrLowPlayed = true;
+        }, 900);
+      }
+    },
+    
+    /**
+     * Checks the user's answer for the High or Low activity
+     * @param {string} answer - The user's answer ('high' or 'low')
+     */
+    checkHighOrLowAnswer(answer) {
+      if (!this.highOrLowPlayed || this.isPlaying) {
+        // If the tone hasn't been played yet or is still playing, ignore the answer
+        return;
+      }
+      
+      const stage = this.currentHighOrLowStage();
+      console.log('Checking High or Low answer:', answer, 'for stage:', stage);
+      
+      let isCorrect = false;
+      let correctAnswer = '';
+      
+      // Different logic based on stage
+      if (stage >= 3) {
+        // For two-tone stages, check if the user correctly identified if the second tone was higher or lower
+        isCorrect = 
+          (answer === 'high' && this.highOrLowSecondTone === 'higher') || 
+          (answer === 'low' && this.highOrLowSecondTone === 'lower');
+        
+        correctAnswer = this.highOrLowSecondTone === 'higher' ? 'high' : 'low';
+      } else {
+        // For single tone stages, check if the user correctly identified if the tone was high or low
+        isCorrect = answer === this.currentHighOrLowTone;
+        correctAnswer = this.currentHighOrLowTone;
+      }
+      
+      // Handle feedback
+      if (isCorrect) {
+        // Correct answer: increment progress
+        this.highOrLowProgress = (this.highOrLowProgress || 0) + 1;
+        
+        // Update stored progress
+        this.progress['1_1_pitches_high_or_low'] = this.highOrLowProgress;
+        this.saveProgress();
+        
+        // Check if we've reached a new stage
+        const newStage = this.currentHighOrLowStage();
+        const previousStage = stage;
+        
+        if (newStage > previousStage) {
+          // We've reached a new stage
+          let stageMessage = '';
+          
+          switch(newStage) {
+            case 2:
+              stageMessage = this.$store.strings?.high_low_stage2_unlocked || '🎉 Stage 2 reached! The tones are now closer together!';
+              break;
+            case 3:
+              stageMessage = this.$store.strings?.high_low_stage3_unlocked || '🎵 Stage 3 reached! You now hear two tones in sequence!';
+              break;
+            case 4:
+              stageMessage = this.$store.strings?.high_low_stage4_unlocked || '🚀 Stage 4 reached! The tones are even closer together!';
+              break;
+            case 5:
+              stageMessage = this.$store.strings?.high_low_stage5_unlocked || '🏆 Master level reached! Ultimate challenge unlocked!';
+              break;
+          }
+          
+          // Show stage progression message
+          this.feedback = stageMessage;
+        } else {
+          // Regular correct answer feedback
+          if (stage >= 3) {
+            // For comparison stages
+            this.feedback = (this.$store.strings?.high_or_low_correct_comparison || 'Correct! The second tone was {0}!')
+              .replace('{0}', correctAnswer === 'high' ? 
+                (this.$store.strings?.high_choice || 'higher') : 
+                (this.$store.strings?.low_choice || 'lower'));
+          } else {
+            // For single tone stages
+            this.feedback = (this.$store.strings?.high_or_low_correct_single || 'Correct! The tone was {0}!')
+              .replace('{0}', correctAnswer === 'high' ? 
+                (this.$store.strings?.high_choice || 'high') : 
+                (this.$store.strings?.low_choice || 'low'));
+          }
+        }
+      } else {
+        // Wrong answer
+        if (stage >= 3) {
+          // For comparison stages
+          this.feedback = (this.$store.strings?.high_or_low_wrong_comparison || 'Try again. The second tone was {0}.')
+            .replace('{0}', correctAnswer === 'high' ? 
+              (this.$store.strings?.high_choice || 'higher') : 
+              (this.$store.strings?.low_choice || 'lower'));
+        } else {
+          // For single tone stages
+          this.feedback = (this.$store.strings?.high_or_low_wrong_single || 'Try again. The tone was {0}.')
+            .replace('{0}', correctAnswer === 'high' ? 
+              (this.$store.strings?.high_choice || 'high') : 
+              (this.$store.strings?.low_choice || 'low'));
+        }
+      }
+      
+      // Show feedback
+      this.showFeedback = true;
+      
+      // Clear any existing timer
+      if (this.highOrLowFeedbackTimer) {
+        clearTimeout(this.highOrLowFeedbackTimer);
+      }
+      
+      // Hide feedback after a delay
+      this.highOrLowFeedbackTimer = setTimeout(() => {
+        this.showFeedback = false;
+        
+        // Generate a new tone after feedback is hidden
+        this.generateHighOrLowTone();
+      }, 2000);
+    },
+    
+    
+    /**
      * Set the current activity mode
      * @param {string} newMode - The mode to switch to
      */
@@ -482,7 +765,11 @@ export function pitches() {
       } 
       // New ID format handlers
       else if (newMode === '1_1_pitches_high_or_low') {
-        // For listen mode, just show instructions
+        // For high or low mode, initialize the highOrLowProgress from saved progress
+        this.highOrLowProgress = this.progress['1_1_pitches_high_or_low'] || 0;
+        console.log('High or Low mode activated with progress:', this.highOrLowProgress);
+        // Load current stage based on progress
+        this.setupHighOrLowMode();
       } else if (newMode === '1_2_pitches_match-sounds') {
         this.gameMode = false; // Start in free play mode
         this.setupMatchingMode(false); // Setup without playing sound
@@ -507,16 +794,47 @@ export function pitches() {
     /**
      * Show a mascot message that's context-aware based on current activity
      */
+    /**
+     * Shows context-specific messages based on current activity and stage
+     * Displays instructions and guidance to the user via the mascot
+     */
     showContextMessage() {
       let message = '';
       const language = localStorage.getItem('lalumo_language') || 'english';
       
       // Provide context-specific instructions based on current mode
-      // TODO: move to strings.xml
       if (this.mode === '1_1_pitches_high_or_low') {
-        message = language === 'german' ? 
-          'Klicke auf jedes Bild, um zu hören, wie diese Melodie klingt!' : 
-          'Click on each picture to hear what that melody sounds like!';
+        // For the High or Low activity, show different instructions based on the current stage
+        const stage = this.currentHighOrLowStage();
+        console.log('Showing context message for High or Low stage:', stage);
+        
+        // Get the appropriate message based on stage and language
+        if (this.$store.strings) {
+          // Use strings from the store if available (for proper localization)
+          const stageKey = `high_or_low_intro_stage${stage}`;
+          message = this.$store.strings[stageKey];
+        }
+        
+        // Fallbacks if string is not found
+        if (!message) {
+          switch(stage) {
+            case 1:
+            case 2:
+              // Single tone stages
+              message = language === 'german' ? 
+                'Höre den Ton! Ist er hoch oder tief?' : 
+                'Listen to the tone! Is it high or low?';
+              break;
+            case 3:
+            case 4:
+            case 5:
+              // Two-tone comparison stages
+              message = language === 'german' ? 
+                'Höre beide Töne! Ist der zweite Ton höher oder tiefer?' : 
+                'Listen to both tones! Is the second one higher or lower?';
+              break;
+          }
+        }
       } else if (this.mode === '1_2_pitches_match-sounds') {
         if (!this.gameMode) {
           message = language === 'german' ? 
