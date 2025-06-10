@@ -35,7 +35,7 @@ export function pitches() {
     },
     
     // State variables
-    mode: '1_1_pitches_high_or_low', // listen, match, draw, guess, memory
+    mode: '1_1_pitches_high_or_low', // high_or_low, match, draw, guess, memory
     currentSequence: [],
     userSequence: [],
     currentAnimation: null,
@@ -104,7 +104,7 @@ export function pitches() {
     ],
     // Progress tracking
     progress: {
-      listen: 0,
+      '1_1_pitches_high_or_low': 0,
       match: 0,
       draw: 0,
       'does-it-sound-right': 0,
@@ -572,6 +572,64 @@ export function pitches() {
     },
     
     /**
+     * Generates and stores a tone sequence for the High or Low activity
+     * @param {number} stage - Current stage in the activity
+     */
+    generateHighOrLowSequence(stage) {
+      console.log('Generating new high or low tone sequence for stage:', stage);
+      
+      // Define tone ranges for different stages
+      const lowTones = {
+        1: ['C2', 'C#2', 'D2', 'D#2', 'E2', 'F2'],
+        2: ['C2', 'C#2', 'D2', 'D#2', 'E2', 'F2', 'F#2', 'G2'],
+        3: ['C2', 'C#2', 'D2', 'D#2', 'E2', 'F2', 'F#2', 'G2'],
+        4: ['D2', 'D#2', 'E2', 'F2', 'F#2', 'G2', 'G#2', 'A2'],
+        5: ['E2', 'F2', 'F#2', 'G2', 'G#2', 'A2', 'A#2', 'B2']
+      };
+      
+      const highTones = {
+        1: ['C5', 'C#5', 'D5', 'D#5', 'E5', 'F5'],
+        2: ['C5', 'C#5', 'D5', 'D#5', 'E5', 'F5', 'F#5', 'G5'],
+        3: ['C5', 'C#5', 'D5', 'D#5', 'E5', 'F5', 'F#5', 'G5'],
+        4: ['B4', 'C5', 'C#5', 'D5', 'D#5', 'E5', 'F5', 'F#5'],
+        5: ['A4', 'A#4', 'B4', 'C5', 'C#5', 'D5', 'D#5', 'E5']
+      };
+      
+      // Get appropriate tone arrays based on current stage
+      const currentLowTones = lowTones[stage] || lowTones[1];
+      const currentHighTones = highTones[stage] || highTones[1];
+      
+      // Pick random tones from the arrays
+      const randomLowTone = currentLowTones[Math.floor(Math.random() * currentLowTones.length)];
+      const randomHighTone = currentHighTones[Math.floor(Math.random() * currentHighTones.length)];
+      
+      if (stage >= 3) {
+        // For two-tone stages, create a sequence with two tones
+        // First tone is always in the middle register (around C4)
+        const middleTones = ['A3', 'A#3', 'B3', 'C4', 'C#4', 'D4', 'D#4', 'E4'];
+        const firstTone = middleTones[Math.floor(Math.random() * middleTones.length)];
+        
+        // Randomly choose if the second tone should be higher or lower
+        this.highOrLowSecondTone = Math.random() < 0.5 ? 'higher' : 'lower';
+        
+        // Second tone is either high or low based on highOrLowSecondTone
+        const secondTone = this.highOrLowSecondTone === 'higher' ? randomHighTone : randomLowTone;
+        
+        // Store the sequence
+        this.currentHighOrLowSequence = { firstTone, secondTone };
+      } else {
+        // For single tone stages, randomly choose high or low
+        this.currentHighOrLowTone = Math.random() < 0.5 ? 'high' : 'low';
+        
+        // Choose the appropriate tone based on high/low choice
+        const toneToPlay = this.currentHighOrLowTone === 'high' ? randomHighTone : randomLowTone;
+        
+        // Store the single tone
+        this.currentHighOrLowSequence = { toneToPlay };
+      }
+    },
+    
+    /**
      * Plays a tone or sequence of tones for the High or Low activity
      * Called when the play button is clicked
      */
@@ -586,41 +644,15 @@ export function pitches() {
         // First, ensure the audio engine is initialized
         await audioEngine.initialize();
         
-        // Define tone ranges for different stages
-        const lowTones = {
-          1: ['C2', 'C#2', 'D2', 'D#2', 'E2', 'F2'],
-          2: ['C2', 'C#2', 'D2', 'D#2', 'E2', 'F2', 'F#2', 'G2'],
-          3: ['C2', 'C#2', 'D2', 'D#2', 'E2', 'F2', 'F#2', 'G2'],
-          4: ['D2', 'D#2', 'E2', 'F2', 'F#2', 'G2', 'G#2', 'A2'],
-          5: ['E2', 'F2', 'F#2', 'G2', 'G#2', 'A2', 'A#2', 'B2']
-        };
-        
-        const highTones = {
-          1: ['C5', 'C#5', 'D5', 'D#5', 'E5', 'F5'],
-          2: ['C5', 'C#5', 'D5', 'D#5', 'E5', 'F5', 'F#5', 'G5'],
-          3: ['C5', 'C#5', 'D5', 'D#5', 'E5', 'F5', 'F#5', 'G5'],
-          4: ['B4', 'C5', 'C#5', 'D5', 'D#5', 'E5', 'F5', 'F#5'],
-          5: ['A4', 'A#4', 'B4', 'C5', 'C#5', 'D5', 'D#5', 'E5']
-        };
-        
-        // Get appropriate tone arrays based on current stage
-        const currentLowTones = lowTones[stage] || lowTones[1];
-        const currentHighTones = highTones[stage] || highTones[1];
-        
-        // Pick a random tone from the array
-        const randomLowTone = currentLowTones[Math.floor(Math.random() * currentLowTones.length)];
-        const randomHighTone = currentHighTones[Math.floor(Math.random() * currentHighTones.length)];
+        // Only generate new tones if not already stored or if explicitly requested
+        if (!this.currentHighOrLowSequence) {
+          this.generateHighOrLowSequence(stage);
+        }
         
         // For two-tone stages (3 and above)
         if (stage >= 3) {
-          // Play two tones in sequence with the second one being higher or lower
-          // First tone is always in the middle register (around C4)
-          const middleTones = ['A3', 'A#3', 'B3', 'C4', 'C#4', 'D4', 'D#4', 'E4'];
-          const firstTone = middleTones[Math.floor(Math.random() * middleTones.length)];
-          
-          // Second tone is either high or low based on highOrLowSecondTone
-          const secondTone = this.highOrLowSecondTone === 'higher' ? randomHighTone : randomLowTone;
-          
+          // Play the stored sequence of two tones
+          const { firstTone, secondTone } = this.currentHighOrLowSequence;
           console.log('Playing first tone:', firstTone, 'followed by', this.highOrLowSecondTone, 'tone:', secondTone);
           
           // Play the first tone and await it
@@ -636,8 +668,8 @@ export function pitches() {
             }, 900);
           }, 1000);  
         } else {
-          // For single tone stages, just play the selected tone
-          const toneToPlay = this.currentHighOrLowTone === 'high' ? randomHighTone : randomLowTone;
+          // For single tone stages, play the stored tone
+          const { toneToPlay } = this.currentHighOrLowSequence;
           console.log('Playing single tone:', toneToPlay);
           
           // Play the tone and await it
@@ -692,6 +724,9 @@ export function pitches() {
         // Update stored progress
         this.progress['1_1_pitches_high_or_low'] = this.highOrLowProgress;
         this.saveProgress();
+        
+        // Clear the current sequence so a new one will be generated next time
+        this.currentHighOrLowSequence = null;
         
         // Check if we've reached a new stage
         const newStage = this.currentHighOrLowStage();
@@ -1292,11 +1327,14 @@ export function pitches() {
     },
     
     /**
-     * Setup for the listening mode
+     * Setup for the High or Low activity
      */
-    setupListeningMode() {
-      // All patterns (up, down, wave, jump) will be generated on-demand when buttons are clicked
-      console.log('Listening mode ready with', this.availableNotes.length, 'available notes');
+    setupHighOrLowMode() {
+      // Initialize the high or low activity
+      console.log('High or Low mode ready with progress:', this.highOrLowProgress);
+      
+      // Reset the current sequence so a new one will be generated on play
+      this.currentHighOrLowSequence = null;
       
       // Show intro message immediately when entering the activity
       this.showActivityIntroMessage('1_1_pitches_high_or_low');
@@ -3740,7 +3778,7 @@ export function pitches() {
      * Sollte nach einem globalen Reset aufgerufen werden, falls kein Reload erfolgt.
      */
     resetProgress() {
-      this.progress = { listen: 0, match: 0, draw: 0, guess: 0, memory: 0 };
+      this.progress = { '1_1_pitches_high_or_low': 0, match: 0, draw: 0, guess: 0, memory: 0 };
       this.correctAnswersCount = 0;
       this.unlockedPatterns = ['up', 'down'];
       this.memorySuccessCount = 0;

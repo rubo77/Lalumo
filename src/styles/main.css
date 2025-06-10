@@ -1283,7 +1283,7 @@ section h2 {
   transform-origin: center;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  background-color: transparent;
   cursor: pointer;
   user-select: none;
   touch-action: manipulation;

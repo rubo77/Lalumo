@@ -277,18 +277,6 @@
           
           <!-- High or Low choice buttons -->
           <div class="high-low-choices">
-            <div class="pitch-card high-choice" 
-                 @click="checkHighOrLowAnswer('high')" 
-                 :aria-label="currentHighOrLowStage >= 3 ? ($store.strings?.second_tone_higher_a11y || 'The second tone is higher') : ($store.strings?.high_choice_a11y || 'High tone')"
-                 :title="currentHighOrLowStage >= 3 ? ($store.strings?.second_tone_higher_a11y || 'The second tone is higher') : ($store.strings?.high_choice_a11y || 'High tone')">
-              <div class="pitch-icon high-icon">
-                <img src="/images/rocket.png" alt="High pitch" />
-                <span class="choice-label" 
-                      x-text="currentHighOrLowStage >= 3 ? 
-                        ($store.strings?.high_choice || 'Höher') : 
-                        ($store.strings?.high_choice || 'Hoch')"></span>
-              </div>
-            </div>
             <div class="pitch-card low-choice" 
                  @click="checkHighOrLowAnswer('low')" 
                  :aria-label="currentHighOrLowStage >= 3 ? ($store.strings?.second_tone_lower_a11y || 'The second tone is lower') : ($store.strings?.low_choice_a11y || 'Low tone')"
@@ -299,6 +287,18 @@
                       x-text="currentHighOrLowStage >= 3 ? 
                         ($store.strings?.low_choice || 'Tiefer') : 
                         ($store.strings?.low_choice || 'Tief')"></span>
+              </div>
+            </div>
+            <div class="pitch-card high-choice" 
+                 @click="checkHighOrLowAnswer('high')" 
+                 :aria-label="currentHighOrLowStage >= 3 ? ($store.strings?.second_tone_higher_a11y || 'The second tone is higher') : ($store.strings?.high_choice_a11y || 'High tone')"
+                 :title="currentHighOrLowStage >= 3 ? ($store.strings?.second_tone_higher_a11y || 'The second tone is higher') : ($store.strings?.high_choice_a11y || 'High tone')">
+              <div class="pitch-icon high-icon">
+                <img src="/images/rocket.png" alt="High pitch" />
+                <span class="choice-label" 
+                      x-text="currentHighOrLowStage >= 3 ? 
+                        ($store.strings?.high_choice || 'Höher') : 
+                        ($store.strings?.high_choice || 'Hoch')"></span>
               </div>
             </div>
           </div>
