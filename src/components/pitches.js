@@ -624,8 +624,9 @@ export function pitches() {
         // Choose the appropriate tone based on high/low choice
         const toneToPlay = this.currentHighOrLowTone === 'high' ? randomHighTone : randomLowTone;
         
-        // Store the single tone
-        this.currentHighOrLowSequence = { toneToPlay };
+        // Store the single tone and the expected answer
+        this.currentHighOrLowSequence = { toneToPlay, expectedAnswer: this.currentHighOrLowTone };
+        console.log('Generated tone sequence with expected answer:', this.currentHighOrLowTone);
       }
     },
     
@@ -711,9 +712,11 @@ export function pitches() {
         
         correctAnswer = this.highOrLowSecondTone === 'higher' ? 'high' : 'low';
       } else {
-        // For single tone stages, check if the user correctly identified if the tone was high or low
-        isCorrect = answer === this.currentHighOrLowTone;
-        correctAnswer = this.currentHighOrLowTone;
+        // For single tone stages, use the stored expected answer for consistency
+        const expectedAnswer = this.currentHighOrLowSequence?.expectedAnswer || this.currentHighOrLowTone;
+        isCorrect = answer === expectedAnswer;
+        correctAnswer = expectedAnswer;
+        console.log('Checking answer:', answer, 'against expected:', expectedAnswer);
       }
       
       // Handle feedback
