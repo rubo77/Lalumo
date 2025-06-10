@@ -88,8 +88,8 @@ Dies soll in allen aktionen:
  - soll keinen patch ebene haben, nur 1.1, 1.2, 2.0, 2.1, ....
  
 # nach kapitel
-1_1_high_or_low
-- WIP
+1_1 "High or Low?" (1_1_pitches_high_or_low) 
+- fertig
 
 1_2_match_sounds
 - Der Hintergrund wechselt erst nach elf erfolgen, soll aber auch schon nach 10 erfolgen
@@ -113,44 +113,9 @@ Dies soll in allen aktionen:
 - im Browser global den back-button abfangauch auf deutsch
  - back button in android gesondert handeln: der back-button soll da zurück ins menu gehen, aber nur, wenn die navigation nicht gelockt ist.
 
-
-
 - Die Bilder müssen nach unten weiter expandet werden
 
 # most important
-Implementiere die neue Aktivität "High or Low?" (1_1_pitches_high_or_low) als kompletten Ersatz für die alte "Listen to melodies"-Aktivität mit den folgenden Anforderungen:
-
-1. Entferne alle Überbleibsel der alten "Listen to melodies"-Funktionalität:
+- Entferne alle Überbleibsel der alten "Listen to melodies"-Funktionalität:
    - Lösche unnötige Melodie-Abspielfunktionen für die alte Aktivität
-   - Ersetze veraltete Texte, Hilfetexte und Anweisungen
-
-2. Refaktorisiere den Code, um Wiederverwendung zu maximieren:
-   - Lagere gemeinsame Funktionalitäten mit 1_2_match_sounds in wiederverwendbare Funktionen aus
-   - Nutze das gleiche Feedback-System (richtig/falsch) wie bei 1_2_match_sounds
-   - Verwende die gleiche Grundstruktur für Spiellogik und UI-Organisation
-
-3. Implementiere die High-or-Low-Logik:
-   - Funktionen zum Abspielen eines einzelnen Tons (nicht mehrere wie bei anderen Aktivitäten)
-   - Zufällige Auswahl zwischen hohen (C5-F6) und tiefen (C2-F2) Tönen
-   - Tracking des ausgewählten Tonbereichs zur Antwortüberprüfung
-   - darauf achten, dass nicht 2x hintereinander die gleiche Note gespielt wird
-   - fortschritt tracken
-   - in preferences auch leeren, wenn man seinen fortschritt zurücksetzt
-   - wenn man 10x richtig hat, sollen die töne näher beieinander liegen: lage 3 und 5
-   - wenn man 20x richtig hat, soll ein zusätzlicher ton als erstes gespielt werden: C3, erst danach der zweite, für den man dann entscheinden soll ob höher oder tiefer
-   - wenn man 30x richtig hat, sollen die töne näher an C3 liegen
-   - wenn man 40x richtig hat, sollder erste ton zufällig sein und von dort aus dann ob der zweite ton höher oder tiefer ist
-
-4. Erstelle das UI mit wiederverwendbaren Komponenten:
-   - Vogel ist im BG, mit transparentem Play-Button zum Abspielen des Tons ist im hintergrund oben mittig (wie bei 1_2_match_sounds)
-   - Zwei TRANSPARENTE buttons als Auswahlmöglichkeiten: Pitch-Cards mit "Hoch"/"Tief" Beschriftungen im title und alt tag; bei spaterem fortschritt mit 2 tönen "Der zweite ton ist Höher/Tiefer" im alt tag
-
-5. Implementiere den Spielablauf:
-   - Abspielen von halben Noten (längere Dauer) 
-   - Auswertung der Auswahl (richtig/falsch)
-   - Feedback und Animation wie bei 1_2_match_sounds
-   - Fortschrittserfassung unter '1_1_pitches_high_or_low'
-
-6. Füge Internationalisierungsunterstützung hinzu:
-   - Deutsche und englische Texte für alle UI-Elemente in strings.xml
-   - Nutze den Übersetzungsmechanisus mit strings.xml
+   

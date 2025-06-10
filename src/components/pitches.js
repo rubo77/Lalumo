@@ -1852,9 +1852,16 @@ export function pitches() {
         if (!this.progress['1_2_pitches_match-sounds']) {
           this.progress['1_2_pitches_match-sounds'] = 0;
         }
+        // Increment progress counter
         this.progress['1_2_pitches_match-sounds'] += 1;
+        const currentProgress = this.progress['1_2_pitches_match-sounds'];
         
-        console.log('Updated match progress:', this.progress['1_2_pitches_match-sounds']);
+        console.log('Updated match progress:', currentProgress);
+        
+        // Important thresholds for background changes
+        if (currentProgress === 10 || currentProgress === 20) {
+          console.log(`Milestone reached: ${currentProgress} correct answers - updating background`);
+        }
         
         // Update background based on new progress level
         this.updateMatchingBackground();
@@ -3720,9 +3727,10 @@ export function pitches() {
       const progress = this.progress['1_2_pitches_match-sounds'] || 0;
       let backgroundImage;
       
-      if (progress < 10) {
+      // Progress thresholds change at exactly 10 and 20 successes
+      if (progress <= 9) { // Change at exactly 10
         backgroundImage = '/images/backgrounds/pitches_action1_no_waves_and_frog.png';
-      } else if (progress < 20) {
+      } else if (progress <= 19) { // Change at exactly 20
         backgroundImage = '/images/backgrounds/pitches_action1_no_frog.png';
       } else {
         backgroundImage = '/images/backgrounds/pitches_action1.png';
