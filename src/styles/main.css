@@ -2129,7 +2129,8 @@ section h2 {
   padding: 0.5rem 1rem 1.5rem;
   border-radius: 0.8rem;
   text-align: center;
-  margin: 0.5rem auto;
+  margin-top: 25px;
+  margin-bottom: -16px;
   max-width: 80%;
   font-weight: bold;
   animation: bounce 0.5s ease;
