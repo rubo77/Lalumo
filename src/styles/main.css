@@ -1335,8 +1335,10 @@ section h2 {
 
 /* Spezifische Positionierung der Cards */
 .match-sounds-container .up-card { grid-column: 1; grid-row: 1; }
-.match-sounds-container .down-card { grid-column: 2; grid-row: 1 / span 1; } /* Standard 1 Zeile */
-.match-sounds-container.no-frog .down-card { grid-row: 1 / span 2; } /* Mit Frosch 2 Zeilen */
+.match-sounds-container .down-card { grid-column: 2; grid-row: 1 / span 1; }
+/* Standard 1 Zeile */
+.match-sounds-container.no-frog .down-card { grid-row: 1 / span 2; }
+/* Mit Frosch 2 Zeilen */
 .match-sounds-container .wave-card { grid-column: 1; grid-row: 2; }
 .match-sounds-container .jump-card { grid-column: 2; grid-row: 2; }
 
@@ -2288,4 +2290,45 @@ section h2 {
 .high-low-progress p {
   margin: 2px 0;
   font-weight: bold;
+}
+
+.bottom_round_edge {
+  position: fixed;
+  bottom: calc(717px - 1vw * 133);
+  z-index:90;
+  left: 0;
+  width: 100%;
+  height: 30px;
+  background-color: yellowgreen; /* Gelber Hintergrund */
+  z-index: 1000;
+  border-top-left-radius: 15px;
+  border-top-right-radius: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #333;
+  font-weight: bold;
+  box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.2);
+  padding: 10px;
+  box-sizing: border-box;
+  overflow: hidden;
+  padding: 0px;
+  margin: 0px;
+}
+
+/* Innerer Bereich des Footers mit weißem Hintergrund und abgerundeten Ecken */
+.footer_inner {
+  background-color: white;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  padding: 0px;
+  margin: 0px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 }
