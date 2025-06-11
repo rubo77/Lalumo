@@ -496,7 +496,7 @@ export function pitches() {
     /**
      * Sets up the High or Low activity with appropriate difficulty
      */
-    setupHighOrLowMode() {
+    setupHighOrLowMode_1_1() {
       const stage = this.currentHighOrLowStage();
       console.log('Setting up High or Low mode with stage:', stage);
       
@@ -561,7 +561,7 @@ export function pitches() {
     /**
      * Saves the current progress to localStorage
      */
-    saveProgress() {
+    saveProgress_1_1() {
       try {
         // Save the progress object to localStorage
         localStorage.setItem('lalumo_progress', JSON.stringify(this.progress));
@@ -726,7 +726,7 @@ export function pitches() {
         
         // Update stored progress
         this.progress['1_1_pitches_high_or_low'] = this.highOrLowProgress;
-        this.saveProgress();
+        this.saveProgress_1_1();
         
         // Create and show rainbow success animation
         const rainbow = document.createElement('div');
@@ -844,26 +844,26 @@ export function pitches() {
         this.highOrLowProgress = this.progress['1_1_pitches_high_or_low'] || 0;
         console.log('High or Low mode activated with progress:', this.highOrLowProgress);
         // Load current stage based on progress
-        this.setupHighOrLowMode();
+        this.setupHighOrLowMode_1_1();
       } else if (newMode === '1_2_pitches_match-sounds') {
         this.gameMode = false; // Start in free play mode
-        this.setupMatchingMode(false); // Setup without playing sound
+        this.setupMatchingMode_1_2(false); // Setup without playing sound
       } else if (newMode === '1_3_pitches_draw-melody') {
-        this.setupDrawingMode(); // Drawing doesn't play sound by default
+        this.setupDrawingMode_1_3(); // Drawing doesn't play sound by default
       } else if (newMode === '1_4_pitches_does-it-sound-right') {
         // Always generate a melody but don't play it yet (user will press play button)
-        this.setupSoundJudgmentMode(false); // Setup without auto-playing sound
+        this.setupSoundJudgmentMode_1_4(false); // Setup without auto-playing sound
       } else if (newMode === '1_5_pitches_memory-game') {
         this.gameMode = false; // Start in free play mode
         this.memoryFreePlay = true; // Enable free play
-        this.setupMemoryMode(false); // Setup without playing sound
+        this.setupMemoryMode_1_5(false); // Setup without playing sound
       }
       
       // Always show the mascot message for the current mode
       this.showContextMessage(); // Use our context-aware message function
       
       // Update progress tracking
-      this.updateProgressGarden();
+      this.updateProgressPitches();
     },
     
     /**
@@ -1321,9 +1321,9 @@ export function pitches() {
     },
     
     /**
-     * Update the progress garden based on user's progress
+     * Update the progress in localStorage based on user's progress
      */
-    updateProgressGarden() {
+    updateProgressPitches() {
       // Get progress values from the new activity IDs
       const progressValues = [
         this.progress['1_1_pitches_high_or_low'] || 0,
@@ -1344,7 +1344,7 @@ export function pitches() {
     /**
      * Setup for the High or Low activity
      */
-    setupHighOrLowMode() {
+    setupHighOrLowMode_1_1() {
       // Initialize the high or low activity
       console.log('High or Low mode ready with progress:', this.highOrLowProgress);
       
@@ -2632,7 +2632,7 @@ export function pitches() {
      * @param {boolean} playSound - Whether to play the melody
      * @param {boolean} generateNew - Whether to generate a new melody
      */
-    setupMemoryMode(playSound = false, generateNew = true) {
+    setupMemoryMode_1_5(playSound = false, generateNew = true) {
       // Use the specific C, D, E, G, A notes for the memory game (skipping F and H/B)
       const fixedNotes = ['C4', 'D4', 'E4', 'G4', 'A4'];
       
@@ -2891,7 +2891,7 @@ export function pitches() {
         
         if (isCorrect) {
           // Play the new melody automatically after 2 seconds
-          this.setupMemoryMode();
+          this.setupMemoryMode_1_5();
           
           // Play the new sequence automatically after another 2 seconds
           setTimeout(() => {
@@ -2988,7 +2988,7 @@ export function pitches() {
       }
     },
     
-    setupSoundJudgmentMode(playSound = true) {
+    setupSoundJudgmentMode_1_4(playSound = true) {
       console.log('Setting up Sound Judgment mode');
       
       // Reset state variables specific to this activity
@@ -3651,7 +3651,7 @@ export function pitches() {
     startMemoryGame() {
       this.gameMode = true;
       this.memoryFreePlay = false;
-      this.setupMemoryMode(true, true); // Play sound and generate new
+      this.setupMemoryMode_1_5(true, true); // Play sound and generate new
       this.showContextMessage(); // Update instructions
     },
 

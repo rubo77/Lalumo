@@ -122,7 +122,7 @@ Dies soll in allen aktionen:
 - exportProgress funktioniiert nicht merh, wenn man garbage importiert hat
 - import progress funktioniert nicht, zumindest bei 1_2 nicht
 
-- add the activity ids 1_1, 1_-2, ... in all functions, that are only used in one activity in pitches.js
+- add the activity ids 1_1, 1_2, 1_3, 1_4, 1_5 in all functions, that are only used in one activity in pitches.js
 
 # most important
 
