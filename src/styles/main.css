@@ -1757,9 +1757,11 @@ section h2 {
 /* Drawing mode */
 .drawing-container {
   position: absolute;
-  top: 306px;
+  top: calc(2vh + 63vw);
   margin: 2rem auto;
-  max-width: 96%;
+  height: calc(2vh + 33vw);
+  min-height: 33px;
+  width: 88%;
   max-width: 600px;
   display: flex;
   justify-content: center;
@@ -1767,7 +1769,7 @@ section h2 {
 
 .drawing-canvas {
   width: 100%;
-  height: 300px;
+  height: 100%;
   background-color: rgba(255, 255, 255, 0.3);
   border: 1px solid rgba(51, 51, 51, 0.2);
   border-radius: 12px;
@@ -1814,11 +1816,12 @@ section h2 {
 
 .challenge-toggle {
   display: flex;
-  justify-content: center;
+  justify-content: space-evenly;
   position: absolute;
   width: 100%;
-  gap: 1rem;
+  gap: clamp(0.5rem, 2vw, 1.5rem);
   z-index: 20;
+  padding: 0;
 }
 
 .challenge-toggle button, .clear-drawing-button {
@@ -1831,13 +1834,13 @@ section h2 {
   font-weight: 500;
   transition: all 0.2s ease;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  height: 207px;
-  width: calc(38vw - 20px); /* Direktes Wachsen mit dem Viewport */
-  min-width: 220px; /* Minimum width for small screens */
-  max-width: 350px; /* Maximum width for large screens */
+  height: calc(2vh + 50vw);
+  min-height: 33px;
+  width: 49vw;
   position: relative;
   overflow: hidden;
   text-indent: -9999px;
+  max-height: 345px;
 }
 
 .challenge-toggle button:hover {

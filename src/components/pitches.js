@@ -2082,7 +2082,7 @@ export function pitches() {
           
           // Position the buttons 200px from the top with direct inline styles
           challengeToggle.style.position = 'absolute';
-          challengeToggle.style.top = '132px';
+          challengeToggle.style.top = '84px';
           challengeToggle.style.left = '0';
           challengeToggle.style.right = '0';
         } else {
