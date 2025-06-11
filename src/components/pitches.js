@@ -518,19 +518,19 @@ export function pitches() {
       const stage = this.currentHighOrLowStage();
       console.log('Generating High or Low tone for stage:', stage);
       
-      // Define tone ranges for different stages
+      // Define tone ranges for different stages (according to CONCEPT.md)
       const lowTones = {
-        1: ['C2', 'C#2', 'D2', 'D#2', 'E2', 'F2'], // Stage 1: Basic low tones
-        2: ['C2', 'C#2', 'D2', 'D#2', 'E2', 'F2', 'F#2', 'G2'], // Stage 2: Expanded low tones
-        3: ['C2', 'C#2', 'D2', 'D#2', 'E2', 'F2', 'F#2', 'G2'], // Stage 3: Same as stage 2
-        4: ['D2', 'D#2', 'E2', 'F2', 'F#2', 'G2', 'G#2', 'A2'], // Stage 4: Higher low tones
-        5: ['E2', 'F2', 'F#2', 'G2', 'G#2', 'A2', 'A#2', 'B2']  // Stage 5: Highest low tones
+        1: ['C3', 'C#3', 'D3', 'D#3', 'E3', 'F3'], // Stage 1: Basic low tones (C3-F3)
+        2: ['C3', 'C#3', 'D3', 'D#3', 'E3', 'F3', 'F#3', 'G3'], // Stage 2: Expanded low tones
+        3: ['C3', 'C#3', 'D3', 'D#3', 'E3', 'F3', 'F#3', 'G3'], // Stage 3: Same as stage 2
+        4: ['D3', 'D#3', 'E3', 'F3', 'F#3', 'G3', 'G#3', 'A3'], // Stage 4: Higher low tones
+        5: ['E3', 'F3', 'F#3', 'G3', 'G#3', 'A3', 'A#3', 'B3']  // Stage 5: Highest low tones
       };
       
       const highTones = {
-        1: ['C5', 'C#5', 'D5', 'D#5', 'E5', 'F5'], // Stage 1: Basic high tones
-        2: ['C5', 'C#5', 'D5', 'D#5', 'E5', 'F5', 'F#5', 'G5'], // Stage 2: Expanded high tones
-        3: ['C5', 'C#5', 'D5', 'D#5', 'E5', 'F5', 'F#5', 'G5'], // Stage 3: Same as stage 2
+        1: ['C5', 'C#5', 'D5', 'D#5', 'E5', 'F5', 'F#5', 'G5', 'G#5', 'A5', 'A#5', 'B5', 'C6'], // Stage 1: Basic high tones (C5-F6)
+        2: ['C5', 'C#5', 'D5', 'D#5', 'E5', 'F5', 'F#5', 'G5', 'G#5', 'A5', 'A#5', 'B5', 'C6'], // Stage 2: Expanded high tones
+        3: ['C5', 'C#5', 'D5', 'D#5', 'E5', 'F5', 'F#5', 'G5', 'G#5', 'A5', 'A#5', 'B5', 'C6'], // Stage 3: Same as stage 2
         4: ['B4', 'C5', 'C#5', 'D5', 'D#5', 'E5', 'F5', 'F#5'], // Stage 4: Lower high tones
         5: ['A4', 'A#4', 'B4', 'C5', 'C#5', 'D5', 'D#5', 'E5']  // Stage 5: Lowest high tones
       };
@@ -578,19 +578,19 @@ export function pitches() {
     generateHighOrLowSequence(stage) {
       console.log('Generating new high or low tone sequence for stage:', stage);
       
-      // Define tone ranges for different stages
+      // Define tone ranges for different stages (according to CONCEPT.md)
       const lowTones = {
-        1: ['C2', 'C#2', 'D2', 'D#2', 'E2', 'F2'],
-        2: ['C2', 'C#2', 'D2', 'D#2', 'E2', 'F2', 'F#2', 'G2'],
-        3: ['C2', 'C#2', 'D2', 'D#2', 'E2', 'F2', 'F#2', 'G2'],
-        4: ['D2', 'D#2', 'E2', 'F2', 'F#2', 'G2', 'G#2', 'A2'],
-        5: ['E2', 'F2', 'F#2', 'G2', 'G#2', 'A2', 'A#2', 'B2']
+        1: ['C3', 'C#3', 'D3', 'D#3', 'E3', 'F3'],
+        2: ['C3', 'C#3', 'D3', 'D#3', 'E3', 'F3', 'F#3', 'G3'],
+        3: ['C3', 'C#3', 'D3', 'D#3', 'E3', 'F3', 'F#3', 'G3'],
+        4: ['D3', 'D#3', 'E3', 'F3', 'F#3', 'G3', 'G#3', 'A3'],
+        5: ['E3', 'F3', 'F#3', 'G3', 'G#3', 'A3', 'A#3', 'B3']
       };
       
       const highTones = {
-        1: ['C5', 'C#5', 'D5', 'D#5', 'E5', 'F5'],
-        2: ['C5', 'C#5', 'D5', 'D#5', 'E5', 'F5', 'F#5', 'G5'],
-        3: ['C5', 'C#5', 'D5', 'D#5', 'E5', 'F5', 'F#5', 'G5'],
+        1: ['C5', 'C#5', 'D5', 'D#5', 'E5', 'F5', 'F#5', 'G5', 'G#5', 'A5', 'A#5', 'B5', 'C6'],
+        2: ['C5', 'C#5', 'D5', 'D#5', 'E5', 'F5', 'F#5', 'G5', 'G#5', 'A5', 'A#5', 'B5', 'C6'],
+        3: ['C5', 'C#5', 'D5', 'D#5', 'E5', 'F5', 'F#5', 'G5', 'G#5', 'A5', 'A#5', 'B5', 'C6'],
         4: ['B4', 'C5', 'C#5', 'D5', 'D#5', 'E5', 'F5', 'F#5'],
         5: ['A4', 'A#4', 'B4', 'C5', 'C#5', 'D5', 'D#5', 'E5']
       };
@@ -605,18 +605,47 @@ export function pitches() {
       
       if (stage >= 3) {
         // For two-tone stages, create a sequence with two tones
-        // First tone is always in the middle register (around C4)
-        const middleTones = ['A3', 'A#3', 'B3', 'C4', 'C#4', 'D4', 'D#4', 'E4'];
-        const firstTone = middleTones[Math.floor(Math.random() * middleTones.length)];
+        // First tone is always C4 as specified in CONCEPT.md
+        const firstTone = 'C4';
         
-        // Randomly choose if the second tone should be higher or lower
-        this.highOrLowSecondTone = Math.random() < 0.5 ? 'higher' : 'lower';
+        // Get a random tone from either the high or low range
+        const useHighTone = Math.random() < 0.5;
+        const secondTone = useHighTone ? randomHighTone : randomLowTone;
         
-        // Second tone is either high or low based on highOrLowSecondTone
-        const secondTone = this.highOrLowSecondTone === 'higher' ? randomHighTone : randomLowTone;
+        // Determine if the second tone is higher or lower based on actual pitch comparison
+        // Extract the note number from the tone string (e.g., C4 -> 4, F#5 -> 5)
+        const firstToneOctave = parseInt(firstTone.match(/\d+/)[0], 10);
+        const secondToneOctave = parseInt(secondTone.match(/\d+/)[0], 10);
         
-        // Store the sequence
-        this.currentHighOrLowSequence = { firstTone, secondTone };
+        // Extract the note letter (e.g., C4 -> C, F#5 -> F#)
+        const firstToneNote = firstTone.replace(/\d+/, '');
+        const secondToneNote = secondTone.replace(/\d+/, '');
+        
+        // Notes in order for comparison
+        const noteOrder = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+        const firstToneNoteIndex = noteOrder.indexOf(firstToneNote);
+        const secondToneNoteIndex = noteOrder.indexOf(secondToneNote);
+        
+        // Compare octaves first, then note positions
+        let isHigher;
+        if (secondToneOctave > firstToneOctave) {
+          isHigher = true;
+        } else if (secondToneOctave < firstToneOctave) {
+          isHigher = false;
+        } else {
+          // Same octave, compare note positions
+          isHigher = secondToneNoteIndex > firstToneNoteIndex;
+        }
+        
+        this.highOrLowSecondTone = isHigher ? 'higher' : 'lower';
+        console.log(`Second tone ${secondTone} is ${this.highOrLowSecondTone} than first tone ${firstTone}`);
+        
+        // Store the sequence with correct comparison information
+        this.currentHighOrLowSequence = { 
+          firstTone, 
+          secondTone, 
+          expectedAnswer: isHigher ? 'high' : 'low' 
+        };
       } else {
         // For single tone stages, randomly choose high or low
         this.currentHighOrLowTone = Math.random() < 0.5 ? 'high' : 'low';
@@ -716,11 +745,11 @@ export function pitches() {
       // Different logic based on stage
       if (stage >= 3) {
         // For two-tone stages, check if the user correctly identified if the second tone was higher or lower
-        isCorrect = 
-          (answer === 'high' && this.highOrLowSecondTone === 'higher') || 
-          (answer === 'low' && this.highOrLowSecondTone === 'lower');
+        const expectedAnswer = this.currentHighOrLowSequence.expectedAnswer;
+        isCorrect = answer === expectedAnswer;
         
-        correctAnswer = this.highOrLowSecondTone === 'higher' ? 'high' : 'low';
+        correctAnswer = expectedAnswer;
+        console.log('Checking answer:', answer, 'against expected:', expectedAnswer, 'isCorrect:', isCorrect);
       } else {
         // For single tone stages, use the stored expected answer for consistency
         const expectedAnswer = this.currentHighOrLowSequence?.expectedAnswer || this.currentHighOrLowTone;
