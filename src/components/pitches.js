@@ -40,6 +40,7 @@ export function pitches() {
     userSequence: [],
     currentAnimation: null,
     drawPath: [],
+    previousDrawPath: [], // Store the previous drawing path
     correctAnswer: null,
     melodyHasWrongNote: false, // For 'does-it-sound-right' activity - whether current melody has wrong note
     currentMelodyName: '', // Display name of currently playing melody
@@ -2035,6 +2036,9 @@ export function pitches() {
      * Clear the current drawing and reset the canvas
      */
     clearDrawing() {
+      // Save current path before clearing
+      this.previousDrawPath = [...this.drawPath];
+      
       // Reset path array
       this.drawPath = [];
       
@@ -2318,15 +2322,42 @@ export function pitches() {
     startDrawing(e) {
       e.preventDefault(); // Verhindert unbeabsichtigtes Verhalten auf Mobilgeräten
       
-      // Reset path
-      this.drawPath = [];
-      
       // Hole den Canvas-Kontext zum Zeichnen
       const canvas = e.currentTarget;
+      this.canvas = canvas; // Store canvas reference for use in other methods
       this.ctx = canvas.getContext('2d');
       
-      // Setze Zeichenstil
+      // Clear the canvas
       this.ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      // Draw the previous path with semi-transparency if it exists
+      if (this.previousDrawPath && this.previousDrawPath.length > 0) {
+        this.ctx.save(); // Save the current context state
+        
+        // Set semi-transparent style for previous path
+        this.ctx.strokeStyle = 'rgba(52, 152, 219, 0.3)'; // Semi-transparent blue
+        this.ctx.lineWidth = 4;
+        this.ctx.lineCap = 'round';
+        this.ctx.lineJoin = 'round';
+        
+        // Draw the previous path
+        this.ctx.beginPath();
+        const firstPoint = this.previousDrawPath[0];
+        this.ctx.moveTo(firstPoint.x, firstPoint.y);
+        
+        for (let i = 1; i < this.previousDrawPath.length; i++) {
+          const point = this.previousDrawPath[i];
+          this.ctx.lineTo(point.x, point.y);
+        }
+        
+        this.ctx.stroke();
+        this.ctx.restore(); // Restore the context to its original state
+      }
+      
+      // Reset current path
+      this.drawPath = [];
+      
+      // Set style for new drawing
       this.ctx.strokeStyle = '#3498db'; // Blauer Strich
       this.ctx.lineWidth = 4;
       this.ctx.lineCap = 'round';
