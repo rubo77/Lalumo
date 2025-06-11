@@ -744,6 +744,12 @@ export function pitches() {
       
       // Different logic based on stage
       if (stage >= 3) {
+        // Guard against null sequence which can happen when clicking rapidly
+        if (!this.currentHighOrLowSequence) {
+          console.warn('No current sequence available. Ignoring this answer.');
+          return;
+        }
+        
         // For two-tone stages, check if the user correctly identified if the second tone was higher or lower
         const expectedAnswer = this.currentHighOrLowSequence.expectedAnswer;
         isCorrect = answer === expectedAnswer;
@@ -751,6 +757,12 @@ export function pitches() {
         correctAnswer = expectedAnswer;
         console.log('Checking answer:', answer, 'against expected:', expectedAnswer, 'isCorrect:', isCorrect);
       } else {
+        // Guard against null sequence which can happen when clicking rapidly
+        if (!this.currentHighOrLowSequence) {
+          console.warn('No current sequence available. Ignoring this answer.');
+          return;
+        }
+        
         // For single tone stages, use the stored expected answer for consistency
         const expectedAnswer = this.currentHighOrLowSequence?.expectedAnswer || this.currentHighOrLowTone;
         isCorrect = answer === expectedAnswer;
@@ -785,7 +797,10 @@ export function pitches() {
         }, 2000);
         
         // Clear the current sequence so a new one will be generated next time
+      // Use setTimeout to avoid issues with rapid clicking
+      setTimeout(() => {
         this.currentHighOrLowSequence = null;
+      }, 100);
         
         // Check if we've reached a new stage
         const newStage = this.currentHighOrLowStage();
