@@ -90,7 +90,8 @@ Dies soll in allen aktionen:
 
 # nach kapitel
 1_1 "High or Low?" (1_1_pitches_high_or_low) 
-- wenn man noch nicht auf den play button gedrückt hat, soll einfach ein zufälliger hoher, bzw. tiefer ton kommen wenn man auf einen der buttons drckt
+- 
+- es soll nicht automatisch starten, sondern wenn man noch nicht auf den play button gedrückt hat, soll einfach ein zufälliger hoher, bzw. tiefer ton kommen wenn man auf einen der buttons drckt
 - wenn man erfolgreich war, soll nach 2s automatisch der neue ton kommen
 - Entferne alle Überbleibsel der alten "Listen to melodies"-Funktionalität:
    - Lösche unnötige Melodie-Abspielfunktionen für die alte Aktivität
@@ -116,7 +117,7 @@ Dies soll in allen aktionen:
 
 - Die Bilder müssen nach unten weiter expandet werden
 
-- das impoertieren des exportierten spielstandes mit freigeschalteter welle bei 1_2, dann fortschritt zurücksetzen und den string importieren  führt nicht dazu, dass bei 1_2 die welle wieder freigeschaltet ist. füge eine message ein. beim importieren, was genau durch den string freigeschaltet wurde
+- das importieren des exportierten spielstandes mit freigeschalteter welle bei 1_2, dann fortschritt zurücksetzen und den string importieren  führt nicht dazu, dass bei 1_2 die welle wieder freigeschaltet ist. füge eine message ein. beim importieren, was genau durch den string freigeschaltet wurde
 
 - exportProgress funktioniiert nicht merh, wenn man garbage importiert hat
 - import progress funktioniert nicht, zumindest bei 1_2 nicht

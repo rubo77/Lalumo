@@ -520,19 +520,19 @@ export function pitches() {
       
       // Define tone ranges for different stages (according to CONCEPT.md)
       const lowTones = {
-        1: ['C3', 'C#3', 'D3', 'D#3', 'E3', 'F3'], // Stage 1: Basic low tones (C3-F3)
-        2: ['C3', 'C#3', 'D3', 'D#3', 'E3', 'F3', 'F#3', 'G3'], // Stage 2: Expanded low tones
-        3: ['C3', 'C#3', 'D3', 'D#3', 'E3', 'F3', 'F#3', 'G3'], // Stage 3: Same as stage 2
-        4: ['D3', 'D#3', 'E3', 'F3', 'F#3', 'G3', 'G#3', 'A3'], // Stage 4: Higher low tones
-        5: ['E3', 'F3', 'F#3', 'G3', 'G#3', 'A3', 'A#3', 'B3']  // Stage 5: Highest low tones
+        1: ['C4', 'C#4', 'D4', 'D#4', 'E4', 'F4'], // Stage 1: Basic low tones (C3-F3)
+        2: ['C4', 'C#4', 'D4', 'D#4', 'E4', 'F4', 'F#4', 'G4'], // Stage 2: Expanded low tones
+        3: ['C4', 'C#4', 'D4', 'D#4', 'E4', 'F4', 'F#4', 'G4'], // Stage 3: Same as stage 2
+        4: ['F#4', 'G4', 'G#4', 'A4'], // Stage 4: Higher low tones
+        5: ['G#4', 'A4', 'A#4', 'B4']  // Stage 5: Highest low tones
       };
       
       const highTones = {
-        1: ['C5', 'C#5', 'D5', 'D#5', 'E5', 'F5', 'F#5', 'G5', 'G#5', 'A5', 'A#5', 'B5', 'C6'], // Stage 1: Basic high tones (C5-F6)
+        1: ['C6', 'C#6', 'D6', 'D#6', 'E6', 'F6', 'F#6', 'G6', 'G#6', 'A6', 'A#6', 'B6', 'C7'], // Stage 1: Basic high tones (C5-C7)
         2: ['C5', 'C#5', 'D5', 'D#5', 'E5', 'F5', 'F#5', 'G5', 'G#5', 'A5', 'A#5', 'B5', 'C6'], // Stage 2: Expanded high tones
         3: ['C5', 'C#5', 'D5', 'D#5', 'E5', 'F5', 'F#5', 'G5', 'G#5', 'A5', 'A#5', 'B5', 'C6'], // Stage 3: Same as stage 2
-        4: ['B4', 'C5', 'C#5', 'D5', 'D#5', 'E5', 'F5', 'F#5'], // Stage 4: Lower high tones
-        5: ['A4', 'A#4', 'B4', 'C5', 'C#5', 'D5', 'D#5', 'E5']  // Stage 5: Lowest high tones
+        4: ['E5', 'F5', 'F#5'], // Stage 4: Lower high tones
+        5: ['C#5', 'D5', 'D#5', 'E5']  // Stage 5: Lowest high tones
       };
       
       // Don't play the same tone twice in a row
@@ -606,7 +606,7 @@ export function pitches() {
       if (stage >= 3) {
         // For two-tone stages, create a sequence with two tones
         // First tone is always C4 as specified in CONCEPT.md
-        const firstTone = 'C4';
+        const firstTone = 'C5';
         
         // Get a random tone from either the high or low range
         const useHighTone = Math.random() < 0.5;
@@ -682,8 +682,11 @@ export function pitches() {
         // For two-tone stages (3 and above)
         if (stage >= 3) {
           // Play the stored sequence of two tones
-          const { firstTone, secondTone } = this.currentHighOrLowSequence;
-          console.log('Playing first tone:', firstTone, 'followed by', this.highOrLowSecondTone, 'tone:', secondTone);
+          const { firstTone, secondTone, expectedAnswer } = this.currentHighOrLowSequence;
+          
+          // Make sure highOrLowSecondTone is synchronized with the stored sequence
+          this.highOrLowSecondTone = expectedAnswer === 'high' ? 'higher' : 'lower';
+          console.log('Playing first tone:', firstTone, 'followed by', this.highOrLowSecondTone, 'tone:', secondTone, 'with expected answer:', expectedAnswer);
           
           // Play the first tone and await it
           await this.playTone(firstTone, 800); // Longer duration for first tone
