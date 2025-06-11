@@ -1899,7 +1899,7 @@ export function pitches() {
         // If correct answer, automatically progress to next melody after feedback
         if (isCorrect) {
           // Setup a new match automatically
-          this.setupMatchingMode(true, true);
+          this.setupMatchingMode_1_2(true, true);
           console.log('Auto-progressed to next melody in match mode');
         }
         // For wrong answers, don't generate new melody so user can try the same one again
@@ -2754,7 +2754,7 @@ export function pitches() {
         if (!this.gameMode) {
           this.startMatchGame(); // Start game mode from free play
         } else {
-          this.setupMatchingMode(true, false); // Replay current melody in game mode
+          this.setupMatchingMode_1_2(true, false); // Replay current melody in game mode
         }
       } else if (this.mode === '1_4_pitches_does-it-sound-right') {
         // Pass false to indicate we want to replay the current melody, not generate a new one
@@ -3679,7 +3679,7 @@ export function pitches() {
     
     startMatchGame() {
       this.gameMode = true;
-      this.setupMatchingMode(true, true); // Play sound and generate new
+      this.setupMatchingMode_1_2(true, true); // Play sound and generate new
       this.showContextMessage(); // Update instructions
     },
 
