@@ -88,6 +88,10 @@ Dies soll in allen aktionen:
 
 - "background-image: 1s ease" funktioniert noch nicht
 
+- Verschiedene Instrumente
+
+- Bei Android funktioniert die Sprache nicht. Nur die mascot messages gehen
+
 # nach kapitel
 1_1 "High or Low?" (1_1_pitches_high_or_low) 
 - 
@@ -97,14 +101,17 @@ Dies soll in allen aktionen:
    - Lösche unnötige Melodie-Abspielfunktionen für die alte Aktivität
 
 1_3 Draw a melody:
+- Wenn man einen Ton trifft, soll die Note oben im kasten aufleuchten 
+- Wenn man neu malt, soll der zuletzt genannte Strich halbtransparent noch sichtbar sein
+- man soll auf den Kasten oben drücken können für die selbe melodie nochmal hören.
 - bg: einen vogel zum spiel starten oben hin
 - die noten werden eierig im breiten screen
 
 1_4 does this sound right:
- - die animals dürfen sich nciht wiederholen, also es muss sich das letzte tier gemerkt werden, damit es nicht erneut ausgewählt wird im zufall
  - Manchmal zeigt er am anfang das falsche Lied an, die ton. Länger Stimmen noch nicht alle. 
  - fix gebogenen text
  - es kommt mehrmals in log "Generated sound judgment melody:..."
+ - die tonlängen Stimmen noch nicht alle. 
 
 1_5 memory game:
  - fertig
