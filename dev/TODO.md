@@ -86,6 +86,8 @@ Dies soll in allen aktionen:
 
 - Hinweis: /var/www/Musici/android/app/src/main/java/com/lalumo/app/MainActivity.java verwendet oder überschreibt eine veraltete API.
 
+- "background-image: 1s ease" funktioniert noch nicht
+
 # nach kapitel
 1_1 "High or Low?" (1_1_pitches_high_or_low) 
 - wenn man noch nicht auf den play button gedrückt hat, soll einfach ein zufälliger hoher, bzw. tiefer ton kommen wenn man auf einen der buttons drckt
@@ -94,11 +96,8 @@ Dies soll in allen aktionen:
    - Lösche unnötige Melodie-Abspielfunktionen für die alte Aktivität
 
 1_3 Draw a melody:
-- Die buttons müssen abhängig von der viewport breite werden und mit der viewport breite wachsen
-- beim zeichnen ist in android der Strich zu weit links
 - bg: einen vogel zum spiel starten oben hin
 - die noten werden eierig im breiten screen
-- "background-image: 1s ease" funktioniert noch nicht
 
 1_4 does this sound right:
  - die animals dürfen sich nciht wiederholen, also es muss sich das letzte tier gemerkt werden, damit es nicht erneut ausgewählt wird im zufall
