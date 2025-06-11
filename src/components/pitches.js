@@ -2030,7 +2030,7 @@ export function pitches() {
       }
     },
     
-    setupDrawingMode() {
+    setupDrawingMode_1_3() {
       this.drawPath = [];
       this.isDrawing = false;
       this.melodyChallengeMode = false;
@@ -2116,7 +2116,7 @@ export function pitches() {
     /**
      * Fügt UI-Elemente für den Zeichenmodus hinzu, inklusive Challenge-Modus-Toggle
      */
-    setupDrawingModeUI() {
+    setupDrawingMode_1_3UI() {
       const container = document.querySelector('.drawing-container');
       if (!container) return;
       
