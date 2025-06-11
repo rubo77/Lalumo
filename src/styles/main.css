@@ -1397,6 +1397,11 @@ section h2 {
   height: min(330px,calc(32vw + (100vw - 360px) * 0.3));
 }
 
+#\31 _1_pitches > button:nth-child(2){
+  height: 24vh !important;
+  position: absolute;
+  top: 0px;
+}
 .play-icon {
   width: 0;
   height: 0;
@@ -1814,7 +1819,7 @@ section h2 {
 
 .challenge-toggle button, .clear-drawing-button {
   padding: 8px 16px;
-  border: none;
+  border: 2px solid white;
   border-radius: 12px;
   background-color: rgba(255, 255, 255, 0.1) !important;
   color: transparent;
@@ -1823,7 +1828,9 @@ section h2 {
   transition: all 0.2s ease;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   height: 207px;
-  width: 300px;
+  width: calc(40% - 20px); /* Responsive width with margin spacing */
+  min-width: 220px; /* Minimum width for small screens */
+  max-width: 350px; /* Maximum width for large screens */
   position: relative;
   overflow: hidden;
   text-indent: -9999px;

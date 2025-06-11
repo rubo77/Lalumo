@@ -2767,12 +2767,35 @@ export function pitches() {
      */
     selectRandomAnimalImages() {
       console.log('ANIMALS: Selecting random animal images');
-      // Pick a random good animal image
-      const goodIndex = Math.floor(Math.random() * this.goodAnimalImages.length);
+      
+      // Initialisiere lastGoodAnimal und lastBadAnimal, falls sie nicht existieren
+      if (!this.lastGoodAnimal) this.lastGoodAnimal = null;
+      if (!this.lastBadAnimal) this.lastBadAnimal = null;
+      
+      // Pick a random good animal image that's different from the last one
+      let goodIndex;
+      do {
+        goodIndex = Math.floor(Math.random() * this.goodAnimalImages.length);
+      } while (
+        this.goodAnimalImages.length > 1 && 
+        this.goodAnimalImages[goodIndex] === this.lastGoodAnimal
+      );
+      
+      // Speichere das vorherige Tier und setze das neue
+      this.lastGoodAnimal = this.goodAnimalImages[goodIndex];
       this.currentGoodAnimalImage = this.goodAnimalImages[goodIndex];
       
-      // Pick a random bad animal image
-      const badIndex = Math.floor(Math.random() * this.badAnimalImages.length);
+      // Pick a random bad animal image that's different from the last one
+      let badIndex;
+      do {
+        badIndex = Math.floor(Math.random() * this.badAnimalImages.length);
+      } while (
+        this.badAnimalImages.length > 1 &&
+        this.badAnimalImages[badIndex] === this.lastBadAnimal
+      );
+      
+      // Speichere das vorherige Tier und setze das neue
+      this.lastBadAnimal = this.badAnimalImages[badIndex];
       this.currentBadAnimalImage = this.badAnimalImages[badIndex];
       
       console.log('ANIMALS: Selected', this.currentGoodAnimalImage, this.currentBadAnimalImage);
