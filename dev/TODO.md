@@ -89,15 +89,14 @@ Dies soll in allen aktionen:
  
 # nach kapitel
 1_1 "High or Low?" (1_1_pitches_high_or_low) 
-- fertig
-
-1_2_match_sounds
-- Der Hintergrund wechselt erst nach elf erfolgen, soll aber auch schon nach 10 erfolgen
+- wenn man noch nciht auf den play button gedrückt hat, soll einfach ein zufälliger hoher, bzw. tiefer ton kommen wenn man auf einen der buttons drckt
 
 1_3 Draw a melody:
 - beim zeichnen ist in android der Strich zu weit links
-- ev- einen vogel zum spiel starteen oben hin
+- bg: einen vogel zum spiel starten oben hin
 - die noten werden eierig im breiten screen
+- "background-image: 1s ease" funktioniert noch nicht
+- Die buttons müssen mit der breite des bildschims wachsen
 
 1_4 does this sound right:
  - Manchmal zeigt er am anfang das falsche Lied an, die ton. Länger Stimmen noch nicht alle. 
@@ -114,6 +113,8 @@ Dies soll in allen aktionen:
  - back button in android gesondert handeln: der back-button soll da zurück ins menu gehen, aber nur, wenn die navigation nicht gelockt ist.
 
 - Die Bilder müssen nach unten weiter expandet werden
+
+- das impoertieren des exportierten spielstandes mit freigeschalteter welle bei 1_2, dann fortschritt zurücksetzen und den string importieren  führt nicht dazu, dass bei 1_2 die welle wieder freigeschaltet ist. füge eine message ein. beim importieren, was genau durch den string freigeschaltet wurde
 
 # most important
 - Entferne alle Überbleibsel der alten "Listen to melodies"-Funktionalität:

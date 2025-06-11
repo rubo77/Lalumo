@@ -3723,6 +3723,24 @@ export function pitches() {
      * - Between 10-19 correct: pitches_action1_no_frog.png
      * - 20+ correct: pitches_action1.png
      */
+    // Helper method to preload an image
+    preloadBackgroundImage(imageUrl) {
+      if (!this.preloadedImages) {
+        this.preloadedImages = new Set();
+      }
+      
+      // Skip if already preloaded
+      if (this.preloadedImages.has(imageUrl)) {
+        return;
+      }
+      
+      // Create an image object and start loading
+      const img = new Image();
+      img.src = imageUrl;
+      this.preloadedImages.add(imageUrl);
+      console.log(`Preloading background image: ${imageUrl}`);
+    },
+    
     updateMatchingBackground() {
       const progress = this.progress['1_2_pitches_match-sounds'] || 0;
       let backgroundImage;
@@ -3730,8 +3748,18 @@ export function pitches() {
       // Progress thresholds change at exactly 10 and 20 successes
       if (progress <= 9) { // Change at exactly 10
         backgroundImage = '/images/backgrounds/pitches_action1_no_waves_and_frog.png';
+        
+        // Preload next background when approaching transition point
+        if (progress === 9) {
+          this.preloadBackgroundImage('/images/backgrounds/pitches_action1_no_frog.png');
+        }
       } else if (progress <= 19) { // Change at exactly 20
         backgroundImage = '/images/backgrounds/pitches_action1_no_frog.png';
+        
+        // Preload next background when approaching transition point
+        if (progress === 19) {
+          this.preloadBackgroundImage('/images/backgrounds/pitches_action1.png');
+        }
       } else {
         backgroundImage = '/images/backgrounds/pitches_action1.png';
       }
@@ -3740,6 +3768,8 @@ export function pitches() {
       if (matchingActivity) {
         matchingActivity.style.backgroundImage = `url(${backgroundImage})`;
         console.log(`Updated background based on progress (${progress}): ${backgroundImage}`);
+      } else {
+        console.log('error updating background: div not found')
       }
     },
     
