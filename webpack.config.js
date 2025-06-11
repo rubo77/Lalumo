@@ -42,6 +42,8 @@ module.exports = (env, argv) => {
             }
           }
         },
+        // CSS processing disabled for testing (enable when needed)
+        //* 
         {
           test: /\.css$/,
           use: [
@@ -49,6 +51,7 @@ module.exports = (env, argv) => {
             'css-loader',
           ],
         },
+        // */
         {
           test: /\.(png|svg|jpg|jpeg|gif|mp3|wav)$/i,
           type: 'asset/resource',

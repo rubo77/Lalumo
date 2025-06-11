@@ -5,18 +5,52 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Lalumo</title>
   <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
-  <!-- Scripts and styles will be injected by webpack -->
+  <style>
+    /* Critical CSS for initial rendering */
+    body {
+      font-family: sans-serif;
+      margin: 0; padding: 0;
+      background-image: url('./images/backgrounds/pitches_bird_sings_small.jpg');
+      background-size: contain;
+      background-position: top left;
+      background-repeat: no-repeat;
+    }
+    .container { width: 100%; max-width: 100%; overflow-x: hidden; min-height: 100%; }
+    /* Main app container only - activity pages */
+    main.container { min-height: 100vh; }
+    
+    /* Modal styles */
+    .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; 
+                    background-color: rgba(0,0,0,0.7); z-index: 1000; 
+                    display: flex; justify-content: center; align-items: center; }
+    .modal-content { background-color: white; border-radius: 10px; padding: 20px; 
+                    max-width: 90%; width: 400px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+    
+    /* Menu styles */
+    .menu-open { width: 250px; }
+    
+    /* Button styles */
+    .primary-button { display: inline-block; padding: 10px 16px; background-color: #4a86e8; 
+                     color: white; border: none; border-radius: 5px; cursor: pointer; }
+    .button { display: inline-block; padding: 8px 12px; border-radius: 5px; }
+    
+    /* Activity elements */
+    .activity-container { padding: 12px; }
+    .mascot { max-width: 80px; height: auto; }
+    .mascot-welcome { display: flex; align-items: center; margin: 10px 0; }
+  </style>
+  <!-- Scripts and more styles will be injected by webpack -->
 </head>
 <body>
-
   <main x-data="app()" x-init="init(); initLazyLoading();" @click="unlockAudio()" @touchstart="unlockAudio()" class="container">
     
     <!-- Username Prompt Modal -->
-    <div class="modal-overlay" x-show="showUsernamePrompt" x-transition>
+    <div class="modal-overlay" x-show="showUsernamePrompt" x-transition
+    style="display: none;">
       <div class="modal-content" @click.outside="setUsername()">
         <h3 x-text="$store.strings?.welcome_message || 'Welcome to Lalumo!'"></h3>
         <div class="mascot-welcome">
-          <img src="/images/mascot.png" alt="Lalumo Mascot" class="mascot" />
+          <img src="/images/mascot.png" alt="Lalumo Mascot" class="mascot" width="0" />
           <p x-text="$store.strings?.create_name_message || 'Let\'s create a special name just for you!'"></p>
         </div>
         <button class="primary-button" @click="setUsername()" x-text="$store.strings?.button_generate_name || 'Generate Random Name'"></button>
@@ -236,7 +270,7 @@
         <!-- Mascot Message Overlay -->
         <div class="mascot-message-overlay" x-show="showMascot" x-transition>
           <div class="mascot-message-container">
-            <img src="/images/mascot.png" alt="Lalumo Mascot" class="mascot-image" />
+            <img src="/images/mascot.png" alt="Lalumo Mascot" class="mascot-image" width="0" />
             <div class="mascot-speech-bubble">
               <p x-text="mascotMessage || ''"></p>
             </div>
@@ -261,7 +295,12 @@
         </div>
         
         <!-- High or Low Activity -->
-        <div id="1_1_pitches" x-show="mode === '1_1_pitches_high_or_low'" class="pitch-activity lazyload-bg" data-background-image="./images/backgrounds/pitches_action1_1_butterfly_mule.png" style="background-size: cover; background-position: top left;">
+        <div id="1_1_pitches" x-show="mode === '1_1_pitches_high_or_low'" class="pitch-activity lazyload-bg" data-background-image="./images/backgrounds/pitches_action1_1_sloth_mouse.png" style="background-size: cover; background-position: top left;
+        background-image: url('./images/backgrounds/pitches_action1_1_sloth_mouse_small.jpg');
+        height: 100vh;
+        width: 100%;
+        background-size: 100% 100%;
+        background-repeat: no-repeat;">
           <div class="mode-header">
             <button class="back-to-main" @click="setMode('main')" aria-label="Back to main menu">
               <span style="font-size: 24px;">🏠</span>
