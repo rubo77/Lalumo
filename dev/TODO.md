@@ -83,15 +83,18 @@ Dies soll in allen aktionen:
 
 - mobile-build.sh:
  - fertig
- 
+
+- Hinweis: /var/www/Musici/android/app/src/main/java/com/lalumo/app/MainActivity.java verwendet oder überschreibt eine veraltete API.
+
 # nach kapitel
 1_1 "High or Low?" (1_1_pitches_high_or_low) 
 - wenn man noch nicht auf den play button gedrückt hat, soll einfach ein zufälliger hoher, bzw. tiefer ton kommen wenn man auf einen der buttons drckt
+- wenn man erfolgreich war, soll nach 2s automatisch der neue ton kommen
 - Entferne alle Überbleibsel der alten "Listen to melodies"-Funktionalität:
    - Lösche unnötige Melodie-Abspielfunktionen für die alte Aktivität
 
 1_3 Draw a melody:
-- Die buttons müssen mit der breite des bildschims wachsen
+- Die buttons müssen abhängig von der viewport breite werden und mit der viewport breite wachsen
 - beim zeichnen ist in android der Strich zu weit links
 - bg: einen vogel zum spiel starten oben hin
 - die noten werden eierig im breiten screen

@@ -1832,7 +1832,7 @@ section h2 {
   transition: all 0.2s ease;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   height: 207px;
-  width: calc(40% - 20px); /* Responsive width with margin spacing */
+  width: calc(38vw - 20px); /* Direktes Wachsen mit dem Viewport */
   min-width: 220px; /* Minimum width for small screens */
   max-width: 350px; /* Maximum width for large screens */
   position: relative;

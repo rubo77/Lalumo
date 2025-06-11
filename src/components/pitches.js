@@ -692,8 +692,18 @@ export function pitches() {
      * @param {string} answer - The user's answer ('high' or 'low')
      */
     checkHighOrLowAnswer(answer) {
-      if (!this.highOrLowPlayed || this.isPlaying) {
-        // If the tone hasn't been played yet or is still playing, ignore the answer
+      if (this.isPlaying) {
+        // If a tone is currently playing, ignore the answer
+        return;
+      }
+      
+      // If the tone hasn't been played yet, play one first
+      if (!this.highOrLowPlayed) {
+        // Play a tone first, then immediately check the answer
+        this.playHighOrLowTone().then(() => {
+          // After the tone has finished playing, check the answer
+          this.checkHighOrLowAnswer(answer);
+        });
         return;
       }
       
@@ -729,6 +739,11 @@ export function pitches() {
         this.saveProgress_1_1();
         
         // Create and show rainbow success animation
+        
+        // Auto play next tone after 2 seconds
+        setTimeout(() => {
+          this.playHighOrLowTone();
+        }, 2000);
         const rainbow = document.createElement('div');
         rainbow.className = 'rainbow-success';
         document.body.appendChild(rainbow);
