@@ -973,7 +973,7 @@
           <button class="primary-button" @click="exportProgress()" x-text="$store.strings?.button_export_progress || 'Export Progress'"></button>
           <div x-show="exportedData" class="export-data">
             <p x-text="$store.strings?.copy_code || 'Copy this code to save your progress:'"></p>
-            <textarea x-text="exportedData" readonly class="export-textarea"></textarea>
+            <textarea x-model="exportedData" readonly class="export-textarea"></textarea>
             <button class="secondary-button" @click="copyToClipboard()" x-text="$store.strings?.button_copy_clipboard || 'Copy to Clipboard'"></button>
           </div>
           <p class="import-label" x-text="$store.strings?.import_progress || 'Import your progress from another device:'"></p>

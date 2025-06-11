@@ -488,31 +488,65 @@ export function app() {
      * Export the user's progress as a save game string
      */
     exportProgress() {
-      // TODO: if there is garbage in the local storage because you imported an invalid string log this
+      // Reset exportedData vor jedem neuen Export
+      this.exportedData = '';
+      
       try {
-        // Collect all progress data
+        console.log('Starte Export des Fortschritts...');
+        
+        // Lese den aktuellen Fortschritt aus dem localStorage
+        const pitchProgressRaw = localStorage.getItem('lalumo_progress') || '{}';
+        console.log('Roher Fortschritt aus localStorage:', pitchProgressRaw);
+        
+        let pitchProgress = JSON.parse(pitchProgressRaw);
+        console.log('Geparster Fortschritt:', pitchProgress);
+        
+        // Prüfe auf freigeschaltete Features für bessere Diagnose
+        let unlockedFeatures = [];
+        
+        // Prüfe auf freigeschaltete Welle in 1_2
+        if (pitchProgress && pitchProgress['1_2_pitches_match-sounds'] && 
+            pitchProgress['1_2_pitches_match-sounds'] >= 5) {
+          unlockedFeatures.push('Wave mode in "Match Sounds"');
+        }
+
+        // Sammle alle Fortschrittsdaten
         const progressData = {
-          username: this.username,
+          username: this.username || 'Player',
           lastSaved: new Date().toISOString(),
-          pitchProgress: JSON.parse(localStorage.getItem('lalumo_progress') || '{}'),
+          pitchProgress: pitchProgress, // Direkt als Objekt speichern, keine erneute JSON-Konvertierung
           memoryGameLevel: parseInt(localStorage.getItem('lalumo_memory_level') || '0', 10),
-          // TODO: add the progress of all activities
-          lastActivity: this.active
+          lastActivity: this.active,
+          unlockedFeatures: unlockedFeatures // Speichere freigeschaltete Features für bessere Diagnose
         };
         
-        // Convert to JSON and encode for export
+        // Konvertieren zu JSON und codieren für Export
         const jsonString = JSON.stringify(progressData);
+        console.log('JSON-String für Export:', jsonString);
+        
         const encoded = btoa(jsonString);
+        console.log('Kodierter String:', encoded, 'Länge:', encoded.length);
         
-        // Set the exportedData property for display in the UI
-        this.exportedData = encoded;
+        if(!encoded || encoded.length === 0) {
+          console.error('Kodierter String ist leer');
+          alert('Error exporting progress: encoded string is empty');
+          return null;
+        }
         
-        console.log('Progress exported successfully with memory game data');
+        // Alpine.js Reaktivität erzwingen mit Timeout
+        setTimeout(() => {
+          // Set the exportedData property for display in the UI
+          this.exportedData = encoded;
+          console.log('ExportedData wurde gesetzt auf:', this.exportedData);
+          
+          // Log für bessere Diagnose
+          console.log('Progress exported successfully with these features:', unlockedFeatures);
+        }, 10);
+        
         return encoded;
       } catch (e) {
-        console.log('Error exporting progress', e);
-        alert('Error exporting progress:');
-        // TODO: show the data, that are tried to save in log
+        console.error('Fehler beim Exportieren:', e);
+        alert('Error exporting progress: ' + e.message);
         return null;
       }
     },
@@ -553,22 +587,57 @@ export function app() {
      * Copy the exported progress code to the clipboard
      */
     copyToClipboard() {
-      if (!this.exportedData) return;
+      if (!this.exportedData) {
+        console.error('ExportedData ist leer, nichts zu kopieren');
+        alert('No data to copy. Please export your progress first.');
+        return;
+      }
+      
+      console.log('Versuche zu kopieren:', this.exportedData);
       
       try {
-        // Create a temporary textarea element to copy from
-        const textarea = document.createElement('textarea');
-        textarea.value = this.exportedData;
-        document.body.appendChild(textarea);
-        textarea.select();
-        document.execCommand('copy');
-        document.body.removeChild(textarea);
-        
-        // Show feedback
-        console.log('Progress code copied to clipboard!');
-        alert('Progress code copied to clipboard!');
+        // Moderne Clipboard API verwenden, wenn verfügbar
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(this.exportedData)
+            .then(() => {
+              console.log('Progress code copied to clipboard using Clipboard API!');
+              alert('Progress code copied to clipboard!');
+            })
+            .catch(err => {
+              console.error('Clipboard API failed:', err);
+              // Fallback zur alten Methode
+              this.copyToClipboardFallback();
+            });
+        } else {
+          // Fallback für ältere Browser
+          this.copyToClipboardFallback();
+        }
       } catch (e) {
         console.error('Failed to copy to clipboard:', e);
+        alert('Failed to copy. Please select and copy the text manually.');
+      }
+    },
+    
+    copyToClipboardFallback() {
+      // Fallback-Methode für ältere Browser
+      try {
+        // Auf das tatsächliche Textfeld zugreifen
+        const textarea = document.querySelector('.export-textarea');
+        if (textarea) {
+          textarea.select();
+          const success = document.execCommand('copy');
+          if (success) {
+            console.log('Progress code copied to clipboard using fallback!');
+            alert('Progress code copied to clipboard!');
+          } else {
+            throw new Error('execCommand returned false');
+          }
+        } else {
+          throw new Error('Textarea not found');
+        }
+      } catch (e) {
+        console.error('Fallback copy failed:', e);
+        alert('Could not copy automatically. Please select and copy the text manually.');
       }
     },
     

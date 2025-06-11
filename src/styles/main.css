@@ -517,7 +517,7 @@
   margin: 10px 0;
   padding: 10px;
   border-radius: 8px;
-  border: 2px solid var(--color-accent-light);
+  border: 2px solid #ddd;
   background-color: var(--color-background-lighter);
   font-family: monospace;
   color: var(--color-text);
