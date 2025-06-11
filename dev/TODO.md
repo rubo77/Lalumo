@@ -124,8 +124,6 @@ Dies soll in allen aktionen:
 
 - add the activity ids 1_1, 1_2, 1_3, 1_4, 1_5 in all functions, that are only used in one activity in pitches.js
 
-# most important
+- why is the apk 30MB large?
 
-- on slow connection, the style is loaded really late. what can we do? suggest solutions to have a minimal style already on loading. i can imagine
- - addinig a minimal style set inline, that is overwritten, when fully loaded
- - adding the main.css in inidex.html directly on top
+# most important

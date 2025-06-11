@@ -223,14 +223,6 @@
             >
               🌸 <span x-text="$store.strings?.harmony_gardens || 'Harmony Gardens'"></span>
             </button>
-            <button 
-              class="back-to-main"
-              @click="$root.active = 'main'"
-              role="button"
-              aria-label="Back to main menu_a11y"
-            >
-              ↩️ <span>Back</span>
-            </button>
           </div>
         </template>
         
@@ -460,12 +452,12 @@
 
           <!-- Animal choice buttons -->
           <div class="sound-judgment-options">
-            <div class="pitch-card animal-card happy" @click="checkSoundJudgment(true)" aria-label="Sounds good" title="Sounds good">
+            <div class="pitch-card animal-card happy" @click="checkSoundHighOrLow(true)" aria-label="Sounds good" title="Sounds good">
               <div class="pitch-icon animal-icon" title="Sounds good!">
                 <img src="/images/1_5_pitches_good_cat.png" alt="Happy cat">
               </div>
             </div>
-            <div class="pitch-card animal-card unhappy" @click="checkSoundJudgment(false)" aria-label="Sounds wrong" title="Sounds wrong">
+            <div class="pitch-card animal-card unhappy" @click="checkSoundHighOrLow(false)" aria-label="Sounds wrong" title="Sounds wrong">
               <div class="pitch-icon animal-icon" title="Sounds wrong!">
                 <img src="/images/1_5_pitches_bad_snake.png" alt="Unhappy snake">
               </div>
@@ -544,28 +536,28 @@
     </section>
     
     <!-- Chapter: Chords -->
-    <section x-show="active === 'chords'" x-transition class="chord-chapters-view lazyload-bg" data-background-image="./images/backgrounds/pitches_bird_sings.png" style="background-size: cover; background-position: top center; border-radius: 0;">
+    <section x-show="active === 'chords'" x-transition class="chord-chapters-view lazyload-bg" data-background-image="./x.gif" style="background-size: cover; background-position: top center; border-radius: 0;">
       <div x-data="chords()" x-init="init()">
         
         <!-- Main chord activity selection screen -->
         <div x-show="!mode || mode === 'main'" class="chord-landing">
           <div class="image-map-container">
-            <div class="clickable-area color-matching-area" @click="setMode('color-matching')" aria-label="Color Matching">
+            <div class="clickable-area color-matching-area" @click="setMode('2_1_chords_color-matching')" aria-label="Color Matching">
               <span class="area-label" x-text="$store.strings?.chord_color_matching || 'Chord Color Matching'">Chord Color Matching</span>
             </div>
-            <div class="clickable-area mood-landscapes-area" @click="setMode('mood-landscapes')" aria-label="Mood Landscapes">
+            <div class="clickable-area mood-landscapes-area" @click="setMode('2_2_chords_mood-landscapes')" aria-label="Mood Landscapes">
               <span class="area-label" x-text="$store.strings?.mood_landscapes || 'Mood Landscapes'">Mood Landscapes</span>
             </div>
-            <div class="clickable-area chord-building-area" @click="setMode('chord-building')" aria-label="Chord Building">
+            <div class="clickable-area chord-building-area" @click="setMode('2_3_chords_chord-building')" aria-label="Chord Building">
               <span class="area-label" x-text="$store.strings?.chord_building || 'Chord Building'">Chord Building</span>
             </div>
-            <div class="clickable-area missing-note-area" @click="setMode('missing-note')" aria-label="Missing Note">
+            <div class="clickable-area missing-note-area" @click="setMode('2_4_chords_missing-note')" aria-label="Missing Note">
               <span class="area-label" x-text="$store.strings?.missing_note || 'Guess the Missing Note'">Guess the Missing Note</span>
             </div>
-            <div class="clickable-area character-matching-area" @click="setMode('character-matching')" aria-label="Character Matching">
+            <div class="clickable-area character-matching-area" @click="setMode('2_5_chords_characters')" aria-label="Character Matching">
               <span class="area-label" x-text="$store.strings?.chord_characters || 'Chord Story Characters'">Chord Story Characters</span>
             </div>
-            <div class="clickable-area harmony-gardens-area" @click="setMode('harmony-gardens')" aria-label="Harmony Gardens">
+            <div class="clickable-area harmony-gardens-area" @click="setMode('2_6_chords_harmony-gardens')" aria-label="Harmony Gardens">
               <span class="area-label" x-text="$store.strings?.harmony_gardens || 'Harmony Gardens'">Harmony Gardens</span>
             </div>
           </div>

@@ -60,15 +60,6 @@ export function app() {
           '2_5_chords_characters': 'Chord Characters',
           '2_6_chords_harmony-gardens': 'Harmony Gardens'
         },
-        // Mapping von alten zu neuen IDs
-        legacyMapping: {
-          'color-matching': '2_1_chords_color-matching',
-          'mood-landscapes': '2_2_chords_mood-landscapes',
-          'chord-building': '2_3_chords_chord-building',
-          'missing-note': '2_4_chords_missing-note',
-          'character-matching': '2_5_chords_characters',
-          'harmony-gardens': '2_6_chords_harmony-gardens'
-        }
       },
       '3_timbres': {
         name: 'Discovering Timbres',

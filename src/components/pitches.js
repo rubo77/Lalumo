@@ -35,7 +35,7 @@ export function pitches() {
     },
     
     // State variables
-    mode: '1_1_pitches_high_or_low', // high_or_low, match, draw, guess, memory
+    mode: '1_1_pitches_high_or_low', // default mode, 1_1_pitches_high_or_low, it could be one of 1_2_pitches_match-sounds, 1_3_pitches_draw, 1_4_pitches_does-it-sound-right or 1_5_pitches_memory
     currentSequence: [],
     userSequence: [],
     currentAnimation: null,
@@ -852,7 +852,7 @@ export function pitches() {
         this.setupDrawingMode_1_3(); // Drawing doesn't play sound by default
       } else if (newMode === '1_4_pitches_does-it-sound-right') {
         // Always generate a melody but don't play it yet (user will press play button)
-        this.setupSoundJudgmentMode_1_4(false); // Setup without auto-playing sound
+        this.setupSoundHighOrLowMode_1_4(false); // Setup without auto-playing sound
       } else if (newMode === '1_5_pitches_memory-game') {
         this.gameMode = false; // Start in free play mode
         this.memoryFreePlay = true; // Enable free play
@@ -1251,29 +1251,25 @@ export function pitches() {
       // Define all intro messages for different activities
       const introMessages = {
         '1_1_pitches_high_or_low': {
-          'en': 'High or low?',
-          'de': 'Hoch oder tief?'
+          'en': 'Listen to the Note and choose if it is of a high or low pitch!',
+          'de': 'Höre dir die Note an und wähle, ob sie hoch oder tief ist!'
         },
-        'match': {
-          'en': 'Listen to the melody and choose what it sounds like!',
-          'de': 'Höre dir die Melodie an und wähle, wonach sie klingt!'
+        '1_2_pitches_match-sounds': {
+          'en': 'Listen to the Note and choose if it is of a high or low pitch!',
+          'de': 'Höre dir die Note an und wähle, ob sie hoch oder tief ist!'
         },
-        'draw': {
+        '1_3_pitches_draw': {
           'en': 'Draw your own melody! Where does your line go?',
           'de': 'Zeichne deine eigene Melodie! Wohin geht deine Linie?'
         },
-        'does-it-sound-right': {
+        '1_4_pitches_does-it-sound-right': {
           'en': 'Listen to the melody! Does it sound right? Or is there a wrong note?',
           'de': 'Hör dir die Melodie an! Klingt sie richtig? Oder ist da ein falscher Ton?'
         },
-        'memory': {
+        '1_5_pitches_memory': {
           'en': 'Listen carefully and remember the melody! Can you play it back?',
           'de': 'Höre genau hin und merke dir die Melodie! Kannst du sie nachspielen?'
         },
-        'guess': {
-          'en': 'Listen and guess which melody was played!',
-          'de': 'Höre zu und rate, welche Melodie gespielt wurde!'
-        }
       };
       
       // Find the right message for the activity and language
@@ -1751,7 +1747,7 @@ export function pitches() {
     /**
      * Setup for the matching mode ('1_2_pitches_match-sounds')
      */
-    setupMatchingMode(playSound = false, generateNew = true) {
+    setupMatchingMode_1_2(playSound = false, generateNew = true) {
       this.animationInProgress = false;
       this.showActivityIntroMessage('match');
       this.updateMatchingBackground(); // Update background based on progress
@@ -1922,7 +1918,7 @@ export function pitches() {
         this.resetTimeoutId = null;
       }
       
-      // Stop melody playback timeouts - besonders wichtig für die Sound-Judgment-Aktivität
+      // Stop melody playback timeouts - besonders wichtig für die Sound-HighOrLow-Aktivität
       if (this.melodyTimeouts && this.melodyTimeouts.length > 0) {
         console.log(`AUDIO: Clearing ${this.melodyTimeouts.length} melody timeouts`);
         this.melodyTimeouts.forEach(timeoutId => {
@@ -2111,48 +2107,6 @@ export function pitches() {
           }
         });
       }
-    },
-    
-    /**
-     * Fügt UI-Elemente für den Zeichenmodus hinzu, inklusive Challenge-Modus-Toggle
-     */
-    setupDrawingMode_1_3UI() {
-      const container = document.querySelector('.drawing-container');
-      if (!container) return;
-      
-      // Entferne eventuell bereits vorhandene UI-Elemente
-      let challengeToggle = document.querySelector('.challenge-toggle');
-      if (challengeToggle) {
-        challengeToggle.remove();
-      }
-      
-      // Erstelle Challenge-Toggle
-      challengeToggle = document.createElement('div');
-      challengeToggle.className = 'challenge-toggle';
-      challengeToggle.innerHTML = `
-        <button id="challenge-button" class="${this.melodyChallengeMode ? 'active' : ''}">
-          🎵 Melodie nachzeichnen
-        </button>
-        <button id="new-melody-button">
-          🔄 Neue Melodie
-        </button>
-      `;
-      
-      // Füge Toggle unter dem Canvas ein
-      const canvas = document.querySelector('.drawing-canvas');
-      canvas.parentNode.insertBefore(challengeToggle, canvas.nextSibling);
-      
-      // Event-Listener hinzufügen
-      document.getElementById('challenge-button').addEventListener('click', () => {
-        this.toggleMelodyChallenge();
-      });
-      
-      document.getElementById('new-melody-button').addEventListener('click', () => {
-        if (this.melodyChallengeMode) {
-          this.generateReferenceSequence();
-          this.updateDrawingModeUI();
-        }
-      });
     },
     
     /**
@@ -2476,136 +2430,6 @@ export function pitches() {
     },
     
     /**
-     * Setup for the guessing mode
-     * @param {boolean} playSound - Whether to play the melody
-     * @param {boolean} generateNew - Whether to generate a new melody
-     */
-    setupGuessingMode(playSound = false, generateNew = true) {
-      // Define possible sequence types and their expected next note direction
-      const options = [
-        { type: 'up', next: 'up', generator: this.generateUpPattern.bind(this) },
-        { type: 'down', next: 'down', generator: this.generateDownPattern.bind(this) },
-        { type: 'wave', next: 'up', generator: this.generateWavyPattern.bind(this) },
-        { type: 'jump', next: 'down', generator: this.generateJumpyPattern.bind(this) }
-      ];
-      
-      if (generateNew) {
-        // Select a random pattern type
-        const selected = options[Math.floor(Math.random() * options.length)];
-        // Generate a sequence for the selected pattern type
-        const fullSequence = selected.generator();
-        // Only use the first 3 notes for the guessing game
-        this.currentSequence = fullSequence.slice(0, 3);
-        this.correctAnswer = selected.next;
-        this.choices = ['up', 'down'];
-      }
-      // Play the partial sequence using the central audio engine
-      const playPartial = (notes, index = 0) => {
-        if (index >= notes.length) return;
-        // Play current note using the central audio engine
-        audioEngine.playNote(notes[index].toLowerCase(), 0.6);
-        // Schedule next note
-        setTimeout(() => playPartial(notes, index + 1), 600);
-      };
-      // Only play sound if explicitly requested
-      if (playSound) {
-        playPartial(this.currentSequence);
-      }
-    },
-    
-    /**
-     * Check the user's guess for the next note
-     * @param {string} guess - User's guess (up or down)
-     */
-    checkGuess(guess) {
-      const isCorrect = guess === this.correctAnswer;
-      
-      // Find the clicked element for potential error animation
-      const clickedElement = document.querySelector(`.guess-button[data-direction="${guess}"]`);
-      
-      this.showFeedback = true;
-      
-      // Get feedback text from string resources
-      const successMsg = Alpine.store('strings')['success_message'] || 'Great job! You guessed it!';
-      const errorMsg = Alpine.store('strings')['error_message'] || 'Not quite. Let\'s try another one!';
-      this.feedback = isCorrect ? successMsg : errorMsg;
-      
-      // Log feedback with debug utility
-      import('../utils/debug').then(({ debugLog }) => {
-        debugLog('GAME', `User guessed ${guess}, correct answer was ${this.correctAnswer}, result: ${isCorrect ? 'correct' : 'incorrect'}`);
-      });
-      
-      // Play feedback sound using the central audio engine
-      audioEngine.playNote(isCorrect ? 'success' : 'try_again', 1.0);
-      console.log(`AUDIO: Playing ${isCorrect ? 'success' : 'try_again'} feedback sound with audio engine`);
-      
-      // Show appropriate animation based on result
-      if (isCorrect) {
-        // Create and show rainbow success animation
-        const rainbow = document.createElement('div');
-        rainbow.className = 'rainbow-success';
-        document.body.appendChild(rainbow);
-        
-        // Remove rainbow element after animation completes
-        setTimeout(() => {
-          if (rainbow && rainbow.parentNode) {
-            rainbow.parentNode.removeChild(rainbow);
-          }
-        }, 2500);
-      } else if (clickedElement) {
-        // Show shake animation on the clicked element
-        clickedElement.classList.add('shake-error');
-        setTimeout(() => {
-          clickedElement.classList.remove('shake-error');
-        }, 500);
-      }
-      
-      // Play the full sequence with the correct answer
-      const fullSequence = [...this.currentSequence];
-      if (this.correctAnswer === 'up') {
-        fullSequence.push(this.getHigherNote(fullSequence[fullSequence.length - 1]));
-      } else {
-        fullSequence.push(this.getLowerNote(fullSequence[fullSequence.length - 1]));
-      }
-      
-      // Play the sequence using the central audio engine
-      const playFull = (notes, index = 0) => {
-        if (index >= notes.length) return;
-        
-        // Play current note using the central audio engine
-        audioEngine.playNote(notes[index].toLowerCase(), 0.6);
-        
-        // Schedule next note after a delay
-        setTimeout(() => playFull(notes, index + 1), 600);
-      };
-      
-      // Play the sequence
-      playFull(fullSequence);
-      
-      // Play feedback sound using the central audio engine
-      audioEngine.playNote(isCorrect ? 'success' : 'try_again', 1.0);
-      
-      // Reset after feedback
-      setTimeout(() => {
-        this.showFeedback = false;
-        
-        if (isCorrect) {
-          // Update progress tracking
-          this.progress.guess += 1;
-          localStorage.setItem('lalumo_progress', JSON.stringify(this.progress));
-          
-          // Generate a new sequence
-          this.setupGuessingMode();
-        } else {
-          // Let them try again with the same sequence
-          this.userSequence = [];
-          // Call setupGuessingMode to replay the current sequence without generating a new one
-          this.setupGuessingMode(true, false);
-        }
-      }, 2000);
-    },
-    
-    /**
      * Get a higher note than the provided note
      * @param {string} note - Current note
      * @returns {string} - Higher note
@@ -2919,7 +2743,7 @@ export function pitches() {
         }
       } else if (this.mode === '1_4_pitches_does-it-sound-right') {
         // Pass false to indicate we want to replay the current melody, not generate a new one
-        this.playMelodyForSoundJudgment(false);
+        this.playMelodyForSoundHighOrLow(false);
       } else if (this.mode === '1_5_pitches_memory-game') {
         if (!this.gameMode) {
           // Neue Tiere beim Start des Memory-Spiels anzeigen
@@ -2988,8 +2812,8 @@ export function pitches() {
       }
     },
     
-    setupSoundJudgmentMode_1_4(playSound = true) {
-      console.log('Setting up Sound Judgment mode');
+    setupSoundHighOrLowMode_1_4(playSound = true) {
+      console.log('Setting up Sound HighOrLow mode');
       
       // Reset state variables specific to this activity
       this.melodyHasWrongNote = false;
@@ -3022,7 +2846,7 @@ export function pitches() {
       // This way, the first play button click will have a melody to play
       const shouldPlay = playSound;
       // Generate new melody but only play it if shouldPlay is true
-      this.generateSoundJudgmentMelody();
+      this.generateSoundHighOrLowMelody();
       
       // Play the melody if requested
       if (shouldPlay) {
@@ -3034,11 +2858,11 @@ export function pitches() {
      * Generates a melody for the "Does It Sound Right?" activity without playing it
      * This separates the melody generation logic from playback
      */
-    generateSoundJudgmentMelody() {
+    generateSoundHighOrLowMelody() {
       // Get all melody keys
       const melodyKeys = Object.keys(this.knownMelodies);
       if (melodyKeys.length === 0) {
-        console.error('No melodies available for sound judgment activity');
+        console.error('No melodies available for sound HighOrLow activity');
         return false;
       }
         
@@ -3145,8 +2969,8 @@ export function pitches() {
      * Play a melody for the "Does It Sound Right?" activity
      * @param {boolean} generateNew - Whether to generate a new melody
      */
-    playMelodyForSoundJudgment(generateNew = true) {
-      console.log(`AUDIO: playMelodyForSoundJudgment called with generateNew=${generateNew}`);
+    playMelodyForSoundHighOrLow(generateNew = true) {
+      console.log(`AUDIO: playMelodyForSoundHighOrLow called with generateNew=${generateNew}`);
       
       // Stoppe zuerst alle aktuellen Sounds, um Überlagerungen zu vermeiden
       this.stopCurrentSound();
@@ -3168,7 +2992,7 @@ export function pitches() {
       setTimeout(() => {
         // Generate a new melody if requested
         if (generateNew) {
-          if (!this.generateSoundJudgmentMelody()) {
+          if (!this.generateSoundHighOrLowMelody()) {
             console.error('AUDIO_ERROR: Failed to generate sound judgment melody');
             
             // UI-Status zurücksetzen
@@ -3193,7 +3017,7 @@ export function pitches() {
           console.error('AUDIO_ERROR: No sequence to play for sound judgment activity');
           
           // Try to generate a melody as fallback
-          if (this.generateSoundJudgmentMelody()) {
+          if (this.generateSoundHighOrLowMelody()) {
             this.playMelodySequence(this.currentSequence, 'sound-judgment', this.currentMelodyId);
           } else {
             // Reset UI if we can't play anything
@@ -3572,7 +3396,7 @@ export function pitches() {
      * Check the user's answer for the "Does It Sound Right?" activity
      * @param {boolean} userSaysCorrect - True if the user said the melody sounds correct
      */
-    checkSoundJudgment(userSaysCorrect) {
+    checkSoundHighOrLow(userSaysCorrect) {
       // Stop any currently playing sound
       this.stopCurrentSound();
       
@@ -3636,11 +3460,11 @@ export function pitches() {
         
         if (isCorrect) {
           // If the answer was correct, generate a new melody
-          this.playMelodyForSoundJudgment(true);
+          this.playMelodyForSoundHighOrLow(true);
         } else {
           // If the answer was incorrect, replay the same melody
           // Pass false to indicate not to generate a new melody
-          this.playMelodyForSoundJudgment(false);
+          this.playMelodyForSoundHighOrLow(false);
         }
       }, 2000);
     },
