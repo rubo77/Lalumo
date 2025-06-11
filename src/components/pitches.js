@@ -58,7 +58,7 @@ export function pitches() {
     longPressThreshold: 800, // milliseconds for long press
     
     // High or Low activity state variables
-    highOrLowProgress: 0, // Number of correct answers in High or Low activity
+    highOrLowProgress: 0, // Number of correct answers in High or Low activity - initialized properly in afterInit
     currentHighOrLowTone: null, // Current tone type (high/low)
     highOrLowSecondTone: null, // For comparison stages
     highOrLowPlayed: false, // Whether the tone has been played
@@ -252,6 +252,10 @@ export function pitches() {
           if (!this.progress['1_5_pitches_memory-game']) this.progress['1_5_pitches_memory-game'] = 0;
           
           console.log('Loaded progress data with new IDs:', this.progress);
+          
+          // Initialize highOrLowProgress from saved data
+          this.highOrLowProgress = this.progress['1_1_pitches_high_or_low'] || 0;
+          console.log('Initialized highOrLowProgress from localStorage:', this.highOrLowProgress);
         } else {
           // Initialize with empty progress object using new IDs
           this.progress = {
@@ -563,9 +567,12 @@ export function pitches() {
      */
     saveProgress_1_1() {
       try {
+        // Make sure highOrLowProgress is synced to the progress object before saving
+        this.progress['1_1_pitches_high_or_low'] = this.highOrLowProgress;
+        
         // Save the progress object to localStorage
         localStorage.setItem('lalumo_progress', JSON.stringify(this.progress));
-        console.log('Progress saved successfully');
+        console.log('Progress saved successfully:', this.progress);
       } catch (error) {
         console.error('Error saving progress:', error);
       }
@@ -781,6 +788,7 @@ export function pitches() {
         // Update stored progress
         this.progress['1_1_pitches_high_or_low'] = this.highOrLowProgress;
         this.saveProgress_1_1();
+        console.log('Updated progress in localStorage:', this.highOrLowProgress);
         
         // Create and show rainbow success animation
         
