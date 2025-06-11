@@ -1,5 +1,9 @@
 /* Lalumo App Styles */
 
+:root {
+  color-scheme: light only;
+}
+
 /* Mascot Message Overlay */
 .mascot-message-overlay {
   position: fixed;
