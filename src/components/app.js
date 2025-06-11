@@ -589,6 +589,7 @@ export function app() {
         // Validate the data
         if (!progressData || !progressData.username) {
           console.log('Invalid save code');
+          alert('Invalid save code. Please check your progress string.');
           return false;
         }
         
@@ -596,20 +597,59 @@ export function app() {
         this.username = progressData.username;
         localStorage.setItem('lalumo_username', this.username);
         
+        // Prepare the unlocked features message
+        let unlockedFeatures = [];
+        
         // Restore pitch progress
         if (progressData.pitchProgress) {
-          localStorage.setItem('lalumo_progress', progressData.pitchProgress);
+          // Parse the progress if it's a string, otherwise use directly
+          let pitchProgress = typeof progressData.pitchProgress === 'string' 
+            ? JSON.parse(progressData.pitchProgress) 
+            : progressData.pitchProgress;
+          
+          // Store as JSON string in localStorage
+          localStorage.setItem('lalumo_progress', JSON.stringify(pitchProgress));
+          
+          // Check for unlocked wave in 1_2
+          if (pitchProgress && pitchProgress['1_2_pitches_match-sounds'] && 
+              pitchProgress['1_2_pitches_match-sounds'] >= 5) {
+            unlockedFeatures.push('Wave mode in "Match Sounds" activity');
+          }
+          
+          // Check other activities progress
+          for (const activity in pitchProgress) {
+            if (pitchProgress[activity] > 0) {
+              // Format activity name for display
+              const activityName = activity.split('_').slice(2).join(' ')
+                .replace(/-/g, ' ')
+                .replace(/\b\w/g, l => l.toUpperCase());
+              unlockedFeatures.push(`Progress in ${activityName}: Level ${pitchProgress[activity]}`);
+            }
+          }
         }
         
         // Restore last activity
         if (progressData.lastActivity) {
           this.active = progressData.lastActivity;
         }
-        alert('Imported progress.')
-        console.log('Imported progress for', this.username);
+        
+        // Show detailed success message
+        let message = `Progress imported successfully for ${this.username}!`;
+        
+        if (unlockedFeatures.length > 0) {
+          message += '\n\nUnlocked features:';
+          unlockedFeatures.forEach(feature => {
+            message += '\n- ' + feature;
+          });
+        } else {
+          message += '\n\nNo special features unlocked yet.';
+        }
+        
+        alert(message);
+        console.log('Imported progress for', this.username, 'with unlocked features:', unlockedFeatures);
         return true;
       } catch (e) {
-        alert('Error importing progress.')
+        alert('Error importing progress. The provided string may be invalid.');
         console.log('Error importing progress', e);
         return false;
       }
