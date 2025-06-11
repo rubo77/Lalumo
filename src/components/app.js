@@ -497,6 +497,7 @@ export function app() {
      * Export the user's progress as a save game string
      */
     exportProgress() {
+      // TODO: if there is garbage in the local storage because you imported an invalid string log this
       try {
         // Collect all progress data
         const progressData = {
@@ -504,6 +505,7 @@ export function app() {
           lastSaved: new Date().toISOString(),
           pitchProgress: JSON.parse(localStorage.getItem('lalumo_progress') || '{}'),
           memoryGameLevel: parseInt(localStorage.getItem('lalumo_memory_level') || '0', 10),
+          // TODO: add the progress of all activities
           lastActivity: this.active
         };
         
@@ -518,6 +520,8 @@ export function app() {
         return encoded;
       } catch (e) {
         console.log('Error exporting progress', e);
+        alert('Error exporting progress:');
+        // TODO: show the data, that are tried to save in log
         return null;
       }
     },
@@ -610,10 +614,11 @@ export function app() {
         if (progressData.lastActivity) {
           this.active = progressData.lastActivity;
         }
-        
+        alert('Imported progress.')
         console.log('Imported progress for', this.username);
         return true;
       } catch (e) {
+        alert('Error importing progress.')
         console.log('Error importing progress', e);
         return false;
       }

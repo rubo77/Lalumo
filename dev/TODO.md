@@ -90,6 +90,8 @@ Dies soll in allen aktionen:
 # nach kapitel
 1_1 "High or Low?" (1_1_pitches_high_or_low) 
 - wenn man noch nciht auf den play button gedrückt hat, soll einfach ein zufälliger hoher, bzw. tiefer ton kommen wenn man auf einen der buttons drckt
+- Entferne alle Überbleibsel der alten "Listen to melodies"-Funktionalität:
+   - Lösche unnötige Melodie-Abspielfunktionen für die alte Aktivität
 
 1_3 Draw a melody:
 - beim zeichnen ist in android der Strich zu weit links
@@ -107,16 +109,23 @@ Dies soll in allen aktionen:
 1_5 memory game:
  - fertig
 
+-------------------------------------------
+
 - Background-Bilder Lazy load testen
 
-- im Browser global den back-button abfangauch auf deutsch
  - back button in android gesondert handeln: der back-button soll da zurück ins menu gehen, aber nur, wenn die navigation nicht gelockt ist.
 
 - Die Bilder müssen nach unten weiter expandet werden
 
 - das impoertieren des exportierten spielstandes mit freigeschalteter welle bei 1_2, dann fortschritt zurücksetzen und den string importieren  führt nicht dazu, dass bei 1_2 die welle wieder freigeschaltet ist. füge eine message ein. beim importieren, was genau durch den string freigeschaltet wurde
 
+- exportProgress funktioniiert nicht merh, wenn man garbage importiert hat
+- import progress funktioniert nicht, zumindest bei 1_2 nicht
+
+- add the activity ids 1_1, 1_-2, ... in all functions, that are only used in one activity in pitches.js
+
 # most important
-- Entferne alle Überbleibsel der alten "Listen to melodies"-Funktionalität:
-   - Lösche unnötige Melodie-Abspielfunktionen für die alte Aktivität
-   
+
+- on slow connection, the style is loaded really late. what can we do? suggest solutions to have a minimal style already on loading. i can imagine
+ - addinig a minimal style set inline, that is overwritten, when fully loaded
+ - adding the main.css in inidex.html directly on top
