@@ -21,6 +21,7 @@
   - User provided a bird image to use as the new launcher icon foreground (see conversation, image 0)
   - Bird icon image is now available at /src/images/app_icon.png and ready for icon generation logic update
   - Version number in credits only shows "Loading version..."; fix version injection logic (now fixed)
+  - New requirement: Script to remove backgrounds from animal images (goodAnimalImages and badAnimalImages) by making top-left color transparent within a threshold, saving originals if not already present
 
 ## Task List
 - [x] Investigate and fix `this.showFeedback` context/definition bug so feedback is shown on success/failure
@@ -38,6 +39,7 @@
     - [x] Use the provided bird image as the new foreground for ic_launcher_foreground.png
     - [x] Update mobile-build.sh to generate mipmap icons from /src/images/app_icon.png
 - [x] Version number in credits does not load; fix version display
+- [x] Write a script to remove backgrounds from animal images, using top-left color as transparency reference, saving originals if not already present
 
 ## Current Goal
-Implement Android launcher icon is still white; update build script to use bird image
+Save and export progress in preferences/string

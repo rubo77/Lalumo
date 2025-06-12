@@ -127,7 +127,8 @@ Dies soll in allen aktionen:
 - fix gebogenen text
 - es kommt mehrmals in log "Generated sound judgment melody:..."
 - die tonlängen Stimmen noch nicht alle. 
-- die tiere müssen noch durchsichtigen rand haben
+- die tiere müssen noch durchsichtigen rand haben:
+ - ja@pitches.js#L78-94 write a script, das bei all diesen mages die bilder freistellt, also dass die farbe oben links im bild wählt und dann ausgehend von dem punkt sich ausdehnend die farben auf transparent setzt solange die nicht über einem bestimmten sthreshold abweichen. speichere die bilder dann unter s´dem selben namen, kopiere die bilder nach images/originals/ wenn sie noch nciht existieren
  - progress einbauen (unten anzeigen):
   - level 1: Es gibt 2 falsche noten, keine pause als fehler
   - level 2: Es gibt 2 falsche noten, Auch eine Pause ist als fehler möglich
