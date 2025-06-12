@@ -79,10 +79,7 @@ unter chrome auf dem handy android 15:
 - all chapters and activities are included in the sitemap. also, if you select another activity in the nav, the hash tag should change, so you can bookmark them
 
 Dies soll in allen aktionen:
-- immer bei Misserfolg: das element, auf das man gedrückt hat etwas hin und her-wackeln
-
-- mobile-build.sh:
- - nur die bilder exportieren, die auch im code vorkommen
+- immer bei Misserfolg: den sound abspielen und den hintergrund hin und her-wackeln
 
 - Hinweis: /var/www/Musici/android/app/src/main/java/com/lalumo/app/MainActivity.java verwendet oder überschreibt eine veraltete API.
 
