@@ -162,8 +162,12 @@ npm run build
 # Copy public directory contents to dist, excluding android directory (only needed for web dev server)
 # Note: The android/ directory in public/ contains XML files for the webpack dev server
 # The actual native Android app uses the XML files in the main android/ directory
-echo "###### 5. Copying public assets to dist (excluding android XML files)..."
+echo "Copying public assets to dist (excluding android XML files)..."
 rsync -av --exclude='android/' --exclude='images/backgrounds/original/' public/ dist/
+
+# Copy package.json to dist for version info
+echo "Copying package.json to dist for version information..."
+cp package.json dist/
 
 # Sync with Capacitor
 echo "###### 6. Syncing with Capacitor..."
