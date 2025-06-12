@@ -35,7 +35,7 @@ export function app() {
       '1_pitches': {
         name: 'Pitches & Melodies',
         activities: {
-          '1_1_pitches_high_or_low': 'high_or_lowlodies',
+          '1_1_pitches_high_or_low': 'High or Low?',
           '1_2_pitches_match-sounds': 'Match Sounds',
           '1_3_pitches_draw-melody': 'Draw a Melody',
           '1_4_pitches_does-it-sound-right': 'Does It Sound Right?',
