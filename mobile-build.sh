@@ -1,9 +1,54 @@
+#!/bin/bash
 # Mobile build script for Lalumo app using Capacitor
 # This script builds the web app and syncs it with native platforms
 
-# Dynamisch den Pfad zu Android Studio finden, unabhängig von der Snap-Version
+# Default configuration
+SKIP_VERSION_UPDATE=false
+
+# Show help information
+show_help() {
+  echo "\nLalumo Mobile Build Script\n"
+  echo "Usage: bash mobile-build.sh [options] [platform]\n"
+  echo "Options:"
+  echo "  -h, --help                Show this help message"
+  echo "  -n, --no-version-update   Skip version update"
+  echo ""
+  echo "Platforms:"
+  echo "  android    Build and open Android project"
+  echo "  ios        Build and open iOS project"
+  echo "  update     Only update native apps with latest web code"
+  echo ""
+  exit 0
+}
+
+# Process command line arguments
+parse_args() {
+  PLATFORM=""
+  
+  while [[ $# -gt 0 ]]; do
+    case $1 in
+      -h|--help)
+        show_help
+        ;;
+      -n|--no-version-update)
+        SKIP_VERSION_UPDATE=true
+        shift
+        ;;
+      android|ios|update)
+        PLATFORM=$1
+        shift
+        ;;
+      *)
+        echo "Unknown option: $1"
+        show_help
+        ;;
+    esac
+  done
+}
+
+# find path to Android Studio dynamically, independent of snap version
 find_android_studio() {
-  # Versuche zuerst, den neuesten Snap-Pfad zu finden
+  # try to find latest snap path
   SNAP_STUDIO=$(find /snap/android-studio -name studio.sh -type f | sort -r | head -n 1 2>/dev/null)
   
   if [ -n "$SNAP_STUDIO" ] && [ -x "$SNAP_STUDIO" ]; then
@@ -11,7 +56,7 @@ find_android_studio() {
     return
   fi
   
-  # Versuche andere übliche Installationsorte
+  # try other common installation paths
   for path in \
     "/usr/local/android-studio/bin/studio.sh" \
     "$HOME/android-studio/bin/studio.sh" \
@@ -23,11 +68,11 @@ find_android_studio() {
     fi
   done
   
-  # Fallback: Versuche, den Befehl im PATH zu finden
+  # fallback: try to find studio.sh in PATH
   command -v studio.sh
 }
 
-# Setze den Pfad zu Android Studio
+# set path to Android Studio
 STUDIO_PATH=$(find_android_studio)
 
 if [ -n "$STUDIO_PATH" ]; then
@@ -47,7 +92,7 @@ update_version() {
     return 1
   fi
   
-  # Extrahiere aktuelle Version aus package.json
+  # extract current version from package.json
   CURRENT_VERSION=$(grep -oP '"version":\s*"\K[^"]+' "$PACKAGE_FILE")
   
   if [ -z "$CURRENT_VERSION" ]; then
@@ -55,20 +100,20 @@ update_version() {
     return 1
   fi
   
-  # Version in Major.Minor aufteilen
+  # split version into major.minor
   MAJOR=$(echo "$CURRENT_VERSION" | cut -d. -f1)
   MINOR=$(echo "$CURRENT_VERSION" | cut -d. -f2)
   
-  # Minor-Version erhöhen (keine Patch-Version mehr)
+  # increment minor version (no patch version)
   NEW_MINOR=$((MINOR + 1))
   NEW_VERSION="$MAJOR.$NEW_MINOR"
   
   echo "Updating version in package.json: $CURRENT_VERSION → $NEW_VERSION"
   
-  # Version in package.json aktualisieren
+  # update version in package.json
   sed -i "s/\"version\":\s*\"$CURRENT_VERSION\"/\"version\": \"$NEW_VERSION\"/" "$PACKAGE_FILE"
   
-  # package-lock.json mit aktualisierter Version synchronisieren
+  # update package-lock.json
   echo "Updating package-lock.json..."
   npm install --package-lock-only --quiet
   
@@ -88,7 +133,7 @@ update_version() {
       # versionCode in gradle file ersetzen
       sed -i "s/versionCode $CURRENT_CODE/versionCode $NEW_CODE/" "$GRADLE_FILE"
       
-      # versionName mit neuer Version aus package.json synchronisieren
+      # versionName with new version from package.json
       echo "Updating Android versionName: $ANDROID_VERSION"
       sed -i "s/versionName \"[^\"]*\"/versionName \"$ANDROID_VERSION\"/" "$GRADLE_FILE"
     else
@@ -99,8 +144,16 @@ update_version() {
   fi
 }
 
-# Version aktualisieren bei jedem Build
-update_version
+# Parse command line arguments
+parse_args "$@"
+
+# Update version if not skipped
+if [ "$SKIP_VERSION_UPDATE" = false ]; then
+  echo "Updating version numbers..."
+  update_version
+else
+  echo "Skipping version update as requested..."
+fi
 
 # Build the web app
 echo "Building web application..."
@@ -116,11 +169,50 @@ rsync -av --exclude='android/' public/ dist/
 echo "Syncing with Capacitor..."
 npx cap sync
 
-# Ensure images are copied to Android assets
-echo "Copying images to Android assets..."
+# Ensure only used images are copied to Android assets
+echo "Finding used images in the code..."
+
+# create temp directory for used images
+TEMP_IMG_DIR="temp_used_images"
+rm -rf "$TEMP_IMG_DIR"
+mkdir -p "$TEMP_IMG_DIR"
+
+# search for image references in code (HTML, CSS, JS files)
+find src -type f \( -name "*.js" -o -name "*.html" -o -name "*.css" \) -exec grep -oE "['\"][^'\"]*\.(png|jpg|jpeg|gif|svg|webp)['\"]" {} \; | \
+  tr -d "'\"" | sort | uniq > "$TEMP_IMG_DIR/used_images.txt"
+
+echo "Copying only used images to Android assets..."
 mkdir -p android/app/src/main/assets/public/images
-cp -r public/images/* android/app/src/main/assets/public/images/
-echo "Images copied successfully"
+
+echo "Found images:"
+cat "$TEMP_IMG_DIR/used_images.txt"
+
+# copy only used images
+while read -r img_path; do
+  # remove ./ or / from path
+  clean_path=${img_path#./}
+  clean_path=${clean_path#/}
+  
+  # source path
+  src_path="public/$clean_path"
+  
+  # target directory
+  target_dir="android/app/src/main/assets/public/$(dirname "$clean_path")"
+  
+  # only copy if file exists
+  if [ -f "$src_path" ]; then
+    mkdir -p "$target_dir"
+    cp "$src_path" "$target_dir/"
+    echo "Copied: $clean_path"
+  else
+    echo "Warning: Image not found: $src_path"
+  fi
+done < "$TEMP_IMG_DIR/used_images.txt"
+
+# delete temp directory
+rm -rf "$TEMP_IMG_DIR"
+
+echo "Only used images copied successfully"
 
 # Platform-specific commands
 if [ "$1" == "android" ]; then
