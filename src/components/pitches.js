@@ -2335,7 +2335,8 @@ export function pitches() {
         });
         
         // Erstelle visuelle Darstellung der Referenzmelodie
-        const notes = ['C3', 'D3', 'E3', 'F3', 'G3', 'A3', 'B3', 'C4', 'D4', 'E4', 'F4', 'G4'];
+        // Verwende den gleichen Notenbereich wie im Canvas (höhere Oktave)
+        const notes = ['C4', 'D4', 'E4', 'F4', 'G4', 'A4', 'B4', 'C5', 'D5', 'E5', 'F5', 'G5'];
         
         this.referenceSequence.forEach(note => {
           const noteElement = document.createElement('div');
@@ -2364,7 +2365,8 @@ export function pitches() {
      * mit einer Länge basierend auf dem aktuellen Level des Benutzers
      */
     generateReferenceSequence_1_3() {
-      const notes = ['C3', 'D3', 'E3', 'F3', 'G3', 'A3', 'B3', 'C4', 'D4', 'E4', 'F4', 'G4'];
+      // Verwende den gleichen Notenbereich wie im Canvas (höhere Oktave) für konsistente Melodievergleiche
+      const notes = ['C4', 'D4', 'E4', 'F4', 'G4', 'A4', 'B4', 'C5', 'D5', 'E5', 'F5', 'G5'];
       
       // Bestimme die Melodielänge basierend auf dem Benutzerlevel
       // Start mit 3 Noten, maximal 8 Noten
