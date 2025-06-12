@@ -517,7 +517,11 @@ export function app() {
           pitchProgress: pitchProgress, // Direkt als Objekt speichern, keine erneute JSON-Konvertierung
           memoryGameLevel: parseInt(localStorage.getItem('lalumo_memory_level') || '0', 10),
           lastActivity: this.active,
-          unlockedFeatures: unlockedFeatures // Speichere freigeschaltete Features für bessere Diagnose
+          unlockedFeatures: unlockedFeatures, // Speichere freigeschaltete Features für bessere Diagnose
+          
+          // Speichere Draw-a-Melody spezifische Fortschrittsdaten (neu)
+          drawMelodyLevel: parseInt(localStorage.getItem('lalumo_draw_melody_level') || '0', 10),
+          drawMelodySuccessCounter: parseInt(localStorage.getItem('lalumo_draw_melody_success_counter') || '0', 10)
         };
         
         // Konvertieren zu JSON und codieren für Export
@@ -700,6 +704,20 @@ export function app() {
         // Restore last activity
         if (progressData.lastActivity) {
           this.active = progressData.lastActivity;
+        }
+        
+        // Restore Draw-a-Melody specific progress data (new)
+        if (typeof progressData.drawMelodyLevel !== 'undefined') {
+          localStorage.setItem('lalumo_draw_melody_level', progressData.drawMelodyLevel);
+          console.log('Restored Draw-a-Melody level:', progressData.drawMelodyLevel);
+          
+          // Add to unlocked features message
+          unlockedFeatures.push(`Draw-a-Melody: Level ${progressData.drawMelodyLevel + 1} (${progressData.drawMelodyLevel + 3} notes)`);
+        }
+        
+        if (typeof progressData.drawMelodySuccessCounter !== 'undefined') {
+          localStorage.setItem('lalumo_draw_melody_success_counter', progressData.drawMelodySuccessCounter);
+          console.log('Restored Draw-a-Melody success counter:', progressData.drawMelodySuccessCounter);
         }
         
         // Show detailed success message

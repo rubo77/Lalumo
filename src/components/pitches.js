@@ -2107,8 +2107,44 @@ export function pitches() {
     setupDrawingMode_1_3() {
       this.drawPath = [];
       this.isDrawing = false;
+      
+      // Lade gespeicherte Level- und Success-Counter-Werte aus localStorage
+      try {
+        const savedLevel = localStorage.getItem('lalumo_draw_melody_level');
+        if (savedLevel !== null) {
+          this.drawMelodyLevel = parseInt(savedLevel, 10);
+          console.log('MELODY_SETUP: Loaded saved level:', this.drawMelodyLevel);
+        } else if (this.drawMelodyLevel === undefined) {
+          // Falls kein Level gespeichert ist und noch keins gesetzt wurde
+          this.drawMelodyLevel = 0;
+          console.log('MELODY_SETUP: Initialized default level to 0');
+        }
+        
+        const savedCounter = localStorage.getItem('lalumo_draw_melody_success_counter');
+        if (savedCounter !== null) {
+          this.levelSuccessCounter = parseInt(savedCounter, 10);
+          console.log('MELODY_SETUP: Loaded saved success counter:', this.levelSuccessCounter);
+        } else if (this.levelSuccessCounter === undefined) {
+          // Falls kein Counter gespeichert ist und noch keiner gesetzt wurde
+          this.levelSuccessCounter = 0;
+          console.log('MELODY_SETUP: Initialized default success counter to 0');
+        }
+      } catch (e) {
+        console.warn('MELODY_SETUP: Error loading saved level data', e);
+        // Fallback auf Standardwerte
+        if (this.drawMelodyLevel === undefined) this.drawMelodyLevel = 0;
+        if (this.levelSuccessCounter === undefined) this.levelSuccessCounter = 0;
+      }
+      
+      // Standardmäßig nicht im Challenge-Modus
       this.melodyChallengeMode = false;
       this.referenceSequence = null;
+      
+      // Wenn gespeicherter Fortschritt existiert, aktiviere automatisch den Challenge-Modus
+      if (this.drawMelodyLevel > 0 || this.levelSuccessCounter > 0) {
+        console.log('MELODY_SETUP: Activating challenge mode due to existing progress');
+        this.melodyChallengeMode = true;
+      }
       
       // Show intro message when entering the activity
       this.showActivityIntroMessage('draw');
@@ -2221,17 +2257,32 @@ export function pitches() {
         progressContainer.remove();
       }
       
-      // Update button status
+      // Update the challenge toggle buttons based on the current mode
       const challengeButton = document.getElementById('challenge-button');
       const newMelodyButton = document.getElementById('new-melody-button');
       
       if (challengeButton) {
+        const isGerman = document.documentElement.lang === 'de';
+        
+        // Style the challenge mode button based on current mode
         if (this.melodyChallengeMode) {
           challengeButton.classList.add('active');
-          newMelodyButton.style.visibility = 'visible';
+          challengeButton.title = isGerman ? 'Zurück zum freien Zeichnen-Modus' : 'Return to free drawing mode';
+          
+          // Show the new melody button when in challenge mode
+          newMelodyButton.style.display = 'block';
+          
+          // Stelle sicher, dass eine gültige Referenzmelodie existiert
+          if (!this.referenceSequence) {
+            console.log('MELODY_UI: Generating reference sequence as it was null');
+            this.generateReferenceSequence_1_3();
+          }
+          
+          // Die visuelle Darstellung der Referenzmelodie wird später in dieser Funktion erzeugt,
+          // wenn this.melodyChallengeMode && this.referenceSequence true sind
         } else {
           challengeButton.classList.remove('active');
-          newMelodyButton.style.visibility = 'hidden';
+          newMelodyButton.style.display = 'none';
         }
       }
       
@@ -2256,11 +2307,10 @@ export function pitches() {
         
         // Textelement für den Fortschritt
         const isGerman = document.documentElement.lang === 'de';
+        const currentLevel = this.drawMelodyLevel + 3; // Level + 3 = Anzahl der Noten
         const progressText = document.createElement('div');
         progressText.style.fontSize = '14px';
         progressText.style.marginBottom = '5px';
-        
-        const currentLevel = this.drawMelodyLevel + 3; // Level + 3 = Anzahl der Noten
         progressText.textContent = isGerman 
           ? `Level ${this.drawMelodyLevel + 1}: ${this.levelSuccessCounter}/10 Melodien (${currentLevel} Töne)`
           : `Level ${this.drawMelodyLevel + 1}: ${this.levelSuccessCounter}/10 melodies (${currentLevel} notes)`;

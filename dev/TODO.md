@@ -96,19 +96,16 @@ Dies soll in allen aktionen:
 
 # nach kapitel
 1_1 "High or Low?" (1_1_pitches_high_or_low) 
-- 
-- es soll nicht automatisch starten, sondern wenn man noch nicht auf den play button gedrückt hat, soll einfach ein zufälliger hoher, bzw. tiefer ton kommen wenn man auf einen der buttons drckt
+- das game soll nicht automatisch starten, sondern wenn man noch nicht auf den play button gedrückt hat, soll einfach ein zufälliger hoher, bzw. tiefer ton kommen wenn man auf einen der buttons drckt
 - wenn man erfolgreich war, soll nach 2s automatisch der neue ton kommen
 - Entferne alle Überbleibsel der alten "Listen to melodies"-Funktionalität:
    - Lösche unnötige Melodie-Abspielfunktionen für die alte Aktivität
 
 1_3 Draw a melody:
-- der tonumfang in dem canvas (nicht in generateReferenceSequence()) soll nicht so tief sein entferne die unterste oktave aus dem bereich, lasse die obere grenze so, wie sie ist
-- the progress should be saved in preferences too and be exported in the string too
-- der notenbereich im canvas und in der reference melody muss gleich sein, sonst funktioniert das spiel ja nicht
 - when not in game mode, there should always be more notes on the line, depending on how long the line is painted. at the moment there are as many as the user is advanced, but it should vary on the painted line length instead, so eg. every 10px there is a note on the line played
 - Wenn man nicht im spiel ist, das Einhorn auch zum spiel starten benutzen (oder einen vogel oben hin, und das einhorn verstecken, wenn man im siel modus ist)
 - die noten werden eierig im breiten screen
+- reset all progress geht noch nicht
 
 1_4 does this sound right:
  - Manchmal zeigt er am anfang das falsche Lied an, die ton. Länger Stimmen noch nicht alle. 
