@@ -1,0 +1,6 @@
+- Keine Failsafes erstellen, stattdessen bessere Diagnosen zur Identifizierung von Problemen implementieren
+- Bei der Problemanalyse Logging-Anweisungen mit eindeutigen Tags hinzufügen
+- bash file.sh verwenden anstatt chmod +x file.sh
+- Neue Kommentare immer auf Englisch
+- Neue Strings nur zur default strings.xml hinzufügen
+- keine fallbacks bauen, sondern die Probleme beheben

@@ -92,6 +92,8 @@ Dies soll in allen aktionen:
 
 - Bei Android funktioniert die Sprache nicht. Nur die mascot messages gehen
 
+- store username and language in export string in Preferences
+
 # nach kapitel
 1_1 "High or Low?" (1_1_pitches_high_or_low) 
 - 
@@ -101,9 +103,10 @@ Dies soll in allen aktionen:
    - Lösche unnötige Melodie-Abspielfunktionen für die alte Aktivität
 
 1_3 Draw a melody:
-- in game mode, the replay melody should consist of the same number of notes as there are notes painted on the canvas. at first it should be only 3 notes. when the user advances, the number should increase
-- Wenn man einen Ton trifft, soll die Note oben im kasten aufleuchten 
-- bg: einen vogel zum spiel starten oben hin
+- when not in game mode, there should always be more notes on the line, depending on how long the line is painted. at the moment there are as many as the user is advanced, but it should vary on the painted line length instead, so eg. every 10px there is a note on the line played
+- the progress should be saved in preferences too and be exported in the string too
+- Wenn man einen Ton trifft, soll die Note oben im kasten aufleuchten
+- Wenn man nicht im spiel ist, das Einhorn auch zum spiel starten benutzen (oder einen vogel oben hin, und das einhorn verstecken, wenn man im siel modus ist)
 - die noten werden eierig im breiten screen
 - der tonumfang soll eine oktave hoeher
 

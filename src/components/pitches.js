@@ -69,6 +69,9 @@ export function pitches() {
     correctAnswersCount: 0,
     unlockedPatterns: ['up', 'down'], // Start with only up and down
     
+    // Draw melody activity progression
+    drawMelodyLevel: 0, // User level in draw melody activity (determines number of notes)
+    
     // Arrays für die zufälligen Tierbilder
     goodAnimalImages: [
       '/images/1_5_pitches_good_bird_notes.png',
@@ -2294,10 +2297,22 @@ export function pitches() {
     
     /**
      * Generiert eine zufällige Referenzmelodie für den Challenge-Modus
+     * mit einer Länge basierend auf dem aktuellen Level des Benutzers
      */
     generateReferenceSequence() {
       const notes = ['C3', 'D3', 'E3', 'F3', 'G3', 'A3', 'B3', 'C4', 'D4', 'E4', 'F4', 'G4'];
-      const sequenceLength = 6; // 6 Noten in der Melodie
+      
+      // Bestimme die Melodielänge basierend auf dem Benutzerlevel
+      // Start mit 3 Noten, maximal 8 Noten
+      const minNotes = 3;
+      const maxNotes = 8;
+      
+      // Berechne die Anzahl der Noten basierend auf dem Level
+      // Höheres Level = mehr Noten (bis zum Maximum)
+      let sequenceLength = minNotes + this.drawMelodyLevel;
+      sequenceLength = Math.min(sequenceLength, maxNotes); // Auf maximal 8 Noten begrenzen
+      
+      console.log(`Generating melody with ${sequenceLength} notes (user level: ${this.drawMelodyLevel})`);
       
       // Generiere eine zufällige Melodie mit einer einfachen musikalischen Struktur
       this.referenceSequence = [];
@@ -2505,7 +2520,14 @@ export function pitches() {
       const height = canvas.height;
       
       // Punkte aus dem Pfad samplen, um eine Melodie zu erzeugen
-      const sampleSize = Math.min(8, this.drawPath.length);
+      // Use the current level to determine how many notes to sample from the drawing
+      // (minimum 3 and adding the level, with maximum of 8)
+      const minNotes = 3;
+      const maxNotes = 8;
+      // Use the same number of notes as in the reference melody for fair comparison
+      const currentMelodyLength = minNotes + this.drawMelodyLevel;
+      const sampleSize = Math.min(Math.min(maxNotes, currentMelodyLength), this.drawPath.length);
+      
       const step = Math.floor(this.drawPath.length / sampleSize);
       
       const sampledPoints = [];
@@ -2543,6 +2565,11 @@ export function pitches() {
       
       // Sequenz mit korrektem Timing abspielen
       this.playDrawnNoteSequence(sequence.map(note => note.toLowerCase()), 0);
+      
+      // Compare with reference melody if in challenge mode
+      if (this.melodyChallengeMode && this.referenceSequence) {
+        this.compareWithReferenceSequence_1_3(sequence);
+      }
     },
     
     /**
@@ -2566,6 +2593,127 @@ export function pitches() {
         console.error('Error playing note in drawn melody:', error);
         // Trotz Fehler weitergehen
         setTimeout(() => this.playDrawnNoteSequence(notes, index + 1), 300);
+      }
+    },
+    
+    /**
+     * Compares the user's drawn melody with the reference melody
+     * and adjusts the user's level based on success
+     * @param {Array} drawnSequence - The sequence of notes from the user's drawing
+     */
+    compareWithReferenceSequence_1_3(drawnSequence) {
+      // Cannot compare if there's no reference
+      if (!this.referenceSequence || this.referenceSequence.length === 0) return;
+      
+      // Get the number of notes to compare (use the shorter of the two sequences)
+      const compareLength = Math.min(drawnSequence.length, this.referenceSequence.length);
+      
+      if (compareLength === 0) return;
+      
+      // Count how many notes match between the sequences
+      let matchCount = 0;
+      for (let i = 0; i < compareLength; i++) {
+        if (drawnSequence[i].toUpperCase() === this.referenceSequence[i].toUpperCase()) {
+          matchCount++;
+        }
+      }
+      
+      // Calculate the match percentage
+      const matchPercentage = (matchCount / compareLength) * 100;
+      console.log(`Melody match: ${matchCount}/${compareLength} notes (${matchPercentage.toFixed(1)}%)`);
+      
+      // Provide feedback based on match percentage
+      let feedback = '';
+      const isGerman = document.documentElement.lang === 'de';
+      
+      // Create feedback message
+      if (matchPercentage >= 80) {
+        // Great match - increase level if not already at max
+        if (this.drawMelodyLevel < 5) { // Max level is 5 (which gives 8 notes)
+          this.drawMelodyLevel++;
+          console.log(`User level increased to ${this.drawMelodyLevel}`);
+          
+          // Save level to localStorage for persistence
+          try {
+            localStorage.setItem('lalumo_draw_melody_level', this.drawMelodyLevel);
+          } catch (e) {
+            console.warn('Could not save draw melody level to localStorage', e);
+          }
+          
+          feedback = isGerman ? 
+            `Super! Das war sehr gut! Jetzt versuche eine längere Melodie mit ${this.drawMelodyLevel + 3} Tönen.` : 
+            `Great job! That was very good! Now try a longer melody with ${this.drawMelodyLevel + 3} notes.`;
+        } else {
+          feedback = isGerman ? 
+            'Fantastisch! Du hast alle Melodien gemeistert!' : 
+            'Amazing! You\'ve mastered all the melodies!';
+        }
+        
+        // Visual feedback
+        this.showSuccessFeedback();
+      } else if (matchPercentage >= 50) {
+        // Good attempt
+        feedback = isGerman ? 
+          'Fast! Versuche es noch einmal.' : 
+          'Almost there! Try again.';
+      } else {
+        // Poor match
+        feedback = isGerman ? 
+          'Versuche, der Melodie genauer zu folgen.' : 
+          'Try to follow the melody more closely.';
+      }
+      
+      // Display feedback to the user
+      this.showFeedbackMessage(feedback, 3000);
+      
+      // Generate a new reference melody with updated difficulty for the next attempt
+      setTimeout(() => {
+        if (this.melodyChallengeMode) {
+          this.generateReferenceSequence();
+          // Use the existing drawing mode UI update function
+          this.updateDrawingModeUI();
+        }
+      }, 3500);
+    },
+    
+    /**
+     * Display feedback to the user
+     * @param {string} message - The feedback message
+     * @param {number} duration - How long to show the message (ms)
+     */
+    showFeedbackMessage(message, duration = 2000) {
+      // Create or update feedback element
+      let feedbackElement = document.querySelector('.melody-feedback');
+      
+      if (!feedbackElement) {
+        feedbackElement = document.createElement('div');
+        feedbackElement.className = 'melody-feedback';
+        const container = document.querySelector('.drawing-container');
+        if (container) {
+          container.parentNode.insertBefore(feedbackElement, container.nextSibling);
+        }
+      }
+      
+      feedbackElement.textContent = message;
+      feedbackElement.style.opacity = '1';
+      
+      // Hide the feedback after the specified duration
+      setTimeout(() => {
+        feedbackElement.style.opacity = '0';
+      }, duration);
+    },
+    
+    /**
+     * Show a visual success effect
+     */
+    showSuccessFeedback() {
+      // Add a brief animation to the canvas container
+      const container = document.querySelector('.drawing-container');
+      if (container) {
+        container.classList.add('success-pulse');
+        setTimeout(() => {
+          container.classList.remove('success-pulse');
+        }, 1000);
       }
     },
     
