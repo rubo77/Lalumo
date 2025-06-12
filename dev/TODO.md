@@ -105,7 +105,7 @@ Dies soll in allen aktionen:
 1_3 Draw a melody:
 - der tonumfang in dem canvas (nicht in generateReferenceSequence()) soll nicht so tief sein entferne die unterste oktave aus dem bereich, lasse die obere grenze so, wie sie ist
 - the progress should be saved in preferences too and be exported in the string too
-
+- der notenbereich im canvas und in der reference melody muss gleich sein, sonst funktioniert das spiel ja nicht
 - when not in game mode, there should always be more notes on the line, depending on how long the line is painted. at the moment there are as many as the user is advanced, but it should vary on the painted line length instead, so eg. every 10px there is a note on the line played
 - Wenn man nicht im spiel ist, das Einhorn auch zum spiel starten benutzen (oder einen vogel oben hin, und das einhorn verstecken, wenn man im siel modus ist)
 - die noten werden eierig im breiten screen

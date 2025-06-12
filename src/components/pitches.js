@@ -2600,7 +2600,8 @@ export function pitches() {
       }
       
       // Y-Positionen auf Noten abbilden (höhere Position = höherer Ton)
-      const notes = ['C3', 'D3', 'E3', 'F3', 'G3', 'A3', 'B3', 'C4', 'D4', 'E4', 'F4', 'G4'];
+      // Entferne die unterste Oktave aus dem Bereich
+      const notes = ['C4', 'D4', 'E4', 'F4', 'G4', 'A4', 'B4', 'C5', 'D5', 'E5', 'F5', 'G5'];
       
       const sequence = sampledPoints.map(point => {
         // Y-Koordinate invertieren (0 ist oben im Canvas)
@@ -2719,8 +2720,39 @@ export function pitches() {
       
       // Initialize success counter if not already initialized
       if (this.levelSuccessCounter === undefined) {
-        this.levelSuccessCounter = 0;
-        console.log('MELODY_PROGRESSION: Initialized success counter to 0');
+        // Try to load from localStorage first
+        try {
+          const savedCounter = localStorage.getItem('lalumo_draw_melody_success_counter');
+          if (savedCounter !== null) {
+            this.levelSuccessCounter = parseInt(savedCounter, 10);
+            console.log('MELODY_PROGRESSION: Loaded success counter from localStorage:', this.levelSuccessCounter);
+          } else {
+            this.levelSuccessCounter = 0;
+            console.log('MELODY_PROGRESSION: Initialized success counter to 0');
+          }
+        } catch (e) {
+          this.levelSuccessCounter = 0;
+          console.warn('Could not load success counter from localStorage', e);
+        }
+      }
+      
+      // Update the progress in the central progress object
+      // Convert level and success counter to a percentage value (0-100)
+      // Level 0 with 0 successful melodies = 0%, Level 5 with 10 successful melodies = 100%
+      const maxLevel = 5;
+      const melodiesPerLevel = 10;
+      const totalProgress = Math.min(100, Math.round((this.drawMelodyLevel * melodiesPerLevel + this.levelSuccessCounter) / 
+                                                   (maxLevel * melodiesPerLevel + 1) * 100));
+      
+      // Update the central progress object
+      this.progress['1_3_pitches_draw-melody'] = totalProgress;
+      console.log(`MELODY_PROGRESS: Updated central progress to ${totalProgress}% for draw-melody activity`);
+      
+      // Save to localStorage
+      try {
+        localStorage.setItem('lalumo_progress', JSON.stringify(this.progress));
+      } catch (e) {
+        console.warn('Could not update central progress in localStorage', e);
       }
       
       // Create feedback message
