@@ -2654,12 +2654,30 @@ export function pitches() {
       const currentMelodyLength = minNotes + this.drawMelodyLevel;
       const sampleSize = Math.min(Math.min(maxNotes, currentMelodyLength), this.drawPath.length);
       
-      const step = Math.floor(this.drawPath.length / sampleSize);
-      
       const sampledPoints = [];
-      for (let i = 0; i < sampleSize; i++) {
-        sampledPoints.push(this.drawPath[i * step]);
+      
+      // Immer den ersten Punkt nehmen
+      sampledPoints.push(this.drawPath[0]);
+      
+      // Für Melodien mit mehr als 2 Noten, die mittleren Punkte verteilen
+      if (sampleSize > 2) {
+        // Wir verteilen die mittleren Punkte zwischen dem ersten und letzten Punkt
+        // Wir nehmen sampleSize - 2 innere Punkte (da der erste und letzte Punkt fixiert sind)
+        const innerPoints = sampleSize - 2;
+        
+        // Berechne das Intervall für die inneren Punkte
+        // Wir nutzen nicht die volle Länge, sondern lassen etwas Platz am Ende
+        const availableLength = this.drawPath.length * 0.85;
+        const step = Math.floor(availableLength / (innerPoints + 1));
+        
+        for (let i = 1; i <= innerPoints; i++) {
+          const index = Math.min(i * step, this.drawPath.length - 2);
+          sampledPoints.push(this.drawPath[index]);
+        }
       }
+      
+      // Immer den letzten Punkt nehmen
+      sampledPoints.push(this.drawPath[this.drawPath.length - 1]);
       
       // Y-Positionen auf Noten abbilden (höhere Position = höherer Ton)
       // Entferne die unterste Oktave aus dem Bereich

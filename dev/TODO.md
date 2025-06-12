@@ -103,10 +103,7 @@ Dies soll in allen aktionen:
 
 1_3 Draw a melody:
 - when not in game mode, there should always be more notes on the line, depending on how long the line is painted. at the moment there are as many as the user is advanced, but it should vary on the painted line length instead, so eg. every 10px there is a note on the line played
-- Wenn man nicht im spiel ist, das Einhorn auch zum spiel starten benutzen (oder einen vogel oben hin, und das einhorn verstecken, wenn man im siel modus ist)
-- die Noten werden eierig im breiten screen
 - reset all progress geht noch nicht
-- die Noten sind ja verteilt auf die gezeichnete Linie, z.b. 3 Noten , die erste am Anfang, die 2. nach einem Drittel, die 3. nach 2/3. die Verteilung soll aber etwas verlängert werden, also die letzte Note soll dabei aber am Ende der Linie sein
 
 1_4 does this sound right:
  - Manchmal zeigt er am anfang das falsche Lied an, die ton. Länger Stimmen noch nicht alle. 
