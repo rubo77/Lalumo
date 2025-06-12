@@ -2231,6 +2231,16 @@ export function pitches() {
         referenceContainer = document.createElement('div');
         referenceContainer.className = 'reference-melody';
         
+        // Add cursor pointer and title to indicate it's clickable
+        referenceContainer.style.cursor = 'pointer';
+        const isGerman = document.documentElement.lang === 'de';
+        referenceContainer.title = isGerman ? 'Klicken, um die Melodie abzuspielen' : 'Click to replay melody';
+        
+        // Add event listener to replay the melody on click
+        referenceContainer.addEventListener('click', () => {
+          this.playReferenceSequence();
+        });
+        
         // Erstelle visuelle Darstellung der Referenzmelodie
         const notes = ['C3', 'D3', 'E3', 'F3', 'G3', 'A3', 'B3', 'C4', 'D4', 'E4', 'F4', 'G4'];
         
@@ -2446,6 +2456,9 @@ export function pitches() {
       this.isDrawing = false;
       
       if (this.drawPath.length === 0) return;
+      
+      // Save the current drawing path for the next drawing session
+      this.previousDrawPath = [...this.drawPath];
       
       // Zeichnen abschließen
       if (this.ctx) {
