@@ -1809,7 +1809,7 @@ section h2 {
   transition: transform 0.2s, background-color 0.2s;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   position: relative;
-  top: calc(6px - 12vw);
+  top: max(-57px, calc(6px - 12vw));
 }
 
 .reference-note.playing {
@@ -1820,7 +1820,7 @@ section h2 {
 
 .challenge-toggle {
   display: flex;
-  justify-content: space-evenly;
+  justify-content: left;
   position: absolute;
   width: 100%;
   gap: clamp(0.5rem, 2vw, 1.5rem);

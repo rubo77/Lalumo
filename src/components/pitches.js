@@ -2456,9 +2456,19 @@ export function pitches() {
      * Spielt die Referenzmelodie ab
      */
     playReferenceSequence() {
-      if (!this.referenceSequence || this.referenceSequence.length === 0) return;
+      // Erzeuge eine Referenzmelodie, falls keine existiert
+      if (!this.referenceSequence || this.referenceSequence.length === 0) {
+        console.log('MELODY_PLAY: No reference sequence found, generating one');
+        this.generateReferenceSequence_1_3();
+        
+        // Wenn immer noch keine Sequenz existiert, breche ab
+        if (!this.referenceSequence || this.referenceSequence.length === 0) {
+          console.error('MELODY_PLAY: Failed to generate reference sequence');
+          return;
+        }
+      }
       
-      console.log('Playing reference melody:', this.referenceSequence);
+      console.log('MELODY_PLAY: Playing reference melody:', this.referenceSequence);
       
       // Sequentielles Abspielen der Noten
       const playNote = (index) => {
