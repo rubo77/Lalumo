@@ -101,11 +101,11 @@ Dies soll in allen aktionen:
    - Lösche unnötige Melodie-Abspielfunktionen für die alte Aktivität
 
 1_3 Draw a melody:
+- Die melodie zum nachspielen soll aus 8 tnen bestehen statt 6
 - Wenn man einen Ton trifft, soll die Note oben im kasten aufleuchten 
-- Wenn man neu malt, soll der zuletzt genannte Strich halbtransparent noch sichtbar sein
-- man soll auf den Kasten oben drücken können für die selbe melodie nochmal hören.
 - bg: einen vogel zum spiel starten oben hin
 - die noten werden eierig im breiten screen
+- der tonumfang soll eine oktave hoeher
 
 1_4 does this sound right:
  - Manchmal zeigt er am anfang das falsche Lied an, die ton. Länger Stimmen noch nicht alle. 
@@ -127,7 +127,6 @@ Dies soll in allen aktionen:
 - das importieren des exportierten spielstandes mit freigeschalteter welle bei 1_2, dann fortschritt zurücksetzen und den string importieren  führt nicht dazu, dass bei 1_2 die welle wieder freigeschaltet ist. füge eine message ein. beim importieren, was genau durch den string freigeschaltet wurde
 
 - exportProgress funktioniiert nicht merh, wenn man garbage importiert hat
-- import progress funktioniert nicht, zumindest bei 1_2 nicht
 
 - add the activity ids 1_1, 1_2, 1_3, 1_4, 1_5 in all functions, that are only used in one activity in pitches.js
 

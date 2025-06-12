@@ -2236,9 +2236,35 @@ export function pitches() {
         const isGerman = document.documentElement.lang === 'de';
         referenceContainer.title = isGerman ? 'Klicken, um die Melodie abzuspielen' : 'Click to replay melody';
         
+        // Add visual feedback styles for hover and click
+        referenceContainer.style.transition = 'transform 0.1s ease, box-shadow 0.1s ease';
+        
+        // Add hover effect using mouse events
+        referenceContainer.addEventListener('mouseenter', function() {
+          this.style.transform = 'scale(1.02)';
+          this.style.boxShadow = '0 0 5px rgba(0,0,0,0.3)';
+        });
+        
+        referenceContainer.addEventListener('mouseleave', function() {
+          this.style.transform = 'scale(1)';
+          this.style.boxShadow = 'none';
+        });
+        
+        // Add active/click effect
+        referenceContainer.addEventListener('mousedown', function() {
+          this.style.transform = 'scale(0.98)';
+        });
+        
+        referenceContainer.addEventListener('mouseup', function() {
+          this.style.transform = 'scale(1.02)';
+        });
+        
         // Add event listener to replay the melody on click
-        referenceContainer.addEventListener('click', () => {
-          this.playReferenceSequence();
+        // Store a reference to the component instance to ensure correct context
+        const self = this;
+        referenceContainer.addEventListener('click', function() {
+          console.log('Reference melody box clicked!');
+          self.playReferenceSequence();
         });
         
         // Erstelle visuelle Darstellung der Referenzmelodie
@@ -2258,8 +2284,8 @@ export function pitches() {
         });
         
         // Füge die Referenzmelodie vor dem Canvas ein
-        const canvas = document.querySelector('.drawing-canvas');
-        canvas.parentNode.insertBefore(referenceContainer, canvas);
+        const container = document.querySelector('.drawing-container');
+        container.parentNode.insertBefore(referenceContainer, container);
         
         // Spiele die Referenzmelodie ab
         this.playReferenceSequence();

@@ -1759,7 +1759,7 @@ section h2 {
 /* Drawing mode */
 .drawing-container {
   position: absolute;
-  top: calc(2vh + 63vw);
+  top: min(429px, 68vw);
   margin: 2rem auto;
   height: calc(2vh + 33vw);
   min-height: 33px;
@@ -1786,16 +1786,18 @@ section h2 {
   justify-content: space-evenly;
   align-items: center;
   width: 35%;
-  height: 75px;
+  height: 22vw;
+  max-height: 136px;
   margin-top: 0;
   margin-bottom: 0;
-  padding: 10px;
+  padding: 2px;
   background-color: rgba(255, 255, 255, 0.5);
   border-radius: 12px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-  position: absolute;
-  top: -331px;
+  position: fixed;
+  top: 6px;
   z-index: 10;
+  left: 30vw;
 }
 
 .reference-note {
@@ -1807,7 +1809,7 @@ section h2 {
   transition: transform 0.2s, background-color 0.2s;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   position: relative;
-  top: -37px;
+  top: calc(6px - 12vw);
 }
 
 .reference-note.playing {
@@ -1827,22 +1829,19 @@ section h2 {
 }
 
 .challenge-toggle button, .clear-drawing-button {
-  padding: 8px 16px;
-  border: 2px solid white;
+  border: 0;
   border-radius: 12px;
-  background-color: rgba(255, 255, 255, 0.1) !important;
-  color: transparent;
+  background-color: rgba(255, 255, 255, 0.01) !important;
   cursor: pointer;
-  font-weight: 500;
   transition: all 0.2s ease;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  height: calc(2vh + 50vw);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.0);
+  height: calc(-13px + 59vw);
   min-height: 33px;
   width: 49vw;
   position: relative;
   overflow: hidden;
-  text-indent: -9999px;
-  max-height: 345px;
+  max-height: 337px;
+  margin-top: 37px;
 }
 
 .challenge-toggle button:hover {
