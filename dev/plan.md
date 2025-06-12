@@ -15,6 +15,12 @@
     - Prevent consecutive duplicate puzzles (now implemented)
     - Ensure the second tone is never C5 (now implemented)
   - Android: Deprecated SYSTEM_UI_FLAG_* API warning in MainActivity.java; needs update to WindowInsetsController for Android 11+ (see TODO.md)
+  - Android launcher icon remains white despite icon generation logic; investigate icon creation and mipmap usage
+  - Investigation: Icon files exist and are referenced in manifest and adaptive icon XML; next, check actual image contents and format
+  - Diagnostic: ic_launcher_foreground.png is fully transparent or contains only one color; this likely causes the white icon issue. Need to inspect and replace/fix this image.
+  - User provided a bird image to use as the new launcher icon foreground (see conversation, image 0)
+  - Bird icon image is now available at /src/images/app_icon.png and ready for icon generation logic update
+  - Version number in credits only shows "Loading version..."; fix version injection logic (now fixed)
 
 ## Task List
 - [x] Investigate and fix `this.showFeedback` context/definition bug so feedback is shown on success/failure
@@ -27,6 +33,11 @@
 - [x] Prevent duplicate puzzles and restrict second tone in High or Low
 - [ ] Save and export progress in preferences/string
 - [ ] Note highlight should occur exactly when note is hit
+- [ ] Android launcher icon is still white; fix icon generation and ensure correct icon is used
+  - [x] Replace or repair ic_launcher_foreground.png so it is visible and not fully transparent
+    - [x] Use the provided bird image as the new foreground for ic_launcher_foreground.png
+    - [x] Update mobile-build.sh to generate mipmap icons from /src/images/app_icon.png
+- [x] Version number in credits does not load; fix version display
 
 ## Current Goal
-Implement note highlight should occur exactly when note is hit
+Implement Android launcher icon is still white; update build script to use bird image

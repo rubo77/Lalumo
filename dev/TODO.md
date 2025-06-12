@@ -100,6 +100,8 @@ Dies soll in allen aktionen:
 
 - store username and language in export string in Preferences
 
+- also show the build versionCode 18 in klammern dahinter in credits.
+
 # nach kapitel
 1_1 "High or Low?" (1_1_pitches_high_or_low) 
 - # bereit zur veröffentlichung
@@ -116,6 +118,7 @@ Dies soll in allen aktionen:
 - # bereit zur veröffentlichung
 - wenn der zeichenpfad spitze ecken hat, dann sollen noten, die nahe der spitze sind ganz in die spitze rutschen
 - reset all progress geht noch nicht
+- wenn man beim malen den rand des canvas überschreitet, sollte der strich weiter im canvas gemalt werden, an der kante entlang
 
 1_4 Does It Sound Right:
 - # bereit zur veröffentlichung

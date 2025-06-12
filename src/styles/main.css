@@ -1785,23 +1785,24 @@ section h2 {
 /* Drawing mode */
 .drawing-container {
   position: absolute;
-  top: min(429px, 68vw);
   margin: 2rem auto;
-  height: calc(2vh + 33vw);
-  min-height: 33px;
   width: 88%;
   max-width: 600px;
   display: flex;
   justify-content: center;
+  top: min(429px, 68vw);
+  height: 48vw;
+  min-height: 204px;
+  max-height: 286px;
 }
 
 .drawing-canvas {
   width: 100%;
   height: 100%;
-  background-color: rgba(255, 255, 255, 0.3);
-  border: 1px solid rgba(51, 51, 51, 0.2);
+  background-color: rgba(255, 255, 255, 0);
+  border: 1px solid rgba(51, 51, 51, 0);
   border-radius: 12px;
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
   cursor: crosshair;
   touch-action: none; /* Prevent scrolling on touch devices */
 }
@@ -1857,11 +1858,11 @@ section h2 {
 .challenge-toggle button, .clear-drawing-button {
   border: 0;
   border-radius: 12px;
-  background-color: rgba(255, 255, 255, 0.01) !important;
+  background-color: rgba(255, 255, 255, 0.0) !important;
   cursor: pointer;
   transition: all 0.2s ease;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.0);
-  height: calc(-13px + 59vw);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.0) !important;
+  height: calc(-13px + 49vw);
   min-height: 33px;
   width: 49vw;
   position: relative;
@@ -1904,8 +1905,8 @@ section h2 {
 
 .clear-drawing-button {
   position: absolute;
-  top: 295px;
-  left: 50%;
+  top: 265px;
+  left: 40%;
   transform: translateX(-50%);
   z-index: 20;
   min-width: 120px;
