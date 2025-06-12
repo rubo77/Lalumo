@@ -64,6 +64,7 @@ export function pitches() {
     highOrLowSecondTone: null, // For comparison stages
     highOrLowPlayed: false, // Whether the tone has been played
     highOrLowFeedbackTimer: null, // Timer for hiding feedback
+    gameStarted: false, // Whether the game has been started
     
     // Progressive difficulty tracking
     correctAnswersCount: 0,
@@ -584,12 +585,11 @@ export function pitches() {
     },
     
     /**
-     * Generates and stores a tone sequence for the High or Low activity
-     * @param {number} stage - Current stage in the activity
+     * Returns appropriate tone arrays for a given stage
+     * @param {number} stage - The current activity stage
+     * @returns {Object} Object containing lowTones and highTones arrays for the stage
      */
-    generateHighOrLowSequence(stage) {
-      console.log('Generating new high or low tone sequence for stage:', stage);
-      
+    getTonesForStage(stage) {
       // Define tone ranges for different stages (according to CONCEPT.md)
       const lowTones = {
         1: ['C3', 'C#3', 'D3', 'D#3', 'E3', 'F3'],
@@ -608,12 +608,34 @@ export function pitches() {
       };
       
       // Get appropriate tone arrays based on current stage
-      const currentLowTones = lowTones[stage] || lowTones[1];
-      const currentHighTones = highTones[stage] || highTones[1];
+      return {
+        lowTones: lowTones[stage] || lowTones[1],
+        highTones: highTones[stage] || highTones[1]
+      };
+    },
+    
+    /**
+     * Get a random tone for a specific pitch type (high or low) and stage
+     * @param {string} type - 'high' or 'low'
+     * @param {number} stage - The current activity stage
+     * @returns {string} A random tone of the specified type
+     */
+    getRandomToneForType(type, stage) {
+      const tones = this.getTonesForStage(stage);
+      const toneArray = type === 'high' ? tones.highTones : tones.lowTones;
+      return toneArray[Math.floor(Math.random() * toneArray.length)];
+    },
+    
+    /**
+     * Generates a High or Low tone sequence based on the current stage
+     * @param {number} stage - The current activity stage
+     */
+    generateHighOrLowSequence(stage) {
+      console.log('Generating new high or low tone sequence for stage:', stage);
       
-      // Pick random tones from the arrays
-      const randomLowTone = currentLowTones[Math.floor(Math.random() * currentLowTones.length)];
-      const randomHighTone = currentHighTones[Math.floor(Math.random() * currentHighTones.length)];
+      // Get random tones using the helper function
+      const randomLowTone = this.getRandomToneForType('low', stage);
+      const randomHighTone = this.getRandomToneForType('high', stage);
       
       if (stage >= 3) {
         // For two-tone stages, create a sequence with two tones
@@ -679,8 +701,9 @@ export function pitches() {
       if (this.isPlaying) return; // Prevent multiple plays
       
       this.isPlaying = true;
+      this.gameStarted = true; // Mark the game as explicitly started
       const stage = this.currentHighOrLowStage();
-      console.log('Playing High or Low tone for stage:', stage);
+      console.log('Playing High or Low tone for stage:', stage, 'gameStarted:', this.gameStarted);
       
       try {
         // First, ensure the audio engine is initialized
@@ -741,9 +764,27 @@ export function pitches() {
         return;
       }
       
-      // If the tone hasn't been played yet, play one first
+      // If the game hasn't been explicitly started (by clicking the play button)
+      if (!this.gameStarted) {
+        console.log('Button pressed without starting the game, playing a tone matching the button');
+        
+        // Get the current stage
+        const stage = this.currentHighOrLowStage();
+        
+        // Get a random tone matching the pressed button (low or high)
+        const randomTone = this.getRandomToneForType(answer, stage);
+        
+        console.log(`Playing random ${answer} tone (button ${answer === 'low' ? 'left' : 'right'}):`, randomTone);
+        
+        // Play the random tone without checking the answer
+        audioEngine.playNote(randomTone.toLowerCase(), 0.3);
+        
+        return; // Important: exit without checking the answer
+      }
+      
+      // If the game is started but the tone hasn't been played yet, play the sequence first
       if (!this.highOrLowPlayed) {
-        // Play a tone first, then immediately check the answer
+        // Play a tone first, then check the answer
         this.playHighOrLowTone().then(() => {
           // After the tone has finished playing, check the answer
           this.checkHighOrLowAnswer(answer);
@@ -1421,6 +1462,10 @@ export function pitches() {
       
       // Reset the current sequence so a new one will be generated on play
       this.currentHighOrLowSequence = null;
+      
+      // Reset game state - not started until the user explicitly clicks play
+      this.gameStarted = false;
+      console.log('High or Low game reset, gameStarted:', this.gameStarted);
       
       // Show intro message immediately when entering the activity
       this.showActivityIntroMessage('1_1_pitches_high_or_low');

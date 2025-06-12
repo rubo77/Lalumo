@@ -1,3 +1,5 @@
+# globale regeln:
+
 - Keine Failsafes erstellen, stattdessen bessere Diagnosen zur Identifizierung von Problemen implementieren
 - Bei der Problemanalyse Logging-Anweisungen mit eindeutigen Tags hinzufügen
 - bash file.sh verwenden anstatt chmod +x file.sh
@@ -6,3 +8,4 @@
 - keine fallbacks bauen, sondern die Probleme beheben
 - do not work through the TODO list yourself
 - never deploy yourself unless asked
+- kopiere nicht einfach komplette code bereiche aus anderen funktionen, sondern extrahiere die teile in eine funktion, die dann in der ursprünglichen so wie in der neuen stelle benutzt wird

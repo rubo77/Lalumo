@@ -96,20 +96,26 @@ Dies soll in allen aktionen:
 
 # nach kapitel
 1_1 "High or Low?" (1_1_pitches_high_or_low) 
+- das spiel startet immer noch automatisch, sol aber nicht. wenn man F5 drckt oder im nav menu noch mal das spiel auswählt, solllte das spiel beim nächsten mal nicht im game-mode sein
 - das game soll nicht automatisch starten, sondern wenn man noch nicht auf den play button gedrückt hat, soll einfach ein zufälliger hoher, bzw. tiefer ton kommen wenn man auf einen der buttons drckt
-- wenn man erfolgreich war, soll nach 2s automatisch der neue ton kommen
+- es darf nicht 2x das gleiche rätsel kommen
+- der 2. ton darf nicht der erste sein, also nicht der C5
+- im master level dürfen die töne maximal 3 halbtöne auseinander sein und der erste ton muss nicht mehr C5 sein, sondern kann jeder beliebige sein, es wird nur getestet, ob der 2. ton dann höher oder tiefer ist
+- die erfolgsmeldung muss sich ab level 3 aendern in "der ton war höher" anstatt "hoch" und "der ton war tiefer" anstatt "tief"
 - Entferne alle Überbleibsel der alten "Listen to melodies"-Funktionalität:
    - Lösche unnötige Melodie-Abspielfunktionen für die alte Aktivität
 
-1_3 Draw a melody:
+1_3 Draw a Melody:
 - wenn der zeichenpfad spitze ecken hat, dann sollen noten, die nahe der spitze sind ganz in die spitze rutschen
 - reset all progress geht noch nicht
 
-1_4 does this sound right:
- - Manchmal zeigt er am anfang das falsche Lied an, die ton. Länger Stimmen noch nicht alle. 
- - fix gebogenen text
- - es kommt mehrmals in log "Generated sound judgment melody:..."
- - die tonlängen Stimmen noch nicht alle. 
+1_4 Does It Sound Right:
+- es darf nicht bei jedem klick ein neues tierpaar generiert werden, sondern nur, wenn man erfolgreich geraten hat oder wenn man die activity betritt
+- Manchmal zeigt er am anfang das falsche Lied an, die ton. Länger Stimmen noch nicht alle. 
+- fix gebogenen text
+- es kommt mehrmals in log "Generated sound judgment melody:..."
+- die tonlängen Stimmen noch nicht alle. 
+- die tiere müssen noch durchsichtigen rand haben
  - progress einbauen (unten anzeigen):
   - level 1: Es gibt 2 falsche noten, keine pause als fehler
   - level 2: Es gibt 2 falsche noten, Auch eine Pause ist als fehler möglich
@@ -119,7 +125,7 @@ Dies soll in allen aktionen:
   - level 6: Es gibt nur eine falsche note, eine Pause ist als fehler möglich, der fehler abstand der note ist maximal 2 halbtöne
   - level 7: Es gibt nur eine falsche note, eine Pause ist als fehler möglich, der fehler abstand der note ist maximal 1 halbtöne
 - den progress auch in preferences export import und reset einbauen
-
+- baue die lieder im TODO block im pitches.js
 
 1_5 memory game:
  - fertig
