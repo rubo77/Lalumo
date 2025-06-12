@@ -72,7 +72,7 @@ find_android_studio() {
   command -v studio.sh
 }
 
-# set path to Android Studio
+echo "###### 1. set path to Android Studio"
 STUDIO_PATH=$(find_android_studio)
 
 if [ -n "$STUDIO_PATH" ]; then
@@ -108,7 +108,7 @@ update_version() {
   NEW_MINOR=$((MINOR + 1))
   NEW_VERSION="$MAJOR.$NEW_MINOR"
   
-  echo "Updating version in package.json: $CURRENT_VERSION → $NEW_VERSION"
+  echo "###### 2. Updating version in package.json: $CURRENT_VERSION → $NEW_VERSION"
   
   # update version in package.json
   sed -i "s/\"version\":\s*\"$CURRENT_VERSION\"/\"version\": \"$NEW_VERSION\"/" "$PACKAGE_FILE"
@@ -149,99 +149,104 @@ parse_args "$@"
 
 # Update version if not skipped
 if [ "$SKIP_VERSION_UPDATE" = false ]; then
-  echo "Updating version numbers..."
+  echo "###### 3. Updating version numbers..."
   update_version
 else
-  echo "Skipping version update as requested..."
+  echo "###### 3. Skipping version update as requested..."
 fi
 
 # Build the web app
-echo "Building web application..."
+echo "###### 4. Building web application..."
 npm run build
 
 # Copy public directory contents to dist, excluding android directory (only needed for web dev server)
 # Note: The android/ directory in public/ contains XML files for the webpack dev server
 # The actual native Android app uses the XML files in the main android/ directory
-echo "Copying public assets to dist (excluding android XML files)..."
+echo "###### 5. Copying public assets to dist (excluding android XML files)..."
 rsync -av --exclude='android/' --exclude='images/backgrounds/original/' public/ dist/
 
 # Sync with Capacitor
-echo "Syncing with Capacitor..."
+echo "###### 6. Syncing with Capacitor..."
 npx cap sync
 
 # Create Android launcher icons if they don't exist
 LAUNCHER_ICON_DIR="android/app/src/main/res"
 
-# Check if launcher icons exist, if not create them from favicon.svg
+echo "###### 7. Check if launcher icons exist, if not create them from favicon.svg ..."
 if [ ! -f "$LAUNCHER_ICON_DIR/mipmap-mdpi/ic_launcher.png" ]; then
-  echo "Creating Android launcher icons..."
-  
-  # Create required directories if they don't exist
-  for density in mdpi hdpi xhdpi xxhdpi xxxhdpi; do
-    mkdir -p "$LAUNCHER_ICON_DIR/mipmap-$density"
-  done
+  echo "this would create Android launcher icons..."
+  echo "tested for the file $LAUNCHER_ICON_DIR/mipmap-mdpi/ic_launcher.png"
+  echo "disabled !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
 
-  # Define icon sizes for different DPIs
-  declare -A ICON_SIZES=(
-    [mdpi]=48
-    [hdpi]=72
-    [xhdpi]=96
-    [xxhdpi]=144
-    [xxxhdpi]=192
-  )
+  # # Create required directories if they don't exist
+  # for density in mdpi hdpi xhdpi xxhdpi xxxhdpi; do
+  #   mkdir -p "$LAUNCHER_ICON_DIR/mipmap-$density"
+  # done
 
-  # Convert SVG to PNG for each density
-  for density in "${!ICON_SIZES[@]}"; do
-    size=${ICON_SIZES[$density]}
-    output_file="$LAUNCHER_ICON_DIR/mipmap-$density/ic_launcher.png"
-    echo "Creating $density icon ($size x $size)..."
+  # # Define icon sizes for different DPIs
+  # declare -A ICON_SIZES=(
+  #   [mdpi]=48
+  #   [hdpi]=72
+  #   [xhdpi]=96
+  #   [xxhdpi]=144
+  #   [xxxhdpi]=192
+  # )
+
+  # # Convert SVG to PNG for each density
+  # for density in "${!ICON_SIZES[@]}"; do
+  #   size=${ICON_SIZES[$density]}
+  #   output_file="$LAUNCHER_ICON_DIR/mipmap-$density/ic_launcher.png"
+  #   echo "Creating $density icon ($size x $size)..."
     
-    # Use ImageMagick to convert SVG to PNG
-    convert -background none "public/favicon.svg" -resize ${size}x${size} "$output_file"
-  done
+  #   # Use ImageMagick to convert SVG to PNG
+  #   convert -background none "public/favicon.svg" -resize ${size}x${size} "$output_file"
+  # done
 fi
 
-# Create adaptive icon layers if they don't exist
+echo "###### 8. Create adaptive icon layers if they don't exist"
 if [ ! -f "$LAUNCHER_ICON_DIR/mipmap-xxxhdpi/ic_launcher_foreground.png" ]; then
-  echo "Creating adaptive launcher icons..."
+  echo "this would create adaptive launcher icons..."
+  echo "tested for the file $LAUNCHER_ICON_DIR/mipmap-xxxhdpi/ic_launcher_foreground.png"
+  echo "disabled !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
   
-  # Create foreground icon (108x108 px)
-  convert -background none "public/favicon.svg" -resize 108x108 \
-    "$LAUNCHER_ICON_DIR/mipmap-xxxhdpi/ic_launcher_foreground.png"
+  # # Create foreground icon (108x108 px)
+  # convert -background none "public/favicon.svg" -resize 108x108 \
+  #   "$LAUNCHER_ICON_DIR/mipmap-xxxhdpi/ic_launcher_foreground.png"
   
-  # Create background icon (108x108 px)
-  convert -size 108x108 xc:white \
-    "$LAUNCHER_ICON_DIR/mipmap-xxxhdpi/ic_launcher_background.png"
+  # # Create background icon (108x108 px)
+  # convert -size 108x108 xc:white \
+  #   "$LAUNCHER_ICON_DIR/mipmap-xxxhdpi/ic_launcher_background.png"
+  
+  # # Copy adaptive icons to other densities
+  # for density in mdpi hdpi xhdpi xxhdpi; do
+  #   mkdir -p "$LAUNCHER_ICON_DIR/mipmap-$density"
+  #   cp "$LAUNCHER_ICON_DIR/mipmap-xxxhdpi/ic_launcher_foreground.png" \
+  #     "$LAUNCHER_ICON_DIR/mipmap-$density/ic_launcher_foreground.png"
+  #   cp "$LAUNCHER_ICON_DIR/mipmap-xxxhdpi/ic_launcher_background.png" \
+  #     "$LAUNCHER_ICON_DIR/mipmap-$density/ic_launcher_background.png"
+  # done
 fi
 
-# Copy adaptive icons to other densities
-for density in mdpi hdpi xhdpi xxhdpi; do
-  mkdir -p "$LAUNCHER_ICON_DIR/mipmap-$density"
-  cp "$LAUNCHER_ICON_DIR/mipmap-xxxhdpi/ic_launcher_foreground.png" \
-    "$LAUNCHER_ICON_DIR/mipmap-$density/ic_launcher_foreground.png"
-  cp "$LAUNCHER_ICON_DIR/mipmap-xxxhdpi/ic_launcher_background.png" \
-    "$LAUNCHER_ICON_DIR/mipmap-$density/ic_launcher_background.png"
-done
 
 # Ensure only used images are copied to Android assets
-echo "Finding used images in the code..."
+echo "###### 10. Finding used images in the code..."
 
 # create temp directory for used images
 TEMP_IMG_DIR="temp_used_images"
 rm -rf "$TEMP_IMG_DIR"
 mkdir -p "$TEMP_IMG_DIR"
 
-# search for image references in code (HTML, CSS, JS files)
+echo "###### 11. search for image references in code (HTML, CSS, JS files)"
 find src -type f \( -name "*.js" -o -name "*.html" -o -name "*.css" \) -exec grep -oE "['\"][^'\"]*\.(png|jpg|jpeg|gif|svg|webp)['\"]" {} \; | \
   tr -d "'\"" | sort | uniq > "$TEMP_IMG_DIR/used_images.txt"
 
-echo "Copying only used images to Android assets..."
+echo "###### 12. Copying only used images to Android assets..."
 mkdir -p android/app/src/main/assets/public/images
 
 echo "Found images:"
 cat "$TEMP_IMG_DIR/used_images.txt"
 
-# copy only used images
+echo "###### 13. copy only used images"
 while read -r img_path; do
   # remove ./ or / from path
   clean_path=${img_path#./}
@@ -268,7 +273,7 @@ rm -rf "$TEMP_IMG_DIR"
 
 echo "Only used images copied successfully"
 
-# Platform-specific commands
+echo "###### 14. Platform-specific commands"
 if [ "$1" == "android" ]; then
   echo "Opening Android project in Android Studio..."
   npx cap open android
