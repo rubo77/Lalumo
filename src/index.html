@@ -104,7 +104,7 @@
 
           <!-- chords started developed-->
           <button @click="$data.active = 'chords'; $dispatch('set-chord-mode', 'main')" :class="{ 'active': active === 'chords' }"
-          >
+          style="display: none;">
             <span x-text="$store.strings?.menu_chords || 'Chords'"></span>
           </button>
 

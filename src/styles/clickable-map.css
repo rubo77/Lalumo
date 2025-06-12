@@ -129,9 +129,9 @@
 .clickable-area {
   position: absolute;
   cursor: pointer;
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(255, 255, 255, 0);
   transition: background-color 0.3s ease;
-  border-radius: 0;
+  border-radius: 10px;
 }
 
 .clickable-area:hover, .clickable-area:active {
