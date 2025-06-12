@@ -11,6 +11,9 @@
   - Progress should be saved in preferences and exported in the string
   - When a note is hit, the corresponding note in the box should briefly light up at that moment (current focus)
   - Remove the lowest octave from the note range (now implemented)
+  - High or Low (1_1):
+    - Prevent consecutive duplicate puzzles (now in progress)
+    - Ensure the second tone is never C5 (now in progress)
 
 ## Task List
 - [x] Investigate and fix `this.showFeedback` context/definition bug so feedback is shown on success/failure
@@ -22,6 +25,7 @@
 - [x] Remove lowest octave from note range
 - [ ] Save and export progress in preferences/string
 - [ ] Note highlight should occur exactly when note is hit
+- [ ] Prevent duplicate puzzles and restrict second tone in High or Low (in progress)
 
 ## Current Goal
 Implement note highlight should occur exactly when note is hit

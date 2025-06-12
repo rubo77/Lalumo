@@ -4208,9 +4208,9 @@ export function pitches() {
     
     /**
      * Updates the background image based on the matching progress
-     * - Below 10 correct: pitches_action1_no_waves_and_frog.png
-     * - Between 10-19 correct: pitches_action1_no_frog.png
-     * - 20+ correct: pitches_action1.png
+     * - Below 10 correct: pitches_action1_2_no_waves_and_frog.jpg
+     * - Between 10-19 correct: pitches_action1_2_no_frog.jpg
+     * - 20+ correct: pitches_action1_2.jpg
      */
     // Helper method to preload an image
     preloadBackgroundImage(imageUrl) {
@@ -4236,21 +4236,21 @@ export function pitches() {
       
       // Progress thresholds change at exactly 10 and 20 successes
       if (progress <= 9) { // Change at exactly 10
-        backgroundImage = '/images/backgrounds/pitches_action1_no_waves_and_frog.png';
+        backgroundImage = '/images/backgrounds/pitches_action1_2_no_waves_and_frog.jpg';
         
         // Preload next background when approaching transition point
         if (progress === 9) {
-          this.preloadBackgroundImage('/images/backgrounds/pitches_action1_no_frog.png');
+          this.preloadBackgroundImage('/images/backgrounds/pitches_action1_2_no_frog.jpg');
         }
       } else if (progress <= 19) { // Change at exactly 20
-        backgroundImage = '/images/backgrounds/pitches_action1_no_frog.png';
+        backgroundImage = '/images/backgrounds/pitches_action1_2_no_frog.jpg';
         
         // Preload next background when approaching transition point
         if (progress === 19) {
-          this.preloadBackgroundImage('/images/backgrounds/pitches_action1.png');
+          this.preloadBackgroundImage('/images/backgrounds/pitches_action1_2.jpg');
         }
       } else {
-        backgroundImage = '/images/backgrounds/pitches_action1.png';
+        backgroundImage = '/images/backgrounds/pitches_action1_2.jpg';
       }
       
       const matchingActivity = document.querySelector('[x-show="mode === \'1_2_pitches_match-sounds\'"]');
