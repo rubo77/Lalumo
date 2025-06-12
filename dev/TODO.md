@@ -101,7 +101,7 @@ Dies soll in allen aktionen:
    - Lösche unnötige Melodie-Abspielfunktionen für die alte Aktivität
 
 1_3 Draw a melody:
-- Die melodie zum nachspielen soll aus 8 tnen bestehen statt 6
+- in game mode, the replay melody should consist of the same number of notes as there are notes painted on the canvas. at first it should be only 3 notes. when the user advances, the number should increase
 - Wenn man einen Ton trifft, soll die Note oben im kasten aufleuchten 
 - bg: einen vogel zum spiel starten oben hin
 - die noten werden eierig im breiten screen
