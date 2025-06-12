@@ -2646,13 +2646,27 @@ export function pitches() {
       const height = canvas.height;
       
       // Punkte aus dem Pfad samplen, um eine Melodie zu erzeugen
-      // Use the current level to determine how many notes to sample from the drawing
-      // (minimum 3 and adding the level, with maximum of 8)
       const minNotes = 3;
       const maxNotes = 8;
-      // Use the same number of notes as in the reference melody for fair comparison
-      const currentMelodyLength = minNotes + this.drawMelodyLevel;
-      const sampleSize = Math.min(Math.min(maxNotes, currentMelodyLength), this.drawPath.length);
+      
+      let sampleSize;
+      
+      // Im Nicht-Spiel-Modus: Anzahl der Noten basierend auf der Länge der Linie bestimmen
+      if (!this.melodyChallengeMode) {
+        // Berechnung der Länge der gezeichneten Linie (vereinfacht durch Anzahl der Punkte)
+        const pathLength = this.drawPath.length;
+        
+        // Wir nehmen eine Note pro 10 Punkte, aber mindestens minNotes und maximal maxNotes
+        const notesBasedOnLength = Math.max(minNotes, Math.floor(pathLength / 10));
+        sampleSize = Math.min(notesBasedOnLength, maxNotes);
+        console.log(`MELODY_NOTES: Using ${sampleSize} notes based on path length ${pathLength} in free mode`);
+      } 
+      // Im Spiel-Modus: Anzahl der Noten basierend auf dem Level
+      else {
+        const currentMelodyLength = minNotes + this.drawMelodyLevel;
+        sampleSize = Math.min(Math.min(maxNotes, currentMelodyLength), this.drawPath.length);
+        console.log(`MELODY_NOTES: Using ${sampleSize} notes based on level ${this.drawMelodyLevel} in challenge mode`);
+      }
       
       const sampledPoints = [];
       

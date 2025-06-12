@@ -102,7 +102,7 @@ Dies soll in allen aktionen:
    - Lösche unnötige Melodie-Abspielfunktionen für die alte Aktivität
 
 1_3 Draw a melody:
-- when not in game mode, there should always be more notes on the line, depending on how long the line is painted. at the moment there are as many as the user is advanced, but it should vary on the painted line length instead, so eg. every 10px there is a note on the line played
+- wenn der zeichenpfad spitze ecken hat, dann sollen noten, die nahe der spitze sind ganz in die spitze rutschen
 - reset all progress geht noch nicht
 
 1_4 does this sound right:
@@ -110,6 +110,16 @@ Dies soll in allen aktionen:
  - fix gebogenen text
  - es kommt mehrmals in log "Generated sound judgment melody:..."
  - die tonlängen Stimmen noch nicht alle. 
+ - progress einbauen (unten anzeigen):
+  - level 1: Es gibt 2 falsche noten, keine pause als fehler
+  - level 2: Es gibt 2 falsche noten, Auch eine Pause ist als fehler möglich
+  - level 3: Es gibt nur eine falsche note, keine pause als fehler
+  - level 4: Es gibt nur eine falsche note, eine Pause ist als fehler möglich
+  - level 5: Es gibt nur eine falsche note, eine Pause ist als fehler möglich, der fehler abstand der note ist maximal 3 halbtöne
+  - level 6: Es gibt nur eine falsche note, eine Pause ist als fehler möglich, der fehler abstand der note ist maximal 2 halbtöne
+  - level 7: Es gibt nur eine falsche note, eine Pause ist als fehler möglich, der fehler abstand der note ist maximal 1 halbtöne
+- den progress auch in preferences export import und reset einbauen
+
 
 1_5 memory game:
  - fertig
