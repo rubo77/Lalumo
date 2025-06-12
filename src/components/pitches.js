@@ -2215,6 +2215,12 @@ export function pitches() {
         referenceContainer.remove();
       }
       
+      // Entferne bestehende Fortschrittsanzeige
+      let progressContainer = document.querySelector('.melody-progress');
+      if (progressContainer) {
+        progressContainer.remove();
+      }
+      
       // Update button status
       const challengeButton = document.getElementById('challenge-button');
       const newMelodyButton = document.getElementById('new-melody-button');
@@ -2226,6 +2232,63 @@ export function pitches() {
         } else {
           challengeButton.classList.remove('active');
           newMelodyButton.style.visibility = 'hidden';
+        }
+      }
+      
+      // Erstelle Fortschrittsanzeige, wenn im Challenge-Modus
+      if (this.melodyChallengeMode) {
+        // Initialisiere den Erfolgs-Zähler, falls nicht vorhanden
+        if (this.levelSuccessCounter === undefined) {
+          this.levelSuccessCounter = 0;
+        }
+        
+        // Erstelle Container für die Fortschrittsanzeige
+        progressContainer = document.createElement('div');
+        progressContainer.className = 'melody-progress';
+        
+        // Stil der Fortschrittsanzeige
+        progressContainer.style.width = '100%';
+        progressContainer.style.textAlign = 'center';
+        progressContainer.style.padding = '10px 0';
+        progressContainer.style.position = 'absolute';
+        progressContainer.style.bottom = '10px';
+        progressContainer.style.left = '0';
+        
+        // Textelement für den Fortschritt
+        const isGerman = document.documentElement.lang === 'de';
+        const progressText = document.createElement('div');
+        progressText.style.fontSize = '14px';
+        progressText.style.marginBottom = '5px';
+        
+        const currentLevel = this.drawMelodyLevel + 3; // Level + 3 = Anzahl der Noten
+        progressText.textContent = isGerman 
+          ? `Level ${this.drawMelodyLevel + 1}: ${this.levelSuccessCounter}/10 Melodien (${currentLevel} Töne)`
+          : `Level ${this.drawMelodyLevel + 1}: ${this.levelSuccessCounter}/10 melodies (${currentLevel} notes)`;
+        
+        // Fortschrittsleiste
+        const progressBar = document.createElement('div');
+        progressBar.style.width = '80%';
+        progressBar.style.margin = '0 auto';
+        progressBar.style.height = '8px';
+        progressBar.style.backgroundColor = '#e0e0e0';
+        progressBar.style.borderRadius = '4px';
+        progressBar.style.overflow = 'hidden';
+        
+        const progressFill = document.createElement('div');
+        progressFill.style.height = '100%';
+        progressFill.style.width = `${this.levelSuccessCounter * 10}%`; // 10% pro erfolgreiche Melodie
+        progressFill.style.backgroundColor = '#4CAF50';
+        progressFill.style.transition = 'width 0.3s ease-in-out';
+        
+        // Zusammenfügen
+        progressBar.appendChild(progressFill);
+        progressContainer.appendChild(progressText);
+        progressContainer.appendChild(progressBar);
+        
+        // Container zur Seite hinzufügen
+        const container = document.querySelector('.drawing-container');
+        if (container && container.parentNode) {
+          container.parentNode.appendChild(progressContainer);
         }
       }
       
@@ -2587,6 +2650,32 @@ export function pitches() {
         audioEngine.playNote(note, 0.3);
         
         console.log(`Playing note ${index + 1}/${notes.length}: ${note}`);
+        
+        // Wenn wir im Challenge-Modus sind, hervorheben der entsprechenden Note in der Referenzmelodie
+        // Highlight corresponding note in reference melody box when in challenge mode
+        if (this.melodyChallengeMode && this.referenceSequence) {
+          // Finde die entsprechende Note in der Referenzmelodie
+          const noteUpper = note.toUpperCase();
+          const noteIndex = this.referenceSequence.indexOf(noteUpper);
+          
+          // Wenn die Note in der Referenzmelodie vorkommt, hervorheben
+          if (noteIndex !== -1) {
+            console.log(`MELODY_HIGHLIGHT: Highlighting note ${noteUpper} at index ${noteIndex}`);
+            const noteElements = document.querySelectorAll('.reference-note');
+            
+            if (noteElements && noteElements[noteIndex]) {
+              // Kurz aufleuchten lassen
+              noteElements[noteIndex].classList.add('playing');
+              setTimeout(() => {
+                try {
+                  noteElements[noteIndex].classList.remove('playing');
+                } catch(e) {
+                  console.error('MELODY_HIGHLIGHT_ERROR: Error removing highlight:', e);
+                }
+              }, 300);
+            }
+          }
+        }
         
         // Nächste Note mit Verzögerung abspielen
         setTimeout(() => this.playDrawnNoteSequence(notes, index + 1), 300);

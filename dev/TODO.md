@@ -103,11 +103,8 @@ Dies soll in allen aktionen:
    - Lösche unnötige Melodie-Abspielfunktionen für die alte Aktivität
 
 1_3 Draw a melody:
-- das advancen soll langsamer gehen, 10 x mit 3 noten, erst dann kommt der level mit 4 noten, nach 10 mal mit 5, ...
-- the progress should be saved in preferences too and be exported in the string too
-- Wenn man einen Ton trifft, soll in dem moment die entsprechende Note oben im kasten kurz aufleuchten
 - der tonumfang in dem canvas (nicht in generateReferenceSequence()) soll nicht so tief sein entferne die unterste oktave aus dem bereich, lasse die obere grenze so, wie sie ist
-- zeige den fortschritt unten an
+- the progress should be saved in preferences too and be exported in the string too
 
 - when not in game mode, there should always be more notes on the line, depending on how long the line is painted. at the moment there are as many as the user is advanced, but it should vary on the painted line length instead, so eg. every 10px there is a note on the line played
 - Wenn man nicht im spiel ist, das Einhorn auch zum spiel starten benutzen (oder einen vogel oben hin, und das einhorn verstecken, wenn man im siel modus ist)
