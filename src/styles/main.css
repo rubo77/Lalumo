@@ -1250,7 +1250,6 @@ section h2 {
 }
 
 .pitch-activity {
-  height: 90vh !important; /* Use 99% of viewport height */
   margin-top: 0 !important;
   margin-bottom: 0 !important;
   padding: 1rem;
@@ -1260,7 +1259,34 @@ section h2 {
   background-size: 100% auto !important;
   background-repeat: no-repeat;
   overflow-y: auto; /* Allow scrolling if content exceeds height */
+  height: 154vw !important;
+  max-height: 720px;
 }
+
+#\31 _1_pitches{
+  height: 154vw !important;
+  max-height: 805px;
+}
+
+#\31 _2_pitches{
+  height: 152vw !important; 
+}
+
+#\31 _3_pitches{
+  height: 154vw !important;
+  max-height: min(936px, 152vw);
+}
+
+#\31 _4_pitches{
+  height: 150vw !important;
+  max-height: min(775px, 132vw);
+}
+
+#\31 _5_pitches{
+  height: 174vw !important;
+  max-height: min(999px, 163vw);
+}
+
 
 .pitch-activity h3 {
   color: var(--primary-color);
