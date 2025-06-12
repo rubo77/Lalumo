@@ -1048,7 +1048,38 @@ export function app() {
      * Check for iOS audio special handling
      */
     checkIOSAudio() {
-      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+      // iOS-Erkennung ist standardmäßig aktiviert
+      // Zukünftige Erweiterung: Einstellung über Präferenzen zur Deaktivierung
+      
+      // Multi-factor iOS detection instead of just User-Agent
+      const userAgentHasIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+      const noAndroid = !/Android/.test(navigator.userAgent);
+      const platformCheck = /iPhone|iPad|iPod/.test(navigator.platform);
+      
+      // Additional platform checks
+      // These checks are more reliable on real iOS devices
+      let hasIOSPlatformSpecificFeatures = false;
+      
+      // Check for touch events in iOS specific way
+      if (typeof window.TouchEvent !== 'undefined' && 
+          typeof window.ontouchstart !== 'undefined' && 
+          typeof navigator.maxTouchPoints !== 'undefined' && 
+          navigator.maxTouchPoints > 0) {
+        hasIOSPlatformSpecificFeatures = true;
+      }
+      
+      // Final iOS determination - multiple factors must be true
+      const isIOS = userAgentHasIOS && noAndroid && (platformCheck || hasIOSPlatformSpecificFeatures);
+      
+      console.log('AUDIO_DEVICE_CHECK: Details', {
+        userAgentHasIOS, 
+        noAndroid, 
+        platformCheck, 
+        hasIOSPlatformSpecificFeatures,
+        finalDecision: isIOS,
+        userAgent: navigator.userAgent,
+        platform: navigator.platform
+      });
       
       if (isIOS) {
         console.log('AUDIOTROUBLE: iOS device detected, adding special audio handling');
