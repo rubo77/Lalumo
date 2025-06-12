@@ -96,20 +96,24 @@ Dies soll in allen aktionen:
 
 # nach kapitel
 1_1 "High or Low?" (1_1_pitches_high_or_low) 
-- das spiel startet immer noch automatisch, sol aber nicht. wenn man F5 drckt oder im nav menu noch mal das spiel auswählt, solllte das spiel beim nächsten mal nicht im game-mode sein
-- das game soll nicht automatisch starten, sondern wenn man noch nicht auf den play button gedrückt hat, soll einfach ein zufälliger hoher, bzw. tiefer ton kommen wenn man auf einen der buttons drckt
-- es darf nicht 2x das gleiche rätsel kommen
-- der 2. ton darf nicht der erste sein, also nicht der C5
+- die tiefen töne sind eine oktave zu tief
+- # bereit zur veröffentlichung
 - im master level dürfen die töne maximal 3 halbtöne auseinander sein und der erste ton muss nicht mehr C5 sein, sondern kann jeder beliebige sein, es wird nur getestet, ob der 2. ton dann höher oder tiefer ist
 - die erfolgsmeldung muss sich ab level 3 aendern in "der ton war höher" anstatt "hoch" und "der ton war tiefer" anstatt "tief"
 - Entferne alle Überbleibsel der alten "Listen to melodies"-Funktionalität:
    - Lösche unnötige Melodie-Abspielfunktionen für die alte Aktivität
 
+1_2 "Match the Sounds":
+- Hintergrundbild 3 die Rutsche korrigieren, die schwebt so
+- # bereit zur veröffentlichung
+
 1_3 Draw a Melody:
+- # bereit zur veröffentlichung
 - wenn der zeichenpfad spitze ecken hat, dann sollen noten, die nahe der spitze sind ganz in die spitze rutschen
 - reset all progress geht noch nicht
 
 1_4 Does It Sound Right:
+- # bereit zur veröffentlichung
 - when the "next melody" button is pressed in the "Does It Sound Right?" activity, the animal images should NOT change
 - Manchmal zeigt er am anfang das falsche Lied an, die ton. Länger Stimmen noch nicht alle. 
 - fix gebogenen text

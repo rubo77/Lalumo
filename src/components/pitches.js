@@ -633,53 +633,91 @@ export function pitches() {
     generateHighOrLowSequence(stage) {
       console.log('Generating new high or low tone sequence for stage:', stage);
       
+      // Initialize lastHighLowSequence if it doesn't exist
+      if (!this.lastHighLowSequence) {
+        this.lastHighLowSequence = null;
+      }
+      
       // Get random tones using the helper function
       const randomLowTone = this.getRandomToneForType('low', stage);
       const randomHighTone = this.getRandomToneForType('high', stage);
       
       if (stage >= 3) {
         // For two-tone stages, create a sequence with two tones
-        // First tone is always C4 as specified in CONCEPT.md
+        // First tone is always C5 as specified in CONCEPT.md
         const firstTone = 'C5';
         
-        // Get a random tone from either the high or low range
-        const useHighTone = Math.random() < 0.5;
-        const secondTone = useHighTone ? randomHighTone : randomLowTone;
+        let secondTone, useHighTone, isHigher;
+        let attempts = 0;
+        const maxAttempts = 10; // Prevent infinite loop
         
-        // Determine if the second tone is higher or lower based on actual pitch comparison
-        // Extract the note number from the tone string (e.g., C4 -> 4, F#5 -> 5)
-        const firstToneOctave = parseInt(firstTone.match(/\d+/)[0], 10);
-        const secondToneOctave = parseInt(secondTone.match(/\d+/)[0], 10);
+        // Keep generating until we get a valid puzzle that's not a repeat
+        do {
+          // Get a random tone from either the high or low range
+          useHighTone = Math.random() < 0.5;
+          secondTone = useHighTone ? randomHighTone : randomLowTone;
+          
+          // Ensure second tone is never C5 (same as first tone)
+          if (secondTone === 'C5') {
+            continue;
+          }
+          
+          // Determine if second tone is higher or lower
+          const secondToneOctave = parseInt(secondTone.match(/\d+/)[0], 10);
+          const secondToneNote = secondTone.replace(/\d+/, '');
+          const noteOrder = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+          const firstToneNoteIndex = noteOrder.indexOf('C');
+          const secondToneNoteIndex = noteOrder.indexOf(secondToneNote);
+          
+          if (secondToneOctave > 5) {
+            isHigher = true;
+          } else if (secondToneOctave < 5) {
+            isHigher = false;
+          } else {
+            // Same octave, compare note positions
+            isHigher = secondToneNoteIndex > firstToneNoteIndex;
+          }
+          
+          // Check if this is different from the last puzzle
+          const expectedAnswer = isHigher ? 'high' : 'low';
+          const isSameAsPrevious = this.lastHighLowSequence && 
+                                this.lastHighLowSequence.secondTone === secondTone && 
+                                this.lastHighLowSequence.expectedAnswer === expectedAnswer;
+                                
+          // Exit if we have a different puzzle or we've tried too many times
+          if (!isSameAsPrevious || ++attempts >= maxAttempts) {
+            break;
+          }
+          
+        } while (true);
         
-        // Extract the note letter (e.g., C4 -> C, F#5 -> F#)
-        const firstToneNote = firstTone.replace(/\d+/, '');
-        const secondToneNote = secondTone.replace(/\d+/, '');
-        
-        // Notes in order for comparison
-        const noteOrder = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
-        const firstToneNoteIndex = noteOrder.indexOf(firstToneNote);
-        const secondToneNoteIndex = noteOrder.indexOf(secondToneNote);
-        
-        // Compare octaves first, then note positions
-        let isHigher;
-        if (secondToneOctave > firstToneOctave) {
-          isHigher = true;
-        } else if (secondToneOctave < firstToneOctave) {
-          isHigher = false;
-        } else {
-          // Same octave, compare note positions
-          isHigher = secondToneNoteIndex > firstToneNoteIndex;
+        // Log if we had to make multiple attempts
+        if (attempts > 0) {
+          console.log(`Generated different puzzle after ${attempts} attempts`);
         }
+        
+        // We've already calculated isHigher in the loop above
+        // Just need to set the feedback and store the sequence
         
         this.highOrLowSecondTone = isHigher ? 'higher' : 'lower';
         console.log(`Second tone ${secondTone} is ${this.highOrLowSecondTone} than first tone ${firstTone}`);
         
         // Store the sequence with correct comparison information
+        const expectedAnswer = isHigher ? 'high' : 'low';
         this.currentHighOrLowSequence = { 
           firstTone, 
           secondTone, 
-          expectedAnswer: isHigher ? 'high' : 'low' 
+          expectedAnswer 
         };
+        
+        // Store this sequence as the last one to avoid repetition in next round
+        this.lastHighLowSequence = {
+          firstTone,
+          secondTone,
+          expectedAnswer
+        };
+        
+        console.log('HIGH_LOW: Saved current puzzle for repetition check in next round');
       } else {
         // For single tone stages, randomly choose high or low
         this.currentHighOrLowTone = Math.random() < 0.5 ? 'high' : 'low';
