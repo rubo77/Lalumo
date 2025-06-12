@@ -82,7 +82,7 @@ Dies soll in allen aktionen:
 - immer bei Misserfolg: das element, auf das man gedrückt hat etwas hin und her-wackeln
 
 - mobile-build.sh:
- - fertig
+ - nur die bilder exportieren, die auch im code vorkommen
 
 - Hinweis: /var/www/Musici/android/app/src/main/java/com/lalumo/app/MainActivity.java verwendet oder überschreibt eine veraltete API.
 
@@ -103,12 +103,14 @@ Dies soll in allen aktionen:
    - Lösche unnötige Melodie-Abspielfunktionen für die alte Aktivität
 
 1_3 Draw a melody:
-- when not in game mode, there should always be more notes on the line, depending on how long the line is painted. at the moment there are as many as the user is advanced, but it should vary on the painted line length instead, so eg. every 10px there is a note on the line played
+- das advancen soll langsamer gehen, 10 x mit 3 noten, erst dann kommt der level mit 4 noten, nach 10 mal mit 5, ...
 - the progress should be saved in preferences too and be exported in the string too
-- Wenn man einen Ton trifft, soll die Note oben im kasten aufleuchten
+- Wenn man einen Ton trifft, soll in dem moment die entsprechende Note oben im kasten kurz aufleuchten
+- der tonumfang soll nicht so tief sein entferne die unterste oktave aus dem bereich
+
+- when not in game mode, there should always be more notes on the line, depending on how long the line is painted. at the moment there are as many as the user is advanced, but it should vary on the painted line length instead, so eg. every 10px there is a note on the line played
 - Wenn man nicht im spiel ist, das Einhorn auch zum spiel starten benutzen (oder einen vogel oben hin, und das einhorn verstecken, wenn man im siel modus ist)
 - die noten werden eierig im breiten screen
-- der tonumfang soll eine oktave hoeher
 
 1_4 does this sound right:
  - Manchmal zeigt er am anfang das falsche Lied an, die ton. Länger Stimmen noch nicht alle. 

@@ -192,6 +192,7 @@ export function pitches() {
       },
 
       // TODO:
+      // Hey ho spann den wagen an
       // 'bunny-foo': {
       //   en: 'Bunny Foo',
       //   de: 'Häschen Hüpf',
@@ -2169,7 +2170,7 @@ export function pitches() {
         
         document.getElementById('new-melody-button').addEventListener('click', () => {
           if (this.melodyChallengeMode) {
-            this.generateReferenceSequence();
+            this.generateReferenceSequence_1_3();
             this.updateDrawingModeUI();
           }
         });
@@ -2194,7 +2195,7 @@ export function pitches() {
       
       if (this.melodyChallengeMode) {
         // Generiere eine Referenzmelodie für den Challenge-Modus
-        this.generateReferenceSequence();
+        this.generateReferenceSequence_1_3();
       } else {
         // Lösche die Referenzmelodie im freien Modus
         this.referenceSequence = null;
@@ -2299,7 +2300,7 @@ export function pitches() {
      * Generiert eine zufällige Referenzmelodie für den Challenge-Modus
      * mit einer Länge basierend auf dem aktuellen Level des Benutzers
      */
-    generateReferenceSequence() {
+    generateReferenceSequence_1_3() {
       const notes = ['C3', 'D3', 'E3', 'F3', 'G3', 'A3', 'B3', 'C4', 'D4', 'E4', 'F4', 'G4'];
       
       // Bestimme die Melodielänge basierend auf dem Benutzerlevel
@@ -2625,6 +2626,7 @@ export function pitches() {
       // Provide feedback based on match percentage
       let feedback = '';
       const isGerman = document.documentElement.lang === 'de';
+      let perfectMatch = matchPercentage === 100;
       
       // Create feedback message
       if (matchPercentage >= 80) {
@@ -2643,10 +2645,37 @@ export function pitches() {
           feedback = isGerman ? 
             `Super! Das war sehr gut! Jetzt versuche eine längere Melodie mit ${this.drawMelodyLevel + 3} Tönen.` : 
             `Great job! That was very good! Now try a longer melody with ${this.drawMelodyLevel + 3} notes.`;
+          
+          // Show rainbow effect for perfect match
+          if (perfectMatch) {
+            // Create and show rainbow success animation
+            const rainbow = document.createElement('div');
+            rainbow.className = 'rainbow-success';
+            document.body.appendChild(rainbow);
+            
+            // Remove rainbow element after animation completes
+            setTimeout(() => {
+              if (rainbow && rainbow.parentNode) {
+                rainbow.parentNode.removeChild(rainbow);
+              }
+            }, 2000);
+          }
         } else {
           feedback = isGerman ? 
             'Fantastisch! Du hast alle Melodien gemeistert!' : 
             'Amazing! You\'ve mastered all the melodies!';
+          
+          // Always show rainbow for mastering all levels
+          const rainbow = document.createElement('div');
+          rainbow.className = 'rainbow-success';
+          document.body.appendChild(rainbow);
+          
+          // Remove rainbow element after animation completes
+          setTimeout(() => {
+            if (rainbow && rainbow.parentNode) {
+              rainbow.parentNode.removeChild(rainbow);
+            }
+          }, 2000);
         }
         
         // Visual feedback
@@ -2666,11 +2695,18 @@ export function pitches() {
       // Display feedback to the user
       this.showFeedbackMessage(feedback, 3000);
       
-      // Generate a new reference melody with updated difficulty for the next attempt
+      // Generate a new reference melody only if the match was perfect (100%)
       setTimeout(() => {
         if (this.melodyChallengeMode) {
-          this.generateReferenceSequence();
-          // Use the existing drawing mode UI update function
+          // Only generate a new melody if it was a perfect match
+          if (perfectMatch) {
+            console.log('MELODY_CHALLENGE: Perfect match - generating new melody');
+            this.generateReferenceSequence_1_3();
+          } else {
+            console.log('MELODY_CHALLENGE: Same melody continues - not a perfect match yet');
+          }
+          
+          // Always update the UI to refresh the reference melody display
           this.updateDrawingModeUI();
         }
       }, 3500);
