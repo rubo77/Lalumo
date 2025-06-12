@@ -2628,23 +2628,44 @@ export function pitches() {
       const isGerman = document.documentElement.lang === 'de';
       let perfectMatch = matchPercentage === 100;
       
+      // Initialize success counter if not already initialized
+      if (this.levelSuccessCounter === undefined) {
+        this.levelSuccessCounter = 0;
+        console.log('MELODY_PROGRESSION: Initialized success counter to 0');
+      }
+      
       // Create feedback message
       if (matchPercentage >= 80) {
-        // Great match - increase level if not already at max
-        if (this.drawMelodyLevel < 5) { // Max level is 5 (which gives 8 notes)
+        // Great match - count towards level increase
+        
+        // Increase success counter
+        this.levelSuccessCounter++;
+        console.log(`MELODY_PROGRESSION: Success count: ${this.levelSuccessCounter}/10 for level ${this.drawMelodyLevel}`);
+        
+        // Save success counter to localStorage
+        try {
+          localStorage.setItem('lalumo_draw_melody_success_counter', this.levelSuccessCounter);
+        } catch (e) {
+          console.warn('Could not save success counter to localStorage', e);
+        }
+        
+        // If counter reaches 10, increase level if not at max
+        if (this.levelSuccessCounter >= 10 && this.drawMelodyLevel < 5) { // Max level is 5 (gives 8 notes)
           this.drawMelodyLevel++;
-          console.log(`User level increased to ${this.drawMelodyLevel}`);
+          this.levelSuccessCounter = 0; // Reset counter for next level
+          console.log(`MELODY_PROGRESSION: User level increased to ${this.drawMelodyLevel}`);
           
           // Save level to localStorage for persistence
           try {
             localStorage.setItem('lalumo_draw_melody_level', this.drawMelodyLevel);
+            localStorage.setItem('lalumo_draw_melody_success_counter', 0); // Reset counter in storage
           } catch (e) {
             console.warn('Could not save draw melody level to localStorage', e);
           }
           
           feedback = isGerman ? 
-            `Super! Das war sehr gut! Jetzt versuche eine längere Melodie mit ${this.drawMelodyLevel + 3} Tönen.` : 
-            `Great job! That was very good! Now try a longer melody with ${this.drawMelodyLevel + 3} notes.`;
+            `Super! Du hast 10 Melodien erfolgreich gespielt! Jetzt versuche längere Melodien mit ${this.drawMelodyLevel + 3} Tönen.` : 
+            `Great job! You've successfully played 10 melodies! Now try longer melodies with ${this.drawMelodyLevel + 3} notes.`;
           
           // Show rainbow effect for perfect match
           if (perfectMatch) {

@@ -1,26 +1,27 @@
-# Draw a Melody Feature Enhancements
+# Lalumo Draw a Melody Activity Plan
 
 ## Notes
-- User requested enhancements to the "Draw a melody" feature: note highlighting when hit, semi-transparent trace of the last drawing, and a clickable top box to replay the melody.
-- Explored and reviewed relevant code in pitches.js and index.html.
-- Implementation is now focused only on: When starting a new drawing, the previous path should be shown semi-transparently.
-- User clarified: The last path should always be visible when drawing a new path, not just after using the clear button.
-- User also requested: The reference melody box (top box) should be clickable to replay the melody.
-- Clickable reference melody box feature is actively being debugged; ensure event listener attaches correctly and element is present in DOM.
-- In game mode, the replay melody should have the same number of notes as painted on the canvas; initially 3 notes, increasing as the user advances (dynamic, not static).
-- State variable for draw melody level is now added; reference melody generation is now dynamic by level. Next: test and refine this progression logic.
+- Current focus: Implement note highlight effect at the exact moment a note is hit
+- User does not want to simply work through the TODO list; guidance will be provided step by step.
+- Note highlighting on correct note hit is now implemented; confirm behavior.
+- Root cause: `showFeedback` was used as both a variable and a function. User resolved by renaming the function. Feedback and highlighting now work as intended.
+- New requirements: The same melody should persist until it is perfectly replayed; show a rainbow effect (as in 1_2) when the melody is mastered. Both are now implemented.
+- Next requirements:
+  - Slower advancement: 10x with 3 notes, then 10x with 4, etc. (now implemented)
+  - Progress should be saved in preferences and exported in the string
+  - When a note is hit, the corresponding note in the box should briefly light up at that moment (current focus)
+  - Remove the lowest octave from the note range (now implemented)
 
 ## Task List
-- [x] Add previousDrawPath state variable to store the last drawing path
-- [x] Update clearDrawing to save the current path to previousDrawPath before clearing
-- [x] Update startDrawing to render previousDrawPath with semi-transparency before starting a new drawing
-- [ ] Test semi-transparent previous drawing feature
-- [x] Update implementation so previous path is always visible when drawing a new path (not just after clearing)
-  - [x] Update endDrawing to save current path to previousDrawPath
-- [x] Make the top box clickable to replay the melody
-- [ ] Debug and fix clickable reference melody box feature (ensure event listener attaches and element is present)
-- [ ] Update replay melody so that in game mode, it dynamically matches the number of notes painted on the canvas (start with 3 and increase as user advances)
-- [ ] Test and refine dynamic melody length progression logic
+- [x] Investigate and fix `this.showFeedback` context/definition bug so feedback is shown on success/failure
+- [x] Implement note highlighting when correct note is hit
+- [x] Confirm feedback and highlighting work as expected in "Draw a Melody"
+- [x] Ensure the same melody persists until perfectly replayed
+- [x] Show rainbow effect when melody is mastered (like in 1_2)
+- [x] Implement slower advancement: 10x with 3 notes, then 10x with 4, etc.
+- [x] Remove lowest octave from note range
+- [ ] Save and export progress in preferences/string
+- [ ] Note highlight should occur exactly when note is hit
 
 ## Current Goal
-Test semi-transparent previous drawing feature, debug clickable reference melody box, and test dynamic melody length
+Implement note highlight should occur exactly when note is hit

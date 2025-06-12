@@ -4,3 +4,5 @@
 - Neue Kommentare immer auf Englisch
 - Neue Strings nur zur default strings.xml hinzufügen
 - keine fallbacks bauen, sondern die Probleme beheben
+- do not work through the TODO list yourself
+- never deploy yourself unless asked
