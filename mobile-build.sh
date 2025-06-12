@@ -173,21 +173,67 @@ cp package.json dist/
 echo "###### 6. Syncing with Capacitor..."
 npx cap sync
 
-# Create Android launcher icons if they don't exist
-LAUNCHER_ICON_DIR="android/app/src/main/res"
+# Generate Android launcher icons from app_icon.png
+echo "###### 7. Generate Android launcher icons from app_icon.png ..."
 
-echo "###### 7. Check if launcher icons exist, if not create them from favicon.svg ..."
-if [ ! -f "$LAUNCHER_ICON_DIR/mipmap-mdpi/ic_launcher.png" ]; then
-  echo "this would create Android launcher icons..."
-  echo "tested for the file $LAUNCHER_ICON_DIR/mipmap-mdpi/ic_launcher.png"
-  echo "disabled !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+# Create directory structure if it doesn't exist
+mkdir -p android/app/src/main/res/mipmap-hdpi
+mkdir -p android/app/src/main/res/mipmap-mdpi
+mkdir -p android/app/src/main/res/mipmap-xhdpi
+mkdir -p android/app/src/main/res/mipmap-xxhdpi
+mkdir -p android/app/src/main/res/mipmap-xxxhdpi
+mkdir -p android/app/src/main/res/mipmap-anydpi-v26
 
-  # # Create required directories if they don't exist
-  # for density in mdpi hdpi xhdpi xxhdpi xxxhdpi; do
-  #   mkdir -p "$LAUNCHER_ICON_DIR/mipmap-$density"
-  # done
+# Create a solid background for adaptive icon
+convert -size 108x108 xc:"#FFBE85" android/app/src/main/res/mipmap-mdpi/ic_launcher_background.png
+convert -size 162x162 xc:"#FFBE85" android/app/src/main/res/mipmap-hdpi/ic_launcher_background.png
+convert -size 216x216 xc:"#FFBE85" android/app/src/main/res/mipmap-xhdpi/ic_launcher_background.png
+convert -size 324x324 xc:"#FFBE85" android/app/src/main/res/mipmap-xxhdpi/ic_launcher_background.png
+convert -size 432x432 xc:"#FFBE85" android/app/src/main/res/mipmap-xxxhdpi/ic_launcher_background.png
 
-  # # Define icon sizes for different DPIs
+# Generate foreground images from app_icon.png
+convert src/images/app_icon.png -resize 108x108 -background none -gravity center -extent 108x108 android/app/src/main/res/mipmap-mdpi/ic_launcher_foreground.png
+convert src/images/app_icon.png -resize 162x162 -background none -gravity center -extent 162x162 android/app/src/main/res/mipmap-hdpi/ic_launcher_foreground.png
+convert src/images/app_icon.png -resize 216x216 -background none -gravity center -extent 216x216 android/app/src/main/res/mipmap-xhdpi/ic_launcher_foreground.png
+convert src/images/app_icon.png -resize 324x324 -background none -gravity center -extent 324x324 android/app/src/main/res/mipmap-xxhdpi/ic_launcher_foreground.png
+convert src/images/app_icon.png -resize 432x432 -background none -gravity center -extent 432x432 android/app/src/main/res/mipmap-xxxhdpi/ic_launcher_foreground.png
+
+# Create monochromatic version (same as foreground but with light color)
+convert src/images/app_icon.png -resize 108x108 -background none -gravity center -extent 108x108 -modulate 100,0,100 android/app/src/main/res/mipmap-mdpi/ic_launcher_monochrome.png
+convert src/images/app_icon.png -resize 162x162 -background none -gravity center -extent 162x162 -modulate 100,0,100 android/app/src/main/res/mipmap-hdpi/ic_launcher_monochrome.png
+convert src/images/app_icon.png -resize 216x216 -background none -gravity center -extent 216x216 -modulate 100,0,100 android/app/src/main/res/mipmap-xhdpi/ic_launcher_monochrome.png
+convert src/images/app_icon.png -resize 324x324 -background none -gravity center -extent 324x324 -modulate 100,0,100 android/app/src/main/res/mipmap-xxhdpi/ic_launcher_monochrome.png
+convert src/images/app_icon.png -resize 432x432 -background none -gravity center -extent 432x432 -modulate 100,0,100 android/app/src/main/res/mipmap-xxxhdpi/ic_launcher_monochrome.png
+
+# Generate standard launcher icons (non-adaptive)
+convert -background none src/images/app_icon.png -resize 48x48 android/app/src/main/res/mipmap-mdpi/ic_launcher.png
+convert -background none src/images/app_icon.png -resize 48x48 android/app/src/main/res/mipmap-mdpi/ic_launcher_round.png
+convert -background none src/images/app_icon.png -resize 72x72 android/app/src/main/res/mipmap-hdpi/ic_launcher.png
+convert -background none src/images/app_icon.png -resize 72x72 android/app/src/main/res/mipmap-hdpi/ic_launcher_round.png
+convert -background none src/images/app_icon.png -resize 96x96 android/app/src/main/res/mipmap-xhdpi/ic_launcher.png
+convert -background none src/images/app_icon.png -resize 96x96 android/app/src/main/res/mipmap-xhdpi/ic_launcher_round.png
+convert -background none src/images/app_icon.png -resize 144x144 android/app/src/main/res/mipmap-xxhdpi/ic_launcher.png
+convert -background none src/images/app_icon.png -resize 144x144 android/app/src/main/res/mipmap-xxhdpi/ic_launcher_round.png
+convert -background none src/images/app_icon.png -resize 192x192 android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png
+convert -background none src/images/app_icon.png -resize 192x192 android/app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.png
+
+# Create adaptive icon XML files
+cat > android/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml << 'EOL'
+<?xml version="1.0" encoding="utf-8"?>
+<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+  <background android:drawable="@mipmap/ic_launcher_background"/>
+  <foreground android:drawable="@mipmap/ic_launcher_foreground"/>
+  <monochrome android:drawable="@mipmap/ic_launcher_monochrome"/>
+</adaptive-icon>
+EOL
+
+cat > android/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml << 'EOL'
+<?xml version="1.0" encoding="utf-8"?>
+<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+  <background android:drawable="@mipmap/ic_launcher_background"/>
+  <foreground android:drawable="@mipmap/ic_launcher_foreground"/>
+</adaptive-icon>
+EOL
   # declare -A ICON_SIZES=(
   #   [mdpi]=48
   #   [hdpi]=72
