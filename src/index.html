@@ -906,6 +906,9 @@
     <section x-show="active === 'credits' && (window.innerWidth >= 1024 || !menuOpen)" x-transition>
       <h2>Credits</h2>
       <div class="legal-content">
+        <h3>Version</h3>
+        <p id="app-version">Loading version...</p>
+        
         <h3>App-Entwicklung</h3>
         <p>Lalumo Team</p>
         
@@ -1075,6 +1078,32 @@
     // Initial versuchen, Strings zu laden
     updateBackButtonStrings();
     
+    // Event-Listener für Store-Änderungen (wird ausgelöst, sobald Strings geladen sind)
+    document.addEventListener('DOMContentLoaded', () => {
+      // Initialize Alpine.js
+      Alpine.start();
+      
+      // Load and display version number
+      loadVersion();
+    });
+
+    async function loadVersion() {
+      try {
+        // Load package.json
+        const response = await fetch('package.json');
+        const packageJson = await response.json();
+        const version = packageJson.version;
+        
+        // Display version in credits section
+        const versionElement = document.getElementById('app-version');
+        if (versionElement) {
+          versionElement.textContent = `Version ${version}`;
+        }
+      } catch (error) {
+        console.error('Error loading version:', error);
+      }
+    }
+
     // Event-Listener für Store-Änderungen (wird ausgelöst, sobald Strings geladen sind)
     document.addEventListener('alpine:initialized', function() {
       if (window.Alpine && window.Alpine.effect) {

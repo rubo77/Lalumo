@@ -169,6 +169,60 @@ rsync -av --exclude='android/' --exclude='images/backgrounds/original/' public/ 
 echo "Syncing with Capacitor..."
 npx cap sync
 
+# Create Android launcher icons if they don't exist
+LAUNCHER_ICON_DIR="android/app/src/main/res"
+
+# Check if launcher icons exist, if not create them from favicon.svg
+if [ ! -f "$LAUNCHER_ICON_DIR/mipmap-mdpi/ic_launcher.png" ]; then
+  echo "Creating Android launcher icons..."
+  
+  # Create required directories if they don't exist
+  for density in mdpi hdpi xhdpi xxhdpi xxxhdpi; do
+    mkdir -p "$LAUNCHER_ICON_DIR/mipmap-$density"
+  done
+
+  # Define icon sizes for different DPIs
+  declare -A ICON_SIZES=(
+    [mdpi]=48
+    [hdpi]=72
+    [xhdpi]=96
+    [xxhdpi]=144
+    [xxxhdpi]=192
+  )
+
+  # Convert SVG to PNG for each density
+  for density in "${!ICON_SIZES[@]}"; do
+    size=${ICON_SIZES[$density]}
+    output_file="$LAUNCHER_ICON_DIR/mipmap-$density/ic_launcher.png"
+    echo "Creating $density icon ($size x $size)..."
+    
+    # Use ImageMagick to convert SVG to PNG
+    convert -background none "public/favicon.svg" -resize ${size}x${size} "$output_file"
+  done
+fi
+
+# Create adaptive icon layers if they don't exist
+if [ ! -f "$LAUNCHER_ICON_DIR/mipmap-xxxhdpi/ic_launcher_foreground.png" ]; then
+  echo "Creating adaptive launcher icons..."
+  
+  # Create foreground icon (108x108 px)
+  convert -background none "public/favicon.svg" -resize 108x108 \
+    "$LAUNCHER_ICON_DIR/mipmap-xxxhdpi/ic_launcher_foreground.png"
+  
+  # Create background icon (108x108 px)
+  convert -size 108x108 xc:white \
+    "$LAUNCHER_ICON_DIR/mipmap-xxxhdpi/ic_launcher_background.png"
+fi
+
+# Copy adaptive icons to other densities
+for density in mdpi hdpi xhdpi xxhdpi; do
+  mkdir -p "$LAUNCHER_ICON_DIR/mipmap-$density"
+  cp "$LAUNCHER_ICON_DIR/mipmap-xxxhdpi/ic_launcher_foreground.png" \
+    "$LAUNCHER_ICON_DIR/mipmap-$density/ic_launcher_foreground.png"
+  cp "$LAUNCHER_ICON_DIR/mipmap-xxxhdpi/ic_launcher_background.png" \
+    "$LAUNCHER_ICON_DIR/mipmap-$density/ic_launcher_background.png"
+done
+
 # Ensure only used images are copied to Android assets
 echo "Finding used images in the code..."
 

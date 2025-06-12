@@ -95,6 +95,7 @@ Dies soll in allen aktionen:
 
 - Verschiedene Instrumente
 
+ - back button in android gesondert handeln: der back-button soll da zurück ins menu gehen, aber nur, wenn die navigation nicht gelockt ist.
 - Bei Android funktioniert die Sprache nicht. Nur die mascot messages gehen
 
 - store username and language in export string in Preferences
@@ -136,25 +137,21 @@ Dies soll in allen aktionen:
 - baue die lieder im TODO block im pitches.js
 
 1_5 memory game:
- - fertig
+ - # bereit zur
 
 -------------------------------------------
+@mobile-build.sh: die find funktion, die nur das kopieren soll was benutzt wird passiert zu spät, es wird vorher schon mit rsync alles von public/ nach dist/ kopiert. ich habe den original folder da hinzugefügt, aber es wäre schöner, wenn das automatisch nicht gersnynct würde, wenn es nicht bnutzt wird
 
 - Background-Bilder Lazy load testen
 
  - back button in android gesondert handeln: der back-button soll da zurück ins menu gehen, aber nur, wenn die navigation nicht gelockt ist.
 
-- Die Bilder müssen nach unten weiter expandet werden
-
-- das importieren des exportierten spielstandes mit freigeschalteter welle bei 1_2, dann fortschritt zurücksetzen und den string importieren  führt nicht dazu, dass bei 1_2 die welle wieder freigeschaltet ist. füge eine message ein. beim importieren, was genau durch den string freigeschaltet wurde
-
 - exportProgress funktioniiert nicht merh, wenn man garbage importiert hat
 
 - add the activity ids 1_1, 1_2, 1_3, 1_4, 1_5 in all functions, that are only used in one activity in pitches.js
 
-- why is the apk 30MB large?
-
-# most important
-@mobile-build.sh baue verbose option ein, die zeigt, was kopiert wird, und warum der original folder mit kopiert wird
 - warum ist das laubncher icon nur ein weisser kreis?
 - baue die jeweils aktuelle versionsnummer automatisch in den credits screen ein
+- Webpack-Bundle-Analyzer verwenden um große Abhängigkeiten zu identifizieren
+
+# most important
