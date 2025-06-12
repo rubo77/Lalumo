@@ -3612,14 +3612,13 @@ export function pitches() {
         btn.disabled = true;
       });
       
-      // Select new random animal images for each new melody
-      // This ensures the animals change with each new melody
-      this.selectRandomAnimalImages();
-      
       // Kurze Pause einfügen, um sicherzustellen, dass vorherige Sounds gestoppt wurden
       setTimeout(() => {
         // Generate a new melody if requested
         if (generateNew) {
+          // Select new random animal images only when generating a new melody
+          // This ensures the animals only change when the user answers correctly or enters the activity
+          this.selectRandomAnimalImages();
           if (!this.generateSoundHighOrLowMelody()) {
             console.error('AUDIO_ERROR: Failed to generate sound judgment melody');
             

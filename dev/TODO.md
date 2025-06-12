@@ -110,7 +110,7 @@ Dies soll in allen aktionen:
 - reset all progress geht noch nicht
 
 1_4 Does It Sound Right:
-- es darf nicht bei jedem klick ein neues tierpaar generiert werden, sondern nur, wenn man erfolgreich geraten hat oder wenn man die activity betritt
+- when the "next melody" button is pressed in the "Does It Sound Right?" activity, the animal images should NOT change
 - Manchmal zeigt er am anfang das falsche Lied an, die ton. Länger Stimmen noch nicht alle. 
 - fix gebogenen text
 - es kommt mehrmals in log "Generated sound judgment melody:..."
