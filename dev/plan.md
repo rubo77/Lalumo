@@ -1,7 +1,12 @@
 # Lalumo Draw a Melody Activity Plan
 
 ## Notes
-- Current focus: Implement note highlight effect at the exact moment a note is hit
+- **Current focus:** The top priority issues are:
+  - **Navigation between activities is not working**
+  - **Answer checking bugs in "High or Low" (1_1)**
+- Current focus: **Top Priority: Diagnose and fix navigation and answer checking bugs**, specifically:
+  - Navigation between activities is still not working
+  - In "High or Low" (1_1), all answers are marked as wrong regardless of choice
 - User does not want to simply work through the TODO list; guidance will be provided step by step.
 - Note highlighting on correct note hit is now implemented; confirm behavior.
 - Root cause: `showFeedback` was used as both a variable and a function. User resolved by renaming the function. Feedback and highlighting now work as intended.
@@ -16,79 +21,19 @@
   - Playwright strict mode error: locator('button:has-text("Generate")') matches multiple elements in username modal, causing test-utils.js to throw
 - Playwright username modal strict mode error is now fixed (test-utils.js updated to select the primary button by class)
 - Focus is now on restoring or adapting the missing progress variable(s) for High or Low, and updating the template to use the correct variable(s) so Alpine Expression Errors are resolved.
-- Next step: Reintroduce or adapt the progress variable for High or Low and update the template accordingly before continuing with further tests or development.
-- Next requirements:
-  - Slower advancement: 10x with 3 notes, then 10x with 4, etc. (now implemented)
-  - Progress should be saved in preferences and exported in the string
-  - When a note is hit, the corresponding note in the box should briefly light up at that moment (current focus)
-  - Remove the lowest octave from the note range (now implemented)
-  - High or Low (1_1):
-    - Prevent consecutive duplicate puzzles (now implemented)
-    - Ensure the second tone is never C5 (now implemented)
-  - Android: Deprecated SYSTEM_UI_FLAG_* API warning in MainActivity.java; needs update to WindowInsetsController for Android 11+ (see TODO.md)
-  - Android launcher icon remains white despite icon generation logic; investigate icon creation and mipmap usage
-  - Investigation: Icon files exist and are referenced in manifest and adaptive icon XML; next, check actual image contents and format
-  - Diagnostic: ic_launcher_foreground.png is fully transparent or contains only one color; this likely causes the white icon issue. Need to inspect and replace/fix this image.
-  - User provided a bird image to use as the new launcher icon foreground (see conversation, image 0)
-  - Bird icon image is now available at /src/images/app_icon.png and ready for icon generation logic update
-  - Version number in credits only shows "Loading version..."; fix version injection logic (now fixed)
-  - New requirement: Script to remove backgrounds from animal images (goodAnimalImages and badAnimalImages) by making top-left color transparent within a threshold, saving originals if not already present
-  - Implement level system and progress logic for 'Does It Sound Right?' activity; persist and export progress in preferences.
-  - Relevant code locations for 'Does It Sound Right?' activity have been identified and reviewed in pitches.js.
-  - Level system for 'Does It Sound Right?' activity is now implemented in generateSoundHighOrLowMelody and state variable soundJudgmentLevel.
-  - Progress tracking, level initialization from preferences, and UI display for 'Does It Sound Right?' activity are now implemented. Next: answer checking, streak, and export logic.
-  - Sound judgment progress/level is now integrated with preferences export/import/reset, and includes diagnostic logging.
-- All modular activity files are created and contain function skeletons. Next: full migration of logic from pitches.js into modules.
-- All function skeletons from pitches.js have been migrated into their respective module files. Next: fully migrate logic/implementation from pitches.js into modules and adapt imports/usages.
-- Investigation: Why /images/1_5_pitches_bad_rabbit.png is not showing transparent background after edit/commit
-- Animal background removal script did not process rabbit image due to wrong working directory or image path; must fix script invocation or paths to resolve transparency issue
-- Script path/config fixed; next step: rerun script and verify transparency for rabbit image
-- [x] Add working directory check to animal background removal script
-- The transparency issue was not with the image processing script (which works as intended), but with the browser still showing the old/original image—likely due to deployment artifact. Further investigation should focus on deployment handling.
-- It is now confirmed that this is not a browser cache issue; even after re-downloading, the old image is shown. The problem likely lies in deployment, file copying, or build output not updating the image as expected. Next: Investigate build/deployment pipeline for static asset propagation.
-- Änderungen an Bildern werden erst nach `cp -r public/images/* dist/images/` sichtbar (Build/Deploy-Workflow-Notiz).
-- User suspects that the progress display (e.g., streak/level) in the activity container may be immediately overwritten by feedback messages ("well done..."), making it invisible in the UI.
-- The correct activity container for the progress display in 'Does It Sound Right?' is `#1_4_pitches`. The selector in the code has been corrected; next, verify persistent and clear progress/streak/level display.
-- [!] The selector `#1_4_pitches` is not a valid CSS selector (IDs starting with a digit must be escaped). There is a runtime error: `Document.querySelector: '#1_4_pitches' is not a valid selector`. Next: Investigate and fix the selector issue for the activity container so the progress display attaches correctly.
-- Konzept für künftige File-Struktur und Modularisierung von pitches.js/Activities soll in dev/FILESTRUCTURE.md dokumentiert werden (siehe Userwunsch).
-- [x] Konzept für künftige File-Struktur und die Aufteilung von pitches.js/Activities in dev/FILESTRUCTURE.md dokumentiert
-- [x] Beginne mit der Umsetzung der modularen Aufteilung von pitches.js (Dateistruktur und common.js erstellt)
-- [x] Erstelle und dokumentiere ein Konzept für die File-Struktur und die Aufteilung von pitches.js in einzelne Activity-Module in dev/FILESTRUCTURE.md
-- [x] Beginne mit der Umsetzung der modularen Aufteilung von pitches.js (Dateistruktur und common.js erstellt)
-- [x] Erstelle Moduldateien für alle Einzelaktivitäten (1_1_high_or_low.js, 1_2_match_sounds.js, ...)
-- [x] Migriere Funktionen aus pitches.js in die jeweiligen Moduldateien (common.js, 1_1_high_or_low.js, ...)
-  - [x] Beginne mit Migration gemeinsamer Funktionen (z.B. afterInit) in common.js
-  - [x] Migriere spezifische Aktivitätsfunktionen für Sound Judgment (1_4) in 1_4_sound_judgment.js
-  - [x] Migriere spezifische Aktivitätsfunktionen für Draw a Melody (1_3) in 1_3_draw_melody.js
-  - [x] Migriere spezifische Aktivitätsfunktionen für High or Low (1_1) in 1_1_high_or_low.js
-  - [x] Migriere spezifische Aktivitätsfunktionen für Match Sounds (1_2) in 1_2_match_sounds.js
-  - [x] Migriere spezifische Aktivitätsfunktionen für Memory Game (1_5) in 1_5_memory_game.js
-  - [x] Alle Funktionsskelette aus pitches.js in die jeweiligen Moduldateien übertragen
-  - [x] Vollständige Migration der Logik/Implementierung aus pitches.js in die Moduldateien und Anpassung aller Aufrufe/Imports
-- [x] pitches.js als funktionierende Basis wiederhergestellt, nächster Schritt: Schrittweises Testen und Integration der Module
-- [x] Vollständige Migration der Logik/Implementierung aus pitches.js in die Moduldateien und Anpassung aller Aufrufe/Imports
-- [x] pitches.js als funktionierende Basis wiederhergestellt, nächster Schritt: Schrittweises Testen und Integration der Module
-- [!] **Ab jetzt: Automatisches, schrittweises Testen und Integration der Module in pitches.js; bei Fehlern automatische Korrektur oder Rollback bis lauffähig**
-- [x] Erste Aktivitätsmodul-Integration (High or Low) läuft; Syntaxfehler werden automatisch korrigiert
-- [x] High or Low Modul vollständig neu und fehlerfrei erstellt, bereit für Integration
-- [x] Sound Judgment Modul (1_4) vollständig implementiert und integriert
-- [x] Draw a Melody Modul (1_3) vollständig implementiert und integriert
-- [x] Match Sounds Modul (1_2) vollständig implementiert und integriert
-- [x] Memory Game Modul (1_5) vollständig implementiert und integriert
-- [x] pitches.js ist jetzt obsolet und kann gelöscht werden, sofern keine Referenzen mehr bestehen
-- [x] pitches.js löschen, wenn keine Referenzen mehr bestehen
-- [x] Add Playwright tests for each modular activity, using existing tests as reference
-  - [x] Review and analyze existing Playwright test files and structure
-  - [x] Implement Playwright test for High or Low (1_1)
-  - [x] Implement Playwright test for Match Sounds (1_2)
-  - [x] Implement Playwright test for Draw a Melody (1_3)
-  - [x] Implement Playwright test for Sound Judgment (1_4)
-  - [x] Implement Playwright test for Memory Game (1_5)
-  - [x] Create shared Playwright test helper for setup and username modal
-  - [x] Refactor High or Low test to use shared helper
-  - [x] Refactor remaining Playwright tests to use shared helper
-- [x] Refactor remaining Playwright tests to use shared helper
-- [ ] Investigate and resolve all errors occurring on app startup
+- Both the old pitches.js and pithes.js.new are available for reference. The correct progress variable for High or Low is `highOrLowProgress`, which should be tracked in the component and synced with `progress['1_1_pitches_high_or_low']` as before. This variable has now been reintroduced and synchronized in the High or Low module. Next step: verify if Alpine Expression Errors for this variable are resolved, then address any remaining errors (e.g., `correctAnswersCount`).
+- There are additional Alpine Expression Errors for other variables: `unlockedPatterns`, `currentHighlightedNote`, `mascotSettings`, `showMascot`, etc. These must also be restored or initialized in the relevant Alpine components/modules. **It is crucial to note that all variables referenced in Alpine templates must exist in the global `pitches()` Alpine component, not just in module-local code. After modularization, variables that were previously globally available in the monolithic `pitches.js` are now only set in module-local scopes or not at all. Alpine templates still expect these variables to be present in the global `pitches()` Alpine component. Unless all referenced variables are initialized in the global scope, Alpine Expression Errors will occur, even if the migration steps (see dev/FILESTRUCTURE.md) are followed correctly. This is because Alpine templates do not have access to module-local variables; they rely on the global Alpine component for data. Therefore, it is essential to ensure that all necessary variables are initialized in the global `pitches()` Alpine component to resolve Alpine Expression Errors.**
+- **After modularization, both all variables AND all functions referenced by Alpine templates (via x- directives) must be present in the global `pitches()` Alpine component. Failing to expose functions (e.g. checkHighOrLowAnswer, setMode, etc.) is a critical source of runtime errors and navigation/logic breakage.**
+- **In addition to variables, any function referenced by Alpine templates (e.g. `checkHighOrLowAnswer`) must also be present in the global `pitches()` Alpine component. Modularization can break this if functions are only imported but not exposed on the Alpine data object. Exposing all Alpine-referenced functions on the global pitches() Alpine component is critical to prevent 'is not defined' runtime errors after modularization.**
+- **After modularization, both all variables AND all functions referenced by Alpine templates (via x- directives) must be present in the global `pitches()` Alpine component. Failing to expose functions (e.g. checkHighOrLowAnswer, setMode, etc.) is a critical source of runtime errors and navigation/logic breakage.**
+- **After migration, it is essential to document all additional pitfalls, lessons-learned, and required manual adjustments in dev/FILESTRUCTURE.md. This includes: ensuring all Alpine-referenced variables and functions are globally available, updating all imports/exports, verifying that audio and UI behaviors match the legacy implementation, and confirming that all navigation and answer-checking logic is fully functional.**
+- Current issues: Navigation between activities is still not working; in "High or Low" (1_1), all answers are marked as wrong regardless of choice. These must be diagnosed and fixed next.
+- Current focus: Diagnose and fix navigation and answer checking bugs, specifically:
+  - Navigation between activities is still not working
+  - In "High or Low" (1_1), all answers are marked as wrong regardless of choice
+
+## Current Goal
+**Top Priority: Diagnose and fix navigation and answer checking bugs in modularized code**
 
 ## Task List
 - [x] Investigate and fix `this.showFeedback` context/definition bug so feedback is shown on success/failure
