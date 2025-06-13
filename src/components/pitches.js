@@ -9,6 +9,16 @@ import audioEngine from './audio-engine.js';
 // Importiere Debug-Utilities
 import { debugLog } from '../utils/debug.js';
 
+// Importiere Test-Funktionen aus den Modulen
+import { 
+  testCommonModuleImport,
+  testHighOrLowModuleImport,
+  testMatchSoundsModuleImport,
+  testDrawMelodyModuleImport,
+  testSoundJudgmentModuleImport,
+  testMemoryGameModuleImport
+} from './pitches/index.js';
+
 export function pitches() {
   // Audio-Engine-Initialisierung wird in afterInit durchgeführt
   return {
