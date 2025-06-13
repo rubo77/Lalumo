@@ -6,9 +6,6 @@
 // Importiere die zentrale Audio-Engine für alle Audiofunktionen
 import audioEngine from './audio-engine.js';
 
-// Import Tone.js library for audio synthesis
-import * as Tone from 'tone';
-
 // Importiere Debug-Utilities
 import { debugLog } from '../utils/debug.js';
 
