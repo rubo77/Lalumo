@@ -121,15 +121,7 @@ Dies soll in allen aktionen:
 - wenn man beim malen den rand des canvas überschreitet, sollte der strich weiter im canvas gemalt werden, an der kante entlang
 
 1_4 Does It Sound Right:
-- # bereit zur veröffentlichung
-- when the "next melody" button is pressed in the "Does It Sound Right?" activity, the animal images should NOT change
-- Manchmal zeigt er am anfang das falsche Lied an, die ton. Länger Stimmen noch nicht alle. 
-- fix gebogenen text
-- es kommt mehrmals in log "Generated sound judgment melody:..."
-- die tonlängen Stimmen noch nicht alle. 
-- die tiere müssen noch durchsichtigen rand haben:
- - ja@pitches.js#L78-94 write a script, das bei all diesen mages die bilder freistellt, also dass die farbe oben links im bild wählt und dann ausgehend von dem punkt sich ausdehnend die farben auf transparent setzt solange die nicht über einem bestimmten sthreshold abweichen. speichere die bilder dann unter s´dem selben namen, kopiere die bilder nach images/originals/ wenn sie noch nciht existieren
- - progress einbauen (unten anzeigen):
+- progress einbauen (unten anzeigen):
   - level 1: Es gibt 2 falsche noten, keine pause als fehler
   - level 2: Es gibt 2 falsche noten, Auch eine Pause ist als fehler möglich
   - level 3: Es gibt nur eine falsche note, keine pause als fehler
@@ -138,6 +130,14 @@ Dies soll in allen aktionen:
   - level 6: Es gibt nur eine falsche note, eine Pause ist als fehler möglich, der fehler abstand der note ist maximal 2 halbtöne
   - level 7: Es gibt nur eine falsche note, eine Pause ist als fehler möglich, der fehler abstand der note ist maximal 1 halbtöne
 - den progress auch in preferences export import und reset einbauen
+- # bereit zur veröffentlichung
+- when the "next melody" button is pressed in the "Does It Sound Right?" activity, the animal images should NOT change
+- Manchmal zeigt er am anfang das falsche Lied an, die ton. Länger Stimmen noch nicht alle. 
+- fix gebogenen text
+- es kommt mehrmals in log "Generated sound judgment melody:..."
+- die tonlängen Stimmen noch nicht alle. 
+- die tiere müssen noch durchsichtigen rand haben:
+ - ja@pitches.js#L78-94 write a script, das bei all diesen mages die bilder freistellt, also dass die farbe oben links im bild wählt und dann ausgehend von dem punkt sich ausdehnend die farben auf transparent setzt solange die nicht über einem bestimmten sthreshold abweichen. speichere die bilder dann unter s´dem selben namen, kopiere die bilder nach images/originals/ wenn sie noch nciht existieren
 - baue die lieder im TODO block im pitches.js
 
 1_5 memory game:

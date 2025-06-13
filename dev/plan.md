@@ -22,6 +22,10 @@
   - Bird icon image is now available at /src/images/app_icon.png and ready for icon generation logic update
   - Version number in credits only shows "Loading version..."; fix version injection logic (now fixed)
   - New requirement: Script to remove backgrounds from animal images (goodAnimalImages and badAnimalImages) by making top-left color transparent within a threshold, saving originals if not already present
+  - Implement level system and progress logic for 'Does It Sound Right?' activity; persist and export progress in preferences.
+  - Relevant code locations for 'Does It Sound Right?' activity have been identified and reviewed in pitches.js.
+  - Level system for 'Does It Sound Right?' activity is now implemented in generateSoundHighOrLowMelody and state variable soundJudgmentLevel.
+  - Progress tracking, level initialization from preferences, and UI display for 'Does It Sound Right?' activity are now implemented. Next: answer checking, streak, and export logic.
 
 ## Task List
 - [x] Investigate and fix `this.showFeedback` context/definition bug so feedback is shown on success/failure
@@ -32,7 +36,9 @@
 - [x] Implement slower advancement: 10x with 3 notes, then 10x with 4, etc.
 - [x] Remove lowest octave from note range
 - [x] Prevent duplicate puzzles and restrict second tone in High or Low
-- [ ] Save and export progress in preferences/string
+- [x] Implement level system for 'Does It Sound Right?' activity
+- [x] Implement progress tracking, level initialization from preferences, and UI display for 'Does It Sound Right?'
+- [x] Implement answer checking, streak, and export logic for 'Does It Sound Right?'
 - [ ] Note highlight should occur exactly when note is hit
 - [ ] Android launcher icon is still white; fix icon generation and ensure correct icon is used
   - [x] Replace or repair ic_launcher_foreground.png so it is visible and not fully transparent
@@ -42,4 +48,4 @@
 - [x] Write a script to remove backgrounds from animal images, using top-left color as transparency reference, saving originals if not already present
 
 ## Current Goal
-Save and export progress in preferences/string
+Note highlight should occur exactly when note is hit

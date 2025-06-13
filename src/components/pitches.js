@@ -73,6 +73,9 @@ export function pitches() {
     // Draw melody activity progression
     drawMelodyLevel: 0, // User level in draw melody activity (determines number of notes)
     
+    // Does It Sound Right activity progression
+    soundJudgmentLevel: 1, // User level in Does It Sound Right activity (determines difficulty)
+    
     // Arrays für die zufälligen Tierbilder
     goodAnimalImages: [
       '/images/1_5_pitches_good_bird_notes.png',
@@ -3488,6 +3491,7 @@ export function pitches() {
       this.showFeedback = false;
       this.feedback = '';
       this.correctAnswer = null;
+      this.soundJudgmentCorrectStreak = 0; // Neue Variable für die aktuelle Erfolgsserie
       
       // Select random animal images for this round
       this.selectRandomAnimalImages();
@@ -3500,10 +3504,23 @@ export function pitches() {
         ? 'Hör dir die Melodie an! Klingt sie richtig? Oder ist da ein falscher Ton?'
         : 'Listen to the melody! Does it sound right? Or is there a wrong note?';
       
-      // Track activity usage
+      // Track activity usage and initialize level from preferences if available
       if (!this.progress['1_4_pitches_does-it-sound-right']) {
         this.progress['1_4_pitches_does-it-sound-right'] = 0;
       }
+      
+      // Lade den Level aus dem localStorage, falls vorhanden
+      const savedLevel = parseInt(localStorage.getItem('lalumo_soundJudgmentLevel'));
+      if (!isNaN(savedLevel) && savedLevel >= 1 && savedLevel <= 7) {
+        this.soundJudgmentLevel = savedLevel;
+        console.log(`SOUND JUDGMENT: Loaded level ${this.soundJudgmentLevel} from preferences`);
+      } else if (!this.soundJudgmentLevel || this.soundJudgmentLevel < 1) {
+        // Fallback: Setze Level auf 1, wenn nichts gespeichert ist
+        this.soundJudgmentLevel = 1;
+      }
+      
+      // Aktualisiere die UI-Anzeige des Levels
+      this.updateSoundJudgmentLevelDisplay();
       
       // Show mascot message first (moved from playback completion)
       this.showMascotMessage(introMessage);
@@ -3521,8 +3538,57 @@ export function pitches() {
     },
     
     /**
+     * Aktualisiert die Anzeige des aktuellen Levels in der UI
+     */
+    updateSoundJudgmentLevelDisplay() {
+      // Finde das Level-Anzeigeelement im DOM
+      const levelDisplay = document.querySelector('.sound-judgment-level');
+      
+      // Wenn kein Element vorhanden ist, erstellen wir eines
+      if (!levelDisplay) {
+        // Erstelle neues Element für die Level-Anzeige
+        const levelElement = document.createElement('div');
+        levelElement.className = 'sound-judgment-level progress-display';
+        
+        // Füge es als erstes Kind zum Activity-Container hinzu
+        const activityContainer = document.querySelector('#pitches-does-it-sound-right');
+        if (activityContainer) {
+          // Füge es als letztes Element ein
+          activityContainer.appendChild(levelElement);
+        }
+      }
+      
+      // Aktualisiere den Text mit Level-Informationen
+      const levelDescriptions = {
+        1: 'Level 1: 2 falsche Noten, keine Pause',
+        2: 'Level 2: 2 falsche Noten, mit Pausen',
+        3: 'Level 3: 1 falsche Note, keine Pause',
+        4: 'Level 4: 1 falsche Note, mit Pausen',
+        5: 'Level 5: 1 falsche Note, max. 3 Halbtöne Abstand',
+        6: 'Level 6: 1 falsche Note, max. 2 Halbtöne Abstand',
+        7: 'Level 7: 1 falsche Note, max. 1 Halbton Abstand'
+      };
+      
+      const levelText = levelDescriptions[this.soundJudgmentLevel] || `Level ${this.soundJudgmentLevel}`;
+      const streakInfo = this.soundJudgmentCorrectStreak > 0 ? ` (${this.soundJudgmentCorrectStreak}/10)` : '';
+      
+      // Update all level displays
+      document.querySelectorAll('.sound-judgment-level').forEach(el => {
+        el.textContent = levelText + streakInfo;
+      });
+    },
+    
+    /**
      * Generates a melody for the "Does It Sound Right?" activity without playing it
      * This separates the melody generation logic from playback
+     * Implements progressive difficulty levels:
+     * - Level 1: Es gibt 2 falsche Noten, keine Pause als Fehler
+     * - Level 2: Es gibt 2 falsche Noten, Pause kann auch der Fehler sein
+     * - Level 3: Es gibt nur eine falsche Note, keine Pause als Fehler
+     * - Level 4: Es gibt nur eine falsche Note, Pause kann auch der Fehler sein
+     * - Level 5: Es gibt nur eine falsche Note, Pause möglich, Fehler max. 3 Halbtöne
+     * - Level 6: Es gibt nur eine falsche Note, Pause möglich, Fehler max. 2 Halbtöne
+     * - Level 7: Es gibt nur eine falsche Note, Pause möglich, Fehler max. 1 Halbton
      */
     generateSoundHighOrLowMelody() {
       // Get all melody keys
@@ -3531,6 +3597,22 @@ export function pitches() {
         console.error('No melodies available for sound HighOrLow activity');
         return false;
       }
+      
+      // Stellsicherheit für Level-System
+      if (!this.soundJudgmentLevel || this.soundJudgmentLevel < 1) {
+        this.soundJudgmentLevel = 1;
+      } else if (this.soundJudgmentLevel > 7) {
+        this.soundJudgmentLevel = 7;
+      }
+      
+      // Setze die Schwierigkeitsparameter abhängig vom Level
+      const difficulty = {
+        numberOfWrongNotes: this.soundJudgmentLevel <= 2 ? 2 : 1,
+        allowPauseModification: this.soundJudgmentLevel % 2 === 0, // Gerade Levels erlauben Pausen als Fehler
+        maxSemitoneDistance: this.soundJudgmentLevel >= 5 ? 9 - this.soundJudgmentLevel : 100 // Level 5: 3, Level 6: 2, Level 7: 1
+      };
+      
+      console.log(`SOUND JUDGMENT: Currently at level ${this.soundJudgmentLevel}`, difficulty);
         
       // Randomly decide if the melody should have a wrong note (50% chance)
       this.melodyHasWrongNote = Math.random() < 0.5;
@@ -3566,50 +3648,100 @@ export function pitches() {
       // Create a copy of the melody notes
       let melodyToPlay = [...selectedMelody.notes];
       
-      // If the melody should have a wrong note, modify it
+      // If the melody should have wrong notes, modify it
       if (this.melodyHasWrongNote) {
         // Make a copy of the original melody
         const modifiedMelody = [...melodyToPlay];
         
-        // Pick a random position to modify (not the first or last notes)
-        const noteToModifyIndex = Math.floor(Math.random() * (modifiedMelody.length - 2)) + 1;
+        // Bei höheren Levels wird nur 1 Note falsch, bei niedrigeren 2
+        const wrongNotePositions = [];
         
-        // Extract the note to modify
-        const noteToModify = modifiedMelody[noteToModifyIndex];
-        
-        // Handle notes with duration modifiers, e.g., 'C4:h'
-        let noteLetter, noteOctave, durationModifier = '';
-        
-        if (noteToModify.includes(':')) {
-          const [notePart, modifier] = noteToModify.split(':');
-          noteLetter = notePart.substring(0, 1);
-          noteOctave = notePart.substring(1);
-          durationModifier = ':' + modifier; // Save duration modifier to reapply later
-        } else {
-          noteLetter = noteToModify.substring(0, 1);
-          noteOctave = noteToModify.substring(1);
+        // Sammle mögliche Positionen (nicht erste oder letzte Note)
+        const possiblePositions = [];
+        for (let i = 1; i < modifiedMelody.length - 1; i++) {
+          possiblePositions.push(i);
         }
         
-        // Possible note letters
-        const possibleNotes = ['C', 'D', 'E', 'F', 'G', 'A', 'B'];
+        // Wähle eine oder zwei Positionen aus, je nach Schwierigkeitsstufe
+        for (let i = 0; i < difficulty.numberOfWrongNotes; i++) {
+          if (possiblePositions.length === 0) break;
+          
+          const randomIndex = Math.floor(Math.random() * possiblePositions.length);
+          wrongNotePositions.push(possiblePositions[randomIndex]);
+          possiblePositions.splice(randomIndex, 1); // Entfernt diese Position aus den möglichen
+        }
         
-        // Get the index of the current note
-        const currentNoteIndex = possibleNotes.indexOf(noteLetter);
-        
-        // Generate a wrong note that's different from the original
-        let wrongNoteIndex;
-        do {
-          // Random shift between -2 and +2 semitones, but not 0
-          const shift = Math.floor(Math.random() * 5) - 2;
-          if (shift === 0) continue;
-          wrongNoteIndex = (currentNoteIndex + shift + possibleNotes.length) % possibleNotes.length;
-        } while (wrongNoteIndex === currentNoteIndex);
-        
-        // Create the wrong note, preserving any duration modifier
-        const wrongNote = possibleNotes[wrongNoteIndex] + noteOctave + durationModifier;
-        modifiedMelody[noteToModifyIndex] = wrongNote;
-        
-        console.log(`Modified melody at position ${noteToModifyIndex}: ${noteToModify} -> ${wrongNote}`);
+        // Modifiziere die Noten an den gewählten Positionen
+        for (const noteToModifyIndex of wrongNotePositions) {
+          // Extract the note to modify
+          const noteToModify = modifiedMelody[noteToModifyIndex];
+          
+          // Check if we might replace with a pause
+          const usePause = difficulty.allowPauseModification && Math.random() < 0.3; // 30% Chance für Pause wenn erlaubt
+          
+          if (usePause) {
+            // Replace with a pause of the same duration
+            if (noteToModify.includes(':')) {
+              const [, modifier] = noteToModify.split(':');
+              modifiedMelody[noteToModifyIndex] = 'r:' + modifier; // 'r' ist die Notation für Pause
+            } else {
+              modifiedMelody[noteToModifyIndex] = 'r'; // Einfache Pause ohne Modifier
+            }
+            
+            console.log(`Modified melody at position ${noteToModifyIndex}: ${noteToModify} -> pause`);
+          } else {
+            // Modify the note by changing its pitch
+            // Handle notes with duration modifiers, e.g., 'C4:h'
+            let noteLetter, noteOctave, durationModifier = '';
+            
+            if (noteToModify.includes(':')) {
+              const [notePart, modifier] = noteToModify.split(':');
+              noteLetter = notePart.substring(0, 1);
+              noteOctave = notePart.substring(1);
+              durationModifier = ':' + modifier; // Save duration modifier to reapply later
+            } else {
+              noteLetter = noteToModify.substring(0, 1);
+              noteOctave = noteToModify.substring(1);
+            }
+            
+            // Possible note letters
+            const possibleNotes = ['C', 'D', 'E', 'F', 'G', 'A', 'B'];
+            
+            // Get the index of the current note
+            const currentNoteIndex = possibleNotes.indexOf(noteLetter);
+            
+            // Generate a wrong note that's different from the original
+            let wrongNoteIndex;
+            let shift;
+            let attempts = 0;
+            const maxAttempts = 10;
+            
+            do {
+              if (difficulty.maxSemitoneDistance < 100) {
+                // Für höhere Levels mit eingeschränktem Halbtonabstand
+                // Shift zwischen -maxDistance und +maxDistance, aber nicht 0
+                do {
+                  shift = Math.floor(Math.random() * (2 * difficulty.maxSemitoneDistance + 1)) - difficulty.maxSemitoneDistance;
+                } while (shift === 0);
+              } else {
+                // Für niedrigere Levels: Standard-Verhalten (wie bisher)
+                // Random shift zwischen -2 und +2 semitones, aber nicht 0
+                do {
+                  shift = Math.floor(Math.random() * 5) - 2;
+                } while (shift === 0);
+              }
+              
+              wrongNoteIndex = (currentNoteIndex + shift + possibleNotes.length) % possibleNotes.length;
+              attempts++;
+            } while (wrongNoteIndex === currentNoteIndex && attempts < maxAttempts);
+            
+            // Create the wrong note, preserving any duration modifier
+            const wrongNote = possibleNotes[wrongNoteIndex] + noteOctave + durationModifier;
+            modifiedMelody[noteToModifyIndex] = wrongNote;
+            
+            console.log(`Modified melody at position ${noteToModifyIndex}: ${noteToModify} -> ${wrongNote} (shift: ${shift})`);
+          }
+        }
         
         // Set the modified melody as the current sequence
         melodyToPlay = modifiedMelody;
@@ -3624,6 +3756,7 @@ export function pitches() {
       
       console.log('Generated sound judgment melody:', {
         name: this.currentMelodyName,
+        level: this.soundJudgmentLevel,
         hasWrongNote: this.melodyHasWrongNote,
         sequence: this.currentSequence
       });
@@ -4059,6 +4192,10 @@ export function pitches() {
     
     /**
      * Check the user's answer for the "Does It Sound Right?" activity
+     * With progressive level system:
+     * - Level 1-7 with increasing difficulty
+     * - Need 10 correct answers in a row to advance to next level
+     * - Progress is saved in preferences
      * @param {boolean} userSaysCorrect - True if the user said the melody sounds correct
      */
     checkSoundHighOrLow(userSaysCorrect) {
@@ -4117,6 +4254,51 @@ export function pitches() {
         localStorage.setItem('lalumo_progress', JSON.stringify(this.progress));
         
         console.log('Updated sound judgment progress:', this.progress['1_4_pitches_does-it-sound-right']);
+        
+        // Increment the streak counter for level progression
+        this.soundJudgmentCorrectStreak++;
+        console.log(`SOUND JUDGMENT: Streak increased to ${this.soundJudgmentCorrectStreak}`);
+        
+        // Check if we should advance to the next level (10 correct in a row)
+        if (this.soundJudgmentCorrectStreak >= 10 && this.soundJudgmentLevel < 7) {
+          this.soundJudgmentLevel++;
+          this.soundJudgmentCorrectStreak = 0; // Reset streak for next level
+          
+          // Save the updated level to preferences
+          localStorage.setItem('lalumo_soundJudgmentLevel', this.soundJudgmentLevel);
+          
+          console.log(`SOUND JUDGMENT: Advanced to level ${this.soundJudgmentLevel}!`);
+          
+          // Show level-up message
+          let levelUpMessage;
+          if (language === 'de') {
+            levelUpMessage = `Super! Du hast Level ${this.soundJudgmentLevel} erreicht!`;
+          } else {
+            levelUpMessage = `Great! You've reached level ${this.soundJudgmentLevel}!`;
+          }
+          
+          // Show mascot message for level up
+          this.showMascotMessage(levelUpMessage);
+          
+          // Special animation for level up (bigger rainbow)
+          const bigRainbow = document.createElement('div');
+          bigRainbow.className = 'rainbow-success big';
+          document.body.appendChild(bigRainbow);
+          
+          setTimeout(() => {
+            if (bigRainbow && bigRainbow.parentNode) {
+              bigRainbow.parentNode.removeChild(bigRainbow);
+            }
+          }, 3000);
+        }
+        
+        // Update level display
+        this.updateSoundJudgmentLevelDisplay();
+      } else {
+        // Reset streak on wrong answers
+        this.soundJudgmentCorrectStreak = 0;
+        console.log('SOUND JUDGMENT: Streak reset to 0');
+        this.updateSoundJudgmentLevelDisplay();
       }
       
       // After a delay, reset and prepare for the next melody
