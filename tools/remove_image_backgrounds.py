@@ -15,7 +15,7 @@ from PIL import Image
 # Konfiguration
 COLOR_THRESHOLD = 30  # Farbähnlichkeits-Schwellenwert (0-255), höher = mehr Toleranz
 ORIGINALS_DIR = "images/originals"
-PUBLIC_DIR = "public"  # Basis-Verzeichnis für öffentliche Dateien
+PUBLIC_DIR = "../public"  # Basis-Verzeichnis für öffentliche Dateien, relativ zum tools-Verzeichnis
 
 # Liste der zu bearbeitenden Bilder, relativ zum PUBLIC_DIR
 ANIMAL_IMAGES = [
@@ -98,9 +98,43 @@ def make_background_transparent(img_path, threshold=COLOR_THRESHOLD):
         print(f"Fehler bei Bild {img_path}: {e}")
         return False
 
+def check_directory():
+    """Überprüft, ob das Skript im richtigen Verzeichnis ausgeführt wird."""
+    # Das Skript sollte im tools-Verzeichnis ausgeführt werden
+    # Prüfe, ob der aktuelle Ordnername 'tools' ist und ob der übergeordnete Ordner existiert
+    current_dir = os.path.basename(os.getcwd())
+    parent_public_path = os.path.join(os.getcwd(), PUBLIC_DIR)
+    
+    if current_dir != "tools":
+        print(f"FEHLER: Dieses Skript muss aus dem 'tools'-Verzeichnis ausgeführt werden!")
+        print(f"Aktuelles Verzeichnis: {os.getcwd()}")
+        print("Bitte wechseln Sie in das tools-Verzeichnis und versuchen Sie es erneut.")
+        return False
+        
+    if not os.path.exists(parent_public_path):
+        print(f"FEHLER: {parent_public_path} existiert nicht!")
+        print("Stellen Sie sicher, dass Sie sich im richtigen tools-Verzeichnis befinden.")
+        print("Das Skript erwartet, dass sich '../public' relativ zum tools-Verzeichnis befindet.")
+        return False
+        
+    # Überprüfe, ob mindestens ein Bild aus der Liste im PUBLIC_DIR existiert
+    test_image_path = os.path.join(os.getcwd(), PUBLIC_DIR + ANIMAL_IMAGES[0])
+    if not os.path.exists(test_image_path):
+        print(f"FEHLER: Testbild {test_image_path} nicht gefunden!")
+        print("Überprüfen Sie, ob die Bildpfade in ANIMAL_IMAGES korrekt sind.")
+        return False
+        
+    print("Verzeichnisstruktur und Bildpfade ok.")
+    return True
+
 def process_all_images():
     """Verarbeitet alle definierten Bilder."""
     print("Starte Bildverarbeitung...")
+    
+    # Überprüfe, ob das Skript im richtigen Verzeichnis ausgeführt wird
+    if not check_directory():
+        print("Abbruch aufgrund von Verzeichnisfehlern.")
+        return
     
     # Erstelle das Originals-Verzeichnis, falls es nicht existiert
     originals_dir = os.path.join(os.getcwd(), PUBLIC_DIR, ORIGINALS_DIR)
