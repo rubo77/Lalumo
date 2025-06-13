@@ -51,9 +51,7 @@ TODO
 unter chrome auf dem handy android 15:
 -Multi Touch: wenn mulititouch bemerkt wird, alle anderen touchs ignorieren und trotzdem den knopf drücken
 
-- Die Melodien muss ein Vogel piepen
-- Die Welle muss Sägezahn sein ohne Brandung 
-
+- Regenbogen ist im breiten screen zu weit links
 
 - ergänze ein debug flag, das die console logs nur ausgibt, wenn man die app  im debug mode startet, nicht aber wenn man diese deployed oder als android app startet (already started to be implemented with `debugLog`)
 
@@ -105,6 +103,7 @@ Dies soll in allen aktionen:
 # nach kapitel
 1_1 "High or Low?" (1_1_pitches_high_or_low) 
 - # bereit zur veröffentlichung
+- Die Welle muss Sägezahn sein ohne Brandung 
 - die tiefen töne sind eine oktave zu tief
 - im master level dürfen die töne maximal 3 halbtöne auseinander sein und der erste ton muss nicht mehr C5 sein, sondern kann jeder beliebige sein, es wird nur getestet, ob der 2. ton dann höher oder tiefer ist
 - die erfolgsmeldung muss sich ab level 3 aendern in "der ton war höher" anstatt "hoch" und "der ton war tiefer" anstatt "tief"
@@ -113,6 +112,7 @@ Dies soll in allen aktionen:
 
 1_2 "Match the Sounds":
 - # bereit zur veröffentlichung
+- man muss immer 1s warten, bis man drücken darf
 
 1_3 Draw a Melody:
 - # bereit zur veröffentlichung
@@ -148,5 +148,8 @@ Dies soll in allen aktionen:
 - warum ist das laubncher icon nur ein weisser kreis?
 - baue die jeweils aktuelle versionsnummer automatisch in den credits screen ein
 - Webpack-Bundle-Analyzer verwenden um große Abhängigkeiten zu identifizieren
+
+- erstelle ein concept, wie wir die app vermarkten können
+- build for ios
 
 # most important

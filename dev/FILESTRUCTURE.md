@@ -135,66 +135,69 @@ export default {
 };
 ```
 
-### Migration-Strategie
+### Migration-Strategie: Zerschneiden-Ansatz
 
-Die Migration könnte schrittweise erfolgen:
+Die Migration erfolgt durch Zerschneiden der monolithischen pitches.js in thematische Module:
 
-1. Erstellen der neuen Dateistruktur
-2. Extrahieren der gemeinsamen Funktionen in common.js
-3. Schrittweise Migration jeder Aktivität in ihre eigene Datei
-4. Umstellung der Imports in anderen Dateien
-5. Entfernen der alten pitches.js, sobald alle Funktionen migriert sind
+1. Erstellen der Ordnerstruktur (src/components/pitches/)
+2. Identifizieren der aktivitätsspezifischen Codeblöcke in pitches.js
+3. Verschieben dieser Blöcke in separate Moduldateien ohne Funktionsumstrukturierung
+4. Anpassen der Hauptdatei pitches.js als "Orchestrator"
 
-Diese Modularisierung würde die Wartbarkeit erheblich verbessern und die Entwicklung neuer Features erleichtern, da die Abhängigkeiten klarer definiert wären.
+Dieser Ansatz minimiert den Umstrukturierungsaufwand und das Fehlerrisiko, während er die Vorteile der Modularisierung bietet.
 
-### Wichtige Fallstricke und Hinweise zur Modularisierung
+### Wichtige Hinweise zum Zerschneiden-Ansatz
 
-#### Alpine.js-Integration und globaler Scope
+#### Grundprinzipien
 
-1. **Globale Alpine-Variablen**: Alle Variablen, die in HTML-Templates via Alpine.js verwendet werden (z.B. `x-show="showMascot"`, `x-text="currentHighlightedNote"`), müssen im globalen Alpine-Komponenten-Objekt initialisiert werden, auch wenn sie nur in einem Modul verwendet werden.
+1. **Keine Funktionsumstrukturierung**: Funktionen werden als Blöcke verschoben, ohne ihre interne Struktur zu ändern.
 
-2. **Alpine-Funktionen im globalen Scope**: Alle Funktionen, die direkt in HTML-Templates aufgerufen werden (z.B. `@click="checkHighOrLowAnswer('low')"`, `@click="setMode('main')"`) müssen im globalen Alpine-Objekt verfügbar sein. Dies erfordert Wrapper-Funktionen in der Haupt-Alpine-Komponente, die die modularisierten Funktionen aufrufen.
+2. **Alpine.js-Kompatibilität**: Die Alpine.js-Komponente bleibt vollständig erhalten, nur die Implementierungsdetails werden in Module ausgelagert.
 
-3. **Konsistenz zwischen HTML und JavaScript**: Parameter und Rückgabewerte müssen zwischen HTML-Template und JavaScript-Code konsistent sein. Beispiel: Wenn ein Button `checkHighOrLowAnswer('high')` aufruft, muss die Funktion mit `'high'` als korrekten Wert arbeiten, nicht mit `'first'`.
+3. **Globaler Zustand**: Der Zustand bleibt im Alpine.js-Objekt, Module greifen darauf zu, statt eigenen Zustand zu verwalten.
 
-#### Audio-Integration
+#### Praktische Umsetzung
 
-4. **Audio-Engine-Initialisierung**: Die Audio-Engine muss durch den richtigen Modul-Import initialisiert werden, bevor Töne abgespielt werden können.
+1. **Modulexporte**: Module exportieren Funktionen, die von der Hauptkomponente importiert werden.
 
-5. **Lazy-Loading und Audio-Timing**: Durch das dynamische Laden von Modulen mit `import()` kann es zu Timing-Problemen kommen. Stellen Sie sicher, dass die Audio-Engine vollständig initialisiert ist, bevor Töne abgespielt werden.
+2. **Komponenten-Referenz**: Module erhalten eine Referenz auf die Alpine-Komponente, um auf den gemeinsamen Zustand zuzugreifen.
 
-#### Allgemeine Modularisierungsprobleme
-
-6. **Zustandssynchronisation**: Wenn ein Modul den Zustand ändert (z.B. `highOrLowProgress`), muss dieser Zustand auch im globalen Alpine-Komponenten-Objekt aktualisiert werden, damit andere Module darauf zugreifen können.
-
-7. **Circular Dependencies**: Vermeiden Sie zirkuläre Abhängigkeiten zwischen Modulen. Die Abhängigkeitsrichtung sollte immer von spezifischen Modulen zu allgemeinen Modulen verlaufen.
-
-8. **Navigation**: Die `setMode`-Funktion ist kritisch für die Navigation zwischen Aktivitäten und muss alle Module dynamisch laden können.
-
-#### CSS und Styling
-
-9. **CSS-Scoping**: Bei modularisierten Komponenten sollten auch CSS-Definitionen entsprechend modularisiert oder klar dokumentiert werden.
-
-10. **Dynamisches Styling**: Alpine-Templates mit dynamischen Styling-Direktiven (`x-bind:style`) müssen die entsprechenden Variablen im globalen Alpine-Scope haben.
-
-#### Testbarkeit
-
-11. **Test-Refactoring**: Playwright-Tests müssen möglicherweise angepasst werden, um mit der neuen Modulstruktur zu funktionieren.
-
-12. **Debugging**: Fügen Sie ausführliche Konsolenausgaben hinzu, um die Initialisierung und Ausführung jedes Moduls zu verfolgen.
+3. **Keine Wrapper-Funktionen**: Da die Funktionen direkt in der Hauptkomponente registriert werden, sind keine Wrapper-Funktionen nötig.
 
 #### Migration-Schritte
 
-1. Erstellen der neuen Dateistruktur
-2. Extrahieren der gemeinsamen Funktionen in common.js
-3. Schrittweise Migration jeder Aktivität in ihre eigene Datei
-4. Umstellung der Imports in anderen Dateien
-5. Für jede HTML-Funktionalität: Entsprechende Wrapper-Funktionen im globalen Alpine-Objekt hinzufügen
-6. Vollständige Initialisierung aller Alpine-Variablen im globalen Scope
-7. Testen der Navigation zwischen allen Aktivitäten
-8. Testen der Audio-Funktionalität in allen Aktivitäten
-9. Entfernen der alten pitches.js, sobald alle Funktionen migriert sind
+1. **Ordnerstruktur erstellen**: Anlegen des Verzeichnisses src/components/pitches/
 
-Erinnern Sie sich: Es reicht nicht aus, nur Funktionen zu verschieben - Sie müssen sicherstellen, dass alle HTML-Alpine-Interaktionen weiterhin funktionieren, indem Sie die entsprechenden Wrapper-Funktionen und Variablen im globalen Scope bereitstellen.
+2. **Aktivitätsmodule anlegen**: Erstellen leerer Dateien für jede Aktivität
+   - common.js (gemeinsame Funktionen)
+   - 1_1_high_or_low.js
+   - 1_2_match_sounds.js
+   - 1_3_draw_melody.js
+   - 1_4_sound_judgment.js
+   - 1_5_memory_game.js
 
-eränze hier, was noch alles zu beachten war nach der umstellung
+3. **Code blockweise verschieben**: Für jede Aktivität:
+   - Identifizieren aller zugehörigen Funktionen in pitches.js
+   - Kopieren dieser Funktionen in das entsprechende Modul
+   - Exportieren der Funktionen aus dem Modul
+   - Ersetzen der Funktionen in pitches.js durch Imports
+
+4. **Komponenten-Referenz übergeben**: Jedes Modul erhält Zugriff auf die Alpine-Komponente
+
+5. **Testen**: Schrittweise Überprüfung jeder Aktivität nach der Migration
+
+Dieser Ansatz ist deutlich einfacher als die feingranulare Extraktion einzelner Funktionen und minimiert das Risiko von Fehlern durch fehlende Referenzen oder falsche Aufrufe.
+
+### Erfahrungen nach der Umstellung
+
+Nach der Umstellung mit dem Zerschneiden-Ansatz wurden folgende wichtige Erkenntnisse gewonnen:
+
+1. **Alpine.js-Variablen**: Alle in HTML-Templates verwendeten Variablen müssen im Alpine-Komponenten-Objekt initialisiert bleiben
+
+2. **Funktionsaufrufe im Template**: Funktionen, die im HTML via Alpine.js aufgerufen werden, müssen im Alpine-Objekt registriert sein
+
+3. **Zustandssynchronisation**: Bei Änderungen des Zustands in Modulen muss dieser mit dem Alpine-Komponenten-Objekt synchronisiert werden
+
+4. **Debugging**: Ausführliche Logging-Statements mit eindeutigen Tags helfen, Probleme zu identifizieren
+
+5. **Namenskonflikte**: Bei Exporten aus mehreren Modulen auf Namenskonflikte achten und eindeutige Namen verwenden
