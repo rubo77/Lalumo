@@ -81,7 +81,15 @@ unter chrome auf dem handy android 15:
 Dies soll in allen aktionen:
 - immer bei Misserfolg: den sound abspielen und den hintergrund hin und her-wackeln
 
-- Hinweis: /var/www/Musici/android/app/src/main/java/com/lalumo/app/MainActivity.java verwendet oder überschreibt eine veraltete API.
+- Hinweis: /var/www/Musici/android/app/src/main/java/com/lalumo/app/MainActivity.java verwendet oder überschreibt eine veraltete API.:
+    - Das Problem liegt in der Verwendung der SYSTEM_UI_FLAG_* Flags zur Steuerung der UI-Sichtbarkeit (Zeilen 34-36):
+
+    java
+    int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+            | View.SYSTEM_UI_FLAG_FULLSCREEN
+            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
+    decorView.setSystemUiVisibility(uiOptions);
+    Diese Methode ist seit Android 11 (API 30) veraltet und wurde durch den WindowInsetsController ersetzt. Um das Problem zu beheben, müssen wir den Code für neuere Android-Versionen aktualisieren.
 
 - "background-image: 1s ease" funktioniert noch nicht
 
@@ -93,15 +101,14 @@ Dies soll in allen aktionen:
 
 # nach kapitel
 1_1 "High or Low?" (1_1_pitches_high_or_low) 
-- die tiefen töne sind eine oktave zu tief
 - # bereit zur veröffentlichung
+- die tiefen töne sind eine oktave zu tief
 - im master level dürfen die töne maximal 3 halbtöne auseinander sein und der erste ton muss nicht mehr C5 sein, sondern kann jeder beliebige sein, es wird nur getestet, ob der 2. ton dann höher oder tiefer ist
 - die erfolgsmeldung muss sich ab level 3 aendern in "der ton war höher" anstatt "hoch" und "der ton war tiefer" anstatt "tief"
 - Entferne alle Überbleibsel der alten "Listen to melodies"-Funktionalität:
    - Lösche unnötige Melodie-Abspielfunktionen für die alte Aktivität
 
 1_2 "Match the Sounds":
-- Hintergrundbild 3 die Rutsche korrigieren, die schwebt so
 - # bereit zur veröffentlichung
 
 1_3 Draw a Melody:
@@ -148,3 +155,6 @@ Dies soll in allen aktionen:
 - why is the apk 30MB large?
 
 # most important
+@mobile-build.sh baue verbose option ein, die zeigt, was kopiert wird, und warum der original folder mit kopiert wird
+- warum ist das laubncher icon nur ein weisser kreis?
+- baue die jeweils aktuelle versionsnummer automatisch in den credits screen ein

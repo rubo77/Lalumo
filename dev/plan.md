@@ -14,6 +14,7 @@
   - High or Low (1_1):
     - Prevent consecutive duplicate puzzles (now implemented)
     - Ensure the second tone is never C5 (now implemented)
+  - Android: Deprecated SYSTEM_UI_FLAG_* API warning in MainActivity.java; needs update to WindowInsetsController for Android 11+ (see TODO.md)
 
 ## Task List
 - [x] Investigate and fix `this.showFeedback` context/definition bug so feedback is shown on success/failure

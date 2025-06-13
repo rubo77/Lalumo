@@ -163,7 +163,7 @@ npm run build
 # Note: The android/ directory in public/ contains XML files for the webpack dev server
 # The actual native Android app uses the XML files in the main android/ directory
 echo "Copying public assets to dist (excluding android XML files)..."
-rsync -av --exclude='android/' public/ dist/
+rsync -av --exclude='android/' --exclude='images/backgrounds/original/' public/ dist/
 
 # Sync with Capacitor
 echo "Syncing with Capacitor..."
