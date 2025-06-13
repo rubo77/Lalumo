@@ -519,9 +519,13 @@ export function app() {
           lastActivity: this.active,
           unlockedFeatures: unlockedFeatures, // Speichere freigeschaltete Features für bessere Diagnose
           
-          // Speichere Draw-a-Melody spezifische Fortschrittsdaten (neu)
+          // Speichere Draw-a-Melody spezifische Fortschrittsdaten
           drawMelodyLevel: parseInt(localStorage.getItem('lalumo_draw_melody_level') || '0', 10),
-          drawMelodySuccessCounter: parseInt(localStorage.getItem('lalumo_draw_melody_success_counter') || '0', 10)
+          drawMelodySuccessCounter: parseInt(localStorage.getItem('lalumo_draw_melody_success_counter') || '0', 10),
+          
+          // Speichere Sound-Judgment ("Does It Sound Right?") spezifische Fortschrittsdaten
+          soundJudgmentLevel: parseInt(localStorage.getItem('lalumo_soundJudgmentLevel') || '1', 10),
+          soundJudgmentStreak: parseInt(localStorage.getItem('lalumo_soundJudgmentStreak') || '0', 10)
         };
         
         // Konvertieren zu JSON und codieren für Export
@@ -706,7 +710,7 @@ export function app() {
           this.active = progressData.lastActivity;
         }
         
-        // Restore Draw-a-Melody specific progress data (new)
+        // Restore Draw-a-Melody specific progress data
         if (typeof progressData.drawMelodyLevel !== 'undefined') {
           localStorage.setItem('lalumo_draw_melody_level', progressData.drawMelodyLevel);
           console.log('Restored Draw-a-Melody level:', progressData.drawMelodyLevel);
@@ -718,6 +722,20 @@ export function app() {
         if (typeof progressData.drawMelodySuccessCounter !== 'undefined') {
           localStorage.setItem('lalumo_draw_melody_success_counter', progressData.drawMelodySuccessCounter);
           console.log('Restored Draw-a-Melody success counter:', progressData.drawMelodySuccessCounter);
+        }
+        
+        // Restore Sound Judgment ("Does It Sound Right?") specific progress data
+        if (typeof progressData.soundJudgmentLevel !== 'undefined') {
+          localStorage.setItem('lalumo_soundJudgmentLevel', progressData.soundJudgmentLevel);
+          console.log('SOUND JUDGMENT: Imported level:', progressData.soundJudgmentLevel);
+          
+          // Add to unlocked features message
+          unlockedFeatures.push(`Does It Sound Right?: Level ${progressData.soundJudgmentLevel} (${7-progressData.soundJudgmentLevel} levels to go)`);
+        }
+        
+        if (typeof progressData.soundJudgmentStreak !== 'undefined') {
+          localStorage.setItem('lalumo_soundJudgmentStreak', progressData.soundJudgmentStreak);
+          console.log('SOUND JUDGMENT: Imported streak counter:', progressData.soundJudgmentStreak);
         }
         
         // Show detailed success message

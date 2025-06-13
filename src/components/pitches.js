@@ -4502,13 +4502,28 @@ export function pitches() {
      * Sollte nach einem globalen Reset aufgerufen werden, falls kein Reload erfolgt.
      */
     resetProgress() {
-      this.progress = { '1_1_pitches_high_or_low': 0, match: 0, draw: 0, guess: 0, memory: 0 };
+      // Logging for debugging
+      console.log('RESET: Resetting all progress in pitches component');
+      
+      // Reset main progress object
+      this.progress = { '1_1_pitches_high_or_low': 0, match: 0, draw: 0, guess: 0, memory: 0, '1_4_pitches_does-it-sound-right': 0 };
       this.correctAnswersCount = 0;
       this.unlockedPatterns = ['up', 'down'];
       this.memorySuccessCount = 0;
+      
+      // Reset sound judgment level and streak
+      this.soundJudgmentLevel = 1;
+      this.soundJudgmentCorrectStreak = 0;
+      console.log('SOUND JUDGMENT: Reset level to 1 and streak to 0');
+      
+      // Remove all progress from localStorage
       localStorage.removeItem('lalumo_progress');
       localStorage.removeItem('lalumo_memory_level');
       localStorage.removeItem('lalumo_difficulty'); // Wichtig: unlockedPatterns & correctAnswersCount
+      localStorage.removeItem('lalumo_soundJudgmentLevel');
+      localStorage.removeItem('lalumo_soundJudgmentStreak');
+      localStorage.removeItem('lalumo_draw_melody_level');
+      localStorage.removeItem('lalumo_draw_melody_success_counter')
     }
   };
 }
