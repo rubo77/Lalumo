@@ -1646,7 +1646,7 @@ section h2 {
 
 /* Special states for animal cards */
 .animal-card.happy:hover {
-  background-color: rgba(46, 213, 115, 0.1);
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
 .animal-card.unhappy:hover {
