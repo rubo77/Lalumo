@@ -19,6 +19,9 @@ import {
   testMemoryGameModuleImport
 } from './pitches/index.js';
 
+// Importiere High or Low Funktionen direkt aus dem Modul
+import { currentHighOrLowStage } from './pitches/1_1_high_or_low.js';
+
 export function pitches() {
   // Audio-Engine-Initialisierung wird in afterInit durchgeführt
   return {
@@ -496,28 +499,13 @@ export function pitches() {
      * based on the number of correct answers.
      * @returns {number} The current stage (1-5)
      */
-    currentHighOrLowStage() {
-      // Get the progress count (number of correct answers)
-      const progress = this.highOrLowProgress || 0;
-      
-      // Stage 1: 0-9 correct answers (basic)
-      // Stage 2: 10-19 correct answers (closer tones)
-      // Stage 3: 20-29 correct answers (two tones)
-      // Stage 4: 30-39 correct answers (even closer tones)
-      // Stage 5: 40+ correct answers (ultimate challenge)
-      
-      if (progress >= 40) return 5;
-      if (progress >= 30) return 4;
-      if (progress >= 20) return 3;
-      if (progress >= 10) return 2;
-      return 1;
-    },
+    // currentHighOrLowStage wurde in das Modul 1_1_high_or_low.js verschoben
     
     /**
      * Sets up the High or Low activity with appropriate difficulty
      */
     setupHighOrLowMode_1_1() {
-      const stage = this.currentHighOrLowStage();
+      const stage = currentHighOrLowStage(this);
       console.log('Setting up High or Low mode with stage:', stage);
       
       // Initialize properties for high-or-low activity
@@ -535,7 +523,7 @@ export function pitches() {
      * based on the current difficulty stage
      */
     generateHighOrLowTone() {
-      const stage = this.currentHighOrLowStage();
+      const stage = currentHighOrLowStage(this);
       console.log('Generating High or Low tone for stage:', stage);
       
       // Define tone ranges for different stages (according to CONCEPT.md)
@@ -750,7 +738,7 @@ export function pitches() {
       
       this.isPlaying = true;
       this.gameStarted = true; // Mark the game as explicitly started
-      const stage = this.currentHighOrLowStage();
+      const stage = currentHighOrLowStage(this);
       console.log('Playing High or Low tone for stage:', stage, 'gameStarted:', this.gameStarted);
       
       try {
@@ -816,8 +804,8 @@ export function pitches() {
       if (!this.gameStarted) {
         console.log('Button pressed without starting the game, playing a tone matching the button');
         
-        // Get the current stage
-        const stage = this.currentHighOrLowStage();
+        // Determine the current stage based on progress
+        const stage = currentHighOrLowStage(this);
         
         // Get a random tone matching the pressed button (low or high)
         const randomTone = this.getRandomToneForType(answer, stage);
@@ -840,7 +828,7 @@ export function pitches() {
         return;
       }
       
-      const stage = this.currentHighOrLowStage();
+      const stage = currentHighOrLowStage(this);
       console.log('Checking High or Low answer:', answer, 'for stage:', stage);
       
       let isCorrect = false;
@@ -908,7 +896,7 @@ export function pitches() {
       }, 100);
         
         // Check if we've reached a new stage
-        const newStage = this.currentHighOrLowStage();
+        const newStage = currentHighOrLowStage(this);
         const previousStage = stage;
         
         if (newStage > previousStage) {
@@ -1135,7 +1123,7 @@ export function pitches() {
       // Provide context-specific instructions based on current mode
       if (this.mode === '1_1_pitches_high_or_low') {
         // For the High or Low activity, show different instructions based on the current stage
-        const stage = this.currentHighOrLowStage();
+        const stage = currentHighOrLowStage(this);
         console.log('Showing context message for High or Low stage:', stage);
         
         // Get the appropriate message based on stage and language
