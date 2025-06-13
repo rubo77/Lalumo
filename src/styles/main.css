@@ -1407,6 +1407,24 @@ section h2 {
   margin: 0 auto;
 }
 
+/* Sound Judgment Level Display - Spezialisierte Anzeige für Sound Judgment Level und Streak */
+.sound-judgment-level {
+  position: absolute;
+  bottom: 0.5rem; /* Am oberen Rand statt am unteren */
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(255, 255, 255, 0.5); /* Blauer Hintergrund für bessere Sichtbarkeit */
+  color: rgb(0, 0, 0);
+  border-radius: 1rem;
+  padding: 0.5rem 1rem;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  z-index: 5; /* Höherer z-index als andere Elemente */
+  min-width: 180px; /* Mindestbreite für Lesbarkeit */
+  font-size: 0.95rem;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+}
+
 .progress-display p {
   margin: 0.25rem 0;
   font-weight: 500;

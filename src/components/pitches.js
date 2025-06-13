@@ -3550,11 +3550,15 @@ export function pitches() {
         const levelElement = document.createElement('div');
         levelElement.className = 'sound-judgment-level progress-display';
         
-        // Füge es als erstes Kind zum Activity-Container hinzu
-        const activityContainer = document.querySelector('#pitches-does-it-sound-right');
+        // Füge es zum Activity-Container hinzu
+        // CSS-Selektoren, die mit Zahlen beginnen, müssen maskiert werden
+        const activityContainer = document.querySelector('[id="1_4_pitches"]');
         if (activityContainer) {
           // Füge es als letztes Element ein
           activityContainer.appendChild(levelElement);
+          console.log('SOUND JUDGMENT: Level display added to activity container');
+        } else {
+          console.error('SOUND JUDGMENT: Could not find activity container with id 1_4_pitches to append level display');
         }
       }
       

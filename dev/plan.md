@@ -26,6 +26,12 @@
   - Relevant code locations for 'Does It Sound Right?' activity have been identified and reviewed in pitches.js.
   - Level system for 'Does It Sound Right?' activity is now implemented in generateSoundHighOrLowMelody and state variable soundJudgmentLevel.
   - Progress tracking, level initialization from preferences, and UI display for 'Does It Sound Right?' activity are now implemented. Next: answer checking, streak, and export logic.
+  - Sound judgment progress/level is now integrated with preferences export/import/reset, and includes diagnostic logging.
+- Investigate why /images/1_5_pitches_bad_rabbit.png is not showing transparent background after edit/commit
+- Animal background removal script did not process rabbit image due to wrong working directory or image path; must fix script invocation or paths to resolve transparency issue
+- Script path/config fixed; next step: rerun script and verify transparency for rabbit image
+- [x] Add working directory check to animal background removal script
+- The transparency issue was not with the image processing script (which works as intended), but with the browser still showing the old/original image—likely due to browser cache or deployment artifact. Further investigation should focus on cache/deployment handling.
 
 ## Task List
 - [x] Investigate and fix `this.showFeedback` context/definition bug so feedback is shown on success/failure
@@ -39,6 +45,10 @@
 - [x] Implement level system for 'Does It Sound Right?' activity
 - [x] Implement progress tracking, level initialization from preferences, and UI display for 'Does It Sound Right?'
 - [x] Implement answer checking, streak, and export logic for 'Does It Sound Right?'
+- [x] Integrate sound judgment progress/level with preferences export/import/reset
+- [x] Add diagnostic logging for sound judgment progress/level changes
+- [x] Investigate why 1_5_pitches_bad_rabbit.png is not transparent after edit
+- [ ] Draw a Melody: reset all progress (not yet implemented)
 - [ ] Note highlight should occur exactly when note is hit
 - [ ] Android launcher icon is still white; fix icon generation and ensure correct icon is used
   - [x] Replace or repair ic_launcher_foreground.png so it is visible and not fully transparent
@@ -46,6 +56,8 @@
     - [x] Update mobile-build.sh to generate mipmap icons from /src/images/app_icon.png
 - [x] Version number in credits does not load; fix version display
 - [x] Write a script to remove backgrounds from animal images, using top-left color as transparency reference, saving originals if not already present
+- [x] Rerun background removal script with corrected path and verify rabbit image transparency
+- [ ] Investigate browser caching or deployment artifact issues causing old/original rabbit image to show
 
 ## Current Goal
-Note highlight should occur exactly when note is hit
+Investigate browser/deployment cache issue for animal images
