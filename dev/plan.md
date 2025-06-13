@@ -6,6 +6,17 @@
 - Note highlighting on correct note hit is now implemented; confirm behavior.
 - Root cause: `showFeedback` was used as both a variable and a function. User resolved by renaming the function. Feedback and highlighting now work as intended.
 - New requirements: The same melody should persist until it is perfectly replayed; show a rainbow effect (as in 1_2) when the melody is mastered. Both are now implemented.
+- Shared Playwright test utility (`test-utils.js`) created to handle username modal/setup logic for all tests
+- All Playwright tests now refactored to use shared helper; others should follow
+- There are currently many errors when starting the app; these must be investigated and resolved before further feature/test work continues
+- The dev server port conflict has been resolved and the app is running; next, check for and diagnose any further startup errors or warnings in the running application.
+- When running the first Playwright test, abort immediately if any error or JavaScript console error is detected; prioritize direct observation of browser console errors during test execution (per user instruction).
+- First Playwright test (High or Low) aborted due to:
+  - Alpine Expression Errors: `highOrLowProgress` and `correctAnswersCount` are not defined in the template expressions
+  - Playwright strict mode error: locator('button:has-text("Generate")') matches multiple elements in username modal, causing test-utils.js to throw
+- Playwright username modal strict mode error is now fixed (test-utils.js updated to select the primary button by class)
+- Focus is now on restoring or adapting the missing progress variable(s) for High or Low, and updating the template to use the correct variable(s) so Alpine Expression Errors are resolved.
+- Next step: Reintroduce or adapt the progress variable for High or Low and update the template accordingly before continuing with further tests or development.
 - Next requirements:
   - Slower advancement: 10x with 3 notes, then 10x with 4, etc. (now implemented)
   - Progress should be saved in preferences and exported in the string
@@ -27,11 +38,57 @@
   - Level system for 'Does It Sound Right?' activity is now implemented in generateSoundHighOrLowMelody and state variable soundJudgmentLevel.
   - Progress tracking, level initialization from preferences, and UI display for 'Does It Sound Right?' activity are now implemented. Next: answer checking, streak, and export logic.
   - Sound judgment progress/level is now integrated with preferences export/import/reset, and includes diagnostic logging.
-- Investigate why /images/1_5_pitches_bad_rabbit.png is not showing transparent background after edit/commit
+- All modular activity files are created and contain function skeletons. Next: full migration of logic from pitches.js into modules.
+- All function skeletons from pitches.js have been migrated into their respective module files. Next: fully migrate logic/implementation from pitches.js into modules and adapt imports/usages.
+- Investigation: Why /images/1_5_pitches_bad_rabbit.png is not showing transparent background after edit/commit
 - Animal background removal script did not process rabbit image due to wrong working directory or image path; must fix script invocation or paths to resolve transparency issue
 - Script path/config fixed; next step: rerun script and verify transparency for rabbit image
 - [x] Add working directory check to animal background removal script
-- The transparency issue was not with the image processing script (which works as intended), but with the browser still showing the old/original image—likely due to browser cache or deployment artifact. Further investigation should focus on cache/deployment handling.
+- The transparency issue was not with the image processing script (which works as intended), but with the browser still showing the old/original image—likely due to deployment artifact. Further investigation should focus on deployment handling.
+- It is now confirmed that this is not a browser cache issue; even after re-downloading, the old image is shown. The problem likely lies in deployment, file copying, or build output not updating the image as expected. Next: Investigate build/deployment pipeline for static asset propagation.
+- Änderungen an Bildern werden erst nach `cp -r public/images/* dist/images/` sichtbar (Build/Deploy-Workflow-Notiz).
+- User suspects that the progress display (e.g., streak/level) in the activity container may be immediately overwritten by feedback messages ("well done..."), making it invisible in the UI.
+- The correct activity container for the progress display in 'Does It Sound Right?' is `#1_4_pitches`. The selector in the code has been corrected; next, verify persistent and clear progress/streak/level display.
+- [!] The selector `#1_4_pitches` is not a valid CSS selector (IDs starting with a digit must be escaped). There is a runtime error: `Document.querySelector: '#1_4_pitches' is not a valid selector`. Next: Investigate and fix the selector issue for the activity container so the progress display attaches correctly.
+- Konzept für künftige File-Struktur und Modularisierung von pitches.js/Activities soll in dev/FILESTRUCTURE.md dokumentiert werden (siehe Userwunsch).
+- [x] Konzept für künftige File-Struktur und die Aufteilung von pitches.js/Activities in dev/FILESTRUCTURE.md dokumentiert
+- [x] Beginne mit der Umsetzung der modularen Aufteilung von pitches.js (Dateistruktur und common.js erstellt)
+- [x] Erstelle und dokumentiere ein Konzept für die File-Struktur und die Aufteilung von pitches.js in einzelne Activity-Module in dev/FILESTRUCTURE.md
+- [x] Beginne mit der Umsetzung der modularen Aufteilung von pitches.js (Dateistruktur und common.js erstellt)
+- [x] Erstelle Moduldateien für alle Einzelaktivitäten (1_1_high_or_low.js, 1_2_match_sounds.js, ...)
+- [x] Migriere Funktionen aus pitches.js in die jeweiligen Moduldateien (common.js, 1_1_high_or_low.js, ...)
+  - [x] Beginne mit Migration gemeinsamer Funktionen (z.B. afterInit) in common.js
+  - [x] Migriere spezifische Aktivitätsfunktionen für Sound Judgment (1_4) in 1_4_sound_judgment.js
+  - [x] Migriere spezifische Aktivitätsfunktionen für Draw a Melody (1_3) in 1_3_draw_melody.js
+  - [x] Migriere spezifische Aktivitätsfunktionen für High or Low (1_1) in 1_1_high_or_low.js
+  - [x] Migriere spezifische Aktivitätsfunktionen für Match Sounds (1_2) in 1_2_match_sounds.js
+  - [x] Migriere spezifische Aktivitätsfunktionen für Memory Game (1_5) in 1_5_memory_game.js
+  - [x] Alle Funktionsskelette aus pitches.js in die jeweiligen Moduldateien übertragen
+  - [x] Vollständige Migration der Logik/Implementierung aus pitches.js in die Moduldateien und Anpassung aller Aufrufe/Imports
+- [x] pitches.js als funktionierende Basis wiederhergestellt, nächster Schritt: Schrittweises Testen und Integration der Module
+- [x] Vollständige Migration der Logik/Implementierung aus pitches.js in die Moduldateien und Anpassung aller Aufrufe/Imports
+- [x] pitches.js als funktionierende Basis wiederhergestellt, nächster Schritt: Schrittweises Testen und Integration der Module
+- [!] **Ab jetzt: Automatisches, schrittweises Testen und Integration der Module in pitches.js; bei Fehlern automatische Korrektur oder Rollback bis lauffähig**
+- [x] Erste Aktivitätsmodul-Integration (High or Low) läuft; Syntaxfehler werden automatisch korrigiert
+- [x] High or Low Modul vollständig neu und fehlerfrei erstellt, bereit für Integration
+- [x] Sound Judgment Modul (1_4) vollständig implementiert und integriert
+- [x] Draw a Melody Modul (1_3) vollständig implementiert und integriert
+- [x] Match Sounds Modul (1_2) vollständig implementiert und integriert
+- [x] Memory Game Modul (1_5) vollständig implementiert und integriert
+- [x] pitches.js ist jetzt obsolet und kann gelöscht werden, sofern keine Referenzen mehr bestehen
+- [x] pitches.js löschen, wenn keine Referenzen mehr bestehen
+- [x] Add Playwright tests for each modular activity, using existing tests as reference
+  - [x] Review and analyze existing Playwright test files and structure
+  - [x] Implement Playwright test for High or Low (1_1)
+  - [x] Implement Playwright test for Match Sounds (1_2)
+  - [x] Implement Playwright test for Draw a Melody (1_3)
+  - [x] Implement Playwright test for Sound Judgment (1_4)
+  - [x] Implement Playwright test for Memory Game (1_5)
+  - [x] Create shared Playwright test helper for setup and username modal
+  - [x] Refactor High or Low test to use shared helper
+  - [x] Refactor remaining Playwright tests to use shared helper
+- [x] Refactor remaining Playwright tests to use shared helper
+- [ ] Investigate and resolve all errors occurring on app startup
 
 ## Task List
 - [x] Investigate and fix `this.showFeedback` context/definition bug so feedback is shown on success/failure
@@ -57,7 +114,24 @@
 - [x] Version number in credits does not load; fix version display
 - [x] Write a script to remove backgrounds from animal images, using top-left color as transparency reference, saving originals if not already present
 - [x] Rerun background removal script with corrected path and verify rabbit image transparency
-- [ ] Investigate browser caching or deployment artifact issues causing old/original rabbit image to show
+- [x] Investigate deployment/build pipeline and file propagation for static assets
+- [x] Debug missing/incorrect activity container for progress display in 'Does It Sound Right?' activity
+- [ ] Investigate how the progress display is handled in the activity container, and propose/implement a solution for persistent and clear progress/streak/level display during the activity.
+- [x] Erstelle und dokumentiere ein Konzept für die File-Struktur und die Aufteilung von pitches.js in einzelne Activity-Module in dev/FILESTRUCTURE.md
+- [x] Beginne mit der Umsetzung der modularen Aufteilung von pitches.js (Dateistruktur und common.js erstellt)
+- [x] Erstelle Moduldateien für alle Einzelaktivitäten (1_1_high_or_low.js, 1_2_match_sounds.js, ...)
+- [x] Migriere Funktionen aus pitches.js in die jeweiligen Moduldateien (common.js, 1_1_high_or_low.js, ...)
+  - [x] Beginne mit Migration gemeinsamer Funktionen (z.B. afterInit) in common.js
+  - [x] Migriere spezifische Aktivitätsfunktionen für Sound Judgment (1_4) in 1_4_sound_judgment.js
+  - [x] Migriere spezifische Aktivitätsfunktionen für Draw a Melody (1_3) in 1_3_draw_melody.js
+  - [x] Migriere spezifische Aktivitätsfunktionen für High or Low (1_1) in 1_1_high_or_low.js
+  - [x] Migriere spezifische Aktivitätsfunktionen für Match Sounds (1_2) in 1_2_match_sounds.js
+  - [x] Migriere spezifische Aktivitätsfunktionen für Memory Game (1_5) in 1_5_memory_game.js
+  - [x] Alle Funktionsskelette aus pitches.js in die jeweiligen Moduldateien übertragen
+  - [x] Vollständige Migration der Logik/Implementierung aus pitches.js in die Moduldateien und Anpassung aller Aufrufe/Imports
+- [x] Vollständige Migration der Logik/Implementierung aus pitches.js in die Moduldateien und Anpassung aller Aufrufe/Imports
+- [x] pitches.js als funktionierende Basis wiederhergestellt, nächster Schritt: Schrittweises Testen und Integration der Module
+- [x] pitches.js löschen, wenn keine Referenzen mehr bestehen
 
 ## Current Goal
-Investigate browser/deployment cache issue for animal images
+Restore/adapt progress variable for High or Low and fix template to resolve Alpine Expression Errors.

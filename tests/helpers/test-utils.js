@@ -48,26 +48,42 @@ async function handleUsernameModal(page) {
     
     if (isVisible) {
       console.log('Username modal detected, clicking generate button...');
-      // Find the button by its content or role
-      const generateButton = page.locator('button:has-text("Generate")');
-      if (await generateButton.isVisible()) {
-        await generateButton.click();
+      
+      // Use class selector instead of text content to avoid strict mode violation
+      // We specifically select the primary button which should be the main generate button
+      const primaryButton = page.locator('.modal-overlay .primary-button').first();
+      if (await primaryButton.isVisible()) {
+        console.log('Found primary button, clicking...');
+        await primaryButton.click();
       } else {
-        await page.locator('.primary-button').click();
+        console.log('Primary button not found, trying alternative selector...');
+        // Fallback to any button in the modal
+        const anyButton = page.locator('.modal-overlay button').first();
+        await anyButton.click();
       }
-      await page.waitForTimeout(500);
+      await page.waitForTimeout(1000); // Wait longer for modal to close
       
       // Verify the modal was dismissed
       const modalStillVisible = await usernameModal.isVisible({ timeout: 1000 }).catch(() => false);
       if (modalStillVisible) {
         console.log('Username modal still visible, trying different approach...');
-        // Try clicking at center of modal
-        const modalBox = await usernameModal.boundingBox();
-        if (modalBox) {
-          await page.mouse.click(
-            modalBox.x + modalBox.width / 2,
-            modalBox.y + modalBox.height / 2
-          );
+        // Try clicking dialog accept button if visible
+        try {
+          await page.keyboard.press('Enter');
+          await page.waitForTimeout(500);
+        } catch (e) {
+          console.log('Failed to press Enter:', e);
+        }
+        
+        // If still visible, try clicking at center of modal
+        if (await usernameModal.isVisible().catch(() => false)) {
+          const modalBox = await usernameModal.boundingBox();
+          if (modalBox) {
+            await page.mouse.click(
+              modalBox.x + modalBox.width / 2,
+              modalBox.y + modalBox.height / 2
+            );
+          }
         }
       }
     } else {
