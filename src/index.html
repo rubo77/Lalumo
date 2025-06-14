@@ -943,7 +943,7 @@
           </div>
         </div>
         <h3 x-text="$store.strings?.language_preference || 'Language Preference'"></h3>
-        <div class="language-section">
+        <div class="language-section" style="display: none;">
           <p x-text="$store.strings?.select_language || 'Select your preferred language:'"></p>
           <div class="language-options">
             <button class="language-button" :class="{ 'active': preferredLanguage === 'english' }" @click="setLanguage('english')" x-text="$store.strings?.language_english || 'English'"></button>
