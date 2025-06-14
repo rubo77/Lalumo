@@ -1,8 +1,11 @@
 package com.lalumo.app;
 
 import android.os.Bundle;
+import android.os.Build;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.WindowInsets;
+import android.view.WindowInsetsController;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
 import android.speech.tts.TextToSpeech;
@@ -13,6 +16,7 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.List;
 import android.webkit.ValueCallback;
+import androidx.activity.OnBackPressedCallback;
 
 import com.getcapacitor.BridgeActivity;
 
@@ -26,16 +30,38 @@ public class MainActivity extends BridgeActivity implements OnInitListener {
         super.onCreate(savedInstanceState);
         
         // Enable fullscreen mode - hide both status bar and navigation bar
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            // For Android 11 (API 30) and above, use WindowInsetsController
+            View decorView = getWindow().getDecorView();
+            WindowInsetsController controller = decorView.getWindowInsetsController();
+            if (controller != null) {
+                // Hide system bars
+                controller.hide(WindowInsets.Type.systemBars());
+                // Set immersive mode
+                controller.setSystemBarsBehavior(WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
+                Log.d(TAG, "Applied immersive mode using WindowInsetsController");
+            }
+        } else {
+            // For older Android versions, use the legacy approach
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                    WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            
+            View decorView = getWindow().getDecorView();
+            int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                    | View.SYSTEM_UI_FLAG_FULLSCREEN
+                    | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
+            decorView.setSystemUiVisibility(uiOptions);
+            Log.d(TAG, "Applied immersive mode using legacy API");
+        }
         
-        // For newer Android versions (API level 19+), better immersive mode
-        // This hides both the navigation bar and status bar
-        View decorView = getWindow().getDecorView();
-        int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                | View.SYSTEM_UI_FLAG_FULLSCREEN
-                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
-        decorView.setSystemUiVisibility(uiOptions);
+        // Register back button handler using the newer OnBackPressedCallback approach
+        // This works on all Android versions through the compatibility library
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                handleBackButton();
+            }
+        });
         
         // JavaScript-Schnittstellen hinzufügen
         this.bridge.getWebView().addJavascriptInterface(new WebAppInterface(), "AndroidTTS");
@@ -175,8 +201,11 @@ public class MainActivity extends BridgeActivity implements OnInitListener {
         super.onDestroy();
     }
     
-    @Override
-    public void onBackPressed() {
+    /**
+     * Handles back button press with custom navigation logic
+     * This method is called by the OnBackPressedCallback registered in onCreate
+     */
+    private void handleBackButton() {
         Log.d(TAG, "Back button pressed, checking menu lock state");
         
         // Check if navigation is locked via JavaScript

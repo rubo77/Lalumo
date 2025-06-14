@@ -79,21 +79,11 @@ unter chrome auf dem handy android 15:
 Dies soll in allen aktionen:
 - immer bei Misserfolg (error): den sound abspielen und den hintergrund hin und her-wackeln (.shake-error)
 
-- Hinweis: /var/www/Musici/android/app/src/main/java/com/lalumo/app/MainActivity.java verwendet oder überschreibt eine veraltete API.:
-    - Das Problem liegt in der Verwendung der SYSTEM_UI_FLAG_* Flags zur Steuerung der UI-Sichtbarkeit (Zeilen 34-36):
-
-    java
-    int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-            | View.SYSTEM_UI_FLAG_FULLSCREEN
-            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
-    decorView.setSystemUiVisibility(uiOptions);
-    Diese Methode ist seit Android 11 (API 30) veraltet und wurde durch den WindowInsetsController ersetzt. Um das Problem zu beheben, müssen wir den Code für neuere Android-Versionen aktualisieren.
 
 - "background-image: 1s ease" funktioniert noch nicht
 
 - Verschiedene Instrumente
 
- - back button in android gesondert handeln: der back-button soll da zurück ins menu gehen, aber nur, wenn die navigation nicht gelockt ist.
 - Bei Android funktioniert die Sprache nicht. Nur die mascot messages gehen
 
 - store username and language in export string in Preferences
