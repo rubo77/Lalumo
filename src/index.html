@@ -910,16 +910,17 @@
         <p id="app-version">Loading version...</p>
         
         <h3>App-Entwicklung</h3>
-        <p>Lalumo Team</p>
+        <p><a href="https://eclabs.de" target="_blank">Eastcoast Laboratories</a></p>
         
         <h3>Grafiken & Illustrationen</h3>
-        <p>SVG-Grafiken von [Quelle]</p>
+        <p>Grafiken erstellt mit ChatGpt</p>
         
         <h3>Technologien</h3>
         <ul>
           <li>Alpine.js</li>
-          <li>Web Audio API</li>
+          <li>Webpack</li>
           <li>HTML5 & CSS3</li>
+          <li>Tone.js</li>
         </ul>
       </div>
     </section>
@@ -943,11 +944,11 @@
           </div>
         </div>
         <h3 x-text="$store.strings?.language_preference || 'Language Preference'"></h3>
-        <div class="language-section" style="display: none;">
+        <div class="language-section">
           <p x-text="$store.strings?.select_language || 'Select your preferred language:'"></p>
           <div class="language-options">
             <button class="language-button" :class="{ 'active': preferredLanguage === 'english' }" @click="setLanguage('english')" x-text="$store.strings?.language_english || 'English'"></button>
-            <button class="language-button" :class="{ 'active': preferredLanguage === 'german' }" @click="setLanguage('german')" x-text="$store.strings?.language_german || 'Deutsch'"></button>
+            <button style="opacity: 0;" class="language-button" :class="{ 'active': preferredLanguage === 'german' }" @click="setLanguage('german')" x-text="$store.strings?.language_german || 'Deutsch'"></button>
           </div>
         </div>
         
