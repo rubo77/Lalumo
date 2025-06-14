@@ -49,7 +49,7 @@ TODO
 
 
 unter chrome auf dem handy android 15:
--Multi Touch: wenn mulititouch bemerkt wird, alle anderen touchs ignorieren und trotzdem den knopf drücken
+-Multi Touch: wenn mulititouch bemerkt wird, alle anderen touchs ignorieren und trotzdem den knopf drücken, also den letzten, der zählt
 
 - Regenbogen ist im breiten screen zu weit links
 
@@ -103,6 +103,7 @@ Dies soll in allen aktionen:
 - when pressed on a button, the finger moves and is released, it should also trigger the buttons click event
 
 ## nach kapitel
+
 1_1 "High or Low?" (1_1_pitches_high_or_low) 
 - aendere, dass man immer 1s warten muss, bis man wählen kann, welche Taste man drückt. man soll sofort, wenn man den ton hört schon wählen dürfen
 - # bereit zur veröffentlichung

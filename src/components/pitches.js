@@ -360,6 +360,7 @@ export function pitches() {
      * Allows long press to work with any finger, not just the first one
      * @activity common
      * @used-by NOWHERE
+     * @todo implement multi touch long press catch, to use the last touch as normal press
      */
     startMultiTouchLongPress(pattern, event) {
       // Clear any existing timer
@@ -560,11 +561,138 @@ export function pitches() {
       this.updateProgressPitches();
     },
     
+    /**
+     * Update the progress in localStorage based on user's progress
+     * @activity common
+     * @used-by all activities
+     */
+    updateProgressPitches() {
+      // Get progress values from the new activity IDs
+      const progressValues = [
+        this.progress['1_1_pitches_high_or_low'] || 0,
+        this.progress['1_2_pitches_match-sounds'] || 0,
+        this.progress['1_3_pitches_draw-melody'] || 0,
+        this.progress['1_4_pitches_does-it-sound-right'] || 0,
+        this.progress['1_5_pitches_memory-game'] || 0
+      ];
+      
+      // Calculate total progress (0-100%)
+      const totalProgress = progressValues.reduce((sum, val) => sum + val, 0) / 5;
+      console.log('Total progress updated:', totalProgress, 'Progress values:', progressValues);
+      
+      // Store progress in localStorage for persistence
+      localStorage.setItem('lalumo_progress', JSON.stringify(this.progress));
+    },
     
+    /** ****************************************************
+     * unused Functions
+     ******************************************************** */
+
+    /**
+     * Refresh the animation for a pattern
+     * @activity common
+     * @used-by NOWHERE
+     */
+    refreshAnimation(type) {
+      // Get all relevant elements
+      const card = document.querySelector(`.pitch-card:has(.pitch-icon.${type})`);
+      const icon = document.querySelector(`.pitch-icon.${type}`);
+      
+      if (card) {
+        // Remove and re-add active class to trigger CSS animations
+        card.classList.remove('active');
+        setTimeout(() => card.classList.add('active'), 10);
+      }
+      
+      if (icon) {
+        // Apply a pulse effect
+        icon.style.transform = 'scale(1.1)';
+        setTimeout(() => {
+          icon.style.transform = 'scale(1)';
+        }, 300);
+      }
+    },
+
+    /**
+     * Play a tone using Tone.js
+     * @param {string} note - Note name (e.g., 'C4', 'D#3')
+     * @param {number} duration - Duration in milliseconds
+     * @activity common
+     * @used_by NOWHERE
+     * @returns {boolean} True if tone played successfully
+     */
+    async playToneWithToneJs(note, duration = 800) {
+      try {
+        console.log(`TONE: Playing note ${note} for ${duration}ms`);
+        
+        // Make sure audio is initialized
+        await this.ensureToneStarted();
+        
+        // Use the singleton synth instead of creating a new one each time
+        // Convert duration from milliseconds to seconds for Tone.js
+        const durationSeconds = duration / 1000;
+        
+        // Explicitly set the volume for this note
+        this.synth.volume.value = -6; // in dB
+        
+        // Play the note with precise timing
+        const now = Tone.now();
+        this.synth.triggerAttackRelease(note, durationSeconds, now);
+        
+        // Log success
+        console.log(`TONE: Successfully triggered note ${note} at time ${now}`);
+        return true;
+      } catch (error) {
+        console.error('TONE: Error playing note with Tone.js:', error);
+        return false;
+      }
+    },
+    
+    /**
+     * Play a sequence of tones using Tone.js
+     * @param {string[]} notes - Array of note names
+     * @param {number[]} durations - Array of durations in milliseconds
+     * @param {number} interval - Time between notes in seconds
+     * 
+     * @activity common
+     * @used_by NOWHERE
+     */
+    async playToneSequenceWithToneJs(notes, durations, interval = 0.5) {
+      try {
+        console.log(`TONE: Playing sequence of ${notes.length} notes`);
+        
+        // Make sure audio is initialized
+        await this.ensureToneStarted();
+        
+        // Schedule each note using the singleton synth
+        const now = Tone.now();
+        
+        // For better timing and performance
+        Tone.Transport.bpm.value = 120;
+        
+        notes.forEach((note, i) => {
+          const duration = durations[i] / 1000 || 0.5; // Convert ms to seconds
+          const startTime = now + (i * interval);
+          
+          this.synth.triggerAttackRelease(note, duration, startTime);
+          console.log(`TONE: Scheduled note ${note} with duration ${duration} at time ${startTime}`);
+        });
+        
+        return true;
+      } catch (error) {
+        console.error('TONE: Error playing sequence with Tone.js:', error);
+        return false;
+      }
+    },
+
+
     /** *****************************************************
      * 1_1 High or Low Activity
      ******************************************************** */
     
+    // ++++++++++ progress of migration to new structure
+
+
     /**
      * Determines the current difficulty stage for the High or Low activity
      * based on the number of correct answers.
@@ -572,23 +700,10 @@ export function pitches() {
      */
     // currentHighOrLowStage wurde in das Modul 1_1_high_or_low.js verschoben
     
-    /**
-     * Sets up the High or Low activity with appropriate difficulty
-     */
-    setupHighOrLowMode_1_1() {
-      const stage = currentHighOrLowStage(this);
-      console.log('Setting up High or Low mode with stage:', stage);
-      
-      // Initialize properties for high-or-low activity
-      this.currentHighOrLowTone = null; // Will store the current tone (high/low)
-      this.highOrLowSecondTone = null; // For stages with two tones
-      this.highOrLowPlayed = false; // Flag to track if the tone has been played
-      this.highOrLowFeedbackTimer = null; // Timer for feedback messages
-      
-      // Generate a new tone based on the current stage
-      this.generateHighOrLowTone();
-    },
-    
+
+
+    // ++++++++++ after here: TODO: migrate to new structure
+
     /**
      * Setup for the High or Low activity
      * @activity 1_1_high_or_low
@@ -607,7 +722,7 @@ export function pitches() {
       // Show intro message immediately when entering the activity
       this.showActivityIntroMessage('1_1_pitches_high_or_low');
     },
-    
+
     /**
      * Generates a tone (or pair of tones) for the High or Low activity
      * based on the current difficulty stage
@@ -1165,6 +1280,79 @@ export function pitches() {
     },
     
 
+    /**
+     * Generate an ascending melody starting from a random note
+     * @activity 1_1_high_or_low
+     * @returns {Array} The generated pattern
+     */
+    generateUpPattern() {
+      const startIndex = Math.floor(Math.random() * 15); // 0-14
+      
+      // Create a 5-note ascending pattern from this starting position
+      const pattern = [];
+      for (let i = 0; i < 5; i++) {
+        pattern.push(this.availableNotes[startIndex + i]);
+      }
+      
+      return pattern;
+    },
+    
+    /**
+     * Generate a descending melody starting from a random note
+     * @activity 1_1_high_or_low
+     * @returns {Array} The generated pattern
+     */
+    generateDownPattern() {
+      // Use a higher start index to ensure there's enough room to go down
+      const startIndex = 11 + Math.floor(Math.random() * 10); // 11-20
+      
+      // Create a 5-note descending pattern from this starting position
+      const pattern = [];
+      
+      // Log kompletten Tonbereich
+      console.log('Available notes:', this.availableNotes.join(', '));
+      console.log(`Starting down pattern at index ${startIndex}: ${this.availableNotes[startIndex]}`);
+      
+      for (let i = 0; i < 5; i++) {
+        const noteIndex = Math.max(0, startIndex - i); // Stelle sicher, dass der Index nie negativ wird
+        const note = this.availableNotes[noteIndex];
+        pattern.push(note);
+        console.log(`Down pattern note ${i+1}: Index ${noteIndex} -> ${note}`);
+      }
+      
+      // Debug output of the complete melody
+      console.log('Down pattern complete:', pattern.join(', '));
+      
+      return pattern;
+    },
+    
+    /**
+     * Generate a wavy pattern with only two alternating notes
+     * @activity 1_1_high_or_low
+     * @returns {Array} The generated pattern
+     */
+    generateWavyPattern() {
+      // Pick a random starting note from the available range (avoid the highest notes)
+      const randomStartIndex = Math.floor(Math.random() * (this.availableNotes.length - 5));
+      const firstNote = this.availableNotes[randomStartIndex];
+      
+      // For the second note, pick one that's 1-3 steps away (up or down)
+      let interval = Math.floor(Math.random() * 3) + 1; // 1-3 steps
+      
+      // Randomly decide if we go up or down for the second note
+      if (Math.random() > 0.5) {
+        interval = -interval;  // Go down instead of up
+      }
+      
+      // Ensure we stay within bounds
+      const secondNoteIndex = Math.max(0, Math.min(this.availableNotes.length - 1, randomStartIndex + interval));
+      const secondNote = this.availableNotes[secondNoteIndex];
+      
+      // Create the pattern by alternating between the two notes (5 notes total)
+      return [firstNote, secondNote, firstNote, secondNote, firstNote];
+    },
+    
+ 
 
 
 
@@ -1268,69 +1456,35 @@ export function pitches() {
     },
     
     /**
-     * Play a tone using Tone.js
-     * @param {string} note - Note name (e.g., 'C4', 'D#3')
-     * @param {number} duration - Duration in milliseconds
+     * Generate a random jumpy pattern with unpredictable jumps
+     * @activity 1_2_match_sounds
+     * @returns {Array} The generated pattern
      */
-    async playToneWithToneJs(note, duration = 800) {
-      try {
-        console.log(`TONE: Playing note ${note} for ${duration}ms`);
+    generateJumpyPattern() {
+      const pattern = [];
+      let lastIndex = -1;
+      
+      // Create 5 random jumpy notes
+      for (let i = 0; i < 5; i++) {
+        let newIndex;
         
-        // Make sure audio is initialized
-        await this.ensureToneStarted();
-        
-        // Use the singleton synth instead of creating a new one each time
-        // Convert duration from milliseconds to seconds for Tone.js
-        const durationSeconds = duration / 1000;
-        
-        // Explicitly set the volume for this note
-        this.synth.volume.value = -6; // in dB
-        
-        // Play the note with precise timing
-        const now = Tone.now();
-        this.synth.triggerAttackRelease(note, durationSeconds, now);
-        
-        // Log success
-        console.log(`TONE: Successfully triggered note ${note} at time ${now}`);
-        return true;
-      } catch (error) {
-        console.error('TONE: Error playing note with Tone.js:', error);
-        return false;
-      }
-    },
-    
-    /**
-     * Play a sequence of tones using Tone.js
-     * @param {string[]} notes - Array of note names
-     * @param {number[]} durations - Array of durations in milliseconds
-     * @param {number} interval - Time between notes in seconds
-     */
-    async playToneSequenceWithToneJs(notes, durations, interval = 0.5) {
-      try {
-        console.log(`TONE: Playing sequence of ${notes.length} notes`);
-        
-        // Make sure audio is initialized
-        await this.ensureToneStarted();
-        
-        // Schedule each note using the singleton synth
-        const now = Tone.now();
-        
-        // For better timing and performance
-        Tone.Transport.bpm.value = 120;
-        
-        notes.forEach((note, i) => {
-          const duration = durations[i] / 1000 || 0.5; // Convert ms to seconds
-          const startTime = now + (i * interval);
+        // Make sure we don't get the same note twice in a row and ensure a big jump
+        do {
+          newIndex = Math.floor(Math.random() * this.availableNotes.length);
           
-          this.synth.triggerAttackRelease(note, duration, startTime);
-          console.log(`TONE: Scheduled note ${note} with duration ${duration} at time ${startTime}`);
-        });
+          // If not the first note, ensure it's at least 3 steps away from the previous note for bigger jumps
+          if (lastIndex !== -1 && Math.abs(newIndex - lastIndex) < 3) {
+            continue;
+          }
+          
+          break;
+        } while (true);
         
-        return true;
-      } catch (error) {
-        console.error('TONE: Error playing sequence with Tone.js:', error);
-        return false;
+        pattern.push(this.availableNotes[newIndex]);
+        lastIndex = newIndex;
       }
+      
+      return pattern;
     },
     
     /**
@@ -1696,132 +1850,6 @@ export function pitches() {
       }
     },
     
-    /**
-     * Update the progress in localStorage based on user's progress
-     * @activity common
-     * @used-by all activities
-     */
-    updateProgressPitches() {
-      // Get progress values from the new activity IDs
-      const progressValues = [
-        this.progress['1_1_pitches_high_or_low'] || 0,
-        this.progress['1_2_pitches_match-sounds'] || 0,
-        this.progress['1_3_pitches_draw-melody'] || 0,
-        this.progress['1_4_pitches_does-it-sound-right'] || 0,
-        this.progress['1_5_pitches_memory-game'] || 0
-      ];
-      
-      // Calculate total progress (0-100%)
-      const totalProgress = progressValues.reduce((sum, val) => sum + val, 0) / 5;
-      console.log('Total progress updated:', totalProgress, 'Progress values:', progressValues);
-      
-      // Store progress in localStorage for persistence
-      localStorage.setItem('lalumo_progress', JSON.stringify(this.progress));
-    },
-    
-    /**
-     * Generate an ascending melody starting from a random note
-     * @activity 1_1_high_or_low
-     * @returns {Array} The generated pattern
-     */
-    generateUpPattern() {
-      const startIndex = Math.floor(Math.random() * 15); // 0-14
-      
-      // Create a 5-note ascending pattern from this starting position
-      const pattern = [];
-      for (let i = 0; i < 5; i++) {
-        pattern.push(this.availableNotes[startIndex + i]);
-      }
-      
-      return pattern;
-    },
-    
-    /**
-     * Generate a descending melody starting from a random note
-     * @activity 1_1_high_or_low
-     * @returns {Array} The generated pattern
-     */
-    generateDownPattern() {
-      // Use a higher start index to ensure there's enough room to go down
-      const startIndex = 11 + Math.floor(Math.random() * 10); // 11-20
-      
-      // Create a 5-note descending pattern from this starting position
-      const pattern = [];
-      
-      // Log kompletten Tonbereich
-      console.log('Available notes:', this.availableNotes.join(', '));
-      console.log(`Starting down pattern at index ${startIndex}: ${this.availableNotes[startIndex]}`);
-      
-      for (let i = 0; i < 5; i++) {
-        const noteIndex = Math.max(0, startIndex - i); // Stelle sicher, dass der Index nie negativ wird
-        const note = this.availableNotes[noteIndex];
-        pattern.push(note);
-        console.log(`Down pattern note ${i+1}: Index ${noteIndex} -> ${note}`);
-      }
-      
-      // Debug output of the complete melody
-      console.log('Down pattern complete:', pattern.join(', '));
-      
-      return pattern;
-    },
-    
-    /**
-     * Generate a wavy pattern with only two alternating notes
-     * @activity 1_1_high_or_low
-     * @returns {Array} The generated pattern
-     */
-    generateWavyPattern() {
-      // Pick a random starting note from the available range (avoid the highest notes)
-      const randomStartIndex = Math.floor(Math.random() * (this.availableNotes.length - 5));
-      const firstNote = this.availableNotes[randomStartIndex];
-      
-      // For the second note, pick one that's 1-3 steps away (up or down)
-      let interval = Math.floor(Math.random() * 3) + 1; // 1-3 steps
-      
-      // Randomly decide if we go up or down for the second note
-      if (Math.random() > 0.5) {
-        interval = -interval;  // Go down instead of up
-      }
-      
-      // Ensure we stay within bounds
-      const secondNoteIndex = Math.max(0, Math.min(this.availableNotes.length - 1, randomStartIndex + interval));
-      const secondNote = this.availableNotes[secondNoteIndex];
-      
-      // Create the pattern by alternating between the two notes (5 notes total)
-      return [firstNote, secondNote, firstNote, secondNote, firstNote];
-    },
-    
-    /**
-     * Generate a random jumpy pattern with unpredictable jumps
-     * @activity 1_2_match_sounds
-     * @returns {Array} The generated pattern
-     */
-    generateJumpyPattern() {
-      const pattern = [];
-      let lastIndex = -1;
-      
-      // Create 5 random jumpy notes
-      for (let i = 0; i < 5; i++) {
-        let newIndex;
-        
-        // Make sure we don't get the same note twice in a row and ensure a big jump
-        do {
-          newIndex = Math.floor(Math.random() * this.availableNotes.length);
-          
-          // If not the first note, ensure it's at least 3 steps away from the previous note for bigger jumps
-          if (lastIndex !== -1 && Math.abs(newIndex - lastIndex) < 3) {
-            continue;
-          }
-          
-          break;
-        } while (true);
-        
-        pattern.push(this.availableNotes[newIndex]);
-        lastIndex = newIndex;
-      }
-      
-      return pattern;
-    },
     
     /**
      * Play a specific melodic sequence
@@ -2282,31 +2310,6 @@ export function pitches() {
       };
       
       return noteFrequencies[noteName] || 440; // Default to A4 if note not found
-    },
-    
-    /**
-     * Refresh the animation for a pattern
-     * @activity common
-     * @used-by NOWHERE
-     */
-    refreshAnimation(type) {
-      // Get all relevant elements
-      const card = document.querySelector(`.pitch-card:has(.pitch-icon.${type})`);
-      const icon = document.querySelector(`.pitch-icon.${type}`);
-      
-      if (card) {
-        // Remove and re-add active class to trigger CSS animations
-        card.classList.remove('active');
-        setTimeout(() => card.classList.add('active'), 10);
-      }
-      
-      if (icon) {
-        // Apply a pulse effect
-        icon.style.transform = 'scale(1.1)';
-        setTimeout(() => {
-          icon.style.transform = 'scale(1)';
-        }, 300);
-      }
     },
     
     /**
