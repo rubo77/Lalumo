@@ -67,6 +67,16 @@ export function pitches() {
     longPressTimer: null,
     longPressThreshold: 800, // milliseconds for long press
     
+    // Progress tracking
+    progress: {
+      '1_1_pitches_high_or_low': 0,
+      match: 0,
+      draw: 0,
+      'does-it-sound-right': 0,
+      memory: 0
+    },
+    
+    // ************ for 1.1 *****************
     // High or Low activity state variables
     highOrLowProgress: 0, // Number of correct answers in High or Low activity - initialized properly in afterInit
     currentHighOrLowTone: null, // Current tone type (high/low)
@@ -79,12 +89,15 @@ export function pitches() {
     correctAnswersCount: 0,
     unlockedPatterns: ['up', 'down'], // Start with only up and down
     
+    // ************ for 1.3 *****************
     // Draw melody activity progression
     drawMelodyLevel: 0, // User level in draw melody activity (determines number of notes)
     
+    // ************ for 1.4 *****************
     // Does It Sound Right activity progression
     soundJudgmentLevel: 1, // User level in Does It Sound Right activity (determines difficulty)
     
+    // ************ for 1.5 *****************
     // Arrays für die zufälligen Tierbilder
     goodAnimalImages: [
       '/images/1_5_pitches_good_bird_notes.png',
@@ -109,7 +122,8 @@ export function pitches() {
     currentBadAnimalImage: null,
     gameMode: false, // For match and memory modes - false = free play, true = game mode
     memoryFreePlay: false, // Track if memory is in free play mode
-    
+
+    // ************ for 1.2 *****************
     // Available notes for melodies
     availableNotes: [
       // C3 - B3 (Lower octave)
@@ -119,15 +133,8 @@ export function pitches() {
       // C5 - C6 (Upper octave)
       'C5', 'D5', 'E5', 'F5', 'G5', 'A5', 'B5', 'C6'
     ],
-    // Progress tracking
-    progress: {
-      '1_1_pitches_high_or_low': 0,
-      match: 0,
-      draw: 0,
-      'does-it-sound-right': 0,
-      memory: 0
-    },
     
+    // ************ for 1.3 *****************
     // Well-known melodies for the "Does It Sound Right?" activity
     knownMelodies: {
       'twinkle': {
@@ -228,6 +235,7 @@ export function pitches() {
         ]
       }
     },
+    // **************************************
     
     /**
      * Initialize the component
@@ -492,6 +500,10 @@ export function pitches() {
         this.longPressTimer = null;
       }
     },
+    
+    /** *************************************************************************
+     * 1.1 High or Low Activity
+     ************************************************************************** */
     
     /**
      * Determines the current difficulty stage for the High or Low activity
