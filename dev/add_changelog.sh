@@ -1,14 +1,14 @@
 #!/bin/bash
 
 # Paths
-BUILD_GRADLE="app/build.gradle"
+BUILD_GRADLE="android/app/build.gradle"
 BASE_DIR="fastlane/metadata/android"
 CHANGELOG_MD="CHANGELOG.md"
 CHANGELOG_DE_MD="CHANGELOG_de.md"
 PLAYSTORE_DIR="fastlane/metadata/android/playstore"
 
 # Get version from build.gradle
-VERSION_NAME=$(grep versionName $BUILD_GRADLE | awk -F\" '{print $2}')
+VERSION_NAME=1.5
 
 # Get current date
 CURRENT_DATE=$(date +"%Y-%m-%d")
@@ -40,21 +40,23 @@ check_length() {
 
 # German Changelog
 DE_CHANGES=$(cat << EOF
-- Verbesserte Accessibility-Übersetzungen
-- Alle Koordinaten in der Accessibility-Announcement von 1,1 bis 8,8 statt von 0,0 bis 7,7
-- Sound-Einstellung funktioniert jetzt korrekt
-- Gewinnbedingung bei mehreren Zielen prüft jetzt korrekt, ob die gewählte Anzahl an Robotern auf ihren Zielen steht
-- Mehrfarben-Ziele wiederhergestellt im Beginner Mode
+- Pitches Kapitel
+ - High or Low: höre einen Ton und wähle ob er hoch oder tief war
+ - Match Sounds:. höre eine Melodie und wähle ob sie hoch oder tief war
+ - Draw a Melody: zeichne eine Melodie in einen Sandkasten
+ - Does It Sound Right?: höre bekannte Kinderlieder und figuren aus, ob sie richtig gespielt wurden
+ - Memory Game: höre eine Melodie und spiele sie auf einem kleinen vereinfachten Keyboard
 EOF
 )
 
 # English Changelog
 EN_CHANGES=$(cat << EOF
-- Enhanced accessibility translations
-- Make all accessibility coordinate announcements from 1,1 to 8,8 instead of 0,0 to 7,7
-- Fixed sound settings to properly respect user preferences
-- Fixed win condition to correctly check if the selected number of robots are at their targets
-- Freenable multi-color targets in Beginner mode
+- Pitches Chapter
+ - High or Low: listen to the tone and choose if it is high or low
+ - Match Sounds:. listen to a melody and choose if it's going up or down
+ - Draw a Melody: free drawing of a melody in a sand box
+ - Does It Sound Right?: listen to known children songs and figure out, if they are played right or wrong
+ - Memory Game: listen to a sequence of tones and play them on a small simplified keyboard
 EOF
 )
 
