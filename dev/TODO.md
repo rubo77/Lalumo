@@ -102,6 +102,8 @@ Dies soll in allen aktionen:
 
 - when pressed on a button, the finger moves and is released, it should also trigger the buttons click event
 
+- überall den border-shadow focus nach dem click entfernen
+
 ## nach kapitel
 
 1_1 "High or Low?" (1_1_pitches_high_or_low) 
