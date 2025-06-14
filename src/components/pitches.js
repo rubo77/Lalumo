@@ -590,6 +590,25 @@ export function pitches() {
     },
     
     /**
+     * Setup for the High or Low activity
+     * @activity 1_1_high_or_low
+     */
+    setupHighOrLowMode_1_1() {
+      // Initialize the high or low activity
+      console.log('High or Low mode ready with progress:', this.highOrLowProgress);
+      
+      // Reset the current sequence so a new one will be generated on play
+      this.currentHighOrLowSequence = null;
+      
+      // Reset game state - not started until the user explicitly clicks play
+      this.gameStarted = false;
+      console.log('High or Low game reset, gameStarted:', this.gameStarted);
+      
+      // Show intro message immediately when entering the activity
+      this.showActivityIntroMessage('1_1_pitches_high_or_low');
+    },
+    
+    /**
      * Generates a tone (or pair of tones) for the High or Low activity
      * based on the current difficulty stage
      * @activity 1_1_high_or_low
@@ -1074,7 +1093,87 @@ export function pitches() {
       }
     },
     
+        
+    /**
+     * Play a melody for the "Does It Sound Right?" activity
+     * @param {boolean} generateNew - Whether to generate a new melody
+     * @activity 1_1_high_or_low
+     */
+    playMelodyForSoundHighOrLow(generateNew = true) {
+      console.log(`AUDIO: playMelodyForSoundHighOrLow called with generateNew=${generateNew}`);
+      
+      // Stoppe zuerst alle aktuellen Sounds, um Überlagerungen zu vermeiden
+      this.stopCurrentSound();
+      
+      // Hide any previous feedback
+      this.showFeedback = false;
+      
+      // Aktualisiere UI-Status: Buttons deaktivieren während der Wiedergabe
+      document.querySelectorAll('.play-button').forEach(btn => {
+        btn.classList.add('playing');
+        btn.disabled = true;
+      });
+      
+      // Kurze Pause einfügen, um sicherzustellen, dass vorherige Sounds gestoppt wurden
+      setTimeout(() => {
+        // Generate a new melody if requested
+        if (generateNew) {
+          // Select new random animal images only when generating a new melody
+          // This ensures the animals only change when the user answers correctly or enters the activity
+          this.selectRandomAnimalImages();
+          if (!this.generateSoundHighOrLowMelody()) {
+            console.error('AUDIO_ERROR: Failed to generate sound judgment melody');
+            
+            // UI-Status zurücksetzen
+            document.querySelectorAll('.play-button').forEach(btn => {
+              btn.classList.remove('playing');
+              btn.disabled = false;
+            });
+            return;
+          }
+          
+          console.log('AUDIO: Generated new melody with ID:', this.currentMelodyId);
+          // Play the newly generated melody with the melody ID
+          this.playMelodySequence(this.currentSequence, 'sound-judgment', this.currentMelodyId);
+        } 
+        // Play the existing melody if we're not generating a new one
+        else if (this.currentSequence && this.currentSequence.length > 0) {
+          console.log('AUDIO: Replaying existing melody with ID:', this.currentMelodyId);
+          this.playMelodySequence(this.currentSequence, 'sound-judgment', this.currentMelodyId);
+        } 
+        // Handle case where there's no melody to play
+        else {
+          console.error('AUDIO_ERROR: No sequence to play for sound judgment activity');
+          
+          // Try to generate a melody as fallback
+          if (this.generateSoundHighOrLowMelody()) {
+            this.playMelodySequence(this.currentSequence, 'sound-judgment', this.currentMelodyId);
+          } else {
+            // Reset UI if we can't play anything
+            document.querySelectorAll('.play-button').forEach(btn => {
+              btn.classList.remove('playing');
+              btn.disabled = false;
+            });
+          }
+        }
+        
+        // Aktualisiere Melodie-Name in der UI
+        document.querySelectorAll('.sound-status').forEach(el => {
+          el.textContent = this.currentMelodyName || 'Melodie wird abgespielt...';
+        });
+      }, 50); // Kurze Verzögerung, um sicherzustellen, dass stopCurrentSound vollständig ausgeführt wurde
+    },
+    
 
+
+
+
+
+
+    /** *****************************************************
+     * 1_2 Match Sounds Activity
+     ******************************************************** */
+    
     /**
      * Check if the user selected the correct image
      * @param {string} selected - User's selection
@@ -1618,25 +1717,6 @@ export function pitches() {
       
       // Store progress in localStorage for persistence
       localStorage.setItem('lalumo_progress', JSON.stringify(this.progress));
-    },
-    
-    /**
-     * Setup for the High or Low activity
-     * @activity 1_1_high_or_low
-     */
-    setupHighOrLowMode_1_1() {
-      // Initialize the high or low activity
-      console.log('High or Low mode ready with progress:', this.highOrLowProgress);
-      
-      // Reset the current sequence so a new one will be generated on play
-      this.currentHighOrLowSequence = null;
-      
-      // Reset game state - not started until the user explicitly clicks play
-      this.gameStarted = false;
-      console.log('High or Low game reset, gameStarted:', this.gameStarted);
-      
-      // Show intro message immediately when entering the activity
-      this.showActivityIntroMessage('1_1_pitches_high_or_low');
     },
     
     /**
@@ -3816,77 +3896,7 @@ export function pitches() {
       
       return true;
     },
-    
-    /**
-     * Play a melody for the "Does It Sound Right?" activity
-     * @param {boolean} generateNew - Whether to generate a new melody
-     * @activity 1_1_high_or_low
-     */
-    playMelodyForSoundHighOrLow(generateNew = true) {
-      console.log(`AUDIO: playMelodyForSoundHighOrLow called with generateNew=${generateNew}`);
-      
-      // Stoppe zuerst alle aktuellen Sounds, um Überlagerungen zu vermeiden
-      this.stopCurrentSound();
-      
-      // Hide any previous feedback
-      this.showFeedback = false;
-      
-      // Aktualisiere UI-Status: Buttons deaktivieren während der Wiedergabe
-      document.querySelectorAll('.play-button').forEach(btn => {
-        btn.classList.add('playing');
-        btn.disabled = true;
-      });
-      
-      // Kurze Pause einfügen, um sicherzustellen, dass vorherige Sounds gestoppt wurden
-      setTimeout(() => {
-        // Generate a new melody if requested
-        if (generateNew) {
-          // Select new random animal images only when generating a new melody
-          // This ensures the animals only change when the user answers correctly or enters the activity
-          this.selectRandomAnimalImages();
-          if (!this.generateSoundHighOrLowMelody()) {
-            console.error('AUDIO_ERROR: Failed to generate sound judgment melody');
-            
-            // UI-Status zurücksetzen
-            document.querySelectorAll('.play-button').forEach(btn => {
-              btn.classList.remove('playing');
-              btn.disabled = false;
-            });
-            return;
-          }
-          
-          console.log('AUDIO: Generated new melody with ID:', this.currentMelodyId);
-          // Play the newly generated melody with the melody ID
-          this.playMelodySequence(this.currentSequence, 'sound-judgment', this.currentMelodyId);
-        } 
-        // Play the existing melody if we're not generating a new one
-        else if (this.currentSequence && this.currentSequence.length > 0) {
-          console.log('AUDIO: Replaying existing melody with ID:', this.currentMelodyId);
-          this.playMelodySequence(this.currentSequence, 'sound-judgment', this.currentMelodyId);
-        } 
-        // Handle case where there's no melody to play
-        else {
-          console.error('AUDIO_ERROR: No sequence to play for sound judgment activity');
-          
-          // Try to generate a melody as fallback
-          if (this.generateSoundHighOrLowMelody()) {
-            this.playMelodySequence(this.currentSequence, 'sound-judgment', this.currentMelodyId);
-          } else {
-            // Reset UI if we can't play anything
-            document.querySelectorAll('.play-button').forEach(btn => {
-              btn.classList.remove('playing');
-              btn.disabled = false;
-            });
-          }
-        }
-        
-        // Aktualisiere Melodie-Name in der UI
-        document.querySelectorAll('.sound-status').forEach(el => {
-          el.textContent = this.currentMelodyName || 'Melodie wird abgespielt...';
-        });
-      }, 50); // Kurze Verzögerung, um sicherzustellen, dass stopCurrentSound vollständig ausgeführt wurde
-    },
-    
+
     /**
      * Plays a melody sequence for the "Does It Sound Right?" activity
      * Uses the shared playAudioSequence function for consistent audio behavior
