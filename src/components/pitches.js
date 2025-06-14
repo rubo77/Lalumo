@@ -511,6 +511,56 @@ export function pitches() {
       }
     },
     
+    /**
+     * Set the current activity mode
+     * @param {string} newMode - The mode to switch to
+     * @activity common
+     * @used-by all activities
+     */
+    setMode(newMode) {
+      console.log('MODSWITCH: Changing mode from', this.mode, 'to', newMode);
+      this.mode = newMode;
+      this.resetState();
+      
+      // Store the current mode in Alpine.js store for menu highlighting
+      if (window.Alpine && window.Alpine.store) {
+        window.Alpine.store('pitchMode', newMode);
+      }
+      
+      // Setup the new mode without playing any sounds
+      if (newMode === 'main') {
+        // This is the landing page with clickable image, no additional setup needed
+        console.log('Showing main selection screen with clickable image');
+      } 
+      // New ID format handlers
+      else if (newMode === '1_1_pitches_high_or_low') {
+        // For high or low mode, initialize the highOrLowProgress from saved progress
+        this.highOrLowProgress = this.progress['1_1_pitches_high_or_low'] || 0;
+        console.log('High or Low mode activated with progress:', this.highOrLowProgress);
+        // Load current stage based on progress
+        this.setupHighOrLowMode_1_1();
+      } else if (newMode === '1_2_pitches_match-sounds') {
+        this.gameMode = false; // Start in free play mode
+        this.setupMatchingMode_1_2(false); // Setup without playing sound
+      } else if (newMode === '1_3_pitches_draw-melody') {
+        this.setupDrawingMode_1_3(); // Drawing doesn't play sound by default
+      } else if (newMode === '1_4_pitches_does-it-sound-right') {
+        // Always generate a melody but don't play it yet (user will press play button)
+        this.setupSoundHighOrLowMode_1_4(false); // Setup without auto-playing sound
+      } else if (newMode === '1_5_pitches_memory-game') {
+        this.gameMode = false; // Start in free play mode
+        this.memoryFreePlay = true; // Enable free play
+        this.setupMemoryMode_1_5(false); // Setup without playing sound
+      }
+      
+      // Always show the mascot message for the current mode
+      this.showContextMessage(); // Use our context-aware message function
+      
+      // Update progress tracking
+      this.updateProgressPitches();
+    },
+    
+    
     /** *****************************************************
      * 1_1 High or Low Activity
      ******************************************************** */
@@ -998,56 +1048,6 @@ export function pitches() {
       }, 2000);
     },
     
-    
-    /**
-     * Set the current activity mode
-     * @param {string} newMode - The mode to switch to
-     * @activity common
-     * @used-by all activities
-     */
-    setMode(newMode) {
-      console.log('MODSWITCH: Changing mode from', this.mode, 'to', newMode);
-      this.mode = newMode;
-      this.resetState();
-      
-      // Store the current mode in Alpine.js store for menu highlighting
-      if (window.Alpine && window.Alpine.store) {
-        window.Alpine.store('pitchMode', newMode);
-      }
-      
-      // Setup the new mode without playing any sounds
-      if (newMode === 'main') {
-        // This is the landing page with clickable image, no additional setup needed
-        console.log('Showing main selection screen with clickable image');
-      } 
-      // New ID format handlers
-      else if (newMode === '1_1_pitches_high_or_low') {
-        // For high or low mode, initialize the highOrLowProgress from saved progress
-        this.highOrLowProgress = this.progress['1_1_pitches_high_or_low'] || 0;
-        console.log('High or Low mode activated with progress:', this.highOrLowProgress);
-        // Load current stage based on progress
-        this.setupHighOrLowMode_1_1();
-      } else if (newMode === '1_2_pitches_match-sounds') {
-        this.gameMode = false; // Start in free play mode
-        this.setupMatchingMode_1_2(false); // Setup without playing sound
-      } else if (newMode === '1_3_pitches_draw-melody') {
-        this.setupDrawingMode_1_3(); // Drawing doesn't play sound by default
-      } else if (newMode === '1_4_pitches_does-it-sound-right') {
-        // Always generate a melody but don't play it yet (user will press play button)
-        this.setupSoundHighOrLowMode_1_4(false); // Setup without auto-playing sound
-      } else if (newMode === '1_5_pitches_memory-game') {
-        this.gameMode = false; // Start in free play mode
-        this.memoryFreePlay = true; // Enable free play
-        this.setupMemoryMode_1_5(false); // Setup without playing sound
-      }
-      
-      // Always show the mascot message for the current mode
-      this.showContextMessage(); // Use our context-aware message function
-      
-      // Update progress tracking
-      this.updateProgressPitches();
-    },
-    
     /**
      * Play a tone using the central audio engine
      * @param {string} note - Note name (e.g., 'C4', 'D#3')
@@ -1072,6 +1072,100 @@ export function pitches() {
         console.error('Error playing tone:', error);
         return false;
       }
+    },
+    
+
+    /**
+     * Check if the user selected the correct image
+     * @param {string} selected - User's selection
+     * @activity 1_2_match-sounds
+     */
+    checkMatch(selected) {
+      // First stop any currently playing melody
+      this.stopCurrentSound();
+      
+      // Show the selected animation
+      this.animatePatternElement(selected);
+      
+      // In free play mode, just play the selected pattern
+      if (!this.gameMode) {
+        // Just play the selected pattern and provide minimal feedback
+        this.activity1_2_matchSoundsPlaySequence(selected);
+        return;
+      }
+      
+      // Game mode: check if answer is correct
+      const isCorrect = selected === this.correctAnswer;
+      
+      this.showFeedback = true;
+      this.feedback = ''; //isCorrect ? 'Great job! That\'s correct!' : 'Not quite. Let\'s try again!';
+      
+      // Trigger sound feedback using the central audio engine
+      audioEngine.playNote(isCorrect ? 'success' : 'try_again', 1.0);
+      console.log(`AUDIO: Playing ${isCorrect ? 'success' : 'try_again'} feedback sound using audio engine`);
+      
+      // Show appropriate animation based on result
+      if (isCorrect) {
+        // Track the correct answer for progressive difficulty
+        this.addCorrectAnswer();
+        
+        // Create and show rainbow success animation
+        const rainbow = document.createElement('div');
+        rainbow.className = 'rainbow-success';
+        document.body.appendChild(rainbow);
+        
+        // Remove rainbow element after animation completes
+        setTimeout(() => {
+          if (rainbow && rainbow.parentNode) {
+            rainbow.parentNode.removeChild(rainbow);
+          }
+        }, 2500);
+        
+        // Update progress with new ID format only
+        if (!this.progress['1_2_pitches_match-sounds']) {
+          this.progress['1_2_pitches_match-sounds'] = 0;
+        }
+        // Increment progress counter
+        this.progress['1_2_pitches_match-sounds'] += 1;
+        const currentProgress = this.progress['1_2_pitches_match-sounds'];
+        
+        console.log('Updated match progress:', currentProgress);
+        
+        // Important thresholds for background changes
+        if (currentProgress === 10 || currentProgress === 20) {
+          console.log(`Milestone reached: ${currentProgress} correct answers - updating background`);
+        }
+        
+        // Update background based on new progress level
+        this.updateMatchingBackground();
+        
+        // Save progress to localStorage
+        localStorage.setItem('lalumo_progress', JSON.stringify(this.progress));
+      } else {
+        // Find the clicked element for potential error animation
+        const clickedElement = document.querySelector(`.pitch-card .pitch-icon.${selected}`);
+        
+        if (clickedElement) {
+          // Show shake animation on the clicked element
+          clickedElement.classList.add('shake-error');
+          setTimeout(() => {
+            clickedElement.classList.remove('shake-error');
+          }, 500);
+        }
+      }
+      
+      // Reset after showing feedback
+      setTimeout(() => {
+        this.showFeedback = false;
+        
+        // If correct answer, automatically progress to next melody after feedback
+        if (isCorrect) {
+          // Setup a new match automatically
+          this.setupMatchingMode_1_2(true, true);
+          console.log('Auto-progressed to next melody in match mode');
+        }
+        // For wrong answers, don't generate new melody so user can try the same one again
+      }, 2000);
     },
     
     /**
@@ -1878,6 +1972,7 @@ export function pitches() {
     /**
      * Play a sequence of notes based on the selected pattern
      * @param {string} type - Type of pattern ('up', 'down', 'wave', 'jump')
+     * @activity 1_2_match-sounds
      */
     activity1_2_matchSoundsPlaySequence(type) {
       // Enhanced logging for diagnosis
@@ -1942,7 +2037,8 @@ export function pitches() {
     },
     
     /**
-     * Setup for the matching mode ('1_2_pitches_match-sounds')
+     * Setup for the matching mode
+     * @activity 1_2_match_sounds
      */
     setupMatchingMode_1_2(playSound = false, generateNew = true) {
       this.animationInProgress = false;
@@ -1995,105 +2091,13 @@ export function pitches() {
     },
     
     /**
-     * Check if the user selected the correct image
-     * @param {string} selected - User's selection
-     */
-    checkMatch(selected) {
-      // First stop any currently playing melody
-      this.stopCurrentSound();
-      
-      // Show the selected animation
-      this.animatePatternElement(selected);
-      
-      // In free play mode, just play the selected pattern
-      if (!this.gameMode) {
-        // Just play the selected pattern and provide minimal feedback
-        this.activity1_2_matchSoundsPlaySequence(selected);
-        return;
-      }
-      
-      // Game mode: check if answer is correct
-      const isCorrect = selected === this.correctAnswer;
-      
-      this.showFeedback = true;
-      this.feedback = isCorrect ? 
-        'Great job! That\'s correct!' : 
-        'Not quite. Let\'s try again!';
-      
-      // Trigger sound feedback using the central audio engine
-      audioEngine.playNote(isCorrect ? 'success' : 'try_again', 1.0);
-      console.log(`AUDIO: Playing ${isCorrect ? 'success' : 'try_again'} feedback sound using audio engine`);
-      
-      // Show appropriate animation based on result
-      if (isCorrect) {
-        // Track the correct answer for progressive difficulty
-        this.addCorrectAnswer();
-        
-        // Create and show rainbow success animation
-        const rainbow = document.createElement('div');
-        rainbow.className = 'rainbow-success';
-        document.body.appendChild(rainbow);
-        
-        // Remove rainbow element after animation completes
-        setTimeout(() => {
-          if (rainbow && rainbow.parentNode) {
-            rainbow.parentNode.removeChild(rainbow);
-          }
-        }, 2500);
-        
-        // Update progress with new ID format only
-        if (!this.progress['1_2_pitches_match-sounds']) {
-          this.progress['1_2_pitches_match-sounds'] = 0;
-        }
-        // Increment progress counter
-        this.progress['1_2_pitches_match-sounds'] += 1;
-        const currentProgress = this.progress['1_2_pitches_match-sounds'];
-        
-        console.log('Updated match progress:', currentProgress);
-        
-        // Important thresholds for background changes
-        if (currentProgress === 10 || currentProgress === 20) {
-          console.log(`Milestone reached: ${currentProgress} correct answers - updating background`);
-        }
-        
-        // Update background based on new progress level
-        this.updateMatchingBackground();
-        
-        // Save progress to localStorage
-        localStorage.setItem('lalumo_progress', JSON.stringify(this.progress));
-      } else {
-        // Find the clicked element for potential error animation
-        const clickedElement = document.querySelector(`.pitch-card .pitch-icon.${selected}`);
-        
-        if (clickedElement) {
-          // Show shake animation on the clicked element
-          clickedElement.classList.add('shake-error');
-          setTimeout(() => {
-            clickedElement.classList.remove('shake-error');
-          }, 500);
-        }
-      }
-      
-      // Reset after showing feedback
-      setTimeout(() => {
-        this.showFeedback = false;
-        
-        // If correct answer, automatically progress to next melody after feedback
-        if (isCorrect) {
-          // Setup a new match automatically
-          this.setupMatchingMode_1_2(true, true);
-          console.log('Auto-progressed to next melody in match mode');
-        }
-        // For wrong answers, don't generate new melody so user can try the same one again
-      }, 2000);
-    },
-    
-    /**
      * Stop any currently playing sound
      */
     /**
      * Stops all currently playing sounds and resets UI state
      * This is a critical method for preventing sound overlap issues
+     * @activity common
+     * @used_by all activities
      */
     stopCurrentSound() {
       console.log('AUDIO: stopCurrentSound called in pitches.js');
@@ -3200,6 +3204,7 @@ export function pitches() {
     
     /**
      * Play the memory sequence for the user
+     * @activity 1_5_memory
      */
     playMemorySequence() {
       console.log('DEBUG: Starting memory sequence playback');
@@ -3259,6 +3264,8 @@ export function pitches() {
     /**
      * Add a note to the user's sequence
      * @param {string} note - The note to add
+     * @activity 1_5_memory
+     * @used_by index (piano-keyboard)
      */
     addToSequence(note) {
       // Stop any currently playing melody first
@@ -3327,6 +3334,7 @@ export function pitches() {
     
     /**
      * Check if the user's sequence matches the original
+     * @activity 1_5_memory
      */
     checkMemorySequence() {
       // First stop any currently playing melody
@@ -3812,6 +3820,7 @@ export function pitches() {
     /**
      * Play a melody for the "Does It Sound Right?" activity
      * @param {boolean} generateNew - Whether to generate a new melody
+     * @activity 1_1_high_or_low
      */
     playMelodyForSoundHighOrLow(generateNew = true) {
       console.log(`AUDIO: playMelodyForSoundHighOrLow called with generateNew=${generateNew}`);

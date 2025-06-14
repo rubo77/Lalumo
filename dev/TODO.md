@@ -77,7 +77,7 @@ unter chrome auf dem handy android 15:
 - all chapters and activities are included in the sitemap. also, if you select another activity in the nav, the hash tag should change, so you can bookmark them
 
 Dies soll in allen aktionen:
-- immer bei Misserfolg: den sound abspielen und den hintergrund hin und her-wackeln
+- immer bei Misserfolg (error): den sound abspielen und den hintergrund hin und her-wackeln (.shake-error)
 
 - Hinweis: /var/www/Musici/android/app/src/main/java/com/lalumo/app/MainActivity.java verwendet oder überschreibt eine veraltete API.:
     - Das Problem liegt in der Verwendung der SYSTEM_UI_FLAG_* Flags zur Steuerung der UI-Sichtbarkeit (Zeilen 34-36):
