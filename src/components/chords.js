@@ -2,6 +2,22 @@
  * Chords component
  * Implements interactive chord learning experiences for children
  */
+
+// Import debug utilities
+import { debugLog } from '../utils/debug.js';
+
+// Import test functions from the modules
+import {
+  testCommonModuleImport,
+  testChordColorMatchingModuleImport,
+  testChordMoodLandscapesModuleImport,
+  testChordBuildingModuleImport,
+  testMissingNoteModuleImport,
+  testChordCharactersModuleImport,
+  // Import actual functions for color matching activity
+  newColorMatchingQuestion,
+  checkColorAnswer
+} from './2_chords/index.js';
 export function chords() {
   return {
     // Current activity mode
@@ -366,33 +382,21 @@ export function chords() {
     // Color Matching Activity Methods
     startColorMatching() {
       this.resetActivity();
-      this.newColorMatchingQuestion();
+      // Use the imported function with 'this' as the component reference
+      newColorMatchingQuestion(this);
+      
+      // Log that we're using the modular function
+      debugLog('CHORDS', 'Started color matching activity using modular function');
     },
     
+    // These functions are now imported from the module
+    // Wrapper functions to maintain compatibility with existing code
     newColorMatchingQuestion() {
-      const chordType = this.getRandomChordType();
-      const rootNote = this.getRandomRootNote();
-      this.playChord(chordType, rootNote);
-      this.currentChordType = chordType;
-      this.totalQuestions++;
+      newColorMatchingQuestion(this);
     },
     
     checkColorAnswer(selectedColor) {
-      const correctColor = this.chords[this.currentChordType].color;
-      const isCorrect = selectedColor === correctColor;
-      
-      if (isCorrect) {
-        this.correctAnswers++;
-        this.feedbackMessage = 'Great job! That\'s the right color!';
-      } else {
-        this.feedbackMessage = 'Not quite! Let\'s try another one.';
-      }
-      
-      this.showFeedback = true;
-      setTimeout(() => {
-        this.showFeedback = false;
-        this.newColorMatchingQuestion();
-      }, 2000);
+      checkColorAnswer(this, selectedColor);
     },
     
     // Mood Landscapes Activity Methods
