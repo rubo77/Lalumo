@@ -239,6 +239,8 @@ export function pitches() {
     
     /**
      * Initialize the component
+     * @activity common
+     * @used-by all activities
      */
     init() {
       // Set up text-to-speech if available - with better debugging
@@ -331,7 +333,9 @@ export function pitches() {
     },
     
     /**
-     * Reset component state between mode changes
+     * Reset the component state between mode changes
+     * @activity common
+     * @used-by all activities
      */
     resetState() {
       // Reset state for clean mode switching
@@ -493,6 +497,8 @@ export function pitches() {
     
     /**
      * Cancel the long press timer
+     * @activity common
+     * @used-by 1_1_high_or_low, 1_2_match_sounds
      */
     cancelLongPress() {
       if (this.longPressTimer) {
@@ -532,6 +538,7 @@ export function pitches() {
     /**
      * Generates a tone (or pair of tones) for the High or Low activity
      * based on the current difficulty stage
+     * @activity 1_1_high_or_low
      */
     generateHighOrLowTone() {
       const stage = currentHighOrLowStage(this);
@@ -578,7 +585,8 @@ export function pitches() {
     },
     
     /**
-     * Saves the current progress to localStorage
+     * Save progress for the High or Low activity to localStorage
+     * @activity 1_1_high_or_low
      */
     saveProgress_1_1() {
       try {
@@ -1126,6 +1134,8 @@ export function pitches() {
     /**
      * Shows context-specific messages based on current activity and stage
      * Displays instructions and guidance to the user via the mascot
+     * @activity common
+     * @used-by all activities
      */
     showContextMessage() {
       let message = '';
@@ -1197,8 +1207,9 @@ export function pitches() {
     },
     
     /**
-     * Initialisiert die Sprachsynthese mit verbesserten Fallback-Mechanismen
-     * für bessere Kompatibilität mit verschiedenen Browsern und WebViews
+     * Initialize speech synthesis for voice feedback
+     * @activity common
+     * @used-by all activities
      */
     initSpeechSynthesis() {
       console.log('Initializing speech synthesis...');
@@ -1261,6 +1272,8 @@ export function pitches() {
     
     /**
      * Check if the native Android TTS bridge is available
+     * @activity common
+     * @used-by all activities
      */
     checkAndroidNativeTTS() {
       console.log('Checking for native Android TTS bridge');
@@ -1309,6 +1322,8 @@ export function pitches() {
     
     /**
      * Hide mascot message and save preference to not show help messages
+     * @activity common
+     * @used-by all activities
      */
     hideAndSaveMascotPreference() {
       // Hide the mascot message
