@@ -86,6 +86,7 @@ fi
 update_version() {
   PACKAGE_FILE="package.json"
   GRADLE_FILE="android/app/build.gradle"
+  CHANGELOG_GENERATOR_FILE="dev/add_changelog.sh"
   
   if [ ! -f "$PACKAGE_FILE" ]; then
     echo "Error: package.json not found!"
@@ -141,6 +142,15 @@ update_version() {
     fi
   else
     echo "Android gradle file not found at $GRADLE_FILE"
+  fi
+  
+  # Version in add_changelog.sh aktualisieren
+  if [ -f "$CHANGELOG_GENERATOR_FILE" ]; then
+    echo "Updating version in changelog generator: $ANDROID_VERSION"
+    # Ersetze die VERSION_NAME-Zeile in der add_changelog.sh
+    sed -i "s/VERSION_NAME=[0-9.]\+/VERSION_NAME=$ANDROID_VERSION/" "$CHANGELOG_GENERATOR_FILE"
+  else
+    echo "Changelog generator file not found at $CHANGELOG_GENERATOR_FILE"
   fi
 }
 

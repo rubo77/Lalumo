@@ -1,5 +1,7 @@
 #!/bin/bash
 
+cd /var/www/Musici
+
 # Paths
 BUILD_GRADLE="android/app/build.gradle"
 BASE_DIR="fastlane/metadata/android"
@@ -8,7 +10,7 @@ CHANGELOG_DE_MD="CHANGELOG_de.md"
 PLAYSTORE_DIR="fastlane/metadata/android/playstore"
 
 # Get version from build.gradle
-VERSION_NAME=1.5
+VERSION_NAME=1.6
 
 # Get current date
 CURRENT_DATE=$(date +"%Y-%m-%d")
@@ -40,23 +42,13 @@ check_length() {
 
 # German Changelog
 DE_CHANGES=$(cat << EOF
-- Pitches Kapitel
- - High or Low: höre einen Ton und wähle ob er hoch oder tief war
- - Match Sounds:. höre eine Melodie und wähle ob sie hoch oder tief war
- - Draw a Melody: zeichne eine Melodie in einen Sandkasten
- - Does It Sound Right?: höre bekannte Kinderlieder und figuren aus, ob sie richtig gespielt wurden
- - Memory Game: höre eine Melodie und spiele sie auf einem kleinen vereinfachten Keyboard
+- auf Android: fang Back-Gesture ab
 EOF
 )
 
 # English Changelog
 EN_CHANGES=$(cat << EOF
-- Pitches Chapter
- - High or Low: listen to the tone and choose if it is high or low
- - Match Sounds:. listen to a melody and choose if it's going up or down
- - Draw a Melody: free drawing of a melody in a sand box
- - Does It Sound Right?: listen to known children songs and figure out, if they are played right or wrong
- - Memory Game: listen to a sequence of tones and play them on a small simplified keyboard
+- catch back-gesture on Android
 EOF
 )
 

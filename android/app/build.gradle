@@ -11,8 +11,8 @@ android {
         // - versionCode wird bei jedem Build inkrementiert
         // - versionName wird aus package.json übernommen (mit erhöhter Patch-Version x.y.z)
         // Manuelle Änderungen hier werden beim nächsten Build überschrieben
-        versionCode 17
-        versionName "1.5"
+        versionCode 18
+        versionName "1.6"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
@@ -23,10 +23,10 @@ android {
     buildTypes {
         release {
             // Enables code-related app optimization
-            isMinifyEnabled true
+            minifyEnabled true
             
             // Enables resource shrinking
-            isShrinkResources true
+            shrinkResources true
             
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }

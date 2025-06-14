@@ -320,8 +320,19 @@ export function app() {
     toggleMenuLock() {
       this.menuLocked = !this.menuLocked;
       try {
+        // Save to localStorage
         localStorage.setItem('lalumo_menu_locked', this.menuLocked);
         console.log('Menu lock state updated:', this.menuLocked);
+        
+        // Notify Android about menu lock state change if running in Android
+        if (window.AndroidMenuLock) {
+          try {
+            window.AndroidMenuLock.setMenuLockState(this.menuLocked);
+            console.log('Android notified about menu lock state:', this.menuLocked);
+          } catch (androidError) {
+            console.log('Error notifying Android about menu lock state', androidError);
+          }
+        }
       } catch (e) {
         console.log('Error saving menu lock state', e);
       }

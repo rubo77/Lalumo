@@ -1,0 +1,8 @@
+# Play Store Changelogs für Version 1.6
+
+<en-GB>
+- catch back-gesture on Android
+</en-GB>
+<de-DE>
+- auf Android: fang Back-Gesture ab
+</de-DE>
