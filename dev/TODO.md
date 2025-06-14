@@ -100,8 +100,11 @@ Dies soll in allen aktionen:
 
 - also show the build versionCode 18 in klammern dahinter in credits.
 
-# nach kapitel
+- when pressed on a button, the finger moves and is released, it should also trigger the buttons click event
+
+## nach kapitel
 1_1 "High or Low?" (1_1_pitches_high_or_low) 
+- aendere, dass man immer 1s warten muss, bis man wählen kann, welche Taste man drückt. man soll sofort, wenn man den ton hört schon wählen dürfen
 - # bereit zur veröffentlichung
 - Die Welle muss Sägezahn sein ohne Brandung 
 - die tiefen töne sind eine oktave zu tief
@@ -112,7 +115,6 @@ Dies soll in allen aktionen:
 
 1_2 "Match the Sounds":
 - # bereit zur veröffentlichung
-- man muss immer 1s warten, bis man drücken darf
 
 1_3 Draw a Melody:
 - # bereit zur veröffentlichung

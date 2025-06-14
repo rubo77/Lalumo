@@ -358,6 +358,8 @@ export function pitches() {
     /**
      * Enhanced multi-touch long press handler
      * Allows long press to work with any finger, not just the first one
+     * @activity common
+     * @used-by NOWHERE
      */
     startMultiTouchLongPress(pattern, event) {
       // Clear any existing timer
@@ -428,6 +430,8 @@ export function pitches() {
     
     /**
      * Start a long press timer for showing help text
+     * @activity common
+     * @used-by navigation
      * @param {string} pattern - The pattern being long-pressed
      */
     startLongPress(pattern, event) {
@@ -444,13 +448,13 @@ export function pitches() {
         const languageSetting = localStorage.getItem('lalumo_language') || 'english';
         console.log('Current language setting:', languageSetting);
         
-        // Konvertiere die Spracheinstellung zu Sprachcodes für die Hilfstexte
+        // Convert the language setting to language codes for the help texts
         const language = languageSetting === 'german' ? 'de' : 'en';
         
-        // Definiere einen Fallback-Text, falls kein Pattern-Text gefunden wird
+        // Define a fallback text if no pattern text is found
         let helpText = '';
         
-        // Hilfstexte für alle Patterns definieren
+        // Define help texts for all patterns
         const helpTexts = {
           up: { en: 'Up', de: 'Hoch' },
           down: { en: 'Down', de: 'Runter' },
@@ -458,26 +462,26 @@ export function pitches() {
           jump: { en: 'Random', de: 'Zufall' }
         };
         
-        // Pattern-Namen normalisieren (Kleinbuchstaben, Leerzeichen entfernen)
+        // Normalize pattern names (lowercase, remove spaces)
         const normalizedPattern = String(pattern).toLowerCase().trim();
         
-        // Prüfen, ob das Pattern existiert
+        // Check if the pattern exists
         if (helpTexts[normalizedPattern]) {
-          // Wenn ja, den entsprechenden Text in der gewünschten Sprache oder English als Fallback holen
+          // If yes, get the corresponding text in the desired language or English as fallback
           helpText = helpTexts[normalizedPattern][language] || helpTexts[normalizedPattern]['en'];
         } else {
-          // Fallback, wenn das Pattern nicht gefunden wurde
-          helpText = language === 'de' ? 'Melodie abspielen' : 'Play melody';
-          console.warn(`Pattern '${pattern}' nicht in helpTexts definiert. Verwende Fallback-Text.`);
+          // Fallback if the pattern was not found
+          helpText = language === 'de' ? 'Klick' : 'Click';
+          console.warn(`Pattern '${pattern}' not defined in helpTexts. Using fallback text.`);
         }
         
-        // Setze immer die Nachricht, auch wenn ein Fallback verwendet wird
+        // Always set the message, even if a fallback is used
         this.mascotMessage = helpText;
         console.log('Mascot message set to:', helpText);
         
-        // TTS verwenden, wenn verfügbar
+        // Use TTS if available
         try {
-          // Native Android TTS zuerst versuchen
+          // Try native Android TTS first
           if (window.AndroidTTS) {
             window.AndroidTTS.speak(helpText);
             console.log('Using Android TTS');
@@ -498,7 +502,7 @@ export function pitches() {
     /**
      * Cancel the long press timer
      * @activity common
-     * @used-by 1_1_high_or_low, 1_2_match_sounds
+     * @used-by startLongPress, startMultiTouchLongPress
      */
     cancelLongPress() {
       if (this.longPressTimer) {
@@ -507,9 +511,9 @@ export function pitches() {
       }
     },
     
-    /** *************************************************************************
-     * 1.1 High or Low Activity
-     ************************************************************************** */
+    /** *****************************************************
+     * 1_1 High or Low Activity
+     ******************************************************** */
     
     /**
      * Determines the current difficulty stage for the High or Low activity
@@ -605,6 +609,7 @@ export function pitches() {
      * Returns appropriate tone arrays for a given stage
      * @param {number} stage - The current activity stage
      * @returns {Object} Object containing lowTones and highTones arrays for the stage
+     * @activity 1_1_high_or_low
      */
     getTonesForStage(stage) {
       // Define tone ranges for different stages (according to CONCEPT.md)
@@ -636,6 +641,7 @@ export function pitches() {
      * @param {string} type - 'high' or 'low'
      * @param {number} stage - The current activity stage
      * @returns {string} A random tone of the specified type
+     * @activity 1_1_high_or_low
      */
     getRandomToneForType(type, stage) {
       const tones = this.getTonesForStage(stage);
@@ -646,6 +652,7 @@ export function pitches() {
     /**
      * Generates a High or Low tone sequence based on the current stage
      * @param {number} stage - The current activity stage
+     * @activity 1_1_high_or_low
      */
     generateHighOrLowSequence(stage) {
       console.log('Generating new high or low tone sequence for stage:', stage);
@@ -751,6 +758,7 @@ export function pitches() {
     /**
      * Plays a tone or sequence of tones for the High or Low activity
      * Called when the play button is clicked
+     * @activity 1_1_high_or_low
      */
     async playHighOrLowTone() {
       if (this.isPlaying) return; // Prevent multiple plays
@@ -812,6 +820,7 @@ export function pitches() {
     /**
      * Checks the user's answer for the High or Low activity
      * @param {string} answer - The user's answer ('high' or 'low')
+     * @activity 1_1_high_or_low
      */
     checkHighOrLowAnswer(answer) {
       if (this.isPlaying) {
@@ -993,6 +1002,8 @@ export function pitches() {
     /**
      * Set the current activity mode
      * @param {string} newMode - The mode to switch to
+     * @activity common
+     * @used-by all activities
      */
     setMode(newMode) {
       console.log('MODSWITCH: Changing mode from', this.mode, 'to', newMode);
@@ -1038,12 +1049,10 @@ export function pitches() {
     },
     
     /**
-     * Show a mascot message that's context-aware based on current activity
-     */
-    /**
      * Play a tone using the central audio engine
      * @param {string} note - Note name (e.g., 'C4', 'D#3')
      * @param {number} duration - Duration in milliseconds
+     * @activity 1_1_high_or_low
      */
     async playTone(note, duration = 800) {
       try {
@@ -1496,6 +1505,8 @@ export function pitches() {
     
     /**
      * Update the progress in localStorage based on user's progress
+     * @activity common
+     * @used-by all activities
      */
     updateProgressPitches() {
       // Get progress values from the new activity IDs
@@ -1517,6 +1528,7 @@ export function pitches() {
     
     /**
      * Setup for the High or Low activity
+     * @activity 1_1_high_or_low
      */
     setupHighOrLowMode_1_1() {
       // Initialize the high or low activity
@@ -1535,10 +1547,10 @@ export function pitches() {
     
     /**
      * Generate an ascending melody starting from a random note
+     * @activity 1_1_high_or_low
      * @returns {Array} The generated pattern
      */
     generateUpPattern() {
-      // Einfacher Ansatz: Wähle einen Zufallswert zwischen 0 und 16
       const startIndex = Math.floor(Math.random() * 15); // 0-14
       
       // Create a 5-note ascending pattern from this starting position
@@ -1552,10 +1564,11 @@ export function pitches() {
     
     /**
      * Generate a descending melody starting from a random note
+     * @activity 1_1_high_or_low
      * @returns {Array} The generated pattern
      */
     generateDownPattern() {
-      // Verwende einen höheren Startindex, um sicherzustellen, dass genug Platz nach unten ist
+      // Use a higher start index to ensure there's enough room to go down
       const startIndex = 11 + Math.floor(Math.random() * 10); // 11-20
       
       // Create a 5-note descending pattern from this starting position
@@ -1572,7 +1585,7 @@ export function pitches() {
         console.log(`Down pattern note ${i+1}: Index ${noteIndex} -> ${note}`);
       }
       
-      // Debug-Ausgabe der gesamten Melodie
+      // Debug output of the complete melody
       console.log('Down pattern complete:', pattern.join(', '));
       
       return pattern;
@@ -1580,6 +1593,7 @@ export function pitches() {
     
     /**
      * Generate a wavy pattern with only two alternating notes
+     * @activity 1_1_high_or_low
      * @returns {Array} The generated pattern
      */
     generateWavyPattern() {
@@ -1605,6 +1619,7 @@ export function pitches() {
     
     /**
      * Generate a random jumpy pattern with unpredictable jumps
+     * @activity 1_2_match_sounds
      * @returns {Array} The generated pattern
      */
     generateJumpyPattern() {
@@ -2145,6 +2160,7 @@ export function pitches() {
     
     /**
      * Clear the current drawing and reset the canvas
+     * @activity 1_3_draw_melody
      */
     clearDrawing() {
       // Save current path before clearing
@@ -2184,12 +2200,10 @@ export function pitches() {
       return noteFrequencies[noteName] || 440; // Default to A4 if note not found
     },
     
-    // Removed: Android-specific animation fallback method
-    // No longer needed with the centralized audioEngine approach
-    // which handles animation updates consistently across platforms
-    
     /**
      * Refresh the animation for a pattern
+     * @activity common
+     * @used-by NOWHERE
      */
     refreshAnimation(type) {
       // Get all relevant elements
@@ -2211,18 +2225,22 @@ export function pitches() {
       }
     },
     
+    /**
+     * Set up the drawing mode for melody drawing activity
+     * @activity 1_3_draw_melody
+     */
     setupDrawingMode_1_3() {
       this.drawPath = [];
       this.isDrawing = false;
       
-      // Lade gespeicherte Level- und Success-Counter-Werte aus localStorage
+      // Load saved level and success counter values from localStorage
       try {
         const savedLevel = localStorage.getItem('lalumo_draw_melody_level');
         if (savedLevel !== null) {
           this.drawMelodyLevel = parseInt(savedLevel, 10);
           console.log('MELODY_SETUP: Loaded saved level:', this.drawMelodyLevel);
         } else if (this.drawMelodyLevel === undefined) {
-          // Falls kein Level gespeichert ist und noch keins gesetzt wurde
+          // If no level is saved and none has been set yet
           this.drawMelodyLevel = 0;
           console.log('MELODY_SETUP: Initialized default level to 0');
         }
@@ -2232,26 +2250,26 @@ export function pitches() {
           this.levelSuccessCounter = parseInt(savedCounter, 10);
           console.log('MELODY_SETUP: Loaded saved success counter:', this.levelSuccessCounter);
         } else if (this.levelSuccessCounter === undefined) {
-          // Falls kein Counter gespeichert ist und noch keiner gesetzt wurde
+          // If no counter is saved and none has been set yet
           this.levelSuccessCounter = 0;
           console.log('MELODY_SETUP: Initialized default success counter to 0');
         }
       } catch (e) {
         console.warn('MELODY_SETUP: Error loading saved level data', e);
-        // Fallback auf Standardwerte
+        // Fallback to default values
         if (this.drawMelodyLevel === undefined) this.drawMelodyLevel = 0;
         if (this.levelSuccessCounter === undefined) this.levelSuccessCounter = 0;
       }
       
-      // Standardmäßig nicht im Challenge-Modus
+      // Not in challenge mode by default
       this.melodyChallengeMode = false;
       this.referenceSequence = null;
       
-      // Wenn gespeicherter Fortschritt existiert, aktiviere automatisch den Challenge-Modus
+      // If saved progress exists, automatically activate challenge mode
       if (this.drawMelodyLevel > 0 || this.levelSuccessCounter > 0) {
         console.log('MELODY_SETUP: Activating challenge mode due to existing progress');
         this.melodyChallengeMode = true;
-        // Generiere eine Referenzmelodie, wenn wir im Challenge-Modus sind
+        // Generate a reference melody when we are in challenge mode
         this.generateReferenceSequence_1_3();
       }
       
