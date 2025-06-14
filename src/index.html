@@ -309,7 +309,7 @@
           <!-- High or Low choice buttons -->
           <div class="high-low-choices">
             <div class="pitch-card low-choice" 
-                 @click="checkHighOrLowAnswer('low')" 
+                 @click="checkHighOrLowAnswer('low'); this.blur()" 
                  :aria-label="currentHighOrLowStage >= 3 ? ($store.strings?.second_tone_lower_a11y || 'The second tone is lower') : ($store.strings?.low_choice_a11y || 'Low tone')"
                  :title="currentHighOrLowStage >= 3 ? ($store.strings?.second_tone_lower_a11y || 'The second tone is lower') : ($store.strings?.low_choice_a11y || 'Low tone')">
               <div class="pitch-icon low-icon">
@@ -321,7 +321,7 @@
               </div>
             </div>
             <div class="pitch-card high-choice" 
-                 @click="checkHighOrLowAnswer('high')" 
+                 @click="checkHighOrLowAnswer('high'); this.blur()" 
                  :aria-label="currentHighOrLowStage >= 3 ? ($store.strings?.second_tone_higher_a11y || 'The second tone is higher') : ($store.strings?.high_choice_a11y || 'High tone')"
                  :title="currentHighOrLowStage >= 3 ? ($store.strings?.second_tone_higher_a11y || 'The second tone is higher') : ($store.strings?.high_choice_a11y || 'High tone')">
               <div class="pitch-icon high-icon">
