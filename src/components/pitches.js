@@ -12,7 +12,6 @@ import { debugLog } from '../utils/debug.js';
 // Importiere Test-Funktionen aus den Modulen
 import { 
   testCommonModuleImport,
-  testHighOrLowModuleImport,
   testMatchSoundsModuleImport,
   testDrawMelodyModuleImport,
   testSoundJudgmentModuleImport,

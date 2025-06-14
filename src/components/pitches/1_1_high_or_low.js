@@ -34,9 +34,3 @@ export function currentHighOrLowStage(component) {
 
 // Auch global verfügbar machen für Diagnose-Zwecke
 window.currentHighOrLowStage = currentHighOrLowStage;
-
-// Exportiere eine Testfunktion für Import-Tests
-export function testHighOrLowModuleImport() {
-  console.log('High or Low module successfully imported');
-  return true;
-}
