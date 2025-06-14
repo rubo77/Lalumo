@@ -1094,11 +1094,12 @@
         const response = await fetch('package.json');
         const packageJson = await response.json();
         const version = packageJson.version;
+        const versionCode = 17; // Aktuelle versionCode aus Android build.gradle
         
         // Display version in credits section
         const versionElement = document.getElementById('app-version');
         if (versionElement) {
-          versionElement.textContent = `Version ${version}`;
+          versionElement.textContent = `Version ${version} (${versionCode})`;
         }
       } catch (error) {
         console.error('Error loading version:', error);

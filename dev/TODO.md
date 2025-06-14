@@ -98,7 +98,6 @@ Dies soll in allen aktionen:
 
 - store username and language in export string in Preferences
 
-- also show the build versionCode 18 in klammern dahinter in credits.
 
 - when pressed on a button, the finger moves and is released, it should also trigger the buttons click event
 
@@ -153,7 +152,6 @@ Dies soll in allen aktionen:
 - add the activity ids 1_1, 1_2, 1_3, 1_4, 1_5 in all functions, that are only used in one activity in pitches.js
 
 - warum ist das laubncher icon nur ein weisser kreis?
-- baue die jeweils aktuelle versionsnummer automatisch in den credits screen ein
 - Webpack-Bundle-Analyzer verwenden um große Abhängigkeiten zu identifizieren
 
 - erstelle ein concept, wie wir die app vermarkten können
