@@ -59,6 +59,29 @@ export function reset_1_1_HighOrLow_Progress(component) {
   console.log('RESET_HIGH_OR_LOW: Reset completed successfully');
 }
 
-// Auch global verfügbar machen für Diagnose-Zwecke
+/**
+ * Setup for the High or Low activity
+ * @activity 1_1_high_or_low
+ */
+export function setupHighOrLowMode_1_1(component) {
+  // Initialize the high or low activity
+  console.log('High or Low mode ready with progress:', component.highOrLowProgress);
+  
+  // Reset the current sequence so a new one will be generated on play
+  component.currentHighOrLowSequence = null;
+  
+  // Reset game state - not started until the user explicitly clicks play
+  component.gameStarted = false;
+  console.log('High or Low game reset, gameStarted:', component.gameStarted);
+  
+  // Show intro message immediately when entering the activity
+  component.showActivityIntroMessage('1_1_pitches_high_or_low');
+}
+
+
+/* *************************************************** *
+make variables global available, 
+e.g. for diagnosis purposes to be used in the developer console
+*******************************************************/
 window.currentHighOrLowStage = currentHighOrLowStage;
 window.reset_1_1_HighOrLow_Progress = reset_1_1_HighOrLow_Progress;

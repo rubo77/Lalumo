@@ -7,7 +7,7 @@
 export { testCommonModuleImport, resetCurrentActivity, showResetFeedback, resetAllProgress } from './common.js';
 
 // High or Low Module
-export { resetHighOrLow } from './1_1_high_or_low.js';
+export { reset_1_1_HighOrLow_Progress, setupHighOrLowMode_1_1 } from './1_1_high_or_low.js';
 
 // Match Sounds Module
 export { testMatchSoundsModuleImport, resetMatchSounds } from './1_2_match_sounds.js';
