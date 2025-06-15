@@ -4,19 +4,19 @@
 
 // Export specific functions from each module
 // Common Module
-export { testCommonModuleImport } from './common.js';
+export { testCommonModuleImport, resetCurrentActivity, showResetFeedback, resetAllProgress } from './common.js';
 
 // High or Low Module
-export { setupHighOrLowMode_1_1 } from './1_1_high_or_low.js';
+export { reset_1_1_HighOrLow_Progress, setupHighOrLowMode_1_1 } from './1_1_high_or_low.js';
 
 // Match Sounds Module
-export { testMatchSoundsModuleImport } from './1_2_match_sounds.js';
+export { testMatchSoundsModuleImport, reset_1_2_MatchSounds_Progress } from './1_2_match_sounds.js';
 
 // Draw Melody Module
-export { testDrawMelodyModuleImport } from './1_3_draw_melody.js';
+export { testDrawMelodyModuleImport, reset_1_3_DrawMelody_Progress } from './1_3_draw_melody.js';
 
 // Sound Judgment Module
-export { testSoundJudgmentModuleImport } from './1_4_sound_judgment.js';
+export { testSoundJudgmentModuleImport, reset_1_4_SoundJudgment_Progress } from './1_4_sound_judgment.js';
 
 // Memory Game Module
-export { testMemoryGameModuleImport } from './1_5_memory_game.js';
+export { testMemoryGameModuleImport, reset_1_5_MemoryGame_Progress } from './1_5_memory_game.js';

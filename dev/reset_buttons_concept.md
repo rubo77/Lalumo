@@ -91,7 +91,7 @@ Each activity should have its own focused reset method:
 
 ```javascript
 // Example for High or Low activity
-resetHighOrLow() {
+reset_1_1_HighOrLow_Progress() {
   // Reset component variables
   this.highOrLowProgress = 0;
   this.currentHighOrLowTone = null;
@@ -122,11 +122,11 @@ resetCurrentActivity() {
   
   // Map modes to reset methods
   const resetMethods = {
-    '1_1_pitches_high_or_low': () => this.resetHighOrLow(),
-    '1_2_pitches_match-sounds': () => this.resetMatchSounds(),
-    '1_3_pitches_draw-melody': () => this.resetDrawMelody(),
-    '1_4_pitches_does-it-sound-right': () => this.resetSoundJudgment(),
-    '1_5_pitches_memory-game': () => this.resetMemoryGame()
+    '1_1_pitches_high_or_low': () => this.reset_1_1_HighOrLow_Progress(),
+    '1_2_pitches_match-sounds': () => this.reset_1_2_MatchSounds_Progress(),
+    '1_3_pitches_draw-melody': () => this.reset_1_3_DrawMelody_Progress(),
+    '1_4_pitches_does-it-sound-right': () => this.reset_1_4_SoundJudgment_Progress(),
+    '1_5_pitches_memory-game': () => this.reset_1_5_MemoryGame_Progress()
   };
   
   const resetMethod = resetMethods[currentMode];
@@ -144,14 +144,14 @@ From codebase analysis, `$data` appears in several contexts:
 1. **Mode Checking:** `x-show="$data.mode === '1_4_pitches_does-it-sound-right'"`
 2. **Component Access:** `$data.setMode('main')`
 
-### Recommendation: Eliminate `$data`
+### [x] Recommendation: Eliminate `$data`
 **Conclusion:** `$data` is NOT necessary and should be removed for these reasons:
 
-1. **Direct Property Access:** Alpine.js allows direct access to component properties
+1. [x] **Direct Property Access:** Alpine.js allows direct access to component properties
    - Instead of `$data.mode`, use `mode`
    - Instead of `$data.setMode()`, use `setMode()`
 
-2. **Cleaner Syntax:** Removing `$data` makes templates more readable
+2. [x] **Cleaner Syntax:** Removing `$data` makes templates more readable
    ```html
    <!-- Current (unnecessary) -->
    <div x-show="$data.mode === '1_4_pitches_does-it-sound-right'">
@@ -160,18 +160,18 @@ From codebase analysis, `$data` appears in several contexts:
    <div x-show="mode === '1_4_pitches_does-it-sound-right'">
    ```
 
-3. **Consistency:** Most of the codebase already uses direct property access
+3. [x] **Consistency:** Most of the codebase already uses direct property access
 
 ### Migration Strategy
-- **Search and Replace:** Find all instances of `$data.` and remove the prefix
-- **Testing:** Verify functionality remains intact after removal
-- **Documentation:** Update any internal docs referencing `$data` usage
+- [x] **Search and Replace:** Find all instances of `$data.` and remove the prefix
+- [x] **Testing:** Verify functionality remains intact after removal
+- [x] **Documentation:** Update any internal docs referencing `$data` usage
 
 ## Implementation Plan
 
 ### Phase 1: Reset Method Consolidation
 1. Create individual reset methods for each activity
-2. Remove old global reset event listeners (already done)
+2. [x] Remove old global reset event listeners (already done)
 3. Implement centralized reset dispatcher
 
 ### Phase 2: Navigation Integration
@@ -180,9 +180,9 @@ From codebase analysis, `$data` appears in several contexts:
 3. Add confirmation dialog system
 
 ### Phase 3: `$data` Cleanup
-1. Search for all `$data` usage
-2. Replace with direct property access
-3. Test all affected functionality
+1. [x] Search for all `$data` usage
+2. [x] Replace with direct property access
+3. [x] Test all affected functionality
 
 ### Phase 4: Testing & Polish
 1. Test reset functionality for each activity
@@ -194,13 +194,13 @@ From codebase analysis, `$data` appears in several contexts:
 ### Prevent Accidental Resets
 - **Confirmation Dialog:** Always confirm before resetting
 - **Visual Feedback:** Clear indication of what will be reset
-- **Undo Option:** Consider brief undo window for accidental resets
+- [x][wontfix] **Undo Option:** Consider brief undo window for accidental resets
 
 ### Diagnostic Logging
 Following project rules (no failsafes, focus on diagnostics):
 ```javascript
-resetDrawMelody() {
-  console.log('RESET_DRAW_MELODY: Starting reset process', {
+reset_1_1_Draw_Melody_Progress() {
+  console.log('RESET_PROGRESS: Starting reset process', {
     currentLevel: this.drawMelodyLevel,
     successCounter: this.levelSuccessCounter,
     challengeMode: this.melodyChallengeMode
@@ -208,7 +208,7 @@ resetDrawMelody() {
   
   // Reset logic here
   
-  console.log('RESET_DRAW_MELODY: Reset completed successfully');
+  console.log('RESET_PROGRESS: Reset completed successfully');
 }
 ```
 
@@ -222,8 +222,8 @@ resetDrawMelody() {
 
 ## Next Steps
 
-1. Get user approval for this concept
-2. Implement reset methods for each activity
-3. Add navigation reset button
-4. Clean up `$data` usage
-5. Test thoroughly across all activities
+1. [x] Get user approval for this concept
+2. [x] Implement reset methods for each activity
+3. [ ] Add navigation reset button
+4. [x] Clean up `$data` usage
+5. [ ] Test thoroughly across all activities

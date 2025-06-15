@@ -232,6 +232,11 @@
         <!-- Settings Section -->
         <div class="menu-settings">
           
+          <!-- Reset Current Activity Button -->
+          <button @click="resetCurrentActivity(this)" class="menu-reset-btn" title="Reset current activity progress">
+            🔄 <span x-text="$store.strings?.reset_current_activity || 'Reset Current Activity'"></span>
+          </button>
+          
           <button @click="active = 'settings'; window.innerWidth < 1024 ? menuOpen = false : null" :class="{ 'active': active === 'settings' }" class="settings-button" x-show="username">
             <div class="user-avatar" x-show="username">
               <span x-text="username ? username.charAt(0) : '?'"></span>

@@ -84,3 +84,4 @@ make variables global available,
 e.g. for diagnosis purposes to be used in the developer console
 *******************************************************/
 window.currentHighOrLowStage = currentHighOrLowStage;
+window.reset_1_1_HighOrLow_Progress = reset_1_1_HighOrLow_Progress;
