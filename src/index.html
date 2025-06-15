@@ -232,6 +232,11 @@
         <!-- Settings Section -->
         <div class="menu-settings">
           
+          <!-- Reset Current Activity Button -->
+          <button @click="resetCurrentActivity(this)" class="menu-reset-btn" title="Reset current activity progress">
+            🔄 <span x-text="$store.strings?.reset_current_activity || 'Reset Current Activity'"></span>
+          </button>
+          
           <button @click="active = 'settings'; window.innerWidth < 1024 ? menuOpen = false : null" :class="{ 'active': active === 'settings' }" class="settings-button" x-show="username">
             <div class="user-avatar" x-show="username">
               <span x-text="username ? username.charAt(0) : '?'"></span>
@@ -297,9 +302,6 @@
             <button class="back-to-main" @click="setMode('main')" aria-label="Back to main menu">
               <span style="font-size: 24px;">🏠</span>
             </button>
-            <button class="reset-activity-button" @click="resetCurrentActivity(this)" aria-label="Reset current activity progress" title="Reset Progress">
-              <span style="font-size: 20px;">🔄</span>
-            </button>
           </div>
           
           <!-- Play button - bird in background -->
@@ -357,9 +359,6 @@
           <div class="mode-header">
             <button class="back-to-main" @click="setMode('main')" aria-label="Back to main menu">
               <span style="font-size: 24px;">🏠</span>
-            </button>
-            <button class="reset-activity-btn" @click="resetCurrentActivity()" aria-label="Reset current activity progress" title="Reset Progress">
-              <span style="font-size: 20px;">🔄</span>
             </button>
           </div>
           
@@ -420,9 +419,6 @@
             <button class="back-to-main" @click="setMode('main')" aria-label="Back to main menu">
               <span style="font-size: 24px;">🏠</span>
             </button>
-            <button class="reset-activity-btn" @click="resetCurrentActivity()" aria-label="Reset current activity progress" title="Reset Progress">
-              <span style="font-size: 20px;">🔄</span>
-            </button>
           </div>
           
           <div style="height:52vw"></div>
@@ -444,9 +440,6 @@
           <div class="mode-header">
             <button class="back-to-main" @click="setMode('main')" aria-label="Back to main menu">
               <span style="font-size: 24px;">🏠</span>
-            </button>
-            <button class="reset-activity-btn" @click="resetCurrentActivity()" aria-label="Reset current activity progress" title="Reset Progress">
-              <span style="font-size: 20px;">🔄</span>
             </button>
           </div>
 
@@ -486,9 +479,6 @@
           <div class="mode-header">
             <button class="back-to-main" @click="setMode('main')" aria-label="Back to main menu">
               <span style="font-size: 24px;">🏠</span>
-            </button>
-            <button class="reset-activity-btn" @click="resetCurrentActivity()" aria-label="Reset current activity progress" title="Reset Progress">
-              <span style="font-size: 20px;">🔄</span>
             </button>
           </div>
           <button class="circular-play-button" @click="playCurrentMelody()" aria-label="Play Melody" title="Play Melody">
