@@ -98,28 +98,28 @@
         <!-- Chapters Section -->
         <div class="menu-chapters">
           <!-- pitches -->
-          <button @click="$data.active = 'pitches'; $dispatch('set-pitch-mode', 'main'); window.innerWidth < 1024 ? menuOpen = false : null" :class="{ 'active': active === 'pitches' }">
+          <button @click="active = 'pitches'; $dispatch('set-pitch-mode', 'main'); window.innerWidth < 1024 ? menuOpen = false : null" :class="{ 'active': active === 'pitches' }">
             <span x-text="$store.strings?.menu_pitches || 'Pitches & Melodies'"></span>
           </button>
 
           <!-- chords started developed-->
-          <button @click="$data.active = 'chords'; $dispatch('set-chord-mode', 'main')" :class="{ 'active': active === 'chords' }"
+          <button @click="active = 'chords'; $dispatch('set-chord-mode', 'main')" :class="{ 'active': active === 'chords' }"
           style="display: auto;">
             <span x-text="$store.strings?.menu_chords || 'Chords'"></span>
           </button>
 
           <!-- later -->
-          <button @click="$data.active = 'tonecolors'; window.innerWidth < 1024 ? menuOpen = false : null" :class="{ 'active': active === 'tonecolors' }"
+          <button @click="active = 'tonecolors'; window.innerWidth < 1024 ? menuOpen = false : null" :class="{ 'active': active === 'tonecolors' }"
           style="display: none;"
           >
             🎨 <span x-text="$store.strings?.menu_tonecolors || 'Tone Colors'"></span>
           </button>
-          <button @click="$data.active = 'rhythms'; window.innerWidth < 1024 ? menuOpen = false : null" :class="{ 'active': active === 'rhythms' }"
+          <button @click="active = 'rhythms'; window.innerWidth < 1024 ? menuOpen = false : null" :class="{ 'active': active === 'rhythms' }"
           style="display: none;"
           >
             ⏱️ <span x-text="$store.strings?.menu_rhythm || 'Rhythm'"></span>
           </button>
-          <button @click="$data.active = 'freeplay'; window.innerWidth < 1024 ? menuOpen = false : null" :class="{ 'active': active === 'freeplay' }"
+          <button @click="active = 'freeplay'; window.innerWidth < 1024 ? menuOpen = false : null" :class="{ 'active': active === 'freeplay' }"
           style="display: none;"
           >
             🎮 <span x-text="$store.strings?.menu_freeplay || 'Free Play'"></span>
@@ -232,7 +232,7 @@
         <!-- Settings Section -->
         <div class="menu-settings">
           
-          <button @click="$data.active = 'settings'; window.innerWidth < 1024 ? menuOpen = false : null" :class="{ 'active': active === 'settings' }" class="settings-button" x-show="username">
+          <button @click="active = 'settings'; window.innerWidth < 1024 ? menuOpen = false : null" :class="{ 'active': active === 'settings' }" class="settings-button" x-show="username">
             <div class="user-avatar" x-show="username">
               <span x-text="username ? username.charAt(0) : '?'"></span>
             </div>
@@ -242,13 +242,13 @@
         
         <!-- Legal Section -->
         <div class="menu-legal">
-          <button @click="$data.active = 'impressum'; window.innerWidth < 1024 ? menuOpen = false : null" :class="{ 'active': active === 'impressum' }">
+          <button @click="active = 'impressum'; window.innerWidth < 1024 ? menuOpen = false : null" :class="{ 'active': active === 'impressum' }">
             ℹ️ <span x-text="$store.strings?.menu_impressum || 'Impressum'"></span>
           </button>
-          <button @click="$data.active = 'datenschutz'; window.innerWidth < 1024 ? menuOpen = false : null" :class="{ 'active': active === 'datenschutz' }">
+          <button @click="active = 'datenschutz'; window.innerWidth < 1024 ? menuOpen = false : null" :class="{ 'active': active === 'datenschutz' }">
             🔒 <span x-text="$store.strings?.menu_datenschutz || 'Datenschutz'"></span>
           </button>
-          <button @click="$data.active = 'credits'; window.innerWidth < 1024 ? menuOpen = false : null" :class="{ 'active': active === 'credits' }">
+          <button @click="active = 'credits'; window.innerWidth < 1024 ? menuOpen = false : null" :class="{ 'active': active === 'credits' }">
             🏆 <span x-text="$store.strings?.menu_credits || 'Credits'"></span>
           </button>
         </div>

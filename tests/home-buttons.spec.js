@@ -82,7 +82,7 @@ test.describe('Lalumo Home Button Navigation', () => {
           if (window.Alpine) {
             const pitchesComponent = document.querySelector('[x-data="pitches()"]');
             if (pitchesComponent) {
-              window.Alpine.evaluate(pitchesComponent, '$data.setMode("main")');
+              window.Alpine.evaluate(pitchesComponent, 'setMode("main")');
             }
           }
         });
@@ -95,7 +95,7 @@ test.describe('Lalumo Home Button Navigation', () => {
           try {
             const pitchesComponent = document.querySelector('[x-data="pitches()"]');
             if (pitchesComponent) {
-              window.Alpine.evaluate(pitchesComponent, '$data.setMode("main")');
+              window.Alpine.evaluate(pitchesComponent, 'setMode("main")');
             }
           } catch (e) {
             console.error('Failed to set mode via JS:', e);

@@ -55,7 +55,7 @@ function updateHomeButtonsVisibility() {
             if (appRoot && appRoot.__x) {
               const pitchesEl = document.querySelector('[x-data="pitches()"]');
               if (pitchesEl && pitchesEl.__x) {
-                pitchesEl.__x.$data.setMode('main');
+                pitchesEl.__x.setMode('main');
                 console.log('Back button clicked - setMode called directly');
               }
             }
