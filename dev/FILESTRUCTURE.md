@@ -166,9 +166,9 @@ Dieser Ansatz minimiert den Umstrukturierungsaufwand und das Fehlerrisiko, währ
 
 #### Migration-Schritte
 
-1. **Ordnerstruktur erstellen**: Anlegen des Verzeichnisses src/components/pitches/
+1. [x] **Ordnerstruktur erstellen**: Anlegen des Verzeichnisses src/components/pitches/
 
-2. **Aktivitätsmodule anlegen**: Erstellen leerer Dateien für jede Aktivität
+2. [x] **Aktivitätsmodule anlegen**: Erstellen leerer Dateien für jede Aktivität
    - common.js (gemeinsame Funktionen)
    - 1_1_high_or_low.js
    - 1_2_match_sounds.js
@@ -177,10 +177,17 @@ Dieser Ansatz minimiert den Umstrukturierungsaufwand und das Fehlerrisiko, währ
    - 1_5_memory_game.js
 
 3. **Code blockweise verschieben**: Für jede Aktivität:
-   - Identifizieren aller zugehörigen Funktionen in pitches.js
-   - Kopieren dieser Funktionen in das entsprechende Modul
-   - Exportieren der Funktionen aus dem Modul
-   - Ersetzen der Funktionen in pitches.js durch Imports
+   - Identifizieren aller zugehörigen Funktionen in pitches.js: 
+    - add `* @activity 1_1_high_or_low`, ... to function comments
+   - Kopieren dieser Funktionen in das entsprechende Modul (e.g. 1_1_high_or_low.js)
+   - Exportieren der Funktionen aus dem Modul:
+      - füge `export` hinzu, e.g. `export function resetHighOrLow() { ... }`
+      - falls `this` innerhalb der Funktionen verwendet wird:
+         - füge als argument `component` hinzu, e.g. `export function resetHighOrLow(component) { ... }`
+         - innerhalb der Funktionen ersetze `this` durch `component`
+      - ersetze alle aufrufe in der app, e.g. `this.resetHighOrLow()` durch `resetHighOrLow()` bzw. `resetHighOrLow(this)`
+   - Ersetzen der Funktionen in pitches.js durch Imports:
+      e.g. `import { resetHighOrLow } from './1_1_high_or_low.js';`
 
 4. **Komponenten-Referenz übergeben**: Jedes Modul erhält Zugriff auf die Alpine-Komponente
 
