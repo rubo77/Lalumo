@@ -29,18 +29,6 @@ export { testChordCharactersModuleImport } from './2_chords/2_5_chord_characters
 // Import debug utilities
 import { debugLog } from '../utils/debug.js';
 
-// Import test functions from the modules
-import {
-  testCommonModuleImport,
-  testChordColorMatchingModuleImport,
-  testChordMoodLandscapesModuleImport,
-  testChordBuildingModuleImport,
-  testMissingNoteModuleImport,
-  testChordCharactersModuleImport,
-  // Import actual functions for color matching activity
-  newColorMatchingQuestion,
-  checkColorAnswer
-} from './2_chords/index.js';
 export function chords() {
   return {
     // Current activity mode
