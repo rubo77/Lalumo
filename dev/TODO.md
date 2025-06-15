@@ -99,11 +99,29 @@ Dies soll in allen aktionen:
 - alle activities:
  - die activity zeigt den neuen stand erst nach einem reload an
 
-- wenn man ein kapitel anklickt soll das hamburger menu nicht zu gehen
+reset-button:
+- wenn der auto-detect immer geht, dann kann der parameter currentMode in der funktion ja weg in function resetCurrentActivity(currentMode)
+
+- hilfstexte selbst einsprechen oder einmal generieren lassen als mp3
+
+- Empfehlungssystem, nach fünf Empfehlungen. Erfolgreichen freischalten
+
+# play store:
+- In die Texte dass der Bildschirm gesperrt ist
+
+- "Images created with ChatGpt mindfull. Loving prompts" verbessern
+
+- Finanzierung durch unlock button mit link zu Crowd funding
+
+- Language autodedtect
+
+- Alles offline herunterladen (keine cdns)
+
 ## nach kapitel
 
 1_1 "High or Low?" (1_1_pitches_high_or_low) 
 - # bereit zur veröffentlichung
+- der reset button in der navi muss auch die fortschrittsanzeige aktualisieren
 - ändere, dass man immer 1s warten muss, bis man wählen kann, welche Taste man drückt. man soll sofort, wenn man den ton hört schon wählen dürfen
 - die Welle muss Sägezahn sein ohne Brandung 
 - die tiefen töne sind eine oktave zu tief
@@ -113,23 +131,32 @@ Dies soll in allen aktionen:
    - Lösche unnötige Melodie-Abspielfunktionen für die alte Aktivität
 
 1_2 "Match the Sounds":
+- Nach dem Wechsel in den Modus mit der Welle als erstes immer auf jeden Fall einen mit Welle spielen, ebenso mit dem Frosch
+- Utf8 Icon kaputt bei frog unter Android
 - # bereit zur veröffentlichung
+- der reset button in der navi muss auch den hintergrund und die anzeige unten triggern, dass die refresht wird, im moment wird der dann noch einfach weiss
 
 1_3 Draw a Melody:
 - # bereit zur veröffentlichung
+- reset all progress geht noch nicht
 - wenn der zeichenpfad spitze ecken hat, dann sollen noten, die nahe der spitze sind ganz in die spitze rutschen
 - beim frei malen mehr als 8 noten
-- reset all progress geht noch nicht
 - wenn man beim malen den rand des canvas überschreitet, sollte der strich weiter im canvas gemalt werden, an der kante entlang
+- Wenn man einen Ton trifft, die Note aufleuchten verbessern, vielieicht den strich an der stelle dick machen oder so
 
 1_4 Does It Sound Right:
 - # bereit zur veröffentlichung
+- der reset button in der navi muss auch die fortschrittsanzeige aktualisieren
 - when the "next melody" button is pressed in the "Does It Sound Right?" activity, the animal images should NOT change
 - fix gebogenen text
 - es kommt mehrmals in log "Generated sound judgment melody:..."
 - die tonlängen Stimmen noch nicht alle. 
 - die tiere müssen noch durchsichtigen rand haben:
 - baue die lieder im TODO block im pitches.js
+- auch erst einen Modus, wo man nur drauf drückt, ohne die good or bad Tiere unten.
+- jede der drei Tiere mit einem anderen Instrument
+- Und dann im Game Modus alle drei instrumente zusammen
+
 
 1_5 memory game:
  - # bereit zur veröffentlichung

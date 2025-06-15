@@ -23,6 +23,12 @@ export function testCommonModuleImport() {
  * @param {string} currentMode - The current activity mode
  */
 export function resetCurrentActivity(currentMode) {
+  // Auto-detect current mode if no parameter is passed
+  if (!currentMode && window.pitchesComponent && window.pitchesComponent.mode) {
+    currentMode = window.pitchesComponent.mode;
+    console.log('RESET_CURRENT: Auto-detected mode from component:', currentMode);
+  }
+  
   console.log('RESET_CURRENT: Current mode detected:', currentMode);
   console.log('RESET_CURRENT: Mode type:', typeof currentMode);
   console.log('RESET_CURRENT: window.pitchesComponent available:', !!window.pitchesComponent);

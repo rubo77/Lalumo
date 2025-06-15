@@ -56,7 +56,19 @@ export function reset_1_1_HighOrLow_Progress(component) {
   component.progress['1_1_pitches_high_or_low'] = 0;
   component.updateProgressPitches();
   
-  console.log('RESET_HIGH_OR_LOW: Reset completed successfully');
+  // Force UI update by triggering Alpine.js reactivity
+  // This ensures the progress display and stage-dependent UI elements update correctly
+  component.$nextTick(() => {
+    // Force re-evaluation of currentHighOrLowStage-dependent elements
+    const event = new CustomEvent('high-or-low-reset', { 
+      detail: { newProgress: 0, newStage: 1 } 
+    });
+    document.dispatchEvent(event);
+    
+    console.log('RESET_HIGH_OR_LOW: UI refresh triggered');
+  });
+  
+  console.log('RESET_HIGH_OR_LOW: Reset completed successfully with UI refresh');
 }
 
 /**
