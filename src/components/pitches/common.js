@@ -20,13 +20,17 @@ export function testCommonModuleImport() {
 
 /**
  * Reset dispatcher - determines current activity and calls appropriate reset method
- * @param {Object} component - The Alpine.js component instance
+ * @param {string} currentMode - The current activity mode
  */
-export function resetCurrentActivity(component) {
-  const currentMode = component.mode;
-  
+export function resetCurrentActivity(currentMode) {
   console.log('RESET_CURRENT: Current mode detected:', currentMode);
   console.log('RESET_CURRENT: Mode type:', typeof currentMode);
+  console.log('RESET_CURRENT: window.pitchesComponent available:', !!window.pitchesComponent);
+  
+  if (window.pitchesComponent) {
+    console.log('RESET_CURRENT: Component mode:', window.pitchesComponent.mode);
+    console.log('RESET_CURRENT: Component progress before reset:', window.pitchesComponent.progress);
+  }
   
   const isGerman = document.documentElement.lang === 'de';
   
@@ -67,15 +71,29 @@ export function resetCurrentActivity(component) {
   
   // Map modes to reset methods
   const resetMethods = {
-    '1_1_pitches_high_or_low': () => reset_1_1_HighOrLow_Progress(component),
-    '1_2_pitches_match-sounds': () => reset_1_2_MatchSounds_Progress(component),
-    '1_3_pitches_draw-melody': () => reset_1_3_DrawMelody_Progress(component),
-    '1_4_pitches_does-it-sound-right': () => reset_1_4_SoundJudgment_Progress(component),
-    '1_5_pitches_memory-game': () => reset_1_5_MemoryGame_Progress(component)
+    '1_1_pitches_high_or_low': () => reset_1_1_HighOrLow_Progress(window.pitchesComponent),
+    '1_2_pitches_match-sounds': () => reset_1_2_MatchSounds_Progress(window.pitchesComponent),
+    '1_3_pitches_draw-melody': () => reset_1_3_DrawMelody_Progress(window.pitchesComponent),
+    '1_4_pitches_does-it-sound-right': () => reset_1_4_SoundJudgment_Progress(window.pitchesComponent),
+    '1_5_pitches_memory-game': () => reset_1_5_MemoryGame_Progress(window.pitchesComponent)
   };
   
   const resetMethod = resetMethods[currentMode];
   if (resetMethod) {
+    console.log('RESET_CURRENT: Found reset method for:', currentMode);
+    
+    // Safety check for window.pitchesComponent
+    if (!window.pitchesComponent) {
+      console.error('RESET_CURRENT: window.pitchesComponent not available! Cannot reset component state.');
+      console.log('RESET_CURRENT: Available methods on window:', Object.keys(window).filter(k => k.includes('pitches')));
+      
+      const message = isGerman ? 
+        'Fehler: Komponente nicht verfügbar. Bitte laden Sie die Seite neu.' : 
+        'Error: Component not available. Please reload the page.';
+      alert(message);
+      return;
+    }
+    
     console.log('RESET_CURRENT: Executing reset for:', currentMode);
     resetMethod();
     showResetFeedback(currentMode);
@@ -102,8 +120,8 @@ export function showResetFeedback(activityMode) {
   
   const activityName = activityNames[activityMode] || activityMode;
   const message = isGerman ? 
-    `${activityName} Fortschritt zurückgesetzt!` : 
-    `${activityName} progress reset!`;
+    `${activityName} Fortschritt erfolgreich zurückgesetzt!` : 
+    `${activityName} progress successfully reset!`;
   
   // Create or update feedback element
   let feedbackElement = document.querySelector('.reset-feedback');
@@ -154,24 +172,24 @@ export function resetAllProgress(component) {
   
   // Reset all activities
   console.log('RESET_ALL: Resetting High or Low activity');
-  reset_1_1_HighOrLow_Progress(component);
+  reset_1_1_HighOrLow_Progress(window.pitchesComponent);
   
   console.log('RESET_ALL: Resetting Match Sounds activity');
-  reset_1_2_MatchSounds_Progress(component);
+  reset_1_2_MatchSounds_Progress(window.pitchesComponent);
   
   console.log('RESET_ALL: Resetting Draw Melody activity');
-  resetDrawMelody(component);
+  resetDrawMelody(window.pitchesComponent);
   
   console.log('RESET_ALL: Resetting Sound Judgment activity');
-  resetSoundJudgment(component);
+  resetSoundJudgment(window.pitchesComponent);
   
   console.log('RESET_ALL: Resetting Memory Game activity');
-  resetMemoryGame(component);
+  resetMemoryGame(window.pitchesComponent);
   
   // Show global reset feedback
   const message = isGerman ? 
-    'Alle Tonhöhen-Aktivitäten zurückgesetzt!' : 
-    'All pitch activities reset!';
+    'Alle Tonhöhen-Aktivitäten erfolgreich zurückgesetzt!' : 
+    'All pitch activities successfully reset!';
     
   showGlobalResetFeedback(message);
   

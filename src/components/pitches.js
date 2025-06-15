@@ -23,26 +23,11 @@ import {
 import { currentHighOrLowStage } from './pitches/1_1_high_or_low.js';
 
 export function pitches() {
-  // Audio-Engine-Initialisierung wird in afterInit durchgeführt
   return {
     /**
-     * Wird automatisch nach der Komponenteninitialisierung aufgerufen
+     * Initialize the component - called by Alpine.js x-init
      * Initialisiert die Audio-Engine und registriert die Komponente global
      */
-    async afterInit() {
-      try {
-        // Initialisiere die Audio-Engine
-        await audioEngine.initialize();
-        debugLog('PITCHES', 'Audio engine successfully initialized');
-        
-        // Registriere diese Komponente im globalen Kontext
-        // Dies erlaubt anderen Komponenten, auf die robuste Wiedergabemethode zuzugreifen
-        console.log('AUDIO: Registering pitches component globally');
-        window.pitchesComponent = this;
-      } catch (error) {
-        console.error('PITCHES: Error initializing audio engine', error);
-      }
-    },
     
     // State variables
     mode: '1_1_pitches_high_or_low', // default mode, 1_1_pitches_high_or_low, it could be one of 1_2_pitches_match-sounds, 1_3_pitches_draw, 1_4_pitches_does-it-sound-right or 1_5_pitches_memory
@@ -237,13 +222,32 @@ export function pitches() {
       }
     },
     // **************************************
-    
+
+    async initializeAudioEngine() {
+	      try {
+	        await audioEngine.initialize();
+	        debugLog("PITCHES_INIT", "Audio engine successfully initialized");
+	      } catch (error) {
+	        console.error("PITCHES_INIT: Error initializing audio engine", error);
+	      }
+	},
+	
     /**
      * Initialize the component
      * @activity common
      * @used-by all activities
      */
     init() {
+      
+      // Register this component globally immediately
+      console.log("PITCHES_INIT: Registering pitches component globally");
+      window.pitchesComponent = this;
+      console.log("PITCHES_INIT: Registration completed. window.pitchesComponent is now:", !!window.pitchesComponent);
+      console.log("PITCHES_INIT: Component mode after registration:", this.mode);
+      
+      // Initialize audio engine asynchronously
+      this.initializeAudioEngine();
+	  
       // Set up text-to-speech if available - with better debugging
       this.speechSynthesis = null;
       this.ttsAvailable = false;

@@ -93,7 +93,8 @@ Dies soll in allen aktionen:
 
 - überall den border-shadow focus nach dem click entfernen
 
-- alle activities sollen einen reset bekomen zum resetten nur des einen progresses
+- alle activities:
+ - die activity zeigt den neuen stand erst nach einem reload an
 
 ## nach kapitel
 
@@ -117,6 +118,7 @@ Dies soll in allen aktionen:
 - wenn man beim malen den rand des canvas überschreitet, sollte der strich weiter im canvas gemalt werden, an der kante entlang
 
 1_4 Does It Sound Right:
+- nicht erst nach 10 richtigen Antworten, sondern schon nach 3 einen level aufsteigen
 - # bereit zur veröffentlichung
 - when the "next melody" button is pressed in the "Does It Sound Right?" activity, the animal images should NOT change
 - Manchmal zeigt er am anfang das falsche Lied an, die ton. Länger Stimmen noch nicht alle. 
