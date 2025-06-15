@@ -98,7 +98,7 @@
         <!-- Chapters Section -->
         <div class="menu-chapters">
           <!-- pitches -->
-          <button @click="active = 'pitches'; $dispatch('set-pitch-mode', 'main'); window.innerWidth < 1024 ? menuOpen = false : null" :class="{ 'active': active === 'pitches' }">
+          <button @click="active = 'pitches'; $dispatch('set-pitch-mode', 'main')" :class="{ 'active': active === 'pitches' }">
             <span x-text="$store.strings?.menu_pitches || 'Pitches & Melodies'"></span>
           </button>
 
@@ -109,17 +109,17 @@
           </button>
 
           <!-- later -->
-          <button @click="active = 'tonecolors'; window.innerWidth < 1024 ? menuOpen = false : null" :class="{ 'active': active === 'tonecolors' }"
+          <button @click="active = 'tonecolors'" :class="{ 'active': active === 'tonecolors' }"
           style="display: none;"
           >
             🎨 <span x-text="$store.strings?.menu_tonecolors || 'Tone Colors'"></span>
           </button>
-          <button @click="active = 'rhythms'; window.innerWidth < 1024 ? menuOpen = false : null" :class="{ 'active': active === 'rhythms' }"
+          <button @click="active = 'rhythms'" :class="{ 'active': active === 'rhythms' }"
           style="display: none;"
           >
             ⏱️ <span x-text="$store.strings?.menu_rhythm || 'Rhythm'"></span>
           </button>
-          <button @click="active = 'freeplay'; window.innerWidth < 1024 ? menuOpen = false : null" :class="{ 'active': active === 'freeplay' }"
+          <button @click="active = 'freeplay'" :class="{ 'active': active === 'freeplay' }"
           style="display: none;"
           >
             🎮 <span x-text="$store.strings?.menu_freeplay || 'Free Play'"></span>
@@ -237,7 +237,7 @@
             🔄 <span x-text="$store.strings?.reset_current_activity || 'Reset Current Activity'"></span>
           </button>
           
-          <button @click="active = 'settings'; window.innerWidth < 1024 ? menuOpen = false : null" :class="{ 'active': active === 'settings' }" class="settings-button" x-show="username">
+          <button @click="active = 'settings'" :class="{ 'active': active === 'settings' }" class="settings-button" x-show="username">
             <div class="user-avatar" x-show="username">
               <span x-text="username ? username.charAt(0) : '?'"></span>
             </div>
@@ -247,13 +247,13 @@
         
         <!-- Legal Section -->
         <div class="menu-legal">
-          <button @click="active = 'impressum'; window.innerWidth < 1024 ? menuOpen = false : null" :class="{ 'active': active === 'impressum' }">
+          <button @click="active = 'impressum'" :class="{ 'active': active === 'impressum' }">
             ℹ️ <span x-text="$store.strings?.menu_impressum || 'Impressum'"></span>
           </button>
-          <button @click="active = 'datenschutz'; window.innerWidth < 1024 ? menuOpen = false : null" :class="{ 'active': active === 'datenschutz' }">
+          <button @click="active = 'datenschutz'" :class="{ 'active': active === 'datenschutz' }">
             🔒 <span x-text="$store.strings?.menu_datenschutz || 'Datenschutz'"></span>
           </button>
-          <button @click="active = 'credits'; window.innerWidth < 1024 ? menuOpen = false : null" :class="{ 'active': active === 'credits' }">
+          <button @click="active = 'credits'" :class="{ 'active': active === 'credits' }">
             🏆 <span x-text="$store.strings?.menu_credits || 'Credits'"></span>
           </button>
         </div>
