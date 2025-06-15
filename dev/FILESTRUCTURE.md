@@ -186,8 +186,12 @@ Dieser Ansatz minimiert den Umstrukturierungsaufwand und das Fehlerrisiko, währ
          - füge als argument `component` hinzu, e.g. `export function resetHighOrLow(component) { ... }`
          - innerhalb der Funktionen ersetze `this` durch `component`
       - ersetze alle aufrufe in der app, e.g. `this.resetHighOrLow()` durch `resetHighOrLow()` bzw. `resetHighOrLow(this)`
-   - Ersetzen der Funktionen in pitches.js durch Imports:
-      e.g. `import { resetHighOrLow } from './1_1_high_or_low.js';`
+   - Ersetzen der Funktionen in pitches.js durch **direkte Imports**:
+      e.g. `import { resetHighOrLow } from './pitches/1_1_high_or_low.js';`
+   - **WICHTIG**: Keine `index.js` "barrel exports" verwenden - diese sind unnötige Indirektion
+      - Imports sollen direkt von den Modulen kommen: `./pitches/1_1_high_or_low.js`
+      - Nicht über Zwischenschichten wie `./pitches/index.js`
+      - Macht Code einfacher, debugging leichter, weniger Abstraktionsebenen
 
 4. **Komponenten-Referenz übergeben**: Jedes Modul erhält Zugriff auf die Alpine-Komponente
 
