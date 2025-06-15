@@ -676,11 +676,11 @@
 }
 
 :root {
-  --primary-color: #ff9f43;
-  --secondary-color: #6c5ce7;
-  --background-color: #fff8e1;
+  --primary-color: #ff9f43; /* Navigation */
+  --secondary-color: #6c5ce7; /* username circle background */
+  --background-color: #ffffff; /* background of impressum, ...*/
   --text-color: #2d3436;
-  --accent-color: #fdcb6e;
+  --accent-color: #fdcb6e; /* navigation highlight */
   --success-color: #00b894;
   --warning-color: #ff7675;
   
@@ -1265,7 +1265,7 @@ section h2 {
 
 #\31 _1_pitches{
   height: 154vw !important;
-  max-height: 805px;
+  max-height: 803px;
 }
 
 #\31 _2_pitches{
