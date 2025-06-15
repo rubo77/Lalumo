@@ -32,5 +32,33 @@ export function currentHighOrLowStage(component) {
   return 1;
 }
 
+/**
+ * Reset High or Low activity progress
+ * @param {Object} component - The Alpine.js component
+ */
+export function reset_1_1_HighOrLow_Progress(component) {
+  console.log('RESET_HIGH_OR_LOW: Starting reset process', {
+    currentProgress: component.highOrLowProgress,
+    gameStarted: component.gameStarted
+  });
+  
+  // Reset component variables
+  component.highOrLowProgress = 0;
+  component.currentHighOrLowTone = null;
+  component.highOrLowSecondTone = null;
+  component.highOrLowPlayed = false;
+  component.gameStarted = false;
+  
+  // Clear localStorage
+  localStorage.removeItem('lalumo_progress_high_or_low');
+  
+  // Update progress object
+  component.progress['1_1_pitches_high_or_low'] = 0;
+  component.updateProgressPitches();
+  
+  console.log('RESET_HIGH_OR_LOW: Reset completed successfully');
+}
+
 // Auch global verfügbar machen für Diagnose-Zwecke
 window.currentHighOrLowStage = currentHighOrLowStage;
+window.reset_1_1_HighOrLow_Progress = reset_1_1_HighOrLow_Progress;
