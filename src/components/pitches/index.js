@@ -7,7 +7,7 @@
 export { testCommonModuleImport } from './common.js';
 
 // High or Low Module
-// export { testHighOrLowModuleImport } from './1_1_high_or_low.js';
+export { setupHighOrLowMode_1_1 } from './1_1_high_or_low.js';
 
 // Match Sounds Module
 export { testMatchSoundsModuleImport } from './1_2_match_sounds.js';

@@ -15,7 +15,8 @@ import {
   testMatchSoundsModuleImport,
   testDrawMelodyModuleImport,
   testSoundJudgmentModuleImport,
-  testMemoryGameModuleImport
+  testMemoryGameModuleImport,
+  setupHighOrLowMode_1_1
 } from './pitches/index.js';
 
 // Importiere High or Low Funktionen direkt aus dem Modul
@@ -539,7 +540,7 @@ export function pitches() {
         this.highOrLowProgress = this.progress['1_1_pitches_high_or_low'] || 0;
         console.log('High or Low mode activated with progress:', this.highOrLowProgress);
         // Load current stage based on progress
-        this.setupHighOrLowMode_1_1();
+        setupHighOrLowMode_1_1(this);
       } else if (newMode === '1_2_pitches_match-sounds') {
         this.gameMode = false; // Start in free play mode
         this.setupMatchingMode_1_2(false); // Setup without playing sound
