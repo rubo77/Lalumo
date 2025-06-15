@@ -3005,16 +3005,7 @@ export function pitches() {
           // Show rainbow effect for perfect match
           if (perfectMatch) {
             // Create and show rainbow success animation
-            const rainbow = document.createElement('div');
-            rainbow.className = 'rainbow-success';
-            document.body.appendChild(rainbow);
-            
-            // Remove rainbow element after animation completes
-            setTimeout(() => {
-              if (rainbow && rainbow.parentNode) {
-                rainbow.parentNode.removeChild(rainbow);
-              }
-            }, 2000);
+            showRainbowSuccess();
           }
         } else {
           feedback = isGerman ? 
@@ -3348,16 +3339,7 @@ export function pitches() {
       // Show appropriate animation based on result
       if (isCorrect) {
         // Create and show rainbow success animation
-        const rainbow = document.createElement('div');
-        rainbow.className = 'rainbow-success';
-        document.body.appendChild(rainbow);
-        
-        // Remove rainbow element after animation completes
-        setTimeout(() => {
-          if (rainbow && rainbow.parentNode) {
-            rainbow.parentNode.removeChild(rainbow);
-          }
-        }, 2000);
+        showRainbowSuccess();
         
         // Increment and save memory game progress
         this.memorySuccessCount = (this.memorySuccessCount || 0) + 1;
@@ -4197,16 +4179,7 @@ export function pitches() {
       // Show visual feedback animation
       if (isCorrect) {
         // Create and show rainbow success animation
-        const rainbow = document.createElement('div');
-        rainbow.className = 'rainbow-success';
-        document.body.appendChild(rainbow);
-        
-        // Remove the animation element after it completes
-        setTimeout(() => {
-          if (rainbow && rainbow.parentNode) {
-            rainbow.parentNode.removeChild(rainbow);
-          }
-        }, 2000);
+        showRainbowSuccess();
         
         // Increment progress counter
         if (!this.progress['1_4_pitches_does-it-sound-right']) {
@@ -4245,15 +4218,7 @@ export function pitches() {
           this.showMascotMessage(levelUpMessage);
           
           // Special animation for level up (bigger rainbow)
-          const bigRainbow = document.createElement('div');
-          bigRainbow.className = 'rainbow-success big';
-          document.body.appendChild(bigRainbow);
-          
-          setTimeout(() => {
-            if (bigRainbow && bigRainbow.parentNode) {
-              bigRainbow.parentNode.removeChild(bigRainbow);
-            }
-          }, 3000);
+          showBigRainbowSuccess();
         }
         
         // Update level display
