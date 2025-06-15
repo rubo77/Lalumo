@@ -1014,16 +1014,7 @@ export function pitches() {
         setTimeout(() => {
           this.playHighOrLowTone();
         }, 2000);
-        const rainbow = document.createElement('div');
-        rainbow.className = 'rainbow-success';
-        document.body.appendChild(rainbow);
-        
-        // Remove rainbow element after animation completes
-        setTimeout(() => {
-          if (rainbow && rainbow.parentNode) {
-            rainbow.parentNode.removeChild(rainbow);
-          }
-        }, 2000);
+        showRainbowSuccess();
         
         // Clear the current sequence so a new one will be generated next time
       // Use setTimeout to avoid issues with rapid clicking
@@ -1321,16 +1312,7 @@ export function pitches() {
         this.addCorrectAnswer();
         
         // Create and show rainbow success animation
-        const rainbow = document.createElement('div');
-        rainbow.className = 'rainbow-success';
-        document.body.appendChild(rainbow);
-        
-        // Remove rainbow element after animation completes
-        setTimeout(() => {
-          if (rainbow && rainbow.parentNode) {
-            rainbow.parentNode.removeChild(rainbow);
-          }
-        }, 2500);
+        showRainbowSuccess();
         
         // Update progress with new ID format only
         if (!this.progress['1_2_pitches_match-sounds']) {
@@ -3040,16 +3022,7 @@ export function pitches() {
             'Amazing! You\'ve mastered all the melodies!';
           
           // Always show rainbow for mastering all levels
-          const rainbow = document.createElement('div');
-          rainbow.className = 'rainbow-success';
-          document.body.appendChild(rainbow);
-          
-          // Remove rainbow element after animation completes
-          setTimeout(() => {
-            if (rainbow && rainbow.parentNode) {
-              rainbow.parentNode.removeChild(rainbow);
-            }
-          }, 2000);
+          showRainbowSuccess();
         }
         
         // Visual feedback
