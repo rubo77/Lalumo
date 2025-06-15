@@ -6,11 +6,11 @@
 import { debugLog } from '../../utils/debug.js';
 
 // Import all reset functions
-import { resetHighOrLow } from './1_1_high_or_low.js';
-import { resetMatchSounds } from './1_2_match_sounds.js';
-import { resetDrawMelody } from './1_3_draw_melody.js';
-import { resetSoundJudgment } from './1_4_sound_judgment.js';
-import { resetMemoryGame } from './1_5_memory_game.js';
+import { reset_1_1_HighOrLow_Progress } from './1_1_high_or_low.js';
+import { reset_1_2_MatchSounds_Progress } from './1_2_match_sounds.js';
+import { reset_1_3_DrawMelody_Progress } from './1_3_draw_melody.js';
+import { reset_1_4_SoundJudgment_Progress } from './1_4_sound_judgment.js';
+import { reset_1_5_MemoryGame_Progress } from './1_5_memory_game.js';
 
 // Exportiere eine Testfunktion für Import-Tests
 export function testCommonModuleImport() {
@@ -40,11 +40,11 @@ export function resetCurrentActivity(component) {
   
   // Map modes to reset methods
   const resetMethods = {
-    '1_1_pitches_high_or_low': () => resetHighOrLow(component),
-    '1_2_pitches_match-sounds': () => resetMatchSounds(component),
-    '1_3_pitches_draw-melody': () => resetDrawMelody(component),
-    '1_4_pitches_does-it-sound-right': () => resetSoundJudgment(component),
-    '1_5_pitches_memory-game': () => resetMemoryGame(component)
+    '1_1_pitches_high_or_low': () => reset_1_1_HighOrLow_Progress(component),
+    '1_2_pitches_match-sounds': () => reset_1_2_MatchSounds_Progress(component),
+    '1_3_pitches_draw-melody': () => reset_1_3_DrawMelody_Progress(component),
+    '1_4_pitches_does-it-sound-right': () => reset_1_4_SoundJudgment_Progress(component),
+    '1_5_pitches_memory-game': () => reset_1_5_MemoryGame_Progress(component)
   };
   
   const resetMethod = resetMethods[currentMode];
@@ -127,10 +127,10 @@ export function resetAllProgress(component) {
   
   // Reset all activities
   console.log('RESET_ALL: Resetting High or Low activity');
-  resetHighOrLow(component);
+  reset_1_1_HighOrLow_Progress(component);
   
   console.log('RESET_ALL: Resetting Match Sounds activity');
-  resetMatchSounds(component);
+  reset_1_2_MatchSounds_Progress(component);
   
   console.log('RESET_ALL: Resetting Draw Melody activity');
   resetDrawMelody(component);

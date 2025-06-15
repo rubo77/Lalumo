@@ -91,7 +91,7 @@ Each activity should have its own focused reset method:
 
 ```javascript
 // Example for High or Low activity
-resetHighOrLow() {
+reset_1_1_HighOrLow_Progress() {
   // Reset component variables
   this.highOrLowProgress = 0;
   this.currentHighOrLowTone = null;
@@ -122,11 +122,11 @@ resetCurrentActivity() {
   
   // Map modes to reset methods
   const resetMethods = {
-    '1_1_pitches_high_or_low': () => this.resetHighOrLow(),
-    '1_2_pitches_match-sounds': () => this.resetMatchSounds(),
-    '1_3_pitches_draw-melody': () => this.resetDrawMelody(),
-    '1_4_pitches_does-it-sound-right': () => this.resetSoundJudgment(),
-    '1_5_pitches_memory-game': () => this.resetMemoryGame()
+    '1_1_pitches_high_or_low': () => this.reset_1_1_HighOrLow_Progress(),
+    '1_2_pitches_match-sounds': () => this.reset_1_2_MatchSounds_Progress(),
+    '1_3_pitches_draw-melody': () => this.reset_1_3_DrawMelody_Progress(),
+    '1_4_pitches_does-it-sound-right': () => this.reset_1_4_SoundJudgment_Progress(),
+    '1_5_pitches_memory-game': () => this.reset_1_5_MemoryGame_Progress()
   };
   
   const resetMethod = resetMethods[currentMode];
