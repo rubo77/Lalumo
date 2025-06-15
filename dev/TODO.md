@@ -121,7 +121,13 @@ Dies soll in allen aktionen:
 
 1_4 Does It Sound Right:
 - nicht erst nach 10 richtigen Antworten, sondern schon nach 3 einen level aufsteigen
-- den fortschrittsbalken aus 1_3 benutzen
+ - 1_4: Level-Progression-Logik wurde erfolgreich von 10 auf 3 richtige Antworten sind immer noch 10 nicht 3
+ - 
+implementiere den balken in der bestehenden oben, wo noch /10 steht udn lösche die gedoppelte neu-implementierung ganz unten
+
+Revert
+
+- den progress-fortschrittsbalken aus 1_3 in feedback.js extrahieren und auch in 1_4 benutzen
 - # bereit zur veröffentlichung
 - when the "next melody" button is pressed in the "Does It Sound Right?" activity, the animal images should NOT change
 - Manchmal zeigt er am anfang das falsche Lied an, die ton. Länger Stimmen noch nicht alle. 

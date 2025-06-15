@@ -2427,7 +2427,12 @@ export function pitches() {
           totalCount: 3,
           currentLevel: this.drawMelodyLevel + 1,
           notesCount: currentLevel,
-          activityName: activityName
+          activityName: activityName,
+        positioning: {
+          position: "relative",
+          margin: "10px 0",
+          width: "100%"
+        }
         });
       }
       
@@ -3516,20 +3521,6 @@ export function pitches() {
         this.playMelodySequence(this.currentSequence, 'sound-judgment', this.currentMelodyId);
       }
 
-      // Add progress bar for Sound Judgment activity
-      const isGerman = document.documentElement.lang === "de";
-      const activityName = isGerman ? "Klingt das richtig?" : "Does it sound right?";
-      
-      showActivityProgressBar({
-        containerSelector: "[id=\"1_4_pitches\"]",
-        progressClass: "sound-judgment-progress",
-        currentCount: this.progress["1_4_pitches_does-it-sound-right"] || 0,
-        totalCount: 3,
-        currentLevel: this.soundJudgmentLevel || 1,
-        notesCount: null,
-        activityName: activityName
-      });
-    
     },
     /**
      * Aktualisiert die Anzeige des aktuellen Levels in der UI
@@ -3568,11 +3559,30 @@ export function pitches() {
       };
       
       const levelText = levelDescriptions[this.soundJudgmentLevel] || `Level ${this.soundJudgmentLevel}`;
-      const streakInfo = this.soundJudgmentCorrectStreak > 0 ? ` (${this.soundJudgmentCorrectStreak}/10)` : '';
+      const streakInfo = this.soundJudgmentCorrectStreak > 0 ? ` (${this.soundJudgmentCorrectStreak}/3)` : '';
       
       // Update all level displays
       document.querySelectorAll('.sound-judgment-level').forEach(el => {
         el.textContent = levelText + streakInfo;
+      });
+      
+      // Add visual progress bar using reusable function
+      const isGerman = document.documentElement.lang === "de";
+      const activityName = isGerman ? "Klingt das richtig?" : "Does it sound right?";
+      
+      showActivityProgressBar({
+        containerSelector: "[id=\"1_4_pitches\"]",
+        progressClass: "sound-judgment-progress",
+        currentCount: this.soundJudgmentCorrectStreak || 0,
+        totalCount: 3,
+        currentLevel: this.soundJudgmentLevel || 1,
+        notesCount: null,
+        activityName: activityName,
+        positioning: {
+          position: "relative",
+          margin: "10px 0",
+          width: "100%"
+        }
       });
     },
     
@@ -4180,7 +4190,7 @@ export function pitches() {
         console.log(`SOUND JUDGMENT: Streak increased to ${this.soundJudgmentCorrectStreak}`);
         
         // Check if we should advance to the next level (10 correct in a row)
-        if (this.soundJudgmentCorrectStreak >= 10 && this.soundJudgmentLevel < 7) {
+        if (this.soundJudgmentCorrectStreak >= 3 && this.soundJudgmentLevel < 7) {
           this.soundJudgmentLevel++;
           this.soundJudgmentCorrectStreak = 0; // Reset streak for next level
           
