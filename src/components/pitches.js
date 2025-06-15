@@ -9,6 +9,17 @@ import audioEngine from './audio-engine.js';
 // Importiere Debug-Utilities
 import { debugLog } from '../utils/debug.js';
 
+// Import shared feedback utilities
+import { 
+  showRainbowSuccess, 
+  showBigRainbowSuccess, 
+  showShakeError, 
+  showCompleteSuccess, 
+  showCompleteBigSuccess, 
+  showCompleteError 
+} from '../effects/feedback.js';
+
+
 // Importiere Test-Funktionen aus den Modulen
 // Direct imports from individual modules
 import { testCommonModuleImport, resetCurrentActivity, resetAllProgress, showResetFeedback } 
