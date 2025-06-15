@@ -10,7 +10,7 @@
     body {
       font-family: sans-serif;
       margin: 0; padding: 0;
-      background-image: url('./images/backgrounds/pitches_bird_sings_small.jpg');
+      background-image: url('./images/x.gif');
       background-size: contain;
       background-position: top left;
       background-repeat: no-repeat;
@@ -233,7 +233,7 @@
         <div class="menu-settings">
           
           <!-- Reset Current Activity Button -->
-          <button @click="resetCurrentActivity($store.pitchMode)" class="menu-reset-btn" title="Reset current activity progress">
+          <button @click="resetCurrentActivity()" class="menu-reset-btn" title="Reset current activity progress">
             🔄 <span x-text="$store.strings?.reset_current_activity || 'Reset Current Activity'"></span>
           </button>
           
@@ -261,7 +261,7 @@
     </div>
 
     <!-- Chapter: Pitch Chapters View -->
-    <section x-show="active === 'pitches'" x-transition class="pitch-chapters-view lazyload-bg" data-background-image="./images/backgrounds/pitches_bird_sings.jpg" style="background-size: cover; background-position: top center; border-radius: 0;">
+    <section x-show="active === 'pitches'" x-transition class="pitch-chapters-view lazyload-bg" data-background-image="./images/x.gif" style="background-size: cover; background-position: top center; border-radius: 0;">
       <div x-data="pitches()" x-init="init()">
         
         <!-- Mascot Message Overlay -->
