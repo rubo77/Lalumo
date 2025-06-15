@@ -3,15 +3,18 @@ TODO
 
 ## Chord Chapter Implementation
 
-- Fix Audio in Chord Activities
-  - **2_1_chords_color-matching**: Implementiere Audio-Engine-Integration für Akkord-Wiedergabe
-  - **2_2_chords_mood-landscapes**: Aktiviere Audio-Wiedergabe für Akkordprogressionen
+  - **2_1_chords_color-matching**:
+   - Implementiere Tone.js Audio-Engine-Integration für Akkord-Wiedergabe
+  - **2_2_chords_mood-landscapes**:
+    - Aktiviere Audio-Wiedergabe für Akkordprogressionen
+    - schlage landschaften vor
   - **2_3_chords_chord-building**: Füge Button hinzu, um den vollständigen gebauten Akkord abzuspielen
-  - **2_5_chords_characters**: Implementiere Audio-Engine-Integration für Akkord-Wiedergabe
+  - **2_5_chords_characters**:
+   - Implementiere Tone.js Audio-Engine-Integration für Akkord-Wiedergabe
   - **2_6_chords_harmony-gardens**: Aktiviere Audio-Wiedergabe für Akkordsequenzen
 
 - Optimize Chord User Experience
-  - Alle activities sollen bei erfolg den Regenbogen anzeigen
+  - Alle activities sollen bei erfolg den Regenbogen anzeigen (aus feedback.js)
   - **2_4_chords_missing-note**: Vereinfache die Aktivität für jüngere Kinder
   - Stelle sicher, dass alle Akkordaktivitäten eine konsistente UI haben
   - Implementiere kindgerechtes visuelles Feedback bei Akkordwiedergabe
@@ -120,22 +123,12 @@ Dies soll in allen aktionen:
 - wenn man beim malen den rand des canvas überschreitet, sollte der strich weiter im canvas gemalt werden, an der kante entlang
 
 1_4 Does It Sound Right:
-- nicht erst nach 10 richtigen Antworten, sondern schon nach 3 einen level aufsteigen
- - 1_4: Level-Progression-Logik wurde erfolgreich von 10 auf 3 richtige Antworten sind immer noch 10 nicht 3
- - 
-implementiere den balken in der bestehenden oben, wo noch /10 steht udn lösche die gedoppelte neu-implementierung ganz unten
-
-Revert
-
-- den progress-fortschrittsbalken aus 1_3 in feedback.js extrahieren und auch in 1_4 benutzen
 - # bereit zur veröffentlichung
 - when the "next melody" button is pressed in the "Does It Sound Right?" activity, the animal images should NOT change
-- Manchmal zeigt er am anfang das falsche Lied an, die ton. Länger Stimmen noch nicht alle. 
 - fix gebogenen text
 - es kommt mehrmals in log "Generated sound judgment melody:..."
 - die tonlängen Stimmen noch nicht alle. 
 - die tiere müssen noch durchsichtigen rand haben:
- - ja@pitches.js#L78-94 write a script, das bei all diesen mages die bilder freistellt, also dass die farbe oben links im bild wählt und dann ausgehend von dem punkt sich ausdehnend die farben auf transparent setzt solange die nicht über einem bestimmten sthreshold abweichen. speichere die bilder dann unter s´dem selben namen, kopiere die bilder nach images/originals/ wenn sie noch nciht existieren
 - baue die lieder im TODO block im pitches.js
 
 1_5 memory game:

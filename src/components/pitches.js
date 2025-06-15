@@ -188,10 +188,8 @@ export function pitches() {
         de: 'Schlaf, Kindlein, schlaf',
         quarterNoteDuration: 550,
         notes: [
-          'C', 'D4', 'E4', 'C4', // Frère Jacques (erster Teil)
-          'C4', 'D4', 'E4', 'C4', // Wiederholung
-          'E4', 'F4', 'G4:h', // Mittelteil
-          'E4', 'F4', 'G4:h' // Wiederholung
+          'E:h', 'D4', 'D4', 'C4:h', 'C', // Frère Jacques (erster Teil)
+          'G3', 'E', 'E', 'D4', 'D4', 'C4:h', 'C', // Wiederholung
         ]
       },
       'little-hans': { // Hänschen klein
@@ -3472,6 +3470,11 @@ export function pitches() {
       // Reset state variables specific to this activity
       this.melodyHasWrongNote = false;
       this.currentMelodyName = '';
+  
+  // Clear any existing melody name display immediately
+  document.querySelectorAll('.sound-status').forEach(el => {
+    el.textContent = 'Generiere neue Melodie...';
+  });
       this.currentMelodyId = null;
       this.showFeedback = false;
       this.feedback = '';
@@ -3652,6 +3655,12 @@ export function pitches() {
       
       // Set the melody name in the appropriate language
       this.currentMelodyName = selectedMelody[language] || selectedMelody.en;
+  console.log(`MELODY_NAME_DEBUG: Set currentMelodyName to "${this.currentMelodyName}" for melody ID "${randomMelodyKey}"`);
+  
+  // Update UI immediately after setting melody name
+  document.querySelectorAll('.sound-status').forEach(el => {
+    el.textContent = this.currentMelodyName;
+  });
       
       // Create a copy of the melody notes
       let melodyToPlay = [...selectedMelody.notes];
@@ -3903,6 +3912,16 @@ export function pitches() {
       if (melodyId && this.knownMelodies[melodyId] && this.knownMelodies[melodyId].quarterNoteDuration) {
         baseQuarterNoteDuration = this.knownMelodies[melodyId].quarterNoteDuration;
         console.log(`AUDIO: Using melody-specific quarter note duration: ${baseQuarterNoteDuration}ms for ${melodyId}`);
+	  } else {
+	    console.log(`DURATION_DEBUG: Using default quarter note duration ${baseQuarterNoteDuration}ms - no melody-specific duration found for melodyId: ${melodyId}`);
+	  }
+	  
+	  // Log the melody definition for debugging
+	  if (melodyId && this.knownMelodies[melodyId]) {
+	    console.log(`DURATION_DEBUG: Melody "${melodyId}" definition:`, {
+	      quarterNoteDuration: this.knownMelodies[melodyId].quarterNoteDuration,
+	      notes: this.knownMelodies[melodyId].notes
+	    });
       }
       
       /**
