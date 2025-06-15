@@ -96,6 +96,7 @@ Dies soll in allen aktionen:
 - alle activities:
  - die activity zeigt den neuen stand erst nach einem reload an
 
+- wenn man ein kapitel anklickt soll das hamburger menu nicht zu gehen
 ## nach kapitel
 
 1_1 "High or Low?" (1_1_pitches_high_or_low) 
@@ -114,11 +115,13 @@ Dies soll in allen aktionen:
 1_3 Draw a Melody:
 - # bereit zur veröffentlichung
 - wenn der zeichenpfad spitze ecken hat, dann sollen noten, die nahe der spitze sind ganz in die spitze rutschen
+- beim frei malen mehr als 8 noten
 - reset all progress geht noch nicht
 - wenn man beim malen den rand des canvas überschreitet, sollte der strich weiter im canvas gemalt werden, an der kante entlang
 
 1_4 Does It Sound Right:
 - nicht erst nach 10 richtigen Antworten, sondern schon nach 3 einen level aufsteigen
+- den fortschrittsbalken aus 1_3 benutzen
 - # bereit zur veröffentlichung
 - when the "next melody" button is pressed in the "Does It Sound Right?" activity, the animal images should NOT change
 - Manchmal zeigt er am anfang das falsche Lied an, die ton. Länger Stimmen noch nicht alle. 
