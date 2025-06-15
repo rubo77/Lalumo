@@ -10,17 +10,22 @@ import audioEngine from './audio-engine.js';
 import { debugLog } from '../utils/debug.js';
 
 // Importiere Test-Funktionen aus den Modulen
-import { 
-  testCommonModuleImport,
-  testMatchSoundsModuleImport,
-  testDrawMelodyModuleImport,
-  testSoundJudgmentModuleImport,
-  testMemoryGameModuleImport,
-  setupHighOrLowMode_1_1
-} from './pitches/index.js';
+// Direct imports from individual modules
+import { testCommonModuleImport, resetCurrentActivity, resetAllProgress, showResetFeedback } 
+  from "./pitches/common.js";
+
+import { setupHighOrLowMode_1_1, reset_1_1_HighOrLow_Progress, currentHighOrLowStage } 
+  from "./pitches/1_1_high_or_low.js";
+import { testMatchSoundsModuleImport, reset_1_2_MatchSounds_Progress } 
+  from "./pitches/1_2_match_sounds.js";
+import { testDrawMelodyModuleImport, reset_1_3_DrawMelody_Progress } 
+  from "./pitches/1_3_draw_melody.js";
+import { testSoundJudgmentModuleImport, reset_1_4_SoundJudgment_Progress } 
+  from "./pitches/1_4_sound_judgment.js";
+import { testMemoryGameModuleImport, reset_1_5_MemoryGame_Progress } 
+  from "./pitches/1_5_memory_game.js";
 
 // Importiere High or Low Funktionen direkt aus dem Modul
-import { currentHighOrLowStage } from './pitches/1_1_high_or_low.js';
 
 export function pitches() {
   return {
