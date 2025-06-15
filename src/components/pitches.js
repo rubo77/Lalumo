@@ -2415,53 +2415,20 @@ export function pitches() {
           this.levelSuccessCounter = 0;
         }
         
-        // Erstelle Container für die Fortschrittsanzeige
-        progressContainer = document.createElement('div');
-        progressContainer.className = 'melody-progress';
-        
-        // Stil der Fortschrittsanzeige
-        progressContainer.style.width = '100%';
-        progressContainer.style.textAlign = 'center';
-        progressContainer.style.padding = '10px 0';
-        progressContainer.style.position = 'absolute';
-        progressContainer.style.bottom = '10px';
-        progressContainer.style.left = '0';
-        
-        // Textelement für den Fortschritt
-        const isGerman = document.documentElement.lang === 'de';
+        // Use shared progress bar utility
+        const isGerman = document.documentElement.lang === "de";
+        const activityName = isGerman ? "Melodien" : "melodies";
         const currentLevel = this.drawMelodyLevel + 3; // Level + 3 = Anzahl der Noten
-        const progressText = document.createElement('div');
-        progressText.style.fontSize = '14px';
-        progressText.style.marginBottom = '5px';
-        progressText.textContent = isGerman 
-          ? `Level ${this.drawMelodyLevel + 1}: ${this.levelSuccessCounter}/10 Melodien (${currentLevel} Töne)`
-          : `Level ${this.drawMelodyLevel + 1}: ${this.levelSuccessCounter}/10 melodies (${currentLevel} notes)`;
         
-        // Fortschrittsleiste
-        const progressBar = document.createElement('div');
-        progressBar.style.width = '80%';
-        progressBar.style.margin = '0 auto';
-        progressBar.style.height = '8px';
-        progressBar.style.backgroundColor = '#e0e0e0';
-        progressBar.style.borderRadius = '4px';
-        progressBar.style.overflow = 'hidden';
-        
-        const progressFill = document.createElement('div');
-        progressFill.style.height = '100%';
-        progressFill.style.width = `${this.levelSuccessCounter * 10}%`; // 10% pro erfolgreiche Melodie
-        progressFill.style.backgroundColor = '#4CAF50';
-        progressFill.style.transition = 'width 0.3s ease-in-out';
-        
-        // Zusammenfügen
-        progressBar.appendChild(progressFill);
-        progressContainer.appendChild(progressText);
-        progressContainer.appendChild(progressBar);
-        
-        // Container zur Seite hinzufügen
-        const container = document.querySelector('.drawing-container');
-        if (container && container.parentNode) {
-          container.parentNode.appendChild(progressContainer);
-        }
+        showActivityProgressBar({
+          containerSelector: ".drawing-container",
+          progressClass: "melody-progress",
+          currentCount: this.levelSuccessCounter,
+          totalCount: 3,
+          currentLevel: this.drawMelodyLevel + 1,
+          notesCount: currentLevel,
+          activityName: activityName
+        });
       }
       
       // Wenn wir im Challenge-Modus sind und eine Referenzmelodie haben
@@ -2977,7 +2944,7 @@ export function pitches() {
         
         // Increase success counter
         this.levelSuccessCounter++;
-        console.log(`MELODY_PROGRESSION: Success count: ${this.levelSuccessCounter}/10 for level ${this.drawMelodyLevel}`);
+        console.log(`MELODY_PROGRESSION: Success count: ${this.levelSuccessCounter}/3 for level ${this.drawMelodyLevel}`);
         
         // Save success counter to localStorage
         try {
@@ -2987,7 +2954,7 @@ export function pitches() {
         }
         
         // If counter reaches 10, increase level if not at max
-        if (this.levelSuccessCounter >= 10 && this.drawMelodyLevel < 5) { // Max level is 5 (gives 8 notes)
+        if (this.levelSuccessCounter >= 3 && this.drawMelodyLevel < 5) { // Max level is 5 (gives 8 notes)
           this.drawMelodyLevel++;
           this.levelSuccessCounter = 0; // Reset counter for next level
           console.log(`MELODY_PROGRESSION: User level increased to ${this.drawMelodyLevel}`);
@@ -3548,8 +3515,22 @@ export function pitches() {
       if (shouldPlay) {
         this.playMelodySequence(this.currentSequence, 'sound-judgment', this.currentMelodyId);
       }
-    },
+
+      // Add progress bar for Sound Judgment activity
+      const isGerman = document.documentElement.lang === "de";
+      const activityName = isGerman ? "Klingt das richtig?" : "Does it sound right?";
+      
+      showActivityProgressBar({
+        containerSelector: "[id=\"1_4_pitches\"]",
+        progressClass: "sound-judgment-progress",
+        currentCount: this.progress["1_4_pitches_does-it-sound-right"] || 0,
+        totalCount: 3,
+        currentLevel: this.soundJudgmentLevel || 1,
+        notesCount: null,
+        activityName: activityName
+      });
     
+    },
     /**
      * Aktualisiert die Anzeige des aktuellen Levels in der UI
      */
