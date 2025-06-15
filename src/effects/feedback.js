@@ -139,6 +139,124 @@ export function getLastInteractedElement() {
  * @param {HTMLElement} [targetElement] - Specific element to shake (optional)
  */
 export function showSmartError(targetElement = null) {
-  const elementToShake = targetElement || getLastInteractedElement() || document.body;
-  showCompleteError(elementToShake);
+  const element = targetElement || getLastInteractedElement() || document.body;
+  showShakeError(element);
+  playErrorSound();
+}
+
+/**
+ * Create and display a progress bar for activities
+ * @param {Object} options - Configuration options for the progress bar
+ * @param {string} options.containerSelector - CSS selector for the container to append the progress bar to
+ * @param {string} options.progressClass - CSS class name for the progress container
+ * @param {number} options.currentCount - Current progress count (e.g., successful completions)
+ * @param {number} options.totalCount - Total count needed for completion
+ * @param {number} options.currentLevel - Current level number
+ * @param {number} options.notesCount - Number of notes in current level (optional)
+ * @param {string} [options.activityName] - Name of the activity for display text
+ * @param {Object} [options.positioning] - Custom positioning styles
+ * @returns {HTMLElement|null} The created progress container or null if container not found
+ */
+export function showActivityProgressBar(options) {
+  const {
+    containerSelector,
+    progressClass = 'activity-progress',
+    currentCount = 0,
+    totalCount = 10,
+    currentLevel = 1,
+    notesCount = null,
+    activityName = 'Activity',
+    positioning = {
+      position: 'absolute',
+      bottom: '10px',
+      left: '0',
+      width: '100%'
+    }
+  } = options;
+
+  // Remove existing progress display
+  let existingProgress = document.querySelector(`.${progressClass}`);
+  if (existingProgress) {
+    existingProgress.remove();
+  }
+
+  // Find target container
+  const targetContainer = document.querySelector(containerSelector);
+  if (!targetContainer) {
+    console.warn(`PROGRESS_BAR: Container not found: ${containerSelector}`);
+    return null;
+  }
+
+  // Create progress container
+  const progressContainer = document.createElement('div');
+  progressContainer.className = progressClass;
+  
+  // Apply positioning styles
+  Object.assign(progressContainer.style, {
+    textAlign: 'center',
+    padding: '10px 0',
+    ...positioning
+  });
+
+  // Create progress text
+  const isGerman = document.documentElement.lang === 'de';
+  const progressText = document.createElement('div');
+  progressText.style.fontSize = '14px';
+  progressText.style.marginBottom = '5px';
+  
+  // Build text content
+  let textContent = '';
+  if (notesCount) {
+    textContent = isGerman 
+      ? `Level ${currentLevel}: ${currentCount}/${totalCount} ${activityName} (${notesCount} Töne)`
+      : `Level ${currentLevel}: ${currentCount}/${totalCount} ${activityName} (${notesCount} notes)`;
+  } else {
+    textContent = isGerman 
+      ? `Level ${currentLevel}: ${currentCount}/${totalCount} ${activityName}`
+      : `Level ${currentLevel}: ${currentCount}/${totalCount} ${activityName}`;
+  }
+  progressText.textContent = textContent;
+
+  // Create progress bar
+  const progressBar = document.createElement('div');
+  progressBar.style.width = '80%';
+  progressBar.style.margin = '0 auto';
+  progressBar.style.height = '8px';
+  progressBar.style.backgroundColor = '#e0e0e0';
+  progressBar.style.borderRadius = '4px';
+  progressBar.style.overflow = 'hidden';
+
+  // Create progress fill
+  const progressFill = document.createElement('div');
+  progressFill.style.height = '100%';
+  progressFill.style.width = `${(currentCount / totalCount) * 100}%`;
+  progressFill.style.backgroundColor = '#4CAF50';
+  progressFill.style.transition = 'width 0.3s ease-in-out';
+
+  // Assemble components
+  progressBar.appendChild(progressFill);
+  progressContainer.appendChild(progressText);
+  progressContainer.appendChild(progressBar);
+
+  // Add to target container
+  if (targetContainer.parentNode) {
+    targetContainer.parentNode.appendChild(progressContainer);
+  } else {
+    targetContainer.appendChild(progressContainer);
+  }
+
+  console.log(`PROGRESS_BAR: Created for ${activityName} - ${currentCount}/${totalCount}`);
+  return progressContainer;
+}
+
+/**
+ * Remove activity progress bar
+ * @param {string} progressClass - CSS class name of the progress container to remove
+ */
+export function hideActivityProgressBar(progressClass = 'activity-progress') {
+  const progressContainer = document.querySelector(`.${progressClass}`);
+  if (progressContainer) {
+    progressContainer.remove();
+    console.log(`PROGRESS_BAR: Removed progress bar with class: ${progressClass}`);
+  }
 }

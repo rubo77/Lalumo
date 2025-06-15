@@ -16,7 +16,9 @@ import {
   showShakeError, 
   showCompleteSuccess, 
   showCompleteBigSuccess, 
-  showCompleteError 
+  showCompleteError,
+  showActivityProgressBar,
+  hideActivityProgressBar
 } from '../effects/feedback.js';
 
 
