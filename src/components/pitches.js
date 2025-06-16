@@ -4291,6 +4291,7 @@ export function pitches() {
       // Unlock wave pattern at 10 correct answers
       if (this.correctAnswersCount >= 10 && !this.unlockedPatterns.includes('wave')) {
         this.unlockedPatterns.push('wave');
+        this.correctAnswer = 'wave'; // PATTERN_FORCE_DEBUG: Force wave pattern next
         unlocked = true;
         const message = window.Alpine?.store('strings')?.mascot_wave_unlocked || 'Great! You unlocked wavy melodies! 🌊';
         this.showMascotMessage(message);
@@ -4299,6 +4300,7 @@ export function pitches() {
       // Unlock jump pattern at 20 correct answers  
       if (this.correctAnswersCount >= 20 && !this.unlockedPatterns.includes('jump')) {
         this.unlockedPatterns.push('jump');
+        this.correctAnswer = 'jump'; // PATTERN_FORCE_DEBUG: Force jump pattern next
         unlocked = true;
         const message = window.Alpine?.store('strings')?.mascot_jump_unlocked || 'Amazing! You unlocked random jump melodies! 🐸';
         this.showMascotMessage(message);

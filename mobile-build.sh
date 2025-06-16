@@ -173,7 +173,7 @@ npm run build
 # Note: The android/ directory in public/ contains XML files for the webpack dev server
 # The actual native Android app uses the XML files in the main android/ directory
 echo "Copying public assets to dist (excluding android XML files)..."
-rsync -av --exclude='android/' --exclude='images/backgrounds/original/' public/ dist/
+rsync -av --exclude='android/' public/ dist/
 
 # Copy package.json to dist for version info
 echo "Copying package.json to dist for version information..."
