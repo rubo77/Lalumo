@@ -2602,6 +2602,10 @@ export function pitches() {
       }
       
       console.log('MELODY_PLAY: Playing reference melody:', this.referenceSequence);
+      if (!this.referenceSequence || !Array.isArray(this.referenceSequence) || this.referenceSequence.length === 0) {
+        console.warn("REFERENCE_SEQ_DEBUG: referenceSequence is null/empty, aborting playReferenceSequence", this.referenceSequence);
+        return;
+      }
       
       // Sequentielles Abspielen der Noten
       
