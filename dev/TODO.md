@@ -96,25 +96,20 @@ Dies soll in allen aktionen:
 
 - überall den border-shadow focus nach dem click entfernen
 
-- alle activities:
- - die activity zeigt den neuen stand erst nach einem reload an
-
 reset-button:
 - wenn der auto-detect immer geht, dann kann der parameter currentMode in der funktion ja weg in function resetCurrentActivity(currentMode)
 
 - hilfstexte selbst einsprechen oder einmal generieren lassen als mp3
 
+# vermarkten
+- erstelle ein concept, wie wir die app vermarkten können
 - Empfehlungssystem, nach fünf Empfehlungen. Erfolgreichen freischalten
 
 # play store:
 - In die Texte dass der Bildschirm gesperrt ist
-
 - "Images created with ChatGpt mindfull. Loving prompts" verbessern
-
 - Finanzierung durch unlock button mit link zu Crowd funding
-
 - Language autodedtect
-
 - Alles offline herunterladen (keine cdns)
 
 ## nach kapitel
@@ -132,10 +127,8 @@ reset-button:
 
 - volume button level
 
-- Reset all your game progress and start fresh funktioniert nichtd mehr
 
 1_2 "Match the Sounds":
-- Nach dem Wechsel in den Modus mit der Welle als erstes immer auf jeden Fall einen mit Welle spielen, ebenso mit dem Frosch
 - # bereit zur veröffentlichung
 - der reset button in der navi muss auch den hintergrund und die anzeige unten triggern, dass die refresht wird, im moment wird der dann noch einfach weiss
 
@@ -176,12 +169,11 @@ reset-button:
 
 - exportProgress funktioniiert nicht merh, wenn man garbage importiert hat
 
-- add the activity ids 1_1, 1_2, 1_3, 1_4, 1_5 in all functions, that are only used in one activity in pitches.js
-
-- warum ist das laubncher icon nur ein weisser kreis?
 - Webpack-Bundle-Analyzer verwenden um große Abhängigkeiten zu identifizieren
 
-- erstelle ein concept, wie wir die app vermarkten können
+
 - build for ios
 
 # most important
+
+- Reset all your game progress and start fresh funktioniert nichtd mehr

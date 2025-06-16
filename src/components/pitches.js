@@ -2422,18 +2422,19 @@ export function pitches() {
         const currentLevel = this.drawMelodyLevel + 3; // Level + 3 = Anzahl der Noten
         
         showActivityProgressBar({
-          containerSelector: ".drawing-container",
+          appendToContainer: ".drawing-container",
           progressClass: "melody-progress",
           currentCount: this.levelSuccessCounter,
           totalCount: 3,
           currentLevel: this.drawMelodyLevel + 1,
           notesCount: currentLevel,
           activityName: activityName,
-        positioning: {
-          position: "relative",
-          margin: "10px 0",
-          width: "100%"
-        }
+          positioning: {
+            position: "fixed",
+            bottom: "16px",
+            width: "min(100%, 477px)",
+            left: "max(-11px, min(20%, -477px + 94vw))"
+          }
         });
       }
       
@@ -3574,20 +3575,22 @@ export function pitches() {
       
       // Add visual progress bar using reusable function
       const isGerman = document.documentElement.lang === "de";
-      const activityName = isGerman ? "Klingt das richtig?" : "Does it sound right?";
+      const progressbarDescription = "";
       
       showActivityProgressBar({
-        containerSelector: "[id=\"1_4_pitches\"]",
+        appendToContainer: "#feedback_message_1_4_pitches",
         progressClass: "sound-judgment-progress",
         currentCount: this.soundJudgmentCorrectStreak || 0,
         totalCount: 3,
         currentLevel: this.soundJudgmentLevel || 1,
         notesCount: null,
-        activityName: activityName,
+        barOnly: true,
+        activityName: progressbarDescription,
         positioning: {
-          position: "relative",
-          margin: "10px 0",
-          width: "100%"
+          position: "fixed",
+          bottom: "16px",
+          width: "min(100%, 477px)",
+          left: "max(-11px, min(20%, calc(-477px + 94vw)))"
         }
       });
     },

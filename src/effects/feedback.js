@@ -147,24 +147,26 @@ export function showSmartError(targetElement = null) {
 /**
  * Create and display a progress bar for activities
  * @param {Object} options - Configuration options for the progress bar
- * @param {string} options.containerSelector - CSS selector for the container to append the progress bar to
+ * @param {string} options.appendToContainer - CSS selector for the container to append the progress bar to
  * @param {string} options.progressClass - CSS class name for the progress container
  * @param {number} options.currentCount - Current progress count (e.g., successful completions)
  * @param {number} options.totalCount - Total count needed for completion
  * @param {number} options.currentLevel - Current level number
  * @param {number} options.notesCount - Number of notes in current level (optional)
- * @param {string} [options.activityName] - Name of the activity for display text
- * @param {Object} [options.positioning] - Custom positioning styles
+ * @param {boolean} options.barOnly - Whether to show only the progress bar (optional)
+ * @param {string} options.activityName - Name of the activity for display text
+ * @param {Object} options.positioning - Custom positioning styles
  * @returns {HTMLElement|null} The created progress container or null if container not found
  */
 export function showActivityProgressBar(options) {
   const {
-    containerSelector,
+    appendToContainer,
     progressClass = 'activity-progress',
     currentCount = 0,
     totalCount = 10,
     currentLevel = 1,
     notesCount = null,
+    barOnly = false,
     activityName = 'Activity',
     positioning = {
       position: 'absolute',
@@ -181,9 +183,9 @@ export function showActivityProgressBar(options) {
   }
 
   // Find target container
-  const targetContainer = document.querySelector(containerSelector);
+  const targetContainer = document.querySelector(appendToContainer);
   if (!targetContainer) {
-    console.warn(`PROGRESS_BAR: Container not found: ${containerSelector}`);
+    console.warn(`PROGRESS_BAR: Container not found: ${appendToContainer}`);
     return null;
   }
 
@@ -198,24 +200,29 @@ export function showActivityProgressBar(options) {
     ...positioning
   });
 
-  // Create progress text
-  const isGerman = document.documentElement.lang === 'de';
-  const progressText = document.createElement('div');
-  progressText.style.fontSize = '14px';
-  progressText.style.marginBottom = '5px';
-  
-  // Build text content
-  let textContent = '';
-  if (notesCount) {
-    textContent = isGerman 
-      ? `Level ${currentLevel}: ${currentCount}/${totalCount} ${activityName} (${notesCount} Töne)`
-      : `Level ${currentLevel}: ${currentCount}/${totalCount} ${activityName} (${notesCount} notes)`;
-  } else {
-    textContent = isGerman 
-      ? `Level ${currentLevel}: ${currentCount}/${totalCount} ${activityName}`
-      : `Level ${currentLevel}: ${currentCount}/${totalCount} ${activityName}`;
+  // Create progress text only if not barOnly mode
+  if (!barOnly) {
+    const isGerman = document.documentElement.lang === 'de';
+    const progressText = document.createElement('div');
+    progressText.style.fontSize = '14px';
+    progressText.style.marginBottom = '5px';
+    
+    // Build text content
+    let textContent = '';
+    if (notesCount) {
+      textContent = isGerman 
+        ? `Level ${currentLevel}: ${currentCount}/${totalCount} ${activityName} (${notesCount} Töne)`
+        : `Level ${currentLevel}: ${currentCount}/${totalCount} ${activityName} (${notesCount} notes)`;
+    } else {
+      textContent = isGerman 
+        ? `Level ${currentLevel}: ${currentCount}/${totalCount} ${activityName}`
+        : `Level ${currentLevel}: ${currentCount}/${totalCount} ${activityName}`;
+    }
+    progressText.textContent = textContent;
+
+    // Assemble components
+    progressContainer.appendChild(progressText);
   }
-  progressText.textContent = textContent;
 
   // Create progress bar
   const progressBar = document.createElement('div');
@@ -235,7 +242,6 @@ export function showActivityProgressBar(options) {
 
   // Assemble components
   progressBar.appendChild(progressFill);
-  progressContainer.appendChild(progressText);
   progressContainer.appendChild(progressBar);
 
   // Add to target container
