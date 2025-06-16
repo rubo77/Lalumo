@@ -995,7 +995,7 @@
               <button class="warning-button" @click="showResetConfirm = true" x-show="!showResetConfirm" x-text="$store.strings?.button_reset_progress || 'Reset All Progress'"></button>
               <div class="confirm-reset" x-show="showResetConfirm">
                 <p x-text="$store.strings?.reset_confirm || 'Are you sure? This cannot be undone.'"></p>
-                <button class="danger-button" @click="$dispatch('reset-all-progress')" x-text="$store.strings?.button_confirm_reset || 'Yes, Reset Everything'"></button>
+                <button class="danger-button" @click="resetAllProgress()" x-text="$store.strings?.button_confirm_reset || 'Yes, Reset Everything'"></button>
                 <button class="secondary-button" @click="showResetConfirm = false" x-text="$store.strings?.button_cancel || 'Cancel'"></button>
               </div>
             </div>

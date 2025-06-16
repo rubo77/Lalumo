@@ -184,13 +184,13 @@ export function resetAllProgress(component) {
   reset_1_2_MatchSounds_Progress(window.pitchesComponent);
   
   console.log('RESET_ALL: Resetting Draw Melody activity');
-  resetDrawMelody(window.pitchesComponent);
+  reset_1_3_DrawMelody_Progress(window.pitchesComponent);
   
   console.log('RESET_ALL: Resetting Sound Judgment activity');
-  resetSoundJudgment(window.pitchesComponent);
+  reset_1_4_SoundJudgment_Progress(window.pitchesComponent);
   
   console.log('RESET_ALL: Resetting Memory Game activity');
-  resetMemoryGame(window.pitchesComponent);
+  reset_1_5_MemoryGame_Progress(window.pitchesComponent);
   
   // Show global reset feedback
   const message = isGerman ? 
