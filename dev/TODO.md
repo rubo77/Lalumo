@@ -156,13 +156,16 @@ reset-button:
 - auch erst einen Modus, wo man nur drauf drückt, ohne die good or bad Tiere unten.
 - jede der drei Tiere mit einem anderen Instrument
 - Und dann im Game Modus alle drei instrumente zusammen
+- eigene melodien hochladen
 
 
 1_5 memory game:
  - # bereit zur veröffentlichung
 
 -------------------------------------------
-@mobile-build.sh: die find funktion, die nur das kopieren soll was benutzt wird passiert zu spät, es wird vorher schon mit rsync alles von public/ nach dist/ kopiert. ich habe den original folder da hinzugefügt, aber es wäre schöner, wenn das automatisch nicht gersnynct würde, wenn es nicht bnutzt wird
+# mobile-build.sh:
+- die find funktion, die nur das kopieren soll was benutzt wird passiert zu spät, es wird vorher schon mit rsync alles von public/ nach dist/ kopiert. ich habe den original folder da hinzugefügt, aber es wäre schöner, wenn das automatisch nicht gersnynct würde, wenn es nicht bnutzt wird
+- option um die icons neu zu machen, defualt ausgeschaltet
 
 - Background-Bilder Lazy load testen
 
