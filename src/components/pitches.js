@@ -1032,7 +1032,7 @@ export function pitches() {
           
           switch(newStage) {
             case 2:
-              stageMessage = this.$store.strings?.high_low_stage2_unlocked || '🎉 Stage 2 reached! The tones are now closer together!';
+              stageMessage = this.$store.strings?.high_low_stage2_unlocked || ':celebration: Stage 2 reached! The tones are now closer together!';
               break;
             case 3:
               stageMessage = this.$store.strings?.high_low_stage3_unlocked || '🎵 Stage 3 reached! You now hear two tones in sequence!';
@@ -4293,7 +4293,7 @@ export function pitches() {
         this.unlockedPatterns.push('wave');
         this.correctAnswer = 'wave'; // PATTERN_FORCE_DEBUG: Force wave pattern next
         unlocked = true;
-        const message = window.Alpine?.store('strings')?.mascot_wave_unlocked || 'Great! You unlocked wavy melodies! 🌊';
+        const message = window.Alpine?.store('strings')?.mascot_wave_unlocked || 'Great! You unlocked wavy melodies! :wave:';
         this.showMascotMessage(message);
       }
       
@@ -4302,7 +4302,7 @@ export function pitches() {
         this.unlockedPatterns.push('jump');
         this.correctAnswer = 'jump'; // PATTERN_FORCE_DEBUG: Force jump pattern next
         unlocked = true;
-        const message = window.Alpine?.store('strings')?.mascot_jump_unlocked || 'Amazing! You unlocked random jump melodies! 🐸';
+        const message = window.Alpine?.store('strings')?.mascot_jump_unlocked || 'Amazing! You unlocked random jump melodies! :frog:';
         this.showMascotMessage(message);
       }
       

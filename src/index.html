@@ -346,7 +346,7 @@
             <p x-show="(highOrLowProgress || 0) >= 10 && (highOrLowProgress || 0) < 20" x-text="$store.strings?.high_low_stage2 || 'Get 20 correct to hear two tones!'"></p>
             <p x-show="(highOrLowProgress || 0) >= 20 && (highOrLowProgress || 0) < 30" x-text="$store.strings?.high_low_stage3 || 'Get 30 correct to make it harder!'"></p>
             <p x-show="(highOrLowProgress || 0) >= 30 && (highOrLowProgress || 0) < 40" x-text="$store.strings?.high_low_stage4 || 'Get 40 correct for the ultimate challenge!'"></p>
-            <p x-show="(highOrLowProgress || 0) >= 40" x-text="$store.strings?.high_low_master || 'Master level achieved! 🎉'"></p>
+            <p x-show="(highOrLowProgress || 0) >= 40" x-text="$store.strings?.high_low_master || 'Master level achieved! :celebration:'"></p>
           </div>
           
           <!-- Feedback message -->
@@ -405,9 +405,9 @@
           <!-- Progress display -->
           <div x-show="mode === '1_2_pitches_match-sounds'" class="progress-display">
             <p x-text="($store.strings?.correct_answers_count || 'Correct answers: {0}').replace('{0}', correctAnswersCount)"></p>
-            <p x-show="correctAnswersCount < 10" x-text="$store.strings?.unlock_wave_message || 'Get 10 correct to unlock wavy patterns! 🌊'"></p>
+            <p x-show="correctAnswersCount < 10" x-text="$store.strings?.unlock_wave_message || 'Get 10 correct to unlock wavy patterns! :wave:'"></p>
             <p x-show="correctAnswersCount >= 10 && correctAnswersCount < 20" x-text="$store.strings?.unlock_jump_message || 'Get 20 correct to unlock random patterns! ��'"></p>
-            <p x-show="correctAnswersCount >= 20" x-text="$store.strings?.all_patterns_unlocked || 'All patterns unlocked! 🎉'"></p>
+            <p x-show="correctAnswersCount >= 20" x-text="$store.strings?.all_patterns_unlocked || 'All patterns unlocked! :celebration:'"></p>
           </div>
           
           <div x-show="showFeedback" class="feedback-message" x-text="feedback"></div>

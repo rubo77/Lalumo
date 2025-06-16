@@ -43,6 +43,18 @@ export function reset_1_2_MatchSounds_Progress(component) {
     console.log('RESET_MATCH_SOUNDS: Reset background to initial state');
   }
   
+  // Force UI update by triggering Alpine.js reactivity
+  // This ensures the progress display and background refresh correctly
+  component.$nextTick(() => {
+    // Force re-evaluation of progress-dependent elements
+    const event = new CustomEvent('match-sounds-reset', { 
+      detail: { newProgress: 0, resetPatterns: ['up', 'down'] } 
+    });
+    document.dispatchEvent(event);
+    
+    console.log('RESET_MATCH_SOUNDS: UI refresh triggered');
+  });
+  
   console.log('RESET_MATCH_SOUNDS: Reset completed successfully');
 }
 
