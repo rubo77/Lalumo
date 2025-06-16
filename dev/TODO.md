@@ -137,7 +137,6 @@ reset-button:
 - wenn der zeichenpfad spitze ecken hat, dann sollen noten, die nahe der spitze sind ganz in die spitze rutschen
 - wenn man beim malen den rand des canvas überschreitet, sollte der strich weiter im canvas gemalt werden, an der kante entlang
 - Wenn man einen Ton trifft, die Note aufleuchten verbessern, vielieicht den strich an der stelle dick machen oder so
-- feine hilfslinien im sand, wo die musikalischen noten liegen wüürden im challenge mode
 
 1_4 Does It Sound Right:
 - # bereit zur veröffentlichung

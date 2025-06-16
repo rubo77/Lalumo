@@ -2202,6 +2202,9 @@ export function pitches() {
         // Clear the entire canvas
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         
+        // Draw guide lines in challenge mode
+        this.drawNoteGuideLines();
+        
         // Reset any drawing state
         this.isDrawing = false;
         
@@ -2210,6 +2213,37 @@ export function pitches() {
       } else {
         console.error('Could not find drawing canvas');
       }
+    },
+
+    /**
+     * Draw subtle guide lines showing note positions (challenge mode only)
+     */
+    drawNoteGuideLines() {
+      if (!this.melodyChallengeMode) return; // Only in challenge mode
+      
+      const canvas = document.querySelector('.drawing-canvas');
+      if (!canvas) return;
+      
+      const ctx = canvas.getContext('2d');
+      const height = canvas.height;
+      const width = canvas.width;
+      
+      // 12 notes total
+      const noteCount = 12;
+      
+      // Draw subtle horizontal lines for each note position
+      ctx.strokeStyle = 'rgba(200, 180, 140, 0.3)';
+      ctx.lineWidth = 0.5;
+      
+      for (let i = 0; i < noteCount; i++) {
+        const y = (i + 0.5) * (height / noteCount); // Center line in each note zone
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(width, y);
+        ctx.stroke();
+      }
+      
+      console.log('GUIDE_LINES: Drew note guide lines in challenge mode');
     },
     
     /**
@@ -2504,6 +2538,9 @@ export function pitches() {
         // Spiele die Referenzmelodie ab
         this.playReferenceSequence();
       }
+      
+      // Draw or clear guide lines based on mode
+      this.drawNoteGuideLines();
     },
     
     /**
@@ -2567,6 +2604,9 @@ export function pitches() {
       console.log('MELODY_PLAY: Playing reference melody:', this.referenceSequence);
       
       // Sequentielles Abspielen der Noten
+      
+      // Draw guide lines in challenge mode after clearing
+      this.drawNoteGuideLines();
       const playNote = (index) => {
         if (index >= this.referenceSequence.length) return;
         
