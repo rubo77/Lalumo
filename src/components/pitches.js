@@ -2754,7 +2754,7 @@ export function pitches() {
         
         // Free draw mode: up to 32 notes, challenge mode: up to 8 notes
         const maxNotesForMode = 32;
-        const notesBasedOnLength = Math.max(minNotes, Math.floor(pathLength / 10));
+        const notesBasedOnLength = Math.max(minNotes, Math.floor(pathLength / 16));
         sampleSize = Math.min(notesBasedOnLength, maxNotesForMode);
         console.log(`MELODY_NOTES: Using ${sampleSize} notes based on path length ${pathLength} in free mode`);
       } 

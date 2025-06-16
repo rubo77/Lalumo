@@ -98,8 +98,8 @@ Dies soll in allen aktionen:
 
 reset-button:
 - wenn der auto-detect immer geht, dann kann der parameter currentMode in der funktion ja weg in function resetCurrentActivity(currentMode)
-
 - hilfstexte selbst einsprechen oder einmal generieren lassen als mp3
+- volume level einstellbar machen
 
 # vermarkten
 - erstelle ein concept, wie wir die app vermarkten können
@@ -125,7 +125,6 @@ reset-button:
 - Entferne alle Überbleibsel der alten "Listen to melodies"-Funktionalität:
    - Lösche unnötige Melodie-Abspielfunktionen für die alte Aktivität
 
-- volume button level
 
 
 1_2 "Match the Sounds":
@@ -136,9 +135,9 @@ reset-button:
 - # bereit zur veröffentlichung
 - reset all progress geht noch nicht
 - wenn der zeichenpfad spitze ecken hat, dann sollen noten, die nahe der spitze sind ganz in die spitze rutschen
-- beim frei malen mehr als 8 noten
 - wenn man beim malen den rand des canvas überschreitet, sollte der strich weiter im canvas gemalt werden, an der kante entlang
 - Wenn man einen Ton trifft, die Note aufleuchten verbessern, vielieicht den strich an der stelle dick machen oder so
+- feine hilfslinien im sand, wo die musikalischen noten liegen wüürden im challenge mode
 
 1_4 Does It Sound Right:
 - # bereit zur veröffentlichung
