@@ -3,7 +3,7 @@
 # This script builds the web app and syncs it with native platforms
 
 # Default configuration
-SKIP_VERSION_UPDATE=false
+UPDATE_VERSION=false
 
 # Show help information
 show_help() {
@@ -30,8 +30,8 @@ parse_args() {
       -h|--help)
         show_help
         ;;
-      -n|--no-version-update)
-        SKIP_VERSION_UPDATE=true
+      -u|--update-version)
+        UPDATE_VERSION=true
         shift
         ;;
       android|ios|update)
@@ -158,7 +158,7 @@ update_version() {
 parse_args "$@"
 
 # Update version if not skipped
-if [ "$SKIP_VERSION_UPDATE" = false ]; then
+if [ "$UPDATE_VERSION" = true ]; then
   echo "###### 3. Updating version numbers..."
   update_version
 else
@@ -183,130 +183,25 @@ cp package.json dist/
 echo "###### 6. Syncing with Capacitor..."
 npx cap sync
 
-# Generate Android launcher icons from app_icon.png
-echo "###### 7. Generate Android launcher icons from app_icon.png ..."
-
-# Create directory structure if it doesn't exist
-mkdir -p android/app/src/main/res/mipmap-hdpi
-mkdir -p android/app/src/main/res/mipmap-mdpi
-mkdir -p android/app/src/main/res/mipmap-xhdpi
-mkdir -p android/app/src/main/res/mipmap-xxhdpi
-mkdir -p android/app/src/main/res/mipmap-xxxhdpi
-mkdir -p android/app/src/main/res/mipmap-anydpi-v26
-
-# Create a solid background for adaptive icon
-convert -size 108x108 xc:"#FFBE85" android/app/src/main/res/mipmap-mdpi/ic_launcher_background.png
-convert -size 162x162 xc:"#FFBE85" android/app/src/main/res/mipmap-hdpi/ic_launcher_background.png
-convert -size 216x216 xc:"#FFBE85" android/app/src/main/res/mipmap-xhdpi/ic_launcher_background.png
-convert -size 324x324 xc:"#FFBE85" android/app/src/main/res/mipmap-xxhdpi/ic_launcher_background.png
-convert -size 432x432 xc:"#FFBE85" android/app/src/main/res/mipmap-xxxhdpi/ic_launcher_background.png
-
-# Generate foreground images from app_icon.png
-convert src/images/app_icon.png -resize 108x108 -background none -gravity center -extent 108x108 android/app/src/main/res/mipmap-mdpi/ic_launcher_foreground.png
-convert src/images/app_icon.png -resize 162x162 -background none -gravity center -extent 162x162 android/app/src/main/res/mipmap-hdpi/ic_launcher_foreground.png
-convert src/images/app_icon.png -resize 216x216 -background none -gravity center -extent 216x216 android/app/src/main/res/mipmap-xhdpi/ic_launcher_foreground.png
-convert src/images/app_icon.png -resize 324x324 -background none -gravity center -extent 324x324 android/app/src/main/res/mipmap-xxhdpi/ic_launcher_foreground.png
-convert src/images/app_icon.png -resize 432x432 -background none -gravity center -extent 432x432 android/app/src/main/res/mipmap-xxxhdpi/ic_launcher_foreground.png
-
-# Create monochromatic version (same as foreground but with light color)
-convert src/images/app_icon.png -resize 108x108 -background none -gravity center -extent 108x108 -modulate 100,0,100 android/app/src/main/res/mipmap-mdpi/ic_launcher_monochrome.png
-convert src/images/app_icon.png -resize 162x162 -background none -gravity center -extent 162x162 -modulate 100,0,100 android/app/src/main/res/mipmap-hdpi/ic_launcher_monochrome.png
-convert src/images/app_icon.png -resize 216x216 -background none -gravity center -extent 216x216 -modulate 100,0,100 android/app/src/main/res/mipmap-xhdpi/ic_launcher_monochrome.png
-convert src/images/app_icon.png -resize 324x324 -background none -gravity center -extent 324x324 -modulate 100,0,100 android/app/src/main/res/mipmap-xxhdpi/ic_launcher_monochrome.png
-convert src/images/app_icon.png -resize 432x432 -background none -gravity center -extent 432x432 -modulate 100,0,100 android/app/src/main/res/mipmap-xxxhdpi/ic_launcher_monochrome.png
-
-# Generate standard launcher icons (non-adaptive)
-convert -background none src/images/app_icon.png -resize 48x48 android/app/src/main/res/mipmap-mdpi/ic_launcher.png
-convert -background none src/images/app_icon.png -resize 48x48 android/app/src/main/res/mipmap-mdpi/ic_launcher_round.png
-convert -background none src/images/app_icon.png -resize 72x72 android/app/src/main/res/mipmap-hdpi/ic_launcher.png
-convert -background none src/images/app_icon.png -resize 72x72 android/app/src/main/res/mipmap-hdpi/ic_launcher_round.png
-convert -background none src/images/app_icon.png -resize 96x96 android/app/src/main/res/mipmap-xhdpi/ic_launcher.png
-convert -background none src/images/app_icon.png -resize 96x96 android/app/src/main/res/mipmap-xhdpi/ic_launcher_round.png
-convert -background none src/images/app_icon.png -resize 144x144 android/app/src/main/res/mipmap-xxhdpi/ic_launcher.png
-convert -background none src/images/app_icon.png -resize 144x144 android/app/src/main/res/mipmap-xxhdpi/ic_launcher_round.png
-convert -background none src/images/app_icon.png -resize 192x192 android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png
-convert -background none src/images/app_icon.png -resize 192x192 android/app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.png
-
-# Create adaptive icon XML files
-cat > android/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml << 'EOL'
-<?xml version="1.0" encoding="utf-8"?>
-<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
-  <background android:drawable="@mipmap/ic_launcher_background"/>
-  <foreground android:drawable="@mipmap/ic_launcher_foreground"/>
-  <monochrome android:drawable="@mipmap/ic_launcher_monochrome"/>
-</adaptive-icon>
-EOL
-
-cat > android/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml << 'EOL'
-<?xml version="1.0" encoding="utf-8"?>
-<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
-  <background android:drawable="@mipmap/ic_launcher_background"/>
-  <foreground android:drawable="@mipmap/ic_launcher_foreground"/>
-</adaptive-icon>
-EOL
-  # declare -A ICON_SIZES=(
-  #   [mdpi]=48
-  #   [hdpi]=72
-  #   [xhdpi]=96
-  #   [xxhdpi]=144
-  #   [xxxhdpi]=192
-  # )
-
-  # # Convert SVG to PNG for each density
-  # for density in "${!ICON_SIZES[@]}"; do
-  #   size=${ICON_SIZES[$density]}
-  #   output_file="$LAUNCHER_ICON_DIR/mipmap-$density/ic_launcher.png"
-  #   echo "Creating $density icon ($size x $size)..."
-    
-  #   # Use ImageMagick to convert SVG to PNG
-  #   convert -background none "public/favicon.svg" -resize ${size}x${size} "$output_file"
-  # done
-fi
-
-echo "###### 8. Create adaptive icon layers if they don't exist"
-if [ ! -f "$LAUNCHER_ICON_DIR/mipmap-xxxhdpi/ic_launcher_foreground.png" ]; then
-  echo "this would create adaptive launcher icons..."
-  echo "tested for the file $LAUNCHER_ICON_DIR/mipmap-xxxhdpi/ic_launcher_foreground.png"
-  echo "disabled !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-  
-  # # Create foreground icon (108x108 px)
-  # convert -background none "public/favicon.svg" -resize 108x108 \
-  #   "$LAUNCHER_ICON_DIR/mipmap-xxxhdpi/ic_launcher_foreground.png"
-  
-  # # Create background icon (108x108 px)
-  # convert -size 108x108 xc:white \
-  #   "$LAUNCHER_ICON_DIR/mipmap-xxxhdpi/ic_launcher_background.png"
-  
-  # # Copy adaptive icons to other densities
-  # for density in mdpi hdpi xhdpi xxhdpi; do
-  #   mkdir -p "$LAUNCHER_ICON_DIR/mipmap-$density"
-  #   cp "$LAUNCHER_ICON_DIR/mipmap-xxxhdpi/ic_launcher_foreground.png" \
-  #     "$LAUNCHER_ICON_DIR/mipmap-$density/ic_launcher_foreground.png"
-  #   cp "$LAUNCHER_ICON_DIR/mipmap-xxxhdpi/ic_launcher_background.png" \
-  #     "$LAUNCHER_ICON_DIR/mipmap-$density/ic_launcher_background.png"
-  # done
-fi
-
-
 # Ensure only used images are copied to Android assets
-echo "###### 10. Finding used images in the code..."
+echo "###### 7. Finding used images in the code..."
 
 # create temp directory for used images
 TEMP_IMG_DIR="temp_used_images"
 rm -rf "$TEMP_IMG_DIR"
 mkdir -p "$TEMP_IMG_DIR"
 
-echo "###### 11. search for image references in code (HTML, CSS, JS files)"
+echo "###### 8. search for image references in code (HTML, CSS, JS files)"
 find src -type f \( -name "*.js" -o -name "*.html" -o -name "*.css" \) -exec grep -oE "['\"][^'\"]*\.(png|jpg|jpeg|gif|svg|webp)['\"]" {} \; | \
   tr -d "'\"" | sort | uniq > "$TEMP_IMG_DIR/used_images.txt"
 
-echo "###### 12. Copying only used images to Android assets..."
+echo "###### 9. Copying only used images to Android assets..."
 mkdir -p android/app/src/main/assets/public/images
 
 echo "Found images:"
 cat "$TEMP_IMG_DIR/used_images.txt"
 
-echo "###### 13. copy only used images"
+echo "###### 10. copy only used images"
 while read -r img_path; do
   # remove ./ or / from path
   clean_path=${img_path#./}
