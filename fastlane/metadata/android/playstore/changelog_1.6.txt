@@ -2,6 +2,7 @@
 
 <en-GB>
 - catch back-gesture on Android
+- reset buttons for progress
 </en-GB>
 <de-DE>
 - auf Android: fang Back-Gesture ab

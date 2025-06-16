@@ -11,7 +11,6 @@ PLAYSTORE_DIR="fastlane/metadata/android/playstore"
 
 # Get version from build.gradle
 VERSION_NAME=1.6
-
 # Get current date
 CURRENT_DATE=$(date +"%Y-%m-%d")
 
@@ -49,6 +48,7 @@ EOF
 # English Changelog
 EN_CHANGES=$(cat << EOF
 - catch back-gesture on Android
+- reset buttons for progress
 EOF
 )
 
