@@ -2752,9 +2752,10 @@ export function pitches() {
         // Berechnung der Länge der gezeichneten Linie (vereinfacht durch Anzahl der Punkte)
         const pathLength = this.drawPath.length;
         
-        // Wir nehmen eine Note pro 10 Punkte, aber mindestens minNotes und maximal maxNotes
+        // Free draw mode: up to 32 notes, challenge mode: up to 8 notes
+        const maxNotesForMode = 32;
         const notesBasedOnLength = Math.max(minNotes, Math.floor(pathLength / 10));
-        sampleSize = Math.min(notesBasedOnLength, maxNotes);
+        sampleSize = Math.min(notesBasedOnLength, maxNotesForMode);
         console.log(`MELODY_NOTES: Using ${sampleSize} notes based on path length ${pathLength} in free mode`);
       } 
       // Im Spiel-Modus: Anzahl der Noten basierend auf dem Level
@@ -2764,7 +2765,7 @@ export function pitches() {
         console.log(`MELODY_NOTES: Using ${sampleSize} notes based on level ${this.drawMelodyLevel} in challenge mode`);
       }
       
-      const sampledPoints = [];
+      var sampledPoints = [];
       
       // Immer den ersten Punkt nehmen
       sampledPoints.push(this.drawPath[0]);
@@ -2783,10 +2784,15 @@ export function pitches() {
         for (let i = 1; i <= innerPoints; i++) {
           const index = Math.min(i * step, this.drawPath.length - 2);
           sampledPoints.push(this.drawPath[index]);
+          console.log('DRAW_PATH_DEBUG: index=', index, 'drawPath.length=', this.drawPath.length, 'point=', this.drawPath[index]);
         }
       }
       
       // Immer den letzten Punkt nehmen
+      
+      // Filter out undefined points to prevent runtime errors
+      sampledPoints = sampledPoints.filter(point => point && point.x !== undefined && point.y !== undefined);
+      console.log('DRAW_PATH_DEBUG: sampledPoints after filter:', sampledPoints.length, 'points');
       sampledPoints.push(this.drawPath[this.drawPath.length - 1]);
       
       // Y-Positionen auf Noten abbilden (höhere Position = höherer Ton)
