@@ -126,8 +126,8 @@ export function showResetFeedback(activityMode) {
   
   const activityName = activityNames[activityMode] || activityMode;
   const message = isGerman ? 
-    `${activityName} Fortschritt erfolgreich zurückgesetzt!` : 
-    `${activityName} progress successfully reset!`;
+    `${activityName} Fortschritt erfolgreich zurückgesetzt! Bitte Neu starten.` : 
+    `${activityName} progress successfully reset! Reload to apply.`;
   
   // Create or update feedback element
   let feedbackElement = document.querySelector('.reset-feedback');

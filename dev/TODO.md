@@ -130,9 +130,12 @@ reset-button:
 - Entferne alle Überbleibsel der alten "Listen to melodies"-Funktionalität:
    - Lösche unnötige Melodie-Abspielfunktionen für die alte Aktivität
 
+- volume button level
+
+- Reset all your game progress and start fresh funktioniert nichtd mehr
+
 1_2 "Match the Sounds":
 - Nach dem Wechsel in den Modus mit der Welle als erstes immer auf jeden Fall einen mit Welle spielen, ebenso mit dem Frosch
-- Utf8 Icon kaputt bei frog unter Android
 - # bereit zur veröffentlichung
 - der reset button in der navi muss auch den hintergrund und die anzeige unten triggern, dass die refresht wird, im moment wird der dann noch einfach weiss
 

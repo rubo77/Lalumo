@@ -2069,19 +2069,28 @@ export function pitches() {
       // Game mode: use only unlocked patterns
       if (generateNew) {
         // Only use unlocked patterns for the game
+        // Check if pattern was forced (e.g., after unlock) before random selection
         const availableTypes = this.unlockedPatterns;
-        const randomType = availableTypes[Math.floor(Math.random() * availableTypes.length)];
-        this.correctAnswer = randomType;
+        let selectedType;
+        if (this.correctAnswer && availableTypes.includes(this.correctAnswer)) {
+          // Use forced pattern (newly unlocked wave/jump)
+          selectedType = this.correctAnswer;
+          console.log('PATTERN_FORCE_DEBUG: Using forced pattern:', selectedType);
+        } else {
+          // Random selection from available patterns
+          selectedType = availableTypes[Math.floor(Math.random() * availableTypes.length)];
+          this.correctAnswer = selectedType;
+        }
         
         // Generate the appropriate melody for the selected type
         let pattern;
-        if (randomType === 'up') {
+        if (selectedType === 'up') {
           pattern = this.generateUpPattern();
-        } else if (randomType === 'down') {
+        } else if (selectedType === 'down') {
           pattern = this.generateDownPattern();
-        } else if (randomType === 'wave') {
+        } else if (selectedType === 'wave') {
           pattern = this.generateWavyPattern();
-        } else if (randomType === 'jump') {
+        } else if (selectedType === 'jump') {
           pattern = this.generateJumpyPattern();
         }
         
@@ -2369,12 +2378,6 @@ export function pitches() {
       let referenceContainer = document.querySelector('.reference-melody');
       if (referenceContainer) {
         referenceContainer.remove();
-      }
-      
-      // Entferne bestehende Fortschrittsanzeige
-      let progressContainer = document.querySelector('.melody-progress');
-      if (progressContainer) {
-        progressContainer.remove();
       }
       
       // Update the challenge toggle buttons based on the current mode

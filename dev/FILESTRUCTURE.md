@@ -24,6 +24,7 @@
 │   └── index.html         # Haupt-HTML-Datei
 │   └── utils/             # Hilfsfunktion debug.js - for controlling console logs in different environments
 │   │   └── debug.js       # Debug utility for controlling console logs in different environments
+│   └── effects/           # Effekte
 ├── tools/                 # Hilfsskripte
 └── dev/                   # Entwicklungsdokumentation
     ├── CONCEPT.md         # Konzept der App
