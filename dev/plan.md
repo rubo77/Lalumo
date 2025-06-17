@@ -1,161 +1,134 @@
-# Musici – Reset Button Concept & Activity Progress
+# Musici Progress Bar Extraction Plan
 
 ## Notes
-- User reverted previous reset-handling code; wants a better-designed reset button located in the main navigation.
-- A concept document (in dev/) is required, describing:
-  - All progress/state variables per activity (e.g. `highOrLowProgress`, `drawMelodyLevel`, `levelSuccessCounter`, `soundJudgmentLevel`, `progress` object keys, related localStorage keys).
-  - How the nav reset button determines the currently active activity and resets only its state.
-  - Whether Alpine `$data` is still needed; if yes, justify, else propose simpler access (e.g. component methods or Alpine `$store`).
-- Global project rules apply (no failsafes, use logging for diagnostics, etc.).
-- User approved concept; implementation phase started.
-- Encountering tool timeouts when editing large `pitches.js`; will proceed with incremental small edits per method to avoid failures.
-- Codebase has been modularized into individual activity files (e.g., `1_1_high_or_low.js`), so reset methods will be added in these smaller modules instead of the monolithic `pitches.js`.
-- Implemented `resetHighOrLow` and `resetMatchSounds` functions in their respective modules.
-- Implemented `reset_1_3_DrawMelody_Progress` function in its module.
-- Implemented `reset_1_4_SoundJudgment_Progress` and `reset_1_5_MemoryGame_Progress` functions in their modules.
-- Exported all reset, dispatcher, and feedback functions centrally via `pitches/index.js`.
-- Added `resetCurrentActivity` dispatcher and visual feedback implementation in `pitches/common.js`, globally accessible.
-- Implemented `resetAllProgress` method and global feedback in `pitches/common.js`.
-- Exported dispatcher & feedback via `pitches/index.js` and inserted first in-activity reset button (High or Low header); remaining headers still pending.
-- Standardized long reset function names (`reset_<id>_<Activity>_Progress`) and updated imports across modules.
-- Fixed missing `setupHighOrLowMode_1_1` import; all pitch activity headers now include reset buttons.
-- Added consistent CSS styling & focus outlines for reset/back buttons.
-- Reset buttons successfully moved to main navigation; individual header buttons removed and nav button styled.
-- Confirmation dialog now displays specific activity name in reset prompt.
-- User asked why we use a central `pitches/index.js` (and per-activity indirection) and whether it can be streamlined or removed.
-- User decided to remove all `index.js` barrels and document this change.
-- `pitches/index.js` file deleted and `dev/FILESTRUCTURE.md` updated; remaining code still needs direct-import refactor.
-- `pitches/index.js` removed. First automated replacement in `pitches.js` produced duplicate/incorrect import lines; need manual cleanup across codebase.
-- Direct-import refactor successfully applied in `pitches.js`; grep shows no remaining `index.js` barrel references and import block cleaned.
-- Build passes successfully after cleanup; duplicates resolved.
-- Activity visual & audio feedback guidelines documented in CODING_STANDARDS.md.
-- Nav reset button context is outside the Alpine component; `$data.mode` is `undefined`. Need to expose current `mode` globally (Alpine store or `window`) so reset button can access it.
-+ ``pitchMode`` store already existed; no further global exposure needed.
-+ Reset dispatcher updated to inject `window.pitchesComponent` into individual reset functions.
-+ `resetCurrentActivity` signature simplified; HTML updated to pass only `$store.pitchMode`; dispatcher now injects `window.pitchesComponent`; previous `component is undefined` error resolved.
-+ Reset now runs without error but appears not to clear progress; user requested success message detailing what was reset (current and global).
-+ Still encountering `component is undefined` runtime errors; window.pitchesComponent may not be set early enough or reset functions still expect a parameter.
-+ Added extra debug logging in `resetCurrentActivity` to trace component availability; success feedback strings enhanced.
-+ Added debug logs to `afterInit` registration; **logs do not appear** – indicates Alpine `afterInit()` may never run, so `window.pitchesComponent` not set prior to resets.
-+ Discovered Alpine does not invoke `afterInit()`; global registration must occur in `init()` (or helper), and `afterInit` can be removed.
-+ User mandated editing `pitches.js` via bash (sed) commands instead of direct edits.
-+ Initial sed edits created duplicate `init()` and multiple `initializeAudioEngine()` methods; file requires cleanup.
-- Sed miscommand wiped most of `pitches.js`; user restored file; proceed with cautious incremental import edits.
-- Initial sed edits created duplicate `init()` and multiple `initializeAudioEngine()` methods; file requires cleanup.
-+ Barrel removal extended to chords; `2_chords/index.js` deleted and direct exports added in `chords.js`.
-+ New requirement: document common activity visuals (background, rainbow success, shaking error, success/error melodies) in `dev/CODING_STANDARDS.md`; export rainbow/melody utilities in shared file for reuse across chapters.
-+ Shared feedback utilities module `src/effects/feedback.js` created (rainbow, shake, success/error sounds).
-+ Build error: `components/chords.js` still imports deleted `./2_chords/index.js`; refactor to direct imports to resolve.
-+ Build passes after removing all legacy `./2_chords/index.js` imports from chords components and tests; ready to integrate feedback utilities.
-- User asked why we use a central `pitches/index.js` (and per-activity indirection) and whether it can be streamlined or removed.
-- User decided to remove all `index.js` barrels and document this change.
-- `pitches/index.js` file deleted and `dev/FILESTRUCTURE.md` updated; remaining code still needs direct-import refactor.
-- `pitches/index.js` removed. First automated replacement in `pitches.js` produced duplicate/incorrect import lines; need manual cleanup across codebase.
-- Direct-import refactor successfully applied in `pitches.js`; grep shows no remaining `index.js` barrel references and import block cleaned.
-- Build passes successfully after cleanup; duplicates resolved.
-- Activity visual & audio feedback guidelines documented in CODING_STANDARDS.md.
-- Nav reset button context is outside the Alpine component; `$data.mode` is `undefined`. Need to expose current `mode` globally (Alpine store or `window`) so reset button can access it.
-+ ``pitchMode`` store already existed; no further global exposure needed.
-+ Reset dispatcher updated to inject `window.pitchesComponent` into individual reset functions.
-+ `resetCurrentActivity` signature simplified; HTML updated to pass only `$store.pitchMode`; dispatcher now injects `window.pitchesComponent`; previous `component is undefined` error resolved.
-+ Reset now runs without error but appears not to clear progress; user requested success message detailing what was reset (current and global).
-+ Still encountering `component is undefined` runtime errors; window.pitchesComponent may not be set early enough or reset functions still expect a parameter.
-+ Added extra debug logging in `resetCurrentActivity` to trace component availability; success feedback strings enhanced.
-+ Added debug logs to `afterInit` registration; **logs do not appear** – indicates Alpine `afterInit()` may never run, so `window.pitchesComponent` not set prior to resets.
-+ Discovered Alpine does not invoke `afterInit()`; global registration must occur in `init()` (or helper), and `afterInit` can be removed.
-+ User mandated editing `pitches.js` via bash (sed) commands instead of direct edits.
-+ Initial sed edits created duplicate `init()` and multiple `initializeAudioEngine()` methods; file requires cleanup.
-- Sed miscommand wiped most of `pitches.js`; user restored file; proceed with cautious incremental import edits.
-- Initial sed edits created duplicate `init()` and multiple `initializeAudioEngine()` methods; file requires cleanup.
-+ Barrel removal extended to chords; `2_chords/index.js` deleted and direct exports added in `chords.js`.
-+ New requirement: document common activity visuals (background, rainbow success, shaking error, success/error melodies) in `dev/CODING_STANDARDS.md`; export rainbow/melody utilities in shared file for reuse across chapters.
-+ Shared feedback utilities module `src/effects/feedback.js` created (rainbow, shake, success/error sounds).
-+ Build passes after removing all legacy `./2_chords/index.js` imports from chords components and tests; ready to integrate feedback utilities.
-- User asked why we use a central `pitches/index.js` (and per-activity indirection) and whether it can be streamlined or removed.
-- User decided to remove all `index.js` barrels and document this change.
-- `pitches/index.js` file deleted and `dev/FILESTRUCTURE.md` updated; remaining code still needs direct-import refactor.
-- `pitches/index.js` removed. First automated replacement in `pitches.js` produced duplicate/incorrect import lines; need manual cleanup across codebase.
-- Direct-import refactor successfully applied in `pitches.js`; grep shows no remaining `index.js` barrel references and import block cleaned.
-- Build passes successfully after cleanup; duplicates resolved.
-- Activity visual & audio feedback guidelines documented in CODING_STANDARDS.md.
-- Nav reset button context is outside the Alpine component; `$data.mode` is `undefined`. Need to expose current `mode` globally (Alpine store or `window`) so reset button can access it.
-+ ``pitchMode`` store already existed; no further global exposure needed.
-+ Reset dispatcher updated to inject `window.pitchesComponent` into individual reset functions.
-+ `resetCurrentActivity` signature simplified; HTML updated to pass only `$store.pitchMode`; dispatcher now injects `window.pitchesComponent`; previous `component is undefined` error resolved.
-+ Reset now runs without error but appears not to clear progress; user requested success message detailing what was reset (current and global).
-+ Still encountering `component is undefined` runtime errors; window.pitchesComponent may not be set early enough or reset functions still expect a parameter.
-+ Added extra debug logging in `resetCurrentActivity` to trace component availability; success feedback strings enhanced.
-+ Added debug logs to `afterInit` registration; **logs do not appear** – indicates Alpine `afterInit()` may never run, so `window.pitchesComponent` not set prior to resets.
-+ Discovered Alpine does not invoke `afterInit()`; global registration must occur in `init()` (or helper), and `afterInit` can be removed.
-+ User mandated editing `pitches.js` via bash (sed) commands instead of direct edits.
-+ Initial sed edits created duplicate `init()` and multiple `initializeAudioEngine()` methods; file requires cleanup.
-- Sed miscommand wiped most of `pitches.js`; user restored file; proceed with cautious incremental import edits.
-- Initial sed edits created duplicate `init()` and multiple `initializeAudioEngine()` methods; file requires cleanup.
-+ Barrel removal extended to chords; `2_chords/index.js` deleted and direct exports added in `chords.js`.
-+ New requirement: document common activity visuals (background, rainbow success, shaking error, success/error melodies) in `dev/CODING_STANDARDS.md`; export rainbow/melody utilities in shared file for reuse across chapters.
-+ Shared feedback utilities module `src/effects/feedback.js` created (rainbow, shake, success/error sounds).
-+ Build passes after removing all legacy `./2_chords/index.js` imports from chords components and tests; ready to integrate feedback utilities.
-
+- User wants to extract the progress bar (Fortschrittsbalken) from section 1_3 in `pitches.js` (currently inline around lines 2374–2456) and reuse it in 1_4.
+- Reusable progress bar function `showActivityProgressBar` created in `src/effects/feedback.js`.
+- Progress bar utility imported into `pitches.js` for use in activities.
+- Inline code cleanup completed via sed; duplicate block removed and lint/syntax errors resolved.
+- Level progression should now increase after **3** correct answers (was 10); progress bar totals must reflect this.
+- Progress bar invoked in **1_4 Sound Judgment** via reusable function.
+- Closing brace/comma issue in 1_4 progress bar block patched via sed.
+- Semicolon build error fixed again; quote escaping issue in `containerSelector` resolved; Node syntax check passes.
+- 1_4 duplicate progress bar removed; existing display now uses denominator **3** via reusable function.
+- User reports 1_4 progress bar is missing/not visible; adjust placement or CSS to ensure it appears in viewport.
+- Progress bar function now called within `updateSoundJudgmentLevelDisplay()` to render bar; visibility needs verification.
+- Progress bar now appears but is attached to bottom of viewport; needs to be inserted within activity container. Two text rows shown (top and bottom); bottom bar must be relocated or removed so only one unified display inside activity.
+- Position override passed to `showActivityProgressBar` in `updateSoundJudgmentLevelDisplay()` to render bar relative to the activity container; verify that only one bar is visible.
+- Bottom stray bar removed; progress bar now rendered relative inside the activity container via positioning override; need final visual verification.
+- Occasional wrong melody shown at start of 1_4 and note duration mismatches reported; investigate melody generation and timing logic.
+- Diagnostic logging added: `MELODY_NAME_DEBUG` in `generateSoundHighOrLowMelody()` to trace melody selection; further duration logging planned.
+- UI melody name is now cleared before generation and updated post-generation to prevent stale titles.
+- New requirement refined: Menu **must stay open for chapters** but **auto-close for activity selections** and when user clicks outside the navigation area.
+- Diagnostic logging added: `MELODY_NAME_DEBUG` in `generateSoundHighOrLowMelody()` to trace melody selection; further duration logging planned.
+- UI melody name now cleared before generation and updated post-generation to prevent stale titles.
+- Identified cause of hamburger menu auto-close: inline `window.innerWidth < 1024 ? menuOpen = false : null` present in chapter/activity button handlers in `src/index.html`; remove or adjust this condition.
+- Auto-close conditions removed via sed from `src/index.html`; verify menu remains open across breakpoints.
+- Auto-close `@click.away` directive reinstated for menu content div to close on outside clicks; remaining menu should stay open on mobile.
+- Refined hamburger menu: activity buttons now auto-close the menu; chapters remain open; click-away closes menu on mobile.
+- `reset_1_1_HighOrLow_Progress` now dispatches a `high-or-low-reset` event via `$nextTick` to force UI refresh (progress display & background) after reset.
+- However, user reports progress still persists after reload; reset logic not fully effective – requires deeper investigation (localStorage & component state).
+- `resetCurrentActivity` now auto-detects the current mode when called without a parameter, ensuring the correct per-activity reset function is invoked.
+- New 1_2 requirements: ensure wave mode starts with a wave sample (and frog mode with a frog sample), fix frog icon rendering issue on Android (uses `/images/1x1.gif`, not UTF-8), and make sure the 1_2 reset button also refreshes background & progress.
+- Analysis: random pattern selection causes wrong first sample; need logic to force next pattern to match selected mode/unlocked pattern.
+- Implemented fix: forced first-sample logic via sed; unlock now sets `correctAnswer` to newly unlocked pattern ensuring it plays next.
+- Removed immediate melody playback; now only the next melody is forced to use the newly unlocked pattern, fixing previous duplicate/non-wave issue.
+- Issue: current fix only sets `correctAnswer`; melody generator still randomly picks pattern. Need mechanism (e.g., `nextForcedPattern`) so next melody generation honors the newly unlocked wave/jump pattern.
+- Implemented forced pattern mechanism: melody generator now prioritises `correctAnswer` (via `PATTERN_FORCE_DEBUG`) before random selection; requires verification that only one forced wave/jump melody plays.
+- Replaced UTF-8 emojis (🐸, 🌊, 🎉) in progress texts with textual tokens (:frog:, :wave:, :celebration:) to improve Android compatibility.
+- Added explicit UI refresh in `reset_1_2_MatchSounds_Progress` (dispatches `match-sounds-reset` event) to ensure background & progress update.
+- Consider removing the `currentMode` parameter from `resetCurrentActivity` once auto-detection proves reliable.
+- Do not add failsafes; focus on diagnostics and unique logging tags if needed.
+- Follow global rules: no `chmod +x`, use `bash file.sh`; comments in English; new strings only in `default strings.xml`; accessibility strings end with `_a11y`; when editing `pitches.js` use bash/sed commands instead of direct edits; avoid copying large code blocks—extract reusable functions instead.
+- User prefers AI responses to start with rotating prefixes: "!Gut", "OK!", "AHA!", "Siehe da!" (replacing previous "Fertig!/Perfekt!" preference).
+- Mascot visibility still failing: Alpine.js reactivity problem – overlay remains `display:none` after `showMascot` toggles.
+- Temporary DOM-fallback forces display but bypasses delay; a structural fix is required (move overlay outside `pitches()` scope or use `Alpine.store`).
+- Once structural fix works, DOM fallback must be removed and 2 s delay reinstated.
+- New requirement: When entering an activity via navigation, all mascot timers must be cleared and the message hidden immediately.
 ## Task List
-- [x] Implemented basic Draw-a-Melody functions (`toggleMelodyChallenge`, etc.).
-- [x] Removed old window reset event listeners as per user revert.
-- [x] Catalogue all activity progress variables & their localStorage keys.
-- [x] Draft `dev/reset_buttons_concept.md` explaining nav reset design, variable mapping, and `$data` discussion.
-- [x] Present concept to user for feedback and iterate.
-- [x] Implement nav reset button in UI.
-- [x] Implement `reset_1_1_DrawMelody_Progress` method.
-- [x] Implement `reset_1_2_MatchSounds_Progress` method.
-- [x] Implement `reset_1_3_DrawMelody_Progress` method.
-- [x] Implement `reset_1_4_SoundJudgment_Progress` method.
-- [x] Implement `reset_1_5_MemoryGame_Progress` method.
-- [x] Export reset methods via central `pitches/index.js` for dispatcher.
-- [x] Wire `resetCurrentActivity` dispatcher.
-- [x] Provide visual feedback (`showResetFeedback`).
-- [x] Implement `resetAllProgress` method for global reset.
-- [x] Import `setupHighOrLowMode_1_1` into `pitches.js` to resolve runtime error.
-- [x] Add reset button to all pitch activity headers.
-- [x] Finalize reset button styling & accessibility.
-- [x] Remove individual reset buttons from activity headers.
-- [x] Add single reset button to main navigation that calls `resetCurrentActivity`.
-- [x] Adjust CSS/layout for nav reset button & ensure accessibility.
-- [x] Update documentation (`dev/FILESTRUCTURE.md`) to note index.js removal.
-- [x] Update concept (`dev/reset_buttons_concept.md`) to reflect index.js removal.
-- [ ] Remove remaining `$data` usages across codebase.
-- [x] Refactor imports in codebase that still reference `./pitches/index.js`.
-- [x] Clean duplicate/incorrect import block in `src/components/pitches.js` and verify build.
-- [x] Expose current `mode` globally for nav reset button.
-- [x] Update nav reset button to use global mode and ensure `resetCurrentActivity` receives correct value.
-- [x] Simplify `resetCurrentActivity` signature (remove unused component param) and adjust HTML call.
-- [x] Verify reset button logs correct mode and confirmation dialog.
-- [ ] Debug individual reset functions to ensure they actually reset progress/localStorage.
-- [ ] Add user-facing success feedback listing what was reset for current and global resets.
-- [x] Ensure `window.pitchesComponent` is reliably registered before any reset call (maybe move registration earlier or poll).
-- [ ] Update individual reset functions to gracefully handle missing component (fallback to localStorage-only reset).
-- [ ] Fix `component is undefined` errors during High or Low reset (test all activities).
-- [ ] Provide final success feedback confirming reset completed and variables cleared.
-- [x] Investigate why `afterInit()` is not executed (component mounting / x-init order) and ensure reliable `window.pitchesComponent` registration.
-- [x] Move global registration from `afterInit()` to `init()` (add helper `initializeAudioAndRegister`) and remove unused `afterInit()`.
-- [x] Remove duplicate `init()` and `initializeAudioEngine()` definitions from `pitches.js` and keep one clean implementation.
-- [x] Clean up sed-introduced code duplication and formatting issues; verify build passes.
-- [x] Update `dev/CODING_STANDARDS.md` with activity visual/feedback guidelines and examples.
-- [x] Create shared `effects/feedback.js` exporting rainbow animation and success/error melodies for all chapters.
-- [ ] Refactor existing chapters to use shared feedback utilities.
-- [x] Create shared `effects/feedback.js` exporting rainbow animation and success/error melodies for all chapters.
-- [x] Remove obsolete `./2_chords/index.js` import from `components/chords.js` and ensure direct imports.
-- [ ] Refactor existing chapters to use shared feedback utilities.
-- [x] Import shared feedback utilities in `pitches.js`
-+ All small and big rainbow animations now use shared utilities.
-+ Shared feedback utilities successfully imported into `pitches.js`; build still passes.
-+ First duplicate rainbow animation replaced with `showRainbowSuccess()`; build still passes.
-+ Second duplicate rainbow animation replaced with `showRainbowSuccess()`; build still passes.
-+ Third duplicate rainbow animation replaced with `showRainbowSuccess()`; build passes.
-+ Fourth duplicate rainbow animation replaced with `showRainbowSuccess()`; build passes.
-+ Fifth duplicate rainbow animation replaced with `showRainbowSuccess()`; build passes.
-+ Sixth duplicate rainbow animation replaced with `showRainbowSuccess()`; all rainbow animations unified.
-- [ ] Replace duplicate feedback code in `pitches.js` with shared utilities
-  - [x] Replace remaining rainbow animations with shared utilities (`showRainbowSuccess`/`showBigRainbowSuccess`) (all done)
-  - [ ] Replace shake error animations with `showShakeError()`
-  - [ ] Replace complete success/error animations with shared utilities
-
+- [x] Review existing `plan.md` (lines 1-161) to understand the 1_3 and 1_4 context.
+- [x] Locate progress-bar implementation for 1_3 in `/var/www/Musici/src/components/pitches.js` (lines ~2374-2456).
+- [x] Import progress bar functions into `pitches.js`.
+- [x] Extract that code into a reusable function/component inside `feedback.js` (or a new shared module).
+- [x] Remove duplicated inline code and resolve lint error in `pitches.js` **using sed commands**.
+- [x] Replace the inline 1_3 progress-bar code with a call to the new reusable function.
+- [x] Fix syntax/braces errors after sed replacement and ensure build passes.
+- [x] Update level progression logic to increment after 3 correct answers and adjust progress bar `totalCount` & fill calculations.
+- [x] Invoke the reusable function in the 1_4 context so the same bar appears there.
+- [x] Fix missing semicolon build error at line 3538 in `pitches.js`.
+- [x] Remove duplicate bottom progress bar in 1_4 and merge functionality into the existing top display.
+- [x] Update 1_4 progress bar UI to use denominator **3** instead of 10 and ensure level-up message triggers after 3.
+- [x] Fix quote escaping in `containerSelector` to resolve numeric separator error.
+- [x] Verify 1_4 progress bar renders visibly after integration.
+- [x] Move 1_4 progress bar into activity container and remove stray bottom display.
+- [x] Adjust CSS or container selection to keep bar within viewport of activity.
+- [x] Add diagnostic logging to track melody name and note duration handling.
+- [ ] Diagnose incorrect initial melody displayed in 1_4 and ensure melody name aligns with sequence.
+- [ ] Fix note duration mismatches in 1_4 playback to match melody definitions.
+- [ ] Retest 1_4 for correct melody display and durations.
+- [ ] Test the progress bar in both 1_3 and 1_4 to ensure identical behaviour and styling.
+- [ ] Implement refined hamburger menu behavior.
+  - [x] Remove `window.innerWidth < 1024 ? menuOpen = false : null` from chapter & activity button `@click` handlers in `src/index.html` (and related templates).
+  - [x] Remove `@click.away` auto-close condition from menu container in `src/index.html`.
+  - [x] Ensure menu remains open on both mobile & desktop after navigation.
+  - [x] Reinstate auto-close logic for activity buttons only.
+  - [x] Add `@click.away` (or equivalent) that closes menu when user taps outside the navigation area.
+  - [x] Retest hamburger menu for correct open/close behavior across breakpoints and interactions.
+  - [x] Implement resetCurrentActivity to refresh background and progress in 1_1.
+  - [ ] Debug and fix 1_1 reset persistence issue (ensure localStorage cleared & UI state resets).
+  - [ ] Retest 1_1 reset button to ensure UI and background refresh.
+  - [ ] Implement 1_2 Match the Sounds improvements
+    - [x] Guarantee first sample aligns with selected wave/frog mode
+    - [x] Fix UTF-8 frog icon rendering on Android
+    - [x] Ensure 1_2 reset also refreshes background and progress display
+    - [x] Ensure unlocked wave/jump melody sequence actually plays immediately after unlock (not just correctAnswer forced)
+    - [x] Fix duplicate/non-wave playback after unlock; force exactly one wave/jump melody
+    - [x] Implement forced pattern mechanism in melody generator to honor newly unlocked pattern (e.g., `nextForcedPattern` flag)
+    - [ ] Verify forced pattern mechanism behaves correctly (single wave/jump after unlock)
+  - [ ] Refactor `resetCurrentActivity` to remove unnecessary parameter if auto-detect remains stable.
+- [x] Implement `barOnly` option in progress bar utility and update 1_4 caller
+- [x] Update `mobile-build.sh` to replace `-n` flag with `-u` for version bump (default no bump)
+- [x] Fix "Reset All Progress" button not working (investigate `reset-all-progress` event binding in index.html)
+- [x] Fix runtime error `point is undefined` in `playDrawnMelody` sequence
+- [x] Implement up to 32-note placement along path in free draw mode (1_4)
+- [x] Add subtle guide lines in draw canvas indicating note rows **only in challenge mode** (1_3)
+- [x] Verify guide lines appear only in challenge mode and look correct (1_3)
+- [x] Verify 32-note sampling works in free draw mode
+- [x] Reproduce and fix `_this12.referenceSequence is null` runtime error in 1_3
+  - [x] Ensure `playReferenceSequence` and related callbacks guard against null `referenceSequence`
+  - [x] Add diagnostic logging `REFERENCE_SEQ_DEBUG` and retest
+  - [x] Verify runtime error no longer occurs during rapid clicks
+- [ ] Investigate recurring `_this12.referenceSequence is null` error during `playNote` and implement robust fix
+- [x] Investigate why language preference always falls back to English on Android and fix.
+  - [x] Audit `setLanguage` calls and ensure value persists to `localStorage`.
+  - [x] On first load, derive default language from `navigator.language` and set `preferredLanguage`.
+  - [x] Update `document.documentElement.lang` when language changes.
+  - [x] Add debug logging after each language change and on page load (print stored language).
+  - [x] Test localStorage persistence and language switch in Android app using debug logs.
+  - [x] Verify speech synthesis uses correct `lang` code.
+  - [x] Run production build and test on Android after language fix.
+- [x] Investigate why UI strings remain English on Android despite correct language preference (debug `initStrings`, XML fetch on WebView).
+  - [x] Add detailed debug logging (`STRING_LOAD_DEBUG`) inside `initStrings` to confirm XML fetch path, response status, and parsing on Android.
+  - [x] Review `STRING_LOAD_DEBUG` output on Android to identify translation load failure (404 confirmed).
+  - [x] Provide accessible path for XML on Android (copy to `/public/strings-<lang>.xml` during build).
+  - [x] Update `xmlPath` assignment in `app.js` to new public paths.
+  - [x] Update `loadStringsFromXML` to try public path fallback when native path 404s.
+  - [x] Retest UI translations on Android after path fix.
+  - [x] Verify `$store.strings` reactivity and component updates after language change in Android WebView.
+  - [x] Ensure `initStrings` is awaited before Alpine components render or force refresh after reload.
+  - [x] Revert any unintended code changes introduced in `app.js` during previous path edits.
+  - [x] Adjust `xmlPath` to root-relative (`strings-<lang>.xml`) after 404.
+  - [x] Enhance `loadStringsFromXML` to retry alternative path if first fetch fails.
+  - [x] Retest on Android; confirm `[STRING_LOAD_DEBUG]` status 200 and UI strings translated.
+- [x] Add fast build commands (`build:strings`, `build:fast`) to package.json for quicker builds
+- [ ] Escape `<br>` tags in English `strings.xml` impressum_contact.
+- [ ] Fix mascot message visibility (ensure element shows with fade animation).
+- [ ] Consolidate duplicate `showMascotMessage` functions (`app.js` & `pitches.js`) into shared utility.
+- [ ] Restore proper 2 s delay for mascot messages after visibility fix.
+- [ ] Move mascot overlay to a global Alpine scope or implement `Alpine.store` for reactive visibility.
+- [ ] Remove temporary DOM fallback code and verify fade animation & auto-hide work reliably.
+- [ ] Retest that delaySeconds parameter functions across all activities.
+- [ ] Clear all mascot timers and hide overlay when navigating into a new activity.
 ## Current Goal
-- Replace shake & complete feedback duplicates
+- Fix mascot visibility and 2 s delay
+- Clear mascot timers on activity enter
+{{ ... }}
