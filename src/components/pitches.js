@@ -2299,7 +2299,7 @@ export function pitches() {
       
       // Not in challenge mode by default
       this.melodyChallengeMode = false;
-      this.referenceSequence = null;
+      this.stopReferencePlayback(); this.referenceSequence = null;
       
       // If saved progress exists, automatically activate challenge mode
       if (this.drawMelodyLevel > 0 || this.levelSuccessCounter > 0) {
@@ -2397,7 +2397,7 @@ export function pitches() {
         this.generateReferenceSequence_1_3();
       } else {
         // Lösche die Referenzmelodie im freien Modus
-        this.referenceSequence = null;
+        this.stopReferencePlayback(); this.referenceSequence = null;
       }
       
       // Aktualisiere die UI
@@ -2586,6 +2586,17 @@ export function pitches() {
     },
     
     /**
+     * Stop any running reference playback
+     */
+    stopReferencePlayback() {
+      if (this.referencePlaybackTimeouts) {
+        this.referencePlaybackTimeouts.forEach(timeoutId => clearTimeout(timeoutId));
+        this.referencePlaybackTimeouts = [];
+        console.log("[REFERENCE_SEQ_DEBUG] Stopped all reference playback timeouts");
+      }
+    },
+    
+    /**
      * Spielt die Referenzmelodie ab
      */
     playReferenceSequence() {
@@ -2611,8 +2622,15 @@ export function pitches() {
       
       // Draw guide lines in challenge mode after clearing
       this.drawNoteGuideLines();
+      // Store timeout IDs to allow cancellation
+      this.referencePlaybackTimeouts = this.referencePlaybackTimeouts || [];
+      
       const playNote = (index) => {
-        if (index >= this.referenceSequence.length) return;
+        // Check if referenceSequence still exists and is valid
+        if (!this.referenceSequence || index >= this.referenceSequence.length) {
+          console.log(`[REFERENCE_SEQ_DEBUG] Playback stopped: referenceSequence=${!!this.referenceSequence}, index=${index}`);
+          return;
+        }
         
         const note = this.referenceSequence[index];
         audioEngine.playNote(note.toLowerCase(), 0.3);
@@ -2624,8 +2642,9 @@ export function pitches() {
           setTimeout(() => noteElements[index].classList.remove('playing'), 300);
         }
         
-        // Nächste Note mit Verzögerung abspielen
-        setTimeout(() => playNote(index + 1), 500);
+        // Nächste Note mit Verzögerung abspielen - store timeout ID
+        const timeoutId = setTimeout(() => playNote(index + 1), 500);
+        this.referencePlaybackTimeouts.push(timeoutId);
       };
       
       // Starte das Abspielen mit der ersten Note
