@@ -1,0 +1,1155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lalumo</title>
+  <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+  <style>
+    /* Critical CSS for initial rendering */
+    body {
+      font-family: sans-serif;
+      margin: 0; padding: 0;
+      background-image: url('./images/x.gif');
+      background-size: contain;
+      background-position: top left;
+      background-repeat: no-repeat;
+    }
+    .container { width: 100%; max-width: 100%; overflow-x: hidden; min-height: 100%; }
+    /* Main app container only - activity pages */
+    main.container { min-height: 100vh; }
+    
+    /* Modal styles */
+    .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; 
+                    background-color: rgba(0,0,0,0.7); z-index: 1000; 
+                    display: flex; justify-content: center; align-items: center; }
+    .modal-content { background-color: white; border-radius: 10px; padding: 20px; 
+                    max-width: 90%; width: 400px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+    
+    /* Menu styles */
+    .menu-open { width: 250px; }
+    
+    /* Button styles */
+    .primary-button { display: inline-block; padding: 10px 16px; background-color: #4a86e8; 
+                     color: white; border: none; border-radius: 5px; cursor: pointer; }
+    .button { display: inline-block; padding: 8px 12px; border-radius: 5px; }
+    
+    /* Activity elements */
+    .activity-container { padding: 12px; }
+    .mascot { max-width: 80px; height: auto; }
+    .mascot-welcome { display: flex; align-items: center; margin: 10px 0; }
+  </style>
+  <!-- Scripts and more styles will be injected by webpack -->
+<script defer src="/main.d9a1c843624c34e20b84.js"></script></head>
+<body>
+  <main x-data="app()" x-init="init(); initLazyLoading();" @click="unlockAudio()" @touchstart="unlockAudio()" class="container">
+    
+    <!-- Username Prompt Modal -->
+    <div class="modal-overlay" x-show="showUsernamePrompt" x-transition
+    style="display: none;">
+      <div class="modal-content" @click.outside="setUsername()">
+        <h3 x-text="$store.strings?.welcome_message || 'Welcome to Lalumo!'"></h3>
+        <div class="mascot-welcome">
+          <img src="/images/mascot.png" alt="Lalumo Mascot" class="mascot" width="0" />
+          <p x-text="$store.strings?.create_name_message || 'Let\'s create a special name just for you!'"></p>
+        </div>
+        <button class="primary-button" @click="setUsername()" x-text="$store.strings?.button_generate_name || 'Generate Random Name'"></button>
+        <div class="modal-footer">
+          <p class="note">Your progress will be saved automatically</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hamburger Menu -->
+    <div class="hamburger-container" :class="{ 'menu-open': menuOpen, 'desktop-menu': window.innerWidth >= 1024, 'menu-locked': menuLocked }" x-init="window.innerWidth >= 1024 ? menuOpen = true : menuOpen = false; window.addEventListener('resize', () => { if(window.innerWidth >= 1024) menuOpen = true; })">
+      <!-- Hamburger button with conditional click handler based on lock state -->
+      <button class="hamburger-button" @click="menuLocked ? null : menuOpen = !menuOpen">
+        <div class="hamburger-icon">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </button>
+      
+      <!-- Child Lock button with progress indicator -->
+      <button class="menu-lock-button" 
+        :class="{ 'locked': menuLocked }"
+        @mousedown="startLongPressUnlock" 
+        @mouseup="cancelLongPressUnlock" 
+        @mouseleave="cancelLongPressUnlock"
+        @touchstart="startLongPressUnlock" 
+        @touchend="cancelLongPressUnlock" 
+        @touchcancel="cancelLongPressUnlock">
+        <div class="lock-icon-container">
+          <div class="lock-progress-indicator" x-show="menuLocked"></div>
+          <div class="lock-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 1C8.676 1 6 3.676 6 7v2H4v14h16V9h-2V7c0-3.324-2.676-6-6-6zm0 2c2.276 0 4 1.724 4 4v2H8V7c0-2.276 1.724-4 4-4zm0 10c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2z" x-show="menuLocked"/>
+              <path d="M12 1C8.676 1 6 3.676 6 7v2h4V7c0-1.104.896-2 2-2s2 .896 2 2v2h4V7c0-3.324-2.676-6-6-6zm0 20c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm6-9H6v8h12v-8z" x-show="!menuLocked"/>
+            </svg>
+          </div>
+        </div>
+        <span class="lock-hint" x-show="menuLocked" x-text="$store.strings?.menu_unlock_hint || 'Halte 3 Sek. gedrückt zum Entsperren'"></span>
+      </button>
+      
+      <!-- Menu content -->
+      <div class="menu-content" x-show="menuOpen" @click.away="window.innerWidth < 1024 ? menuOpen = false : null" x-transition>
+        
+        <!-- Chapters Section -->
+        <div class="menu-chapters">
+          <!-- pitches -->
+          <button @click="active = 'pitches'; $dispatch('set-pitch-mode', 'main')" :class="{ 'active': active === 'pitches' }">
+            <span x-text="$store.strings?.menu_pitches || 'Pitches & Melodies'"></span>
+          </button>
+
+          <!-- chords started developed-->
+          <button @click="active = 'chords'; $dispatch('set-chord-mode', 'main')" :class="{ 'active': active === 'chords' }"
+          style="display: none;">
+            <span x-text="$store.strings?.menu_chords || 'Chords'"></span>
+          </button>
+
+          <!-- later -->
+          <button @click="active = 'tonecolors'" :class="{ 'active': active === 'tonecolors' }"
+          style="display: none;"
+          >
+            🎨 <span x-text="$store.strings?.menu_tonecolors || 'Tone Colors'"></span>
+          </button>
+          <button @click="active = 'rhythms'" :class="{ 'active': active === 'rhythms' }"
+          style="display: none;"
+          >
+            ⏱️ <span x-text="$store.strings?.menu_rhythm || 'Rhythm'"></span>
+          </button>
+          <button @click="active = 'freeplay'" :class="{ 'active': active === 'freeplay' }"
+          style="display: none;"
+          >
+            🎮 <span x-text="$store.strings?.menu_freeplay || 'Free Play'"></span>
+          </button>
+        </div>
+        
+        <!-- Activities Section (shows only when Pitches chapter is active) -->
+        <template x-if="active === 'pitches'">
+          <div class="menu-activities">
+            <button 
+              @click="$dispatch('set-pitch-mode', '1_1_pitches_high_or_low'); window.innerWidth < 1024 ? menuOpen = false : null"
+              x-data="{ isActive: false }"
+              x-init="$watch('$store.pitchMode', value => isActive = value === '1_1_pitches_high_or_low')"
+              :class="{ 'active': isActive }"
+              style="display: auto;"
+            >
+              🔊 <span x-text="$store.strings?.high_or_low || 'High or Low?'"></span>
+            </button>
+            <button 
+              @click="$dispatch('set-pitch-mode', '1_2_pitches_match-sounds'); window.innerWidth < 1024 ? menuOpen = false : null"
+              x-data="{ isActive: false }"
+              x-init="$watch('$store.pitchMode', value => isActive = value === '1_2_pitches_match-sounds')"
+              :class="{ 'active': isActive }"
+            >
+            🎵 <span x-text="$store.strings?.match_sounds || 'Match Sounds'"></span>
+            </button>
+            <button 
+              @click="$dispatch('set-pitch-mode', '1_3_pitches_draw-melody'); window.innerWidth < 1024 ? menuOpen = false : null"
+              x-data="{ isActive: false }"
+              x-init="$watch('$store.pitchMode', value => isActive = value === '1_3_pitches_draw-melody')"
+              :class="{ 'active': isActive }"
+            >
+              ✏️ <span x-text="$store.strings?.draw_melody || 'Draw a Melody'"></span>
+            </button>
+            <button 
+              @click="$dispatch('set-pitch-mode', '1_4_pitches_does-it-sound-right'); window.innerWidth < 1024 ? menuOpen = false : null"
+              x-data="{ isActive: false }"
+              x-init="$watch('$store.pitchMode', value => isActive = value === '1_4_pitches_does-it-sound-right')"
+              :class="{ 'active': isActive }">
+              👉 <span x-text="$store.strings?.does_it_sound_right || 'Does It Sound Right?'"></span>
+            </button>
+            <button 
+              @click="$dispatch('set-pitch-mode', '1_5_pitches_memory-game'); window.innerWidth < 1024 ? menuOpen = false : null"
+              x-data="{ isActive: false }"
+              x-init="$watch('$store.pitchMode', value => isActive = value === '1_5_pitches_memory-game')"
+              :class="{ 'active': isActive }"
+            >
+            🎹 <span x-text="$store.strings?.memory_game || 'Memory Game'"></span>
+            </button>
+          </div>
+        </template>
+
+        <!-- Activities for Chapter Chords -->
+        <template x-if="active === 'chords'">
+          <div class="menu-activities">
+            <button 
+              @click="$dispatch('set-chord-mode', '2_1_chords_color-matching'); window.innerWidth < 1024 ? menuOpen = false : null"
+              x-data="{ isActive: false }"
+              x-init="$watch('$store.chordMode', value => isActive = value === '2_1_chords_color-matching')"
+              :class="{ 'active': isActive }"
+            >
+              🌈 <span x-text="$store.strings?.chord_color_matching || 'Color Matching'"></span>
+            </button>
+            <button 
+              @click="$dispatch('set-chord-mode', '2_2_chords_mood-landscapes'); window.innerWidth < 1024 ? menuOpen = false : null"
+              x-data="{ isActive: false }"
+              x-init="$watch('$store.chordMode', value => isActive = value === '2_2_chords_mood-landscapes')"
+              :class="{ 'active': isActive }"
+            >
+              🏞️ <span x-text="$store.strings?.mood_landscapes || 'Mood Landscapes'"></span>
+            </button>
+            <button 
+              @click="$dispatch('set-chord-mode', '2_3_chords_chord-building'); window.innerWidth < 1024 ? menuOpen = false : null"
+              x-data="{ isActive: false }"
+              x-init="$watch('$store.chordMode', value => isActive = value === '2_3_chords_chord-building')"
+              :class="{ 'active': isActive }"
+            >
+              🧱 <span x-text="$store.strings?.chord_building || 'Chord Building'"></span>
+            </button>
+            <button 
+              @click="$dispatch('set-chord-mode', '2_4_chords_missing-note'); window.innerWidth < 1024 ? menuOpen = false : null"
+              x-data="{ isActive: false }"
+              x-init="$watch('$store.chordMode', value => isActive = value === '2_4_chords_missing-note')"
+              :class="{ 'active': isActive }"
+            >
+              🎼 <span x-text="$store.strings?.missing_note || 'Missing Note'"></span>
+            </button>
+            <button 
+              @click="$dispatch('set-chord-mode', '2_5_chords_characters'); window.innerWidth < 1024 ? menuOpen = false : null"
+              x-data="{ isActive: false }"
+              x-init="$watch('$store.chordMode', value => isActive = value === '2_5_chords_characters')"
+              :class="{ 'active': isActive }"
+            >
+              🎭 <span x-text="$store.strings?.chord_characters || 'Character Matching'"></span>
+            </button>
+            <button 
+              @click="$dispatch('set-chord-mode', '2_6_chords_harmony-gardens'); window.innerWidth < 1024 ? menuOpen = false : null"
+              x-data="{ isActive: false }"
+              x-init="$watch('$store.chordMode', value => isActive = value === '2_6_chords_harmony-gardens')"
+              :class="{ 'active': isActive }"
+            >
+              🌸 <span x-text="$store.strings?.harmony_gardens || 'Harmony Gardens'"></span>
+            </button>
+          </div>
+        </template>
+        
+        <!-- Flexible spacer to push settings and legal to bottom -->
+        <div class="menu-spacer"></div>
+        
+        <!-- Settings Section -->
+        <div class="menu-settings">
+          
+          <!-- Reset Current Activity Button -->
+          <button @click="resetCurrentActivity()" class="menu-reset-btn" title="Reset current activity progress">
+            🔄 <span x-text="$store.strings?.reset_current_activity || 'Reset Current Activity'"></span>
+          </button>
+          
+          <button @click="active = 'settings'; window.innerWidth < 1024 ? menuOpen = false : null" :class="{ 'active': active === 'settings' }" class="settings-button" x-show="username">
+            <div class="user-avatar" x-show="username">
+              <span x-text="username ? username.charAt(0) : '?'"></span>
+            </div>
+            ⚙️ <span class="settings-label" x-text="$store.strings?.player_settings || 'Player Settings'"></span>
+          </button>
+        </div>
+        
+        <!-- Legal Section -->
+        <div class="menu-legal">
+          <button @click="active = 'impressum'; window.innerWidth < 1024 ? menuOpen = false : null" :class="{ 'active': active === 'impressum' }">
+            ℹ️ <span x-text="$store.strings?.menu_impressum || 'Impressum'"></span>
+          </button>
+          <button @click="active = 'datenschutz'; window.innerWidth < 1024 ? menuOpen = false : null" :class="{ 'active': active === 'datenschutz' }">
+            🔒 <span x-text="$store.strings?.menu_datenschutz || 'Datenschutz'"></span>
+          </button>
+          <button @click="active = 'credits'; window.innerWidth < 1024 ? menuOpen = false : null" :class="{ 'active': active === 'credits' }">
+            🏆 <span x-text="$store.strings?.menu_credits || 'Credits'"></span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chapter: Pitch Chapters View -->
+    <section x-show="active === 'pitches'" x-transition class="pitch-chapters-view lazyload-bg" data-background-image="./images/x.gif" style="background-size: cover; background-position: top center; border-radius: 0;">
+      <div x-data="pitches()" x-init="init()">
+        
+        <!-- Mascot Message Overlay -->
+        <div class="mascot-message-overlay" x-show="showMascot" x-transition>
+          <div class="mascot-message-container">
+            <img src="/images/mascot.png" alt="Lalumo Mascot" class="mascot-image" width="0" />
+            <div class="mascot-speech-bubble">
+              <p x-text="mascotMessage || ''"></p>
+            </div>
+            <button class="close-mascot-button" @click="$store.mascotSettings.showMascot = false; $store.mascotSettings.showHelpMessages = false">&times;</button>
+          </div>
+        </div>
+        
+        <!-- Main landing with clickable image -->
+        <div x-show="!mode || mode === 'main'" class="pitch-landing">
+          <div class="image-map-container">
+            <div class="clickable-area match-area" @click="setMode('1_2_pitches_match-sounds')" aria-label="Match Mode">
+              <span class="area-label" x-text="$store.strings?.match_sounds || 'Match Sounds'"></span>
+            </div>
+            <div class="clickable-area draw-area" @click="setMode('1_3_pitches_draw-melody')" aria-label="Draw Mode">
+              <span class="area-label" x-text="$store.strings?.draw_melody || 'Draw a Melody'"></span>
+            </div>
+            <div class="clickable-area memory-area" @click="setMode('1_5_pitches_memory-game')" aria-label="Memory Mode">
+              <span class="area-label" x-text="$store.strings?.memory_game || 'Memory Game'"></span>
+            </div>
+          </div>
+
+        </div>
+        
+        <!-- High or Low Activity -->
+        <div id="1_1_pitches" x-show="mode === '1_1_pitches_high_or_low'" class="pitch-activity lazyload-bg" data-background-image="./images/backgrounds/pitches_action1_1_sloth_mouse.jpg" style="background-size: cover; background-position: top left;
+        background-image: url('./images/backgrounds/pitches_action1_1_sloth_mouse.jpg');
+        height: 100vh;
+        width: 100%;
+        background-size: 100% 100%;
+        background-repeat: no-repeat;">
+          <div class="mode-header">
+            <button class="back-to-main" @click="setMode('main')" aria-label="Back to main menu">
+              <span style="font-size: 24px;">🏠</span>
+            </button>
+          </div>
+          
+          <!-- Play button - bird in background -->
+          <button class="circular-play-button" 
+                  @click="playHighOrLowTone()" 
+                  :aria-label="$store.strings?.play_tone_a11y || 'Play tone'" 
+                  :title="$store.strings?.play_tone_a11y || 'Play tone'">
+          </button>
+          
+          <!-- High or Low choice buttons -->
+          <div class="high-low-choices">
+            <div class="pitch-card low-choice" 
+                 @click="checkHighOrLowAnswer('low'); this.blur()" 
+                 :aria-label="currentHighOrLowStage >= 3 ? ($store.strings?.second_tone_lower_a11y || 'The second tone is lower') : ($store.strings?.low_choice_a11y || 'Low tone')"
+                 :title="currentHighOrLowStage >= 3 ? ($store.strings?.second_tone_lower_a11y || 'The second tone is lower') : ($store.strings?.low_choice_a11y || 'Low tone')">
+              <div class="pitch-icon low-icon">
+                <img src="/images/x.gif" alt="Low pitch" />
+                <span class="choice-label" 
+                      x-text="currentHighOrLowStage >= 3 ? 
+                        ($store.strings?.low_choice || 'Tiefer') : 
+                        ($store.strings?.low_choice || 'Tief')"></span>
+              </div>
+            </div>
+            <div class="pitch-card high-choice" 
+                 @click="checkHighOrLowAnswer('high'); this.blur()" 
+                 :aria-label="currentHighOrLowStage >= 3 ? ($store.strings?.second_tone_higher_a11y || 'The second tone is higher') : ($store.strings?.high_choice_a11y || 'High tone')"
+                 :title="currentHighOrLowStage >= 3 ? ($store.strings?.second_tone_higher_a11y || 'The second tone is higher') : ($store.strings?.high_choice_a11y || 'High tone')">
+              <div class="pitch-icon high-icon">
+                <img src="/images/x.gif" alt="High pitch" />
+                <span class="choice-label" 
+                      x-text="currentHighOrLowStage >= 3 ? 
+                        ($store.strings?.high_choice || 'Höher') : 
+                        ($store.strings?.high_choice || 'Hoch')"></span>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Progress display -->
+          <div class="progress-display high-low-progress">
+            <p x-text="($store.strings?.correct_answers_count || 'Correct answers: {0}').replace('{0}', highOrLowProgress || 0)"></p>
+            <p x-show="(highOrLowProgress || 0) < 10" x-text="$store.strings?.high_low_stage1 || 'Get 10 correct to make the tones closer!'"></p>
+            <p x-show="(highOrLowProgress || 0) >= 10 && (highOrLowProgress || 0) < 20" x-text="$store.strings?.high_low_stage2 || 'Get 20 correct to hear two tones!'"></p>
+            <p x-show="(highOrLowProgress || 0) >= 20 && (highOrLowProgress || 0) < 30" x-text="$store.strings?.high_low_stage3 || 'Get 30 correct to make it harder!'"></p>
+            <p x-show="(highOrLowProgress || 0) >= 30 && (highOrLowProgress || 0) < 40" x-text="$store.strings?.high_low_stage4 || 'Get 40 correct for the ultimate challenge!'"></p>
+            <p x-show="(highOrLowProgress || 0) >= 40" x-text="$store.strings?.high_low_master || 'Master level achieved! :celebration:'"></p>
+          </div>
+          
+          <!-- Feedback message -->
+          <div x-show="showFeedback" class="feedback-message" x-text="feedback"></div>
+        </div>
+                
+        <!-- Matching Mode -->
+        <div id="1_2_pitches" x-show="mode === '1_2_pitches_match-sounds'" class="pitch-activity lazyload-bg" data-background-image="./images/backgrounds/pitches_action1_2.jpg"
+        style="background-size: cover; background-position: top left; background-image: 1s ease">
+          <div class="mode-header">
+            <button class="back-to-main" @click="setMode('main')" aria-label="Back to main menu">
+              <span style="font-size: 24px;">🏠</span>
+            </button>
+          </div>
+          
+          <!-- Play button - only show when not in game mode -->
+          <button x-show="!gameMode" class="circular-play-button" 
+          @click="playCurrentMelody()" aria-label="Start Game" title="Play">
+          </button>
+          
+          <!-- Game mode play button - only show when in game mode -->
+          <button x-show="gameMode" class="circular-play-button" @click="playCurrentMelody()" aria-label="Play Melody" title="Play">
+          </button>
+
+          <!-- Grid-Container für Match-Sounds mit richtigem rowspan-Verhalten -->
+          <div class="match-sounds-container">
+            <!-- Up pattern (immer sichtbar) - oben links -->
+            <div class="pitch-card up-card" @click="checkMatch('up')" @mousedown="startLongPress('up')" @mouseup="cancelLongPress()" @mouseleave="cancelLongPress()">
+              <div class="pitch-icon up">
+                <img src="/images/1x1.gif" alt="Rocket going up" />
+              </div>
+            </div>
+            
+            <!-- Down pattern (immer sichtbar) - rechts mit möglichem rowspan -->
+            <div class="pitch-card down-card" @click="checkMatch('down')" @mousedown="startLongPress('down')" @mouseup="cancelLongPress()" @mouseleave="cancelLongPress()">
+              <div class="pitch-icon down">
+                <img src="/images/1x1.gif" alt="Slide going down" />
+              </div>
+            </div>
+            
+            <!-- Wave pattern (wenn freigeschaltet) - unten links -->
+            <div x-show="unlockedPatterns.includes('wave')" class="pitch-card wave-card" @click="checkMatch('wave')" @mousedown="startLongPress('wave')" @mouseup="cancelLongPress()" @mouseleave="cancelLongPress()">
+              <div class="pitch-icon wave">
+                <img src="/images/1x1.gif" alt="Wave pattern" />
+              </div>
+            </div>
+            
+            <!-- Jump pattern (wenn freigeschaltet) - unten rechts -->
+            <div x-show="unlockedPatterns.includes('jump')" class="pitch-card jump-card" @click="checkMatch('jump')" @mousedown="startLongPress('jump')" @mouseup="cancelLongPress()" @mouseleave="cancelLongPress()">
+              <div class="pitch-icon jump">
+                <img src="/images/1x1.gif" alt="Jumping frog" />
+              </div>
+            </div>
+          </div>
+          
+          <!-- Progress display -->
+          <div x-show="mode === '1_2_pitches_match-sounds'" class="progress-display">
+            <p x-text="($store.strings?.correct_answers_count || 'Correct answers: {0}').replace('{0}', correctAnswersCount)"></p>
+            <p x-show="correctAnswersCount < 10" x-text="$store.strings?.unlock_wave_message || 'Get 10 correct to unlock wavy patterns! :wave:'"></p>
+            <p x-show="correctAnswersCount >= 10 && correctAnswersCount < 20" x-text="$store.strings?.unlock_jump_message || 'Get 20 correct to unlock random patterns! ��'"></p>
+            <p x-show="correctAnswersCount >= 20" x-text="$store.strings?.all_patterns_unlocked || 'All patterns unlocked! :celebration:'"></p>
+          </div>
+          
+          <div x-show="showFeedback" class="feedback-message" x-text="feedback"></div>
+        </div>
+        
+        <!-- Drawing Mode -->
+        <div id="1_3_pitches" x-show="mode === '1_3_pitches_draw-melody'" class="pitch-activity lazyload-bg" data-background-image="./images/backgrounds/pitches_action1_3.jpg" style="background-size: cover; background-position: top left;">
+          <div class="mode-header">
+            <button class="back-to-main" @click="setMode('main')" aria-label="Back to main menu">
+              <span style="font-size: 24px;">🏠</span>
+            </button>
+          </div>
+          
+          <div style="height:52vw"></div>
+
+          <div class="drawing-container">
+            <canvas class="drawing-canvas" width="600" height="300"
+                   @mousedown="startDrawing" 
+                   @mousemove="draw" 
+                   @mouseup="endDrawing"
+                   @touchstart="startDrawing" 
+                   @touchmove="draw" 
+                   @touchend="endDrawing">
+            </canvas>
+          </div>
+        </div>
+        
+        <!-- Does It Sound Right? Activity -->
+        <div id="1_4_pitches" x-show="mode === '1_4_pitches_does-it-sound-right'" class="pitch-activity lazyload-bg" data-background-image="./images/backgrounds/pitches_action1_4.jpg" style="background-size: cover; background-position: top left;">
+          <div class="mode-header">
+            <button class="back-to-main" @click="setMode('main')" aria-label="Back to main menu">
+              <span style="font-size: 24px;">🏠</span>
+            </button>
+          </div>
+
+          <!-- Play Melody Button -->
+          <div class="melody-play-container">
+            <button class="circular-play-button" @click="playCurrentMelody()" aria-label="Play Melody" title="Play Melody">
+              
+            </button>
+            <div class="melody-name" x-show="currentMelodyName" x-text="currentMelodyName"></div>
+            <!-- Next melody button -->
+            <button class="next-melody-button" @click="playMelodyForSoundHighOrLow(true)" aria-label="Next melody" title="Next melody">
+              <span style="font-size: 18px;">⏭</span>
+            </button>
+          </div>
+
+          <!-- Animal choice buttons -->
+          <div class="sound-judgment-options">
+            <div class="pitch-card animal-card happy" @click="checkSoundHighOrLow(true)" aria-label="Sounds good" title="Sounds good">
+              <div class="pitch-icon animal-icon" title="Sounds good!">
+                <img src="/images/1_5_pitches_good_cat.png" alt="Happy cat">
+              </div>
+            </div>
+            <div class="pitch-card animal-card unhappy" @click="checkSoundHighOrLow(false)" aria-label="Sounds wrong" title="Sounds wrong">
+              <div class="pitch-icon animal-icon" title="Sounds wrong!">
+                <img src="/images/1_5_pitches_bad_snake.png" alt="Unhappy snake">
+              </div>
+            </div>
+          </div>
+          
+          <!-- Feedback message -->
+          <div id="feedback_message_1_4_pitches" x-show="showFeedback" class="feedback-message" x-text="feedback"></div>
+          
+        </div>
+        
+        <!-- Memory Mode -->
+        <div id="1_5_pitches" x-show="mode === '1_5_pitches_memory-game'" class="pitch-activity lazyload-bg" data-background-image="./images/backgrounds/pitches_action1_5.jpg" style="background-size: cover; background-position: top left;">
+          <div class="mode-header">
+            <button class="back-to-main" @click="setMode('main')" aria-label="Back to main menu">
+              <span style="font-size: 24px;">🏠</span>
+            </button>
+          </div>
+          <button class="circular-play-button" @click="playCurrentMelody()" aria-label="Play Melody" title="Play Melody">
+            
+          </button>
+
+          
+          <div class="piano-keyboard">
+            <!-- White keys C, D, E, G, A with black key indicators -->
+            <button class="piano-key white c4" @click="addToSequence('C4')" :class="{ 'active': currentHighlightedNote === 'C4' }">C</button>
+            <div class="piano-key black" aria-hidden="true"></div>
+            <button class="piano-key white d4" @click="addToSequence('D4')" :class="{ 'active': currentHighlightedNote === 'D4' }">D</button>
+            <div class="piano-key black" aria-hidden="true"></div>
+            <button class="piano-key white e4" @click="addToSequence('E4')" :class="{ 'active': currentHighlightedNote === 'E4' }">E</button>
+            <div class="piano-key inactive f4" aria-hidden="true">F</div>
+            <div class="piano-key black" aria-hidden="true"></div>
+            <button class="piano-key white g4" @click="addToSequence('G4')" :class="{ 'active': currentHighlightedNote === 'G4' }">G</button>
+            <div class="piano-key black" aria-hidden="true"></div>
+            <button class="piano-key white a4" @click="addToSequence('A4')" :class="{ 'active': currentHighlightedNote === 'A4' }">A</button>
+            <div class="piano-key black" aria-hidden="true"></div>
+            <div class="piano-key inactive b4" aria-hidden="true">H</div>
+          </div>
+          
+          <div class="sequence-progress">
+            <template x-for="(_, index) in userSequence" :key="index">
+              <div class="progress-dot active"></div>
+            </template>
+            
+            <template x-for="(_, index) in Array(Math.max(0, currentSequence.length - userSequence.length))" :key="index">
+              <div class="progress-dot"></div>
+            </template>
+          </div>
+          
+          <div x-show="showFeedback" class="feedback-message" x-text="feedback"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Chapter: Tone Colors -->
+    <section x-show="active === 'tonecolors'" x-transition>
+      <div x-data="tonecolors" x-init="init()">
+        <h2>Discover Tone Colors</h2>
+        <div class="tone-grid">
+          <div class="tone-card" @click="pick('warm')">
+            <div class="tone-icon warm"></div>
+            <p>Warm</p>
+          </div>
+          <div class="tone-card" @click="pick('cold')">
+            <div class="tone-icon cold"></div>
+            <p>Cold</p>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Chapter: Rhythm -->
+    <section x-show="active === 'rhythms'" x-transition>
+      <h2>Rhythm Exercises</h2>
+      <p>Coming soon!</p>
+    </section>
+    
+    <!-- Chapter: Chords -->
+    <section x-show="active === 'chords'" x-transition class="chord-chapters-view lazyload-bg" data-background-image="./x.gif" style="background-size: cover; background-position: top center; border-radius: 0;">
+      <div x-data="chords()" x-init="init()">
+        
+        <!-- Main chord activity selection screen -->
+        <div x-show="!mode || mode === 'main'" class="chord-landing">
+          <div class="image-map-container">
+            <div class="clickable-area color-matching-area" @click="setMode('2_1_chords_color-matching')" aria-label="Color Matching">
+              <span class="area-label" x-text="$store.strings?.chord_color_matching || 'Chord Color Matching'">Chord Color Matching</span>
+            </div>
+            <div class="clickable-area mood-landscapes-area" @click="setMode('2_2_chords_mood-landscapes')" aria-label="Mood Landscapes">
+              <span class="area-label" x-text="$store.strings?.mood_landscapes || 'Mood Landscapes'">Mood Landscapes</span>
+            </div>
+            <div class="clickable-area chord-building-area" @click="setMode('2_3_chords_chord-building')" aria-label="Chord Building">
+              <span class="area-label" x-text="$store.strings?.chord_building || 'Chord Building'">Chord Building</span>
+            </div>
+            <div class="clickable-area missing-note-area" @click="setMode('2_4_chords_missing-note')" aria-label="Missing Note">
+              <span class="area-label" x-text="$store.strings?.missing_note || 'Guess the Missing Note'">Guess the Missing Note</span>
+            </div>
+            <div class="clickable-area character-matching-area" @click="setMode('2_5_chords_characters')" aria-label="Character Matching">
+              <span class="area-label" x-text="$store.strings?.chord_characters || 'Chord Story Characters'">Chord Story Characters</span>
+            </div>
+            <div class="clickable-area harmony-gardens-area" @click="setMode('2_6_chords_harmony-gardens')" aria-label="Harmony Gardens">
+              <span class="area-label" x-text="$store.strings?.harmony_gardens || 'Harmony Gardens'">Harmony Gardens</span>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Color Matching Activity -->
+        <div x-show="mode === '2_1_chords_color-matching'" class="chord-activity">
+          <div class="mode-header">
+            <button class="back-to-main" @click="setMode('main')" aria-label="Back to main menu">
+              <span style="font-size: 24px;">🏠</span>
+            </button>
+          </div>
+          
+          <div class="activity-container">
+            <h2 x-text="$store.strings?.chord_color_matching_title || 'Match Colors to Chords'">Match Colors to Chords</h2>
+            
+            <div class="color-matching-explanation">
+              <p x-text="$store.strings?.chord_color_matching_intro || 'Listen to the chord and select the color that matches how it sounds to you.'">Listen to the chord and select the color that matches how it sounds to you.</p>
+            </div>
+            
+            <div class="play-chord-button-container">
+              <button @click="playChord(currentChordType)" class="play-button">
+                <span>🔈</span>
+                <span x-text="$store.strings?.play_chord || 'Play Chord'">Play Chord</span>
+              </button>
+            </div>
+            
+            <div class="color-grid">
+              <div class="color-option" 
+                   @click="checkColorAnswer('#FFD700')" 
+                   style="background-color: #FFD700;">
+                <span>Major</span>
+              </div>
+              <div class="color-option" 
+                   @click="checkColorAnswer('#4682B4')" 
+                   style="background-color: #4682B4;">
+                <span>Minor</span>
+              </div>
+              <div class="color-option" 
+                   @click="checkColorAnswer('#800080')" 
+                   style="background-color: #800080;">
+                <span>Diminished</span>
+              </div>
+              <div class="color-option" 
+                   @click="checkColorAnswer('#FF4500')" 
+                   style="background-color: #FF4500;">
+                <span>Augmented</span>
+              </div>
+              <div class="color-option" 
+                   @click="checkColorAnswer('#32CD32')" 
+                   style="background-color: #32CD32;">
+                <span>Sus4</span>
+              </div>
+              <div class="color-option" 
+                   @click="checkColorAnswer('#00BFFF')" 
+                   style="background-color: #00BFFF;">
+                <span>Sus2</span>
+              </div>
+            </div>
+            
+            <div class="feedback-message" x-show="showFeedback">
+              <p x-text="feedbackMessage"></p>
+            </div>
+            
+            <div class="score-display">
+              <span x-text="`${correctAnswers} / ${totalQuestions}`"></span>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Mood Landscapes Activity -->
+        <div x-show="mode === '2_2_chords_mood-landscapes'" class="chord-activity">
+          <div class="mode-header">
+            <button class="back-to-main" @click="setMode('main')" aria-label="Back to main menu">
+              <span style="font-size: 24px;">🏠</span>
+            </button>
+          </div>
+          
+          <div class="activity-container">
+            <h2 x-text="$store.strings?.mood_landscapes_title || 'Chord Mood Landscapes'">Chord Mood Landscapes</h2>
+            
+            <div class="mood-landscapes-explanation">
+              <p x-text="$store.strings?.mood_landscapes_intro || 'Different chord types create different feelings and landscapes. Play each chord to see how the landscape changes!'">Different chord types create different feelings and landscapes. Play each chord to see how the landscape changes!</p>
+            </div>
+            
+            <div class="landscape-viewer">
+              <!-- Landscape image will change based on selected chord -->
+              <div class="landscape-image">
+                <!--<img src="./images/landscapes/sunny-field.jpg" alt="Landscape scene" id="landscape-image" />-->
+              </div>
+            </div>
+            
+            <div class="chord-selector">
+              <button @click="playChord('major'); updateLandscape('major')" class="chord-button">
+                <span>🌞</span>
+                <span>Major</span>
+              </button>
+              
+              <button @click="playChord('minor'); updateLandscape('minor')" class="chord-button">
+                <span>☁️</span>
+                <span>Minor</span>
+              </button>
+              
+              <button @click="playChord('diminished'); updateLandscape('diminished')" class="chord-button">
+                <span>🌫️</span>
+                <span>Diminished</span>
+              </button>
+              
+              <button @click="playChord('augmented'); updateLandscape('augmented')" class="chord-button">
+                <span>⚡</span>
+                <span>Augmented</span>
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Chord Building Activity -->
+        <div x-show="mode === '2_3_chords_chord-building'" class="chord-activity">
+          <div class="mode-header">
+            <button class="back-to-main" @click="setMode('main')" aria-label="Back to main menu">
+              <span style="font-size: 24px;">🏠</span>
+            </button>
+          </div>
+          
+          <div class="activity-container">
+            <h2 x-text="$store.strings?.chord_building_title || 'Build Your Own Chords'">Build Your Own Chords</h2>
+            
+            <div class="chord-building-explanation">
+              <p x-text="$store.strings?.chord_building_intro || 'Stack blocks to build different chords. Add each note to hear how the chord changes!'">Stack blocks to build different chords. Add each note to hear how the chord changes!</p>
+            </div>
+            
+            <div class="chord-building-area">
+              <div class="chord-blocks">
+                <!-- Blocks will be added here as notes are selected -->
+              </div>
+              
+              <div class="note-selector">
+                <button @click="addNoteToChord(0)" class="note-button">Root</button>
+                <button @click="addNoteToChord(3)" class="note-button">Minor 3rd</button>
+                <button @click="addNoteToChord(4)" class="note-button">Major 3rd</button>
+                <button @click="addNoteToChord(7)" class="note-button">Perfect 5th</button>
+                <button @click="addNoteToChord(6)" class="note-button">Diminished 5th</button>
+                <button @click="addNoteToChord(8)" class="note-button">Augmented 5th</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Missing Note Activity -->
+        <div x-show="mode === '2_4_chords_missing-note'" class="chord-activity">
+          <div class="mode-header">
+            <button class="back-to-main" @click="setMode('main')" aria-label="Back to main menu">
+              <span style="font-size: 24px;">🏠</span>
+            </button>
+          </div>
+          
+          <div class="activity-container">
+            <h2 x-text="$store.strings?.missing_note_title || 'Find the Missing Note'">Find the Missing Note</h2>
+            
+            <div class="missing-note-explanation">
+              <p x-text="$store.strings?.missing_note_intro || 'Listen to the incomplete chord and select which note is missing.'">Listen to the incomplete chord and select which note is missing.</p>
+            </div>
+            
+            <div class="play-chord-button-container">
+              <button @click="playIncompleteChord()" class="play-button">
+                <span>🔈</span>
+                <span x-text="$store.strings?.play_incomplete_chord || 'Play Incomplete Chord'">Play Incomplete Chord</span>
+              </button>
+            </div>
+            
+            <div class="note-options">
+              <button @click="checkMissingNote(3)" class="note-option-button">Minor 3rd</button>
+              <button @click="checkMissingNote(4)" class="note-option-button">Major 3rd</button>
+              <button @click="checkMissingNote(7)" class="note-option-button">Perfect 5th</button>
+              <button @click="checkMissingNote(6)" class="note-option-button">Diminished 5th</button>
+            </div>
+            
+            <div class="feedback-message" x-show="showFeedback">
+              <p x-text="feedbackMessage"></p>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Character Matching Activity -->
+        <div x-show="mode === '2_5_chords_characters'" class="chord-activity">
+          <div class="mode-header">
+            <button class="back-to-main" @click="setMode('main')" aria-label="Back to main menu">
+              <span style="font-size: 24px;">🏠</span>
+            </button>
+          </div>
+          
+          <div class="activity-container">
+            <h2 x-text="$store.strings?.chord_characters_title || 'Chord Characters'">Chord Characters</h2>
+            
+            <div class="character-matching-explanation">
+              <p x-text="$store.strings?.character_matching_intro || 'Each chord type has its own personality! Listen to the chord and match it to the right character.'">Each chord type has its own personality! Listen to the chord and match it to the right character.</p>
+            </div>
+            
+            <div class="play-chord-button-container">
+              <button @click="playCurrentChord()" class="play-button">
+                <span>🔈</span>
+                <span x-text="$store.strings?.play_chord || 'Play Chord'">Play Chord</span>
+              </button>
+            </div>
+            
+            <div class="character-grid">
+              <div class="character" @click="checkCharacterMatch('major')">
+                <div class="character-image">
+                  <span class="character-emoji">😊</span>
+                </div>
+                <div class="character-name">Happy</div>
+              </div>
+              
+              <div class="character" @click="checkCharacterMatch('minor')">
+                <div class="character-image">
+                  <span class="character-emoji">😢</span>
+                </div>
+                <div class="character-name">Sad</div>
+              </div>
+              
+              <div class="character" @click="checkCharacterMatch('diminished')">
+                <div class="character-image">
+                  <span class="character-emoji">🧙</span>
+                </div>
+                <div class="character-name">Mysterious</div>
+              </div>
+              
+              <div class="character" @click="checkCharacterMatch('augmented')">
+                <div class="character-image">
+                  <span class="character-emoji">😮</span>
+                </div>
+                <div class="character-name">Surprised</div>
+              </div>
+            </div>
+            
+            <div class="feedback-message" x-show="showFeedback">
+              <p x-text="feedbackMessage"></p>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Harmony Gardens Activity -->
+        <div x-show="mode === '2_6_chords_harmony-gardens'" class="chord-activity">
+          <div class="mode-header">
+            <button class="back-to-main" @click="setMode('main')" aria-label="Back to main menu">
+              <span style="font-size: 24px;">🏠</span>
+            </button>
+          </div>
+          
+          <div class="activity-container">
+            <h2 x-text="$store.strings?.harmony_gardens_title || 'Harmony Gardens'">Harmony Gardens</h2>
+            
+            <div class="harmony-gardens-explanation">
+              <p x-text="$store.strings?.harmony_gardens_intro || 'Create a beautiful garden by choosing different chord sequences. Each chord type grows different plants!'">Create a beautiful garden by choosing different chord sequences. Each chord type grows different plants!</p>
+            </div>
+            
+            <div class="garden-viewer">
+              <div class="garden-canvas">
+                <!-- Garden elements will be added here -->
+              </div>
+            </div>
+            
+            <div class="chord-sequence">
+              <div class="chord-slot" @click="selectChordSlot(0)">
+                <div class="chord-placeholder">+</div>
+              </div>
+              <div class="chord-slot" @click="selectChordSlot(1)">
+                <div class="chord-placeholder">+</div>
+              </div>
+              <div class="chord-slot" @click="selectChordSlot(2)">
+                <div class="chord-placeholder">+</div>
+              </div>
+              <div class="chord-slot" @click="selectChordSlot(3)">
+                <div class="chord-placeholder">+</div>
+              </div>
+            </div>
+            
+            <div class="chord-palette">
+              <button @click="plantChordInGarden('major')" class="chord-button">
+                <span>🌻</span>
+                <span>Major</span>
+              </button>
+              
+              <button @click="plantChordInGarden('minor')" class="chord-button">
+                <span>🌷</span>
+                <span>Minor</span>
+              </button>
+              
+              <button @click="plantChordInGarden('diminished')" class="chord-button">
+                <span>🌵</span>
+                <span>Diminished</span>
+              </button>
+              
+              <button @click="plantChordInGarden('augmented')" class="chord-button">
+                <span>🌺</span>
+                <span>Augmented</span>
+              </button>
+            </div>
+            
+            <div class="play-sequence-container">
+              <button @click="playChordSequence()" class="play-button">
+                <span>🔈</span>
+                <span x-text="$store.strings?.play_sequence || 'Play Sequence'">Play Sequence</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Chapter: Free Play -->
+    <section x-show="active === 'freeplay'" x-transition>
+      <h2>Free Play Mode</h2>
+      <p>Coming soon!</p>
+    </section>
+    
+    <!-- Legal: Impressum -->
+    <section x-show="active === 'impressum' && (window.innerWidth >= 1024 || !menuOpen)" x-transition>
+      <h2 x-text="$store.strings?.impressum_header || 'Impressum'"></h2>
+      <div class="legal-content">
+        <p x-text="$store.strings?.impressum_app_description || 'Lalumo App - Musik lernen für Kinder'"></p>
+        <p x-text="$store.strings?.impressum_responsible || 'Verantwortlich für den Inhalt:'"></p>
+        <p x-html="$store.strings?.impressum_contact || 'Ruben Barkow-Kuder<br>Knickweg 16<br>24114 Kiel<br>'"></p>
+        <a href="mailto:lalumo-support@it.z11.de">lalumo-support@it.z11.de</a>
+      </div>
+    </section>
+    
+    <!-- Legal: Datenschutz -->
+    <section x-show="active === 'datenschutz' && (window.innerWidth >= 1024 || !menuOpen)" x-transition>
+      <h2 x-text="$store.strings?.datenschutz_header || 'Datenschutz'"></h2>
+      <div class="legal-content">
+        <p x-text="$store.strings?.privacy_intro || 'Datenschutzerklärung für die Lalumo App'"></p>
+        <p x-text="$store.strings?.privacy_statement || 'Wir nehmen den Schutz Ihrer persönlichen Daten sehr ernst. Alle Daten werden lokal auf Ihrem Gerät gespeichert und nicht an Server übertragen.'"></p>
+        <h3 x-text="$store.strings?.privacy_local_storage_header || 'Lokale Speicherung'"></h3>
+        <p x-text="$store.strings?.privacy_local_storage_desc || 'Die App speichert Folgendes lokal auf Ihrem Gerät:'"></p>
+        <ul>
+          <li x-text="$store.strings?.privacy_username_item || 'Benutzername'"></li>
+          <li x-text="$store.strings?.privacy_progress_item || 'Lernfortschritte'"></li>
+        </ul>
+      </div>
+    </section>
+    
+    <!-- Legal: Credits -->
+    <section x-show="active === 'credits' && (window.innerWidth >= 1024 || !menuOpen)" x-transition>
+      <h2 x-text="$store.strings?.credits_header || 'Credits'"></h2>
+      <div class="legal-content">
+        <h3 x-text="$store.strings?.version_label || 'Version'"></h3>
+        <p id="app-version">Loading version...</p>
+        
+        <h3 x-text="$store.strings?.app_development_label || 'App-Entwicklung'"></h3>
+        <p><a href="https://eclabs.de" target="_blank">Eastcoast Laboratories</a></p>
+        
+        <h3 x-text="$store.strings?.graphics_label || 'Grafiken &amp; Illustrationen'"></h3>
+        <p x-text="$store.strings?.graphics_content || 'Images created with ChatGpt - mindfull, lovingly crafted prompts'"></p>
+        
+        <h3 x-text="$store.strings?.technologies_label || 'Technologien'"></h3>
+        <ul>
+          <li>Alpine.js</li>
+          <li>Webpack</li>
+          <li>HTML5 & CSS3</li>
+          <li>Tone.js</li>
+        </ul>
+      </div>
+    </section>
+    
+    <!-- Settings Page -->
+    <section x-show="active === 'settings' && (window.innerWidth >= 1024 || !menuOpen)" x-transition class="settings-page">
+      <h2 x-text="$store.strings?.player_settings || 'Player Settings'"></h2>
+      <div x-show="username" class="settings-section">
+        <h3 x-text="$store.strings?.your_profile || 'Your Profile'"></h3>
+        <div class="profile-section">
+          <div class="profile-avatar">
+            <span x-text="username ? username.charAt(0) : '?' "></span>
+          </div>
+          <div class="profile-details">
+            <p class="profile-name" x-text="username"></p>
+            <div class="username-edit">
+              <input type="text" x-model="editableUsername" class="username-input" :placeholder="$store.strings?.enter_name || 'Enter your name'" maxlength="20">
+              <button class="secondary-button" @click="saveUsername()" x-text="$store.strings?.button_save_name || 'Save Name'"></button>
+            </div>
+            <button class="secondary-button" @click="setUsername()" x-text="$store.strings?.button_generate_name || 'Generate Random Name'"></button>
+          </div>
+        </div>
+        <h3 x-text="$store.strings?.language_preference || 'Language Preference'"></h3>
+        <div class="language-section">
+          <p x-text="$store.strings?.select_language || 'Select your preferred language:'"></p>
+          <div class="language-options">
+            <button class="language-button" :class="{ 'active': preferredLanguage === 'english' }" @click="setLanguage('english')" x-text="$store.strings?.language_english || 'English'"></button>
+            <button style="opacity: 1;" class="language-button" :class="{ 'active': preferredLanguage === 'german' }" @click="setLanguage('german')" x-text="$store.strings?.language_german || 'Deutsch'"></button>
+          </div>
+        </div>
+        
+        <!-- Help Messages Settings -->
+        <h3 x-text="$store.strings?.help_messages || 'Help Messages'"></h3>
+        <div class="help-messages-section">
+          <p x-text="$store.strings?.help_messages_desc || 'Control when mascot help messages appear:'"></p>
+          <div class="help-options">
+            <div class="toggle-container">
+              <button 
+                class="toggle-button" 
+                :class="{'active': $store.mascotSettings.showHelpMessages}" 
+                @click="$store.mascotSettings.showHelpMessages = !$store.mascotSettings.showHelpMessages" 
+                :aria-label="$store.mascotSettings.showHelpMessages ? 'Disable help messages' : 'Enable help messages'" 
+                aria-a11y="mascot_help_toggle">
+                <span class="toggle-slider" :class="{'active': $store.mascotSettings.showHelpMessages}"></span>
+                <span class="toggle-text" x-text="$store.mascotSettings.showHelpMessages ? ($store.strings?.help_messages_on || 'Show Help Messages') : ($store.strings?.help_messages_off || 'Help Messages Hidden')"></span>
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        <h3 x-text="$store.strings?.game_progress || 'Game Progress'"></h3>
+        <div class="progress-section">
+          <p x-text="$store.strings?.export_progress || 'Export your progress to save or transfer to another device:'"></p>
+          <button class="primary-button" @click="exportProgress()" x-text="$store.strings?.button_export_progress || 'Export Progress'"></button>
+          <div x-show="exportedData" class="export-data">
+            <p x-text="$store.strings?.copy_code || 'Copy this code to save your progress:'"></p>
+            <textarea x-model="exportedData" readonly class="export-textarea"></textarea>
+            <button class="secondary-button" @click="copyToClipboard()" x-text="$store.strings?.button_copy_clipboard || 'Copy to Clipboard'"></button>
+          </div>
+          <p class="import-label" x-text="$store.strings?.import_progress || 'Import your progress from another device:'"></p>
+          <textarea :placeholder="$store.strings?.paste_progress || 'Paste your progress data here...'" x-model="importData" class="import-textarea"></textarea>
+          <button class="primary-button" @click="importProgress()" x-text="$store.strings?.button_import_progress || 'Import Progress'"></button>
+          <div class="reset-section">
+            <h3 x-text="$store.strings?.reset_progress || 'Reset Progress'"></h3>
+            <p x-text="$store.strings?.reset_progress_desc || 'Reset all your game progress and start fresh:'"></p>
+            <div class="reset-buttons">
+              <button class="warning-button" @click="showResetConfirm = true" x-show="!showResetConfirm" x-text="$store.strings?.button_reset_progress || 'Reset All Progress'"></button>
+              <div class="confirm-reset" x-show="showResetConfirm">
+                <p x-text="$store.strings?.reset_confirm || 'Are you sure? This cannot be undone.'"></p>
+                <button class="danger-button" @click="resetAllProgress()" x-text="$store.strings?.button_confirm_reset || 'Yes, Reset Everything'"></button>
+                <button class="secondary-button" @click="showResetConfirm = false" x-text="$store.strings?.button_cancel || 'Cancel'"></button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Global footer for all activities with an invers edge
+    <div class="bottom_round_edge">
+      <div class="footer_inner"></div>
+    </div>-->
+
+  </main>
+
+<script>
+  // Globale Funktionen für Lazy Loading und Back-Button-Handling
+  function initLazyLoading() {
+    // Initial alle Lazy-Load-Elemente laden
+    loadBackgroundImages();
+
+    // Beobachter erstellen, der neue Elemente überprüft
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
+          loadBackgroundImages();
+        }
+        
+        if (mutation.addedNodes.length) {
+          loadBackgroundImages();
+        }
+      });
+    });
+
+    // Beobachter auf den Container anwenden
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ['style', 'x-show']
+    });
+
+    // Handler für Browser-Back-Button einrichten
+    setupBackButtonHandler();
+  }
+
+  // Lädt Hintergrundbilder für sichtbare Elemente
+  function loadBackgroundImages() {
+    document.querySelectorAll('.lazyload-bg').forEach(element => {
+      // Überprüfen, ob das Element sichtbar ist
+      const rect = element.getBoundingClientRect();
+      const isVisible = (
+        rect.top <= (window.innerHeight || document.documentElement.clientHeight) &&
+        rect.bottom >= 0 &&
+        rect.left <= (window.innerWidth || document.documentElement.clientWidth) &&
+        rect.right >= 0 &&
+        window.getComputedStyle(element).display !== 'none'
+      );
+
+      if (isVisible && element.dataset.backgroundImage) {
+        // Nur laden, wenn das Element sichtbar ist und noch kein Hintergrundbild hat
+        if (!element.style.backgroundImage || element.style.backgroundImage === 'none') {
+          element.style.backgroundImage = `url('${element.dataset.backgroundImage}')`;
+        }
+      }
+    });
+  }
+
+  // Behandlung des Browser-Back-Buttons
+  function setupBackButtonHandler() {
+    // Erkennen der Plattform
+    const isAndroid = /Android/i.test(navigator.userAgent);
+    
+    // Definitionen für verschiedene Back-Button-Verhalten
+    let currentConfirmMessage = 'Attention! Do you really want to leave this page?';
+    
+    // String-Aktualisierungsfunktion - wird aufgerufen, wenn Alpine.store aktualisiert wird
+    function updateBackButtonStrings() {
+      // Aktualisiere die lokale Nachrichtenvariable aus dem Store
+      if (Alpine.store('strings')?.back_button_confirm_exit) {
+        currentConfirmMessage = Alpine.store('strings').back_button_confirm_exit;
+        console.log('Updated back button confirm message: ' + currentConfirmMessage);
+      }
+    }
+    
+    // Initial versuchen, Strings zu laden
+    updateBackButtonStrings();
+    
+    // Event-Listener für Store-Änderungen (wird ausgelöst, sobald Strings geladen sind)
+    document.addEventListener('DOMContentLoaded', () => {
+      // Initialize Alpine.js
+      Alpine.start();
+      
+      // Load and display version number
+      loadVersion();
+    });
+
+    async function loadVersion() {
+      try {
+        // Load package.json
+        const response = await fetch('package.json');
+        const packageJson = await response.json();
+        const version = packageJson.version;
+        const versionCode = packageJson.versionCode;
+        
+        // Display version in credits section
+        const versionElement = document.getElementById('app-version');
+        if (versionElement) {
+          versionElement.textContent = `Version ${version} (${versionCode})`;
+        }
+      } catch (error) {
+        console.error('Error loading version:', error);
+      }
+    }
+
+    // Event-Listener für Store-Änderungen (wird ausgelöst, sobald Strings geladen sind)
+    document.addEventListener('alpine:initialized', function() {
+      if (window.Alpine && window.Alpine.effect) {
+        window.Alpine.effect(() => {
+          // Diese Funktion wird automatisch aufgerufen, wenn sich Alpine.store('strings') ändert
+          updateBackButtonStrings();
+        });
+      }
+    });
+    
+    // Behandlung für Browser-History (web)
+    window.addEventListener('popstate', function(event) {
+      // Testen, ob wir in einer App sind oder im Browser
+      if (isAndroid) {
+        // In Android: Zurück zum Menü, wenn nicht gesperrt
+        const app = Alpine.getScope(document.querySelector('[x-data="app()"]'));
+        if (app && !app.menuLocked) {
+          // Wenn nicht im Hauptmenü, zurück zum Hauptmenü gehen
+          if (app.active !== 'main') {
+            app.setActive('main');
+            // Verhindern des Verlassens der App
+            history.pushState(null, null, window.location.pathname);
+            event.preventDefault();
+          }
+        }
+      } else {
+        // Im Browser: Nachfragen, ob die Seite wirklich verlassen werden soll
+        // Verwende die aktualisierte Nachrichtenvariable
+        if (confirm(currentConfirmMessage)) {
+          // Benutzer will die Seite verlassen -> nichts tun
+        } else {
+          // Benutzer will auf der Seite bleiben -> Zustand wiederherstellen
+          history.pushState(null, null, window.location.pathname);
+          event.preventDefault();
+        }
+      }
+    });
+
+    // Verhindert, dass der Benutzer die Seite verlässt, indem wir einen History-Eintrag hinzufügen
+    history.pushState(null, null, window.location.pathname);
+  }
+</script>
+</body>
+</html>

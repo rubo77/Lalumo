@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lalumo - Musik lernen durch Hören und Spielen</title>
+    <meta name="description" content="Lalumo ist eine interaktive App zum Musiklernen. Trainiere dein Gehör mit Tonhöhen, Akkorden und Klangfarben durch spielerische Übungen.">
+    <meta name="keywords" content="Musik lernen, Gehörbildung, Musiktheorie, App, Tonhöhen, Akkorde, Klangfarben">
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="Lalumo - Musik lernen durch Hören und Spielen">
+    <meta property="og:description" content="Interaktive Musiklernen-App mit Gehörbildung, Tonhöhen und Akkord-Training">
+    <meta property="og:image" content="https://lalumo.eu/images/mascot.png">
+    <meta property="og:url" content="https://lalumo.eu">
+    <meta property="og:type" content="website">
+    
+    <!-- App Store Meta Tags -->
+    <meta name="apple-itunes-app" content="app-id=YOUR_APP_ID">
+    <meta name="google-play-app" content="app-id=YOUR_PACKAGE_NAME">
+    
+    <link rel="icon" type="image/svg+xml" href="../src/favicon.svg">
+    
+    <style>
+        :root {
+            --primary-color: #ff9f43;
+            --accent-color: #fdcb6e; 
+            --background-color: #ffffff;
+            --text-dark: #2c3e50;
+            --text-light: #7f8c8d;
+            --gradient-warm: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            --gradient-bg: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            --shadow-light: 0 4px 15px rgba(255, 159, 67, 0.1);
+            --shadow-medium: 0 8px 25px rgba(255, 159, 67, 0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-dark);
+            background: var(--background-color);
+        }
+
+        /* Header */
+        .header {
+            background: var(--gradient-warm);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('../src/images/x.gif') center/cover;
+            opacity: 0.1;
+            z-index: 1;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+            padding: 2rem;
+        }
+
+        .logo {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 2rem;
+            border-radius: 50%;
+            box-shadow: var(--shadow-medium);
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo img {
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .hero-subtitle {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+            font-weight: 300;
+        }
+
+        .download-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 3rem;
+        }
+
+        .download-btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 1rem 2rem;
+            background: rgba(255,255,255,0.2);
+            border: 2px solid rgba(255,255,255,0.8);
+            border-radius: 15px;
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .download-btn:hover {
+            background: white;
+            color: var(--primary-color);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .download-btn.coming-soon {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .download-btn.coming-soon:hover {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            transform: none;
+        }
+
+        /* Features Section */
+        .features {
+            padding: 5rem 2rem;
+            background: var(--gradient-bg);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: var(--text-dark);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: var(--shadow-light);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 1.5rem;
+            background: var(--gradient-warm);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+        }
+
+        .feature-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-dark);
+        }
+
+        .feature-description {
+            color: var(--text-light);
+            line-height: 1.6;
+        }
+
+        /* Screenshots Section */
+        .screenshots {
+            padding: 5rem 2rem;
+            background: white;
+        }
+
+        .screenshots-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .screenshot {
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: var(--shadow-light);
+            transition: transform 0.3s ease;
+        }
+
+        .screenshot:hover {
+            transform: scale(1.05);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .screenshot img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--text-dark);
+            color: white;
+            padding: 3rem 2rem 2rem;
+            text-align: center;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-link {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: background-color 0.3s ease;
+        }
+
+        .footer-link:hover {
+            background: var(--primary-color);
+        }
+
+        .footer-copyright {
+            padding-top: 2rem;
+            border-top: 1px solid #444;
+            color: var(--text-light);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.2rem;
+            }
+            
+            .download-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .download-btn {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero-content > * {
+            animation: fadeInUp 0.8s ease;
+        }
+
+        .feature-card {
+            animation: fadeInUp 0.8s ease;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header / Hero Section -->
+    <header class="header">
+        <div class="hero-content">
+            <div class="logo">
+                <img src="../src/images/mascot.png" alt="Lalumo Maskottchen">
+            </div>
+            
+            <h1 class="hero-title">🎵 Lalumo</h1>
+            <p class="hero-subtitle">Musik lernen durch Hören und Spielen</p>
+            <p style="opacity: 0.9; margin-bottom: 2rem;">
+                Entdecke Tonhöhen, Akkorde und Klangfarben durch interaktive Übungen
+            </p>
+            
+            <div class="download-buttons">
+                <a href="#" class="download-btn coming-soon">
+                    🍎 App Store
+                    <small style="display: block; font-size: 0.8rem; margin-top: 0.2rem;">Bald verfügbar</small>
+                </a>
+                <a href="https://play.google.com/store/apps/details?id=eu.lalumo.app" class="download-btn">
+                    🤖 Google Play Store
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Features Section -->
+    <section class="features">
+        <div class="container">
+            <h2 class="section-title">Warum Lalumo?</h2>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🎵</div>
+                    <h3 class="feature-title">Gehörbildung</h3>
+                    <p class="feature-description">
+                        Trainiere dein musikalisches Gehör mit interaktiven Übungen 
+                        zu Tonhöhen und Intervallen
+                    </p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">🎹</div>
+                    <h3 class="feature-title">Akkord-Verständnis</h3>
+                    <p class="feature-description">
+                        Lerne Akkorde durch visuelle und auditive Methoden zu verstehen 
+                        und zu erkennen
+                    </p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">🎺</div>
+                    <h3 class="feature-title">Klangfarben</h3>
+                    <p class="feature-description">
+                        Entdecke verschiedene Instrumentenklänge und entwickle 
+                        ein Gefühl für Timbres
+                    </p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">📈</div>
+                    <h3 class="feature-title">Adaptives Lernen</h3>
+                    <p class="feature-description">
+                        Personalisierte Fortschrittsverfolgung passt sich deinem 
+                        Lernrhythmus an
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Screenshots Section -->
+    <section class="screenshots">
+        <div class="container">
+            <h2 class="section-title">Einblicke in die App</h2>
+            <p style="text-align: center; color: var(--text-light); margin-bottom: 2rem;">
+                Entdecke die schöne und intuitive Benutzeroberfläche von Lalumo
+            </p>
+            
+            <div class="screenshots-grid">
+                <div class="screenshot">
+                    <div style="background: var(--gradient-warm); height: 300px; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.2rem;">
+                        Screenshot 1<br>
+                        <small>Tonhöhen-Training</small>
+                    </div>
+                </div>
+                
+                <div class="screenshot">
+                    <div style="background: var(--gradient-bg); height: 300px; display: flex; align-items: center; justify-content: center; color: var(--text-dark); font-size: 1.2rem;">
+                        Screenshot 2<br>
+                        <small>Akkord-Erkennung</small>
+                    </div>
+                </div>
+                
+                <div class="screenshot">
+                    <div style="background: var(--gradient-warm); height: 300px; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.2rem;">
+                        Screenshot 3<br>
+                        <small>Klangfarben-Spiel</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-links">
+                <a href="impressum.html" class="footer-link">Impressum</a>
+                <a href="datenschutz.html" class="footer-link">Datenschutz</a>
+                <a href="agb.html" class="footer-link">AGB</a>
+                <a href="mailto:support@lalumo.eu" class="footer-link">Kontakt</a>
+            </div>
+            
+            <div class="footer-copyright">
+                <p>&copy; 2024 Lalumo. Alle Rechte vorbehalten.</p>
+                <p style="margin-top: 0.5rem;">
+                    <a href="../app/" style="color: var(--accent-color); text-decoration: none;">
+                        🎵 Zur Web-App
+                    </a>
+                </p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

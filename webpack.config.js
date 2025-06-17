@@ -10,7 +10,7 @@ module.exports = (env, argv) => {
       main: './src/index.js',
     },
     output: {
-      path: path.resolve(__dirname, 'dist'),
+      path: path.resolve(__dirname, 'app'),
       filename: '[name].[contenthash].js',
       clean: true,
       publicPath: '/',
@@ -19,12 +19,9 @@ module.exports = (env, argv) => {
     devServer: {
       static: [
         {
-          directory: path.join(__dirname, 'dist'),
-        },
-        {
-          directory: path.join(__dirname, 'public'),
+          directory: path.join(__dirname, 'app'),
           publicPath: '/',
-        }
+        },
       ],
       port: 9091,
       hot: true,

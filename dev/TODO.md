@@ -132,6 +132,7 @@ reset-button:
 
 
 1_2 "Match the Sounds":
+- durch das freischalten fix auf die neue melodie wird jetzt immer diese melodie gnommen, es soll aber nur beim ersten mal (genau 10 bzw. 20) diese  melodie genommen werden, wenn man 11 hat soll weider zufällig eine melodie ausgegeben werden
 - # bereit zur veröffentlichung
 - der reset button in der navi muss auch den hintergrund und die anzeige unten triggern, dass die refresht wird, im moment wird der dann noch einfach weiss
 
