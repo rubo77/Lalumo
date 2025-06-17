@@ -881,46 +881,44 @@
     
     <!-- Legal: Impressum -->
     <section x-show="active === 'impressum' && (window.innerWidth >= 1024 || !menuOpen)" x-transition>
-      <h2>Impressum</h2>
+      <h2 x-text="$store.strings?.impressum_header || 'Impressum'"></h2>
       <div class="legal-content">
-        <p>Lalumo App - Musik lernen für Kinder</p>
-        <p>Verantwortlich für den Inhalt:</p>
-        <p>Ruben Barkow-Kuder<br>
-        Knickweg 16
-        24114 Kiel<br>
-        <a href="mailto:lalumo-support@it.z11.de">lalumo-support@it.z11.de</a></p>
+        <p x-text="$store.strings?.impressum_app_description || 'Lalumo App - Musik lernen für Kinder'"></p>
+        <p x-text="$store.strings?.impressum_responsible || 'Verantwortlich für den Inhalt:'"></p>
+        <p x-html="$store.strings?.impressum_contact || 'Ruben Barkow-Kuder<br>Knickweg 16<br>24114 Kiel<br>'"></p>
+        <a href="mailto:lalumo-support@it.z11.de">lalumo-support@it.z11.de</a>
       </div>
     </section>
     
     <!-- Legal: Datenschutz -->
     <section x-show="active === 'datenschutz' && (window.innerWidth >= 1024 || !menuOpen)" x-transition>
-      <h2>Datenschutz</h2>
+      <h2 x-text="$store.strings?.datenschutz_header || 'Datenschutz'"></h2>
       <div class="legal-content">
-        <p>Datenschutzerklärung für die Lalumo App</p>
-        <p>Wir nehmen den Schutz Ihrer persönlichen Daten sehr ernst. Alle Daten werden lokal auf Ihrem Gerät gespeichert und nicht an Server übertragen.</p>
-        <h3>Lokale Speicherung</h3>
-        <p>Die App speichert Folgendes lokal auf Ihrem Gerät:</p>
+        <p x-text="$store.strings?.privacy_intro || 'Datenschutzerklärung für die Lalumo App'"></p>
+        <p x-text="$store.strings?.privacy_statement || 'Wir nehmen den Schutz Ihrer persönlichen Daten sehr ernst. Alle Daten werden lokal auf Ihrem Gerät gespeichert und nicht an Server übertragen.'"></p>
+        <h3 x-text="$store.strings?.privacy_local_storage_header || 'Lokale Speicherung'"></h3>
+        <p x-text="$store.strings?.privacy_local_storage_desc || 'Die App speichert Folgendes lokal auf Ihrem Gerät:'"></p>
         <ul>
-          <li>Benutzername</li>
-          <li>Lernfortschritte</li>
+          <li x-text="$store.strings?.privacy_username_item || 'Benutzername'"></li>
+          <li x-text="$store.strings?.privacy_progress_item || 'Lernfortschritte'"></li>
         </ul>
       </div>
     </section>
     
     <!-- Legal: Credits -->
     <section x-show="active === 'credits' && (window.innerWidth >= 1024 || !menuOpen)" x-transition>
-      <h2>Credits</h2>
+      <h2 x-text="$store.strings?.credits_header || 'Credits'"></h2>
       <div class="legal-content">
-        <h3>Version</h3>
+        <h3 x-text="$store.strings?.version_label || 'Version'"></h3>
         <p id="app-version">Loading version...</p>
         
-        <h3>App-Entwicklung</h3>
+        <h3 x-text="$store.strings?.app_development_label || 'App-Entwicklung'"></h3>
         <p><a href="https://eclabs.de" target="_blank">Eastcoast Laboratories</a></p>
         
-        <h3>Grafiken & Illustrationen</h3>
-        <p>Images created with ChatGpt - mindfull, lovingly crafted prompts</p>
+        <h3 x-text="$store.strings?.graphics_label || 'Grafiken &amp; Illustrationen'"></h3>
+        <p x-text="$store.strings?.graphics_content || 'Images created with ChatGpt - mindfull, lovingly crafted prompts'"></p>
         
-        <h3>Technologien</h3>
+        <h3 x-text="$store.strings?.technologies_label || 'Technologien'"></h3>
         <ul>
           <li>Alpine.js</li>
           <li>Webpack</li>
@@ -932,7 +930,7 @@
     
     <!-- Settings Page -->
     <section x-show="active === 'settings' && (window.innerWidth >= 1024 || !menuOpen)" x-transition class="settings-page">
-      <h2>Player Settings</h2>
+      <h2 x-text="$store.strings?.player_settings || 'Player Settings'"></h2>
       <div x-show="username" class="settings-section">
         <h3 x-text="$store.strings?.your_profile || 'Your Profile'"></h3>
         <div class="profile-section">

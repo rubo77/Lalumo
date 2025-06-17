@@ -113,7 +113,41 @@
     <string name="reset_progress">Fortschritt zurücksetzen</string>
     <string name="reset_progress_desc">Setze deinen gesamten Spielfortschritt zurück und starte neu:</string>
     <string name="reset_confirm">Bist du sicher? Dies kann nicht rückgängig gemacht werden.</string>
-
+    <string name="help_messages">Hilf-Nachrichten</string>
+    <string name="help_messages_desc">Steuere, wann Hilf-Nachrichten erscheinen:</string>
+    <string name="help_messages_off">Hilf-Nachrichten aus</string>
+    <string name="help_messages_on">zeige Hilf-Nachrichten</string>
+    
+    
+    <!-- Feedback Messages (from pitches.js) -->
+    <string name="memory_correct">Fantastisches Gedächtnis! Du hast es richtig gemacht!</string>
+    <string name="memory_incorrect">Lass uns es nochmal versuchen. Hör genau zu!</string>
+    
+    <!-- Legal Pages Headers -->
+    <string name="credits_header">Mitwirkende</string>
+    <string name="impressum_header">Impressum</string>
+    <string name="datenschutz_header">Datenschutz</string>
+    
+    <!-- Credits Content -->
+    <string name="version_label">Version</string>
+    <string name="app_development_label">App-Entwicklung</string>
+    <string name="graphics_label">Grafiken &amp; Illustrationen</string>
+    <string name="graphics_content">Bilder erstellt mit ChatGPT - achtsam, liebevoll gestaltete Prompts</string>
+    <string name="technologies_label">Technologien</string>
+    
+    <!-- Impressum Content -->
+    <string name="impressum_app_description">Lalumo App - Musik lernen für Kinder</string>
+    <string name="impressum_responsible">Verantwortlich für den Inhalt:</string>
+    <string name="impressum_contact">Ruben Barkow-Kuder&lt;br /&gt;Knickweg 16&lt;br /&gt;24114 Kiel</string>
+    
+    <!-- Datenschutz Content -->
+    <string name="privacy_intro">Datenschutzerklärung für die Lalumo App</string>
+    <string name="privacy_statement">Wir nehmen den Schutz Ihrer persönlichen Daten sehr ernst. Alle Daten werden lokal auf Ihrem Gerät gespeichert und nicht an Server übertragen.</string>
+    <string name="privacy_local_storage_header">Lokale Speicherung</string>
+    <string name="privacy_local_storage_desc">Die App speichert Folgendes lokal auf Ihrem Gerät:</string>
+    <string name="privacy_username_item">Benutzername</string>
+    <string name="privacy_progress_item">Lernfortschritte</string>
+    
     <!-- Back Button Messages -->
     <string name="back_button_confirm_exit">Möchtest du die Seite wirklich verlassen? Dein Fortschritt dieser Sitzung könnte verloren gehen.</string>
 

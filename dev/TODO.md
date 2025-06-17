@@ -89,10 +89,9 @@ Dies soll in allen aktionen:
 
 - wenn man preferences, credits, datenschutz oder impressum drückt, dann soll das hamburger menu sich schliessen
 
-- Bei Android funktioniert die Sprachwahl nicht, es is immer englisch. anscheinend nimmt er immer den fallback. Nur die mascot messages gehen
-
 - store username and language in export string in Preferences
 
+- übersetze Credits, ... @index.html#L912-935 dies und @index.html#L973 und @index.html#L963-964 @index.html#L883-893 @index.html#L896-908 @pitches.js#L3356-3359 
 
 - when pressed on a button, the finger moves and is released, it should also trigger the buttons click event
 
@@ -111,7 +110,7 @@ reset-button:
 - In die Texte dass der Bildschirm gesperrt ist
 - "Images created with ChatGpt mindfull. Loving prompts" verbessern
 - Finanzierung durch unlock button mit link zu Crowd funding
-- Language autodedtect
+
 - Alles offline herunterladen (keine cdns)
 
 ## nach kapitel

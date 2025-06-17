@@ -3311,7 +3311,7 @@ export function pitches() {
         audioEngine.playNote('try_again', 1.0);
         
         this.showFeedback = true;
-        this.feedback = 'Let\'s try again. Listen carefully!';
+        this.feedback = (this.$store.strings?.memory_incorrect || 'Let\'s try again. Listen carefully!');
         
         // Reset after a delay
         setTimeout(() => {
@@ -3355,8 +3355,8 @@ export function pitches() {
       
       this.showFeedback = true;
       this.feedback = isCorrect ? 
-        'Amazing memory! You got it right!' : 
-        'Let\'s try again. Listen carefully!';
+        (this.$store.strings?.memory_correct || 'Amazing memory! You got it right!') : 
+        (this.$store.strings?.memory_incorrect || 'Let\'s try again. Listen carefully!');
       
       // Play feedback sound using the central audio engine
       audioEngine.playNote(isCorrect ? 'success' : 'try_again', 1.0);
