@@ -280,7 +280,9 @@ export function pitches() {
         const savedMascotSettings = localStorage.getItem('lalumo_mascot_settings');
         if (savedMascotSettings) {
           this.mascotSettings = JSON.parse(savedMascotSettings);
-          console.log('Loaded mascot settings:', this.mascotSettings);
+          // Reset seenActivityMessages on every app start
+          this.mascotSettings.seenActivityMessages = {};
+          console.log('Loaded mascot settings and reset seen messages:', this.mascotSettings);
         }
       } catch (error) {
         console.error('Error loading mascot settings:', error);
@@ -541,6 +543,21 @@ export function pitches() {
      */
     setMode(newMode) {
       console.log('MODSWITCH: Changing mode from', this.mode, 'to', newMode);
+  
+  // Clear any existing mascot timers and hide message when switching activities
+  if (this.mascotShowTimer) {
+    clearTimeout(this.mascotShowTimer);
+    this.mascotShowTimer = null;
+    console.log("MASCOT_CLEAR: Cleared show timer on mode switch");
+  }
+  if (this.mascotHideTimer) {
+    clearTimeout(this.mascotHideTimer);
+    this.mascotHideTimer = null;
+    console.log("MASCOT_CLEAR: Cleared hide timer on mode switch");
+  }
+  // Hide any currently visible mascot message
+  this.showMascot = false;
+  console.log("MASCOT_CLEAR: Hidden mascot on mode switch to:", newMode);
       this.mode = newMode;
       this.resetState();
       
@@ -1692,10 +1709,19 @@ export function pitches() {
           }
         }, 100);
         
-        // Auto-hide after 20 seconds with ease transition
+        // Auto-hide after 10 seconds with ease transition
         this.mascotHideTimer = setTimeout(() => {
           this.showMascot = false;
           console.log("MASCOT_DISPLAY: Auto-hiding after 10s");
+          
+          // Give Alpine.js 100ms to react, then force hide via DOM if needed
+          setTimeout(() => {
+            const mascotOverlay = document.querySelector(".mascot-message-overlay");
+            if (mascotOverlay && window.getComputedStyle(mascotOverlay).display !== "none") {
+              console.log("MASCOT_DEBUG: Alpine failed to hide, forcing hide via DOM");
+              mascotOverlay.style.display = "none";
+            }
+          }, 100);
         }, 10000);
       }, delaySeconds * 1000);
       console.log('Showing mascot message:', message, 'TTS available:', this.ttsAvailable, 'Using native TTS:', this.usingNativeAndroidTTS);
