@@ -9,6 +9,9 @@ app/*.css
 app/*.html
 app/*.json
 app/images/
+app/main.*
+app/strings-*.xml
+app/index.html
 
 # Generated XML files for web development (copied from android/app/src/main/res/)
 public/android/
