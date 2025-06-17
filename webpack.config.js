@@ -85,6 +85,19 @@ module.exports = (env, argv) => {
           {
             from: 'public/images',
             to: 'images'
+          },
+          {
+            // Copy selected background images for homepage screenshots
+            from: 'public/images/backgrounds/pitches_action1_3.jpg',
+            to: 'homepage/images/screenshots/pitches_action1_3.jpg'
+          },
+          {
+            from: 'public/images/backgrounds/pitches_action1_1_sloth_mouse.jpg',
+            to: 'homepage/images/screenshots/pitches_action1_1_sloth_mouse.jpg'
+          },
+          {
+            from: 'public/images/backgrounds/pitches_bird_sings.jpg',
+            to: 'homepage/images/screenshots/pitches_bird_sings.jpg'
           }
         ],
       }),

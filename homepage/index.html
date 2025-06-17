@@ -150,6 +150,59 @@
             transform: none;
         }
 
+        /* Screenshots Section */
+        .screenshots {
+            padding: 5rem 2rem;
+            background-color: var(--bg-dark);
+        }
+
+        .screenshots-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .screenshot-container {
+            position: relative;
+            overflow: hidden;
+            border-radius: 16px;
+            box-shadow: var(--shadow-medium);
+            transition: transform 0.3s ease;
+            height: 300px;
+        }
+
+        .screenshot-container:hover {
+            transform: translateY(-5px);
+        }
+
+        .screenshot-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .screenshot-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), rgba(0,0,0,0));
+            padding: 1.5rem;
+            color: white;
+        }
+
+        .screenshot-caption h3 {
+            margin: 0 0 0.5rem 0;
+            font-size: 1.2rem;
+        }
+
+        .screenshot-caption p {
+            margin: 0;
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
         /* Features Section */
         .features {
             padding: 5rem 2rem;
@@ -409,23 +462,32 @@
             
             <div class="screenshots-grid">
                 <div class="screenshot">
-                    <div style="background: var(--gradient-warm); height: 300px; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.2rem;">
-                        Screenshot 1<br>
-                        <small>Tonhöhen-Training</small>
+                    <div class="screenshot-container">
+                        <img src="images/screenshots/pitches_action1_3.jpg" alt="Tonhöhen-Training" class="screenshot-img">
+                        <div class="screenshot-caption">
+                            <h3>Tonhöhen-Training</h3>
+                            <p>Verbessere dein Gehör mit interaktiven Übungen</p>
+                        </div>
                     </div>
                 </div>
                 
                 <div class="screenshot">
-                    <div style="background: var(--gradient-bg); height: 300px; display: flex; align-items: center; justify-content: center; color: var(--text-dark); font-size: 1.2rem;">
-                        Screenshot 2<br>
-                        <small>Akkord-Erkennung</small>
+                    <div class="screenshot-container">
+                        <img src="images/screenshots/pitches_action1_1_sloth_mouse.jpg" alt="Akkord-Erkennung" class="screenshot-img">
+                        <div class="screenshot-caption">
+                            <h3>Melodie-Übungen</h3>
+                            <p>Erkenne und spiele Melodien nach Gehör</p>
+                        </div>
                     </div>
                 </div>
                 
                 <div class="screenshot">
-                    <div style="background: var(--gradient-warm); height: 300px; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.2rem;">
-                        Screenshot 3<br>
-                        <small>Klangfarben-Spiel</small>
+                    <div class="screenshot-container">
+                        <img src="images/screenshots/pitches_bird_sings.jpg" alt="Klangfarben-Spiel" class="screenshot-img">
+                        <div class="screenshot-caption">
+                            <h3>Klangfarben-Spiel</h3>
+                            <p>Unterscheide verschiedene Instrumente und Klänge</p>
+                        </div>
                     </div>
                 </div>
             </div>

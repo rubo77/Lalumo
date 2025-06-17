@@ -118,6 +118,9 @@ reset-button:
 
 - wenn man resettet, dann muss das hamburger menu zu gehen
 
+- im browser geht der austausch der version nr nicht: Silent test utterance completed successfully pitches.js:1516:46 XHRGET http://localhost:9091/package.json [HTTP/1.1 404 Not Found 5ms] Error loading version: SyntaxError: JSON.parse: unexpected character at line 1 column 1 of the JSON data
+
+
 ## nach kapitel
 
 1_1 "High or Low?" (1_1_pitches_high_or_low) 

@@ -15,6 +15,8 @@ cp -r public/sitemap.xml dist/
 # 4. Upload to the server (both built files and images)
 rsync -avz --no-perms --no-owner --no-group --delete dist/ root@vm06.eclabs:/var/kunden/webs/ruben/www/lalumo.z11.de/
 
+# the homepage is in /var/kunden/webs/ruben/www/lalumo.eu/ reacheable over https://lalumo.eu
+
 echo "Deployment complete! All files including images have been uploaded."
 
 echo "upload the git repo:"
