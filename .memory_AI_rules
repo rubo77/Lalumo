@@ -12,4 +12,5 @@
 - do not work through the TODO list yourself
 - never deploy yourself unless asked
 - kopiere nicht einfach komplette code bereiche aus anderen funktionen, sondern extrahiere die teile in eine funktion, die dann in der ursprünglichen so wie in der neuen stelle benutzt wird
-- wenn du die pitches.js bearbeiten willst benutze einen bash befehl anstatt es direkt zu bearbeiten, da die datei zu gross ist
+- wenn du die pitches.js und andere dateien, die mehr als 1000 zeilen haben, bearbeiten willst benutze einen bash befehl anstatt es direkt zu bearbeiten, da die datei zu gross ist
+- kleinere dateien editiere direkt mit deinem internen tool

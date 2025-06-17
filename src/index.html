@@ -953,7 +953,7 @@
           <p x-text="$store.strings?.select_language || 'Select your preferred language:'"></p>
           <div class="language-options">
             <button class="language-button" :class="{ 'active': preferredLanguage === 'english' }" @click="setLanguage('english')" x-text="$store.strings?.language_english || 'English'"></button>
-            <button style="opacity: 0;" class="language-button" :class="{ 'active': preferredLanguage === 'german' }" @click="setLanguage('german')" x-text="$store.strings?.language_german || 'Deutsch'"></button>
+            <button style="opacity: 1;" class="language-button" :class="{ 'active': preferredLanguage === 'german' }" @click="setLanguage('german')" x-text="$store.strings?.language_german || 'Deutsch'"></button>
           </div>
         </div>
         

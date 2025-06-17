@@ -87,7 +87,9 @@ Dies soll in allen aktionen:
 
 - Verschiedene Instrumente
 
-- Bei Android funktioniert die Sprache nicht. Nur die mascot messages gehen
+- wenn man preferences, credits, datenschutz oder impressum drückt, dann soll das hamburger menu sich schliessen
+
+- Bei Android funktioniert die Sprachwahl nicht, es is immer englisch. anscheinend nimmt er immer den fallback. Nur die mascot messages gehen
 
 - store username and language in export string in Preferences
 

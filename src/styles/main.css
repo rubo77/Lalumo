@@ -228,7 +228,7 @@
   border-radius: 0.8rem;
 }
 
-.user-avatar {
+.user-avatar, .profile-avatar {
   width: 40px;
   height: 40px;
   border-radius: 50%;
@@ -293,7 +293,7 @@
 
 .help-options {
   display: flex;
-  justify-content: center;
+  justify-content: left;
   margin-top: 0.5rem;
 }
 
@@ -517,12 +517,16 @@
   margin: 10px 0;
   padding: 10px;
   border-radius: 8px;
-  border: 2px solid #ddd;
   background-color: var(--color-background-lighter);
   font-family: monospace;
   color: var(--color-text);
   resize: vertical;
 }
+
+input, textarea {
+  border: 2px solid var(--color-accent-light);
+}
+
 
 .code-input {
   width: 100%;
@@ -683,6 +687,8 @@
   --accent-color: #fdcb6e; /* navigation highlight */
   --success-color: #00b894;
   --warning-color: #ff7675;
+  --color-accent-light: #fdcb6e;
+  --color-background-lighter: #f5f5f5;
   
   /* Tone color variables */
   --warm-color: #ff9f43;
@@ -988,6 +994,9 @@ body {
   height: 30px;
   flex-shrink: 0;
   margin: 0 !important;
+}
+.settings-button {
+  width: 100%;
 }
 
 .settings-label {
