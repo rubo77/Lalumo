@@ -38,7 +38,7 @@ Every activity MUST implement consistent feedback mechanisms:
 ### Implementation Requirements
 
 #### Feedback Utilities Location
-- **Shared Module**: `/src/effects/feedback.js`
+- **Shared Module**: `/src/components/shared/feedback.js`
 - **Purpose**: Centralized feedback functions used across all chapters
 - **Exports**: `showRainbowSuccess()`, `showShakeError()`, `playSuccessSound()`, `playErrorSound()`
 

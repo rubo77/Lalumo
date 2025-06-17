@@ -19,7 +19,7 @@ import {
   showCompleteError,
   showActivityProgressBar,
   hideActivityProgressBar
-} from '../effects/feedback.js';
+} from '../components/shared/feedback.js';
 
 
 // Importiere Test-Funktionen aus den Modulen

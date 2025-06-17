@@ -3,6 +3,12 @@ TODO
 
 ## Chord Chapter Implementation
 
+- enhance and Optimize Chord User Experience
+  - Alle activities sollen bei erfolg den Regenbogen anzeigen (aus feedback.js)
+  - **2_4_chords_missing-note**: Vereinfache die Aktivität für jüngere Kinder
+  - Stelle sicher, dass alle Akkordaktivitäten eine konsistente UI haben
+  - Implementiere kindgerechtes visuelles Feedback bei Akkordwiedergabe
+
   - **2_1_chords_color-matching**:
    - Implementiere Tone.js Audio-Engine-Integration für Akkord-Wiedergabe
   - **2_2_chords_mood-landscapes**:
@@ -13,13 +19,10 @@ TODO
    - Implementiere Tone.js Audio-Engine-Integration für Akkord-Wiedergabe
   - **2_6_chords_harmony-gardens**: Aktiviere Audio-Wiedergabe für Akkordsequenzen
 
-- Optimize Chord User Experience
-  - Alle activities sollen bei erfolg den Regenbogen anzeigen (aus feedback.js)
-  - **2_4_chords_missing-note**: Vereinfache die Aktivität für jüngere Kinder
-  - Stelle sicher, dass alle Akkordaktivitäten eine konsistente UI haben
-  - Implementiere kindgerechtes visuelles Feedback bei Akkordwiedergabe
-
+dabei:
 - Überprüfe ob alle mit tone.js umgesetzt wurden
+
+- beachte FILESTRUCTURE.md und CODING_STANDARDS.md
 
 - in "chords" use the same piano as in "pitches" export the piano functionality to a shared component and reuse it
 
@@ -105,20 +108,12 @@ reset-button:
 
 - ganz viel ist noch strings hartkodiert mit `isGerman`
 
-# vermarkten
-- erstelle ein concept, wie wir die app vermarkten können
-- Empfehlungssystem, nach fünf Empfehlungen. Erfolgreichen freischalten
-
 # play store:
 - In die Texte dass der Bildschirm gesperrt ist
 - "Images created with ChatGpt mindfull. Loving prompts" verbessern
 - Finanzierung durch unlock button mit link zu Crowd funding
 
-- Alles offline herunterladen (keine cdns)
-
 - wenn man resettet, dann muss das hamburger menu zu gehen
-
-- im browser geht der austausch der version nr nicht: Silent test utterance completed successfully pitches.js:1516:46 XHRGET http://localhost:9091/package.json [HTTP/1.1 404 Not Found 5ms] Error loading version: SyntaxError: JSON.parse: unexpected character at line 1 column 1 of the JSON data
 
 
 ## nach kapitel
