@@ -41,14 +41,29 @@ check_length() {
 
 # German Changelog
 DE_CHANGES=$(cat << EOF
-- auf Android: fang Back-Gesture ab
+- Deutsche Übersetzung
+- Back-Gesture auf Android
+- Reset-Buttons für Fortschritt
+- Zeichne eine Melodie:
+  - Frei zeichnen: bis zu 32 Noten
+  - Hilfslinien für Notenpositionen im Herausforderungsmodus
+- Klingt es richtig?:
+  - Neue Melodien
+  - Tierbilder aktualisiert und verbessert
 EOF
 )
 
 # English Changelog
 EN_CHANGES=$(cat << EOF
-- catch back-gesture on Android
-- reset buttons for progress
+- German translation added
+- Catch back-gesture on Android
+- Reset buttons for progress
+- Draw a Melody:
+  - Free Draw mode: up to 32-notes
+  - Helplines for pitch positions in challenge mode
+- Does it sound right?:
+  - New Melodies
+  - Animal images updated and improved
 EOF
 )
 

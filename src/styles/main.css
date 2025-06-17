@@ -1834,6 +1834,15 @@ section h2 {
   touch-action: none; /* Prevent scrolling on touch devices */
 }
 
+.melody-feedback{
+  position: fixed;
+  bottom: 60px;
+  left: max(-11px, min(30%, calc(-477px + 94vw)));
+  background-color: rgba(255, 255, 255, 0.5);
+  padding: 10px;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
 /* Styles für die Melodie-Nachzeichnen-Funktion */
 .reference-melody {
   display: flex;
