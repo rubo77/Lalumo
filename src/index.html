@@ -1097,7 +1097,7 @@
         const response = await fetch('package.json');
         const packageJson = await response.json();
         const version = packageJson.version;
-        const versionCode = 17; // Aktuelle versionCode aus Android build.gradle
+        const versionCode = packageJson.versionCode;
         
         // Display version in credits section
         const versionElement = document.getElementById('app-version');

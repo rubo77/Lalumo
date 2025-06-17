@@ -10,7 +10,7 @@ CHANGELOG_DE_MD="CHANGELOG_de.md"
 PLAYSTORE_DIR="fastlane/metadata/android/playstore"
 
 # Get version from build.gradle
-VERSION_NAME=1.6
+VERSION_NAME=1.7
 # Get current date
 CURRENT_DATE=$(date +"%Y-%m-%d")
 

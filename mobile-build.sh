@@ -11,7 +11,9 @@ show_help() {
   echo "Usage: bash mobile-build.sh [options] [platform]\n"
   echo "Options:"
   echo "  -h, --help                Show this help message"
-  echo "  -n, --no-version-update   Skip version update"
+  echo "  -u, --update-version      Update version: extract current version from 'package."
+  echo "                            json' and increment minor version, then update 'build.gradle'"
+  echo "                            and 'dev/add_changelog.sh'"
   echo ""
   echo "Platforms:"
   echo "  android    Build and open Android project"
@@ -121,7 +123,7 @@ update_version() {
   # Version für Android verwenden (immer nur Major.Minor Format)
   ANDROID_VERSION="$NEW_VERSION"
   
-  # Version in build.gradle aktualisieren
+  echo "###### 2.1 Updating version in build.gradle"
   if [ -f "$GRADLE_FILE" ]; then
     # Extrahiere aktuelle versionCode
     CURRENT_CODE=$(grep -oP 'versionCode\s+\K\d+' "$GRADLE_FILE")
@@ -132,10 +134,22 @@ update_version() {
       echo "Updating Android versionCode: $CURRENT_CODE → $NEW_CODE"
       
       # versionCode in gradle file ersetzen
+      
+      # versionCode auch in package.json einfügen für Web-App
+      echo "Injecting versionCode into package.json: $NEW_CODE"
+      # Prüfe ob versionCode bereits existiert
+      if grep -q "versionCode" "$PACKAGE_FILE"; then
+        # Ersetze bestehende versionCode
+        sed -i "s/\"versionCode\":\s*[0-9]*/\"versionCode\": $NEW_CODE/" "$PACKAGE_FILE"
+      else
+        # Füge versionCode nach version hinzu
+        sed -i "/"version":/a\  "versionCode": $NEW_CODE," "$PACKAGE_FILE"
+      fi
       sed -i "s/versionCode $CURRENT_CODE/versionCode $NEW_CODE/" "$GRADLE_FILE"
       
-      # versionName with new version from package.json
-      echo "Updating Android versionName: $ANDROID_VERSION"
+      # Update versionName with new version from package.json
+      echo "###### 2.1.1 Updating Android versionName"
+      echo "New Android versionName: $ANDROID_VERSION"
       sed -i "s/versionName \"[^\"]*\"/versionName \"$ANDROID_VERSION\"/" "$GRADLE_FILE"
     else
       echo "Could not find versionCode in $GRADLE_FILE"
@@ -145,8 +159,9 @@ update_version() {
   fi
   
   # Version in add_changelog.sh aktualisieren
+  echo "###### 2.2 Updating version in dev/add_changelog.sh"
   if [ -f "$CHANGELOG_GENERATOR_FILE" ]; then
-    echo "Updating version in changelog generator: $ANDROID_VERSION"
+    echo "New version in changelog generator: $ANDROID_VERSION"
     # Ersetze die VERSION_NAME-Zeile in der add_changelog.sh
     sed -i "s/VERSION_NAME=[0-9.]\+/VERSION_NAME=$ANDROID_VERSION/" "$CHANGELOG_GENERATOR_FILE"
   else
