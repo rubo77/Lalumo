@@ -296,6 +296,20 @@ export function app() {
         
         // Load language preference from localStorage
         const savedLanguage = localStorage.getItem('lalumo_language');
+        // If no language is set, try to detect from browser
+        if (!savedLanguage) {
+          const browserLang = (navigator.language || navigator.userLanguage || "en").toLowerCase();
+          if (browserLang.startsWith("de")) {
+            this.preferredLanguage = "german";
+            localStorage.setItem("lalumo_language", "german");
+          } else {
+            this.preferredLanguage = "english";
+            localStorage.setItem("lalumo_language", "english");
+          }
+          document.documentElement.lang = this.preferredLanguage === "german" ? "de" : "en";
+        } else {
+          document.documentElement.lang = savedLanguage === "german" ? "de" : "en";
+        }
         if (savedLanguage) {
           this.preferredLanguage = savedLanguage;
         } else {
@@ -385,6 +399,8 @@ export function app() {
         this.unlockInterval = null;
         this.unlockProgress = 0;
         document.documentElement.style.setProperty('--unlock-progress', 0);
+        // Also update the <html lang> attribute
+        document.documentElement.lang = language === "german" ? "de" : "en";
         console.log('Unlock canceled');
       }
     },
