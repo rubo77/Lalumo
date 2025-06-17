@@ -8,9 +8,9 @@ fuser -k 9091/tcp 2>/dev/null || echo "No process running on port 9091"
 # Also try to kill by process name in case port changed
 pkill -f 'webpack.*serve' 2>/dev/null || echo "No webpack process found"
 
-# 3. rsync images from public directory to dist
+# 3. rsync images from public directory to app
 echo "Syncing images..."
-rsync -a --progress --exclude='images/backgrounds/original/' --delete public/images/ dist/images/
+rsync -a --progress --exclude='images/backgrounds/original/' --delete public/images/ app/images/
 
 echo "Starting webpack development server..."
 # Starte webpack-Server im Hintergrund
@@ -20,8 +20,9 @@ cd /var/www/Musici && npm run watch &
 sleep 2
 
 echo "
-Application should be available at: http://localhost:9091"
-echo "If the browser doesn't open automatically, please visit the URL manually."
+Lalumo-App ist verfügbar unter: http://localhost:9091"
+echo "Homepage ist verfügbar unter: http://localhost:9091/homepage"
+echo "If the browser doesn't open automatically, please visit the URLs manually."
 
 #echo "Starting mobile app update..."
 #./mobile-build.sh update

@@ -1,6 +1,7 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = (env, argv) => {
   const isProduction = argv.mode === 'production';
@@ -22,6 +23,14 @@ module.exports = (env, argv) => {
           directory: path.join(__dirname, 'app'),
           publicPath: '/',
         },
+        {
+          directory: path.join(__dirname, 'public'),
+          publicPath: '/',
+        },
+        {
+          directory: path.join(__dirname, 'homepage'),
+          publicPath: '/homepage',
+        }
       ],
       port: 9091,
       hot: true,
@@ -63,9 +72,22 @@ module.exports = (env, argv) => {
         template: './src/index.html',
         filename: 'index.html',
       }),
-      ...(isProduction ? [new MiniCssExtractPlugin({
+      new MiniCssExtractPlugin({
         filename: '[name].[contenthash].css',
-      })] : []),
+      }),
+      // Copy XML files to root for app access
+      new CopyWebpackPlugin({
+        patterns: [
+          { 
+            from: 'public/strings-*.xml',
+            to: '[name][ext]'
+          },
+          {
+            from: 'public/images',
+            to: 'images'
+          }
+        ],
+      }),
     ],
     resolve: {
       extensions: ['.js'],

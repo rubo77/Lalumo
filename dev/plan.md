@@ -20,6 +20,9 @@
 - Initial public homepage (`homepage/index.html`) created with app colour scheme and hero design.
 - Started repository restructuring: created `app/` dir and copied built SPA to `app/index.html`.
 - Webpack output path changed to `app/` and devServer updated accordingly.
+- Fixed bug in "Match the Sounds": forced melody now only plays once (reset `correctAnswer` after unlock).
+- Asset loading errors (404 for strings-en.xml, missing images) arose after homepage restructure; added CopyWebpackPlugin and extra static dirs.
+- Updated run.sh to sync images into app/ directory and display both App and Homepage URLs; copy-webpack-plugin installed and webpack build now outputs XML files and images.
 
 ## Task List
 - [x] Search codebase for any `localStorage.setItem` / `getItem` involving `mascotSettings` or `seenActivityMessages`.
@@ -39,6 +42,9 @@
 - [x] Draft homepage content structure in `dev/Homepage.md` (links, imprint, privacy).
 - [x] Decide on repo structure: moved SPA to `app/` directory, separate from homepage.
 - [x] Update build workflow to output SPA into `app/` directory and adjust paths.
+- [x] Fix forced melody bug in 1_2 Match Sounds (reset `correctAnswer`)
+- [ ] Verify asset loading (strings XML, images) works after webpack update
+- [x] Update run.sh to serve both app and homepage, document access URLs
 - [ ] Update homepage links and navigation to point to `/app/`.
 - [ ] Ensure monetized activity code is not exposed on public homepage.
 - [ ] Fix mascot close button & preference effect
@@ -49,4 +55,4 @@
 - [x] Create `homepage/index.html` using existing colour scheme and hero design.
 
 ## Current Goal
-Verify mascot settings persistence & toggle behavior
+Resolve asset loading issues & update dev script
