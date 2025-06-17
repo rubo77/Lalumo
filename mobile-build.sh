@@ -107,9 +107,17 @@ update_version() {
   MAJOR=$(echo "$CURRENT_VERSION" | cut -d. -f1)
   MINOR=$(echo "$CURRENT_VERSION" | cut -d. -f2)
   
-  # increment minor version (no patch version)
-  NEW_MINOR=$((MINOR + 1))
-  NEW_VERSION="$MAJOR.$NEW_MINOR"
+  # Check if minor version is 99, then rollover to next major version
+  if [ "$MINOR" -eq 99 ]; then
+    NEW_MAJOR=$((MAJOR + 1))
+    NEW_MINOR=0
+    NEW_VERSION="$NEW_MAJOR.$NEW_MINOR"
+    echo "Major version rollover: $CURRENT_VERSION → $NEW_VERSION (minor reached 99)"
+  else
+    # increment minor version (no patch version)
+    NEW_MINOR=$((MINOR + 1))
+    NEW_VERSION="$MAJOR.$NEW_MINOR"
+  fi
   
   echo "###### 2. Updating version in package.json: $CURRENT_VERSION → $NEW_VERSION"
   

@@ -101,7 +101,7 @@ reset-button:
 - hilfstexte selbst einsprechen oder einmal generieren lassen als mp3
 - volume level einstellbar machen
 
-- ganz viel ist noch strings hartkodiert mit isGerman
+- ganz viel ist noch strings hartkodiert mit `isGerman`
 
 # vermarkten
 - erstelle ein concept, wie wir die app vermarkten können

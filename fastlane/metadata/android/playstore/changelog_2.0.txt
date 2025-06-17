@@ -1,0 +1,24 @@
+# Play Store Changelogs für Version 2.0
+
+<en-GB>
+- German translation added
+- Catch back-gesture on Android
+- Reset buttons for progress
+- Draw a Melody:
+  - Free Draw mode: up to 32-notes
+  - Helplines for pitch positions in challenge mode
+- Does it sound right?:
+  - New Melodies
+  - Animal images updated and improved
+</en-GB>
+<de-DE>
+- Deutsche Übersetzung
+- Back-Gesture auf Android
+- Reset-Buttons für Fortschritt
+- Zeichne eine Melodie:
+  - Frei zeichnen: bis zu 32 Noten
+  - Hilfslinien für Notenpositionen im Herausforderungsmodus
+- Klingt es richtig?:
+  - Neue Melodien
+  - Tierbilder aktualisiert und verbessert
+</de-DE>
