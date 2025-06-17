@@ -2147,7 +2147,7 @@ export function pitches() {
         // Check if pattern was forced (e.g., after unlock) before random selection
         const availableTypes = this.unlockedPatterns;
         let selectedType;
-        if (this.correctAnswer && availableTypes.includes(this.correctAnswer)) {
+        if ((this.currentProgress == 10 || this.currentProgress == 20) && this.correctAnswer && availableTypes.includes(this.correctAnswer)) {
           // Use forced pattern (newly unlocked wave/jump)
           selectedType = this.correctAnswer;
           console.log('PATTERN_FORCE_DEBUG: Using forced pattern:', selectedType);
