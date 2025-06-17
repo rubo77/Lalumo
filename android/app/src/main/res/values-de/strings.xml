@@ -122,7 +122,7 @@
     
     <!-- Feedback Messages (from pitches.js) -->
     <string name="memory_correct">Fantastisches Gedächtnis! Du hast es richtig gemacht!</string>
-    <string name="memory_incorrect">Lass uns es nochmal versuchen. Hör genau zu!</string>
+    <string name="memory_incorrect">Probiere noch einmal. Hör genau zu!</string>
     
     <!-- Legal Pages Headers -->
     <string name="credits_header">Mitwirkende</string>
@@ -139,7 +139,7 @@
     <!-- Impressum Content -->
     <string name="impressum_app_description">Lalumo App - Musik lernen für Kinder</string>
     <string name="impressum_responsible">Verantwortlich für den Inhalt:</string>
-    <string name="impressum_contact">Ruben Barkow-Kuder&lt;br /&gt;Knickweg 16&lt;br /&gt;24114 Kiel</string>
+    <string name="impressum_contact">Ruben Barkow-Kuder&lt;br&gt;Knickweg 16&lt;br&gt;24114 Kiel</string>
     
     <!-- Datenschutz Content -->
     <string name="privacy_intro">Datenschutzerklärung für die Lalumo App</string>
