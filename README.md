@@ -106,7 +106,17 @@ Bundle and build with:
 ```
 npm run build
 ```
-All files are then in the /dist folder
+All files are then in the /dist folder.
+Full Optimization - Minification, Tree-shaking
+
+
+## fast build
+
+No Minification - Code stays readable
+
+```
+npm run build:fast
+```
 
 # Online Deployment
 
