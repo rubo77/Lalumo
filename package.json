@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "sync-strings": "mkdir -p public/android/app/src/main/res/values public/android/app/src/main/res/values-de && cp android/app/src/main/res/values/strings.xml public/android/app/src/main/res/values/ && cp android/app/src/main/res/values-de/strings.xml public/android/app/src/main/res/values-de/",
+    "sync-strings": "mkdir -p public/android/app/src/main/res/values public/android/app/src/main/res/values-de && cp android/app/src/main/res/values/strings.xml public/android/app/src/main/res/values/ && cp android/app/src/main/res/values-de/strings.xml public/android/app/src/main/res/values-de/ && cp android/app/src/main/res/values/strings.xml public/strings-en.xml && cp android/app/src/main/res/values-de/strings.xml public/strings-de.xml",
     "watch": "npm run sync-strings && webpack serve --mode development",
     "dev": "npm run sync-strings && webpack serve --mode development",
     "build": "npm run sync-strings && webpack --mode production"

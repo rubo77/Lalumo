@@ -72,3 +72,4 @@ yarn-error.log*
 /playwright-report/
 /test-results/
 /tests/*png
+/public/strings*.xml

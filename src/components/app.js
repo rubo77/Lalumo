@@ -83,13 +83,15 @@ export function app() {
       // Determine which language file to load
       const language = this.preferredLanguage === 'german' ? 'de' : 'en';
       const xmlPath = language === 'de' 
-        ? '/android/app/src/main/res/values-de/strings.xml'
-        : '/android/app/src/main/res/values/strings.xml';
+        ? 'strings-de.xml'
+        : 'strings-en.xml';
       
       console.log(`Loading strings from: ${xmlPath}`);
+      console.log("[STRING_LOAD_DEBUG] Fetching XML from path:", xmlPath);
       
       // Fetch the XML file
       const response = await fetch(xmlPath);
+      console.log("[STRING_LOAD_DEBUG] Fetch response status:", response.status, "- OK:", response.ok);
       if (!response.ok) {
         throw new Error(`Failed to load ${xmlPath}: ${response.status}`);
       }
