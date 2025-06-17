@@ -30,6 +30,7 @@
 - Added initial logic to close hamburger menu in `resetCurrentActivity`, but menu still not closing; needs further fix.
 - Added `close-hamburger-menu` custom event and listener in index.js/index.html, but introduced syntax (lint) errors; menu still not closing until fixed.
 - Global `closeHamburgerMenu` function added in index.js and resetCurrentActivity now dispatches it; still needs syntax cleanup.
+- Copied `package.json` into build via CopyWebpackPlugin so version can load.
 
 ## Task List
 - [x] Search codebase for any `localStorage.setItem` / `getItem` involving `mascotSettings` or `seenActivityMessages`.
@@ -51,6 +52,8 @@
 - [x] Update build workflow to output SPA into `app/` directory and adjust paths.
 - [x] Fix forced melody bug in 1_2 Match Sounds (reset `correctAnswer`)
 - [ ] Verify asset loading (strings XML, images) works after webpack update
+- [x] Copy package.json into build for version display
+- [ ] Verify version number displays in credits without 404
 - [x] Update run.sh to serve both app and homepage, document access URLs
 - [x] Update homepage links and navigation to point to `/app/`.
 - [ ] Ensure monetized activity code is not exposed on public homepage.

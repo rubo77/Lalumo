@@ -98,6 +98,11 @@ module.exports = (env, argv) => {
           {
             from: 'public/images/backgrounds/pitches_bird_sings.jpg',
             to: 'homepage/images/screenshots/pitches_bird_sings.jpg'
+          },
+          {
+            // Copy package.json for version display in credits
+            from: 'package.json',
+            to: 'package.json'
           }
         ],
       }),
