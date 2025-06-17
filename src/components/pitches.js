@@ -65,6 +65,7 @@ export function pitches() {
     melodyTimeouts: [], // Array für Timeout-IDs der Melodiesequenzen
     mascotSettings: {
       showHelpMessages: true,     // Whether to show help messages
+      disableTTS: true,          // Whether to disable TTS for mascot messages
       seenActivityMessages: {},   // Track which activities have shown the message
     },
     currentHighlightedNote: null, // For highlighting piano keys during playback
@@ -279,11 +280,18 @@ export function pitches() {
       try {
         const savedMascotSettings = localStorage.getItem('lalumo_mascot_settings');
         if (savedMascotSettings) {
-          this.mascotSettings = JSON.parse(savedMascotSettings);
+          const loadedSettings = JSON.parse(savedMascotSettings);
+          // Merge loaded settings with defaults to ensure new flags are set
+          this.mascotSettings = {
+            ...this.mascotSettings,  // Default values
+            ...loadedSettings        // Saved values override defaults
+          };
           // Reset seenActivityMessages on every app start
           this.mascotSettings.seenActivityMessages = {};
           console.log('Loaded mascot settings and reset seen messages:', this.mascotSettings);
         }
+        // Always save back to localStorage to persist any new default flags
+        localStorage.setItem('lalumo_mascot_settings', JSON.stringify(this.mascotSettings));
       } catch (error) {
         console.error('Error loading mascot settings:', error);
         // Keep default settings
@@ -1724,20 +1732,26 @@ export function pitches() {
           }, 100);
         }, 10000);
       }, delaySeconds * 1000);
-      console.log('Showing mascot message:', message, 'TTS available:', this.ttsAvailable, 'Using native TTS:', this.usingNativeAndroidTTS);
+      console.log('MASCOT_DISPLAY: Showing mascot message:', message, 'TTS available:', this.ttsAvailable, 'Using native TTS:', this.usingNativeAndroidTTS);
       
-      // Check if we can use the native Android TTS bridge
-      if (this.usingNativeAndroidTTS && window.AndroidTTS) {
-        try {
-          console.log('Using native Android TTS bridge to speak:', message);
-          window.AndroidTTS.speak(message);
-        } catch (error) {
-          console.error('Error using native Android TTS:', error);
+      // Check TTS settings before attempting speech
+      console.log('MASCOT_TTS: TTS disabled:', this.mascotSettings.disableTTS);
+      if (!this.mascotSettings.disableTTS) {
+        // Check if we can use the native Android TTS bridge
+        if (this.usingNativeAndroidTTS && window.AndroidTTS) {
+          try {
+            console.log('MASCOT_TTS: Using native Android TTS bridge to speak:', message);
+            window.AndroidTTS.speak(message);
+          } catch (error) {
+            console.error('MASCOT_TTS: Error using native Android TTS:', error);
+            this.tryWebSpeechAPI(message);
+          }
+        } else {
+          // Fallback to Web Speech API
           this.tryWebSpeechAPI(message);
         }
       } else {
-        // Fallback to Web Speech API
-        this.tryWebSpeechAPI(message);
+        console.log('MASCOT_TTS: TTS disabled, skipping speech for:', message);
       }
     },
     
