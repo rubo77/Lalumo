@@ -1411,20 +1411,21 @@ export function pitches() {
         
         // Get the appropriate message based on stage and language
         if (this.$store.strings) {
-          // Use strings from the store if available (for proper localization)
+          // high_or_low_intro_stage1, high_or_low_intro_stage2, high_or_low_intro_stage3, high_or_low_intro_stage4, high_or_low_intro_stage5
           const stageKey = `high_or_low_intro_stage${stage}`;
           message = this.$store.strings[stageKey];
         }
         
-        // Fallbacks if string is not found
+        // TODO: no Fallbacks if string is not found
+        // add this to strings.xml
         if (!message) {
           switch(stage) {
             case 1:
             case 2:
               // Single tone stages
               message = language === 'german' ? 
-                'Höre den Ton! Ist er hoch oder tief?' : 
-                'Listen to the tone! Is it high or low?';
+                'Höre den Ton! Ist er hoch oder tief? Drücke ▶️ um das Spiel zu starten!' : 
+                'Listen to the tone! Is it high or low? Press ▶️ for the game!';
               break;
             case 3:
             case 4:
@@ -1437,10 +1438,11 @@ export function pitches() {
           }
         }
       } else if (this.mode === '1_2_pitches_match-sounds') {
+        // TODO: use match_sounds_practice from strings.xml
         if (!this.gameMode) {
           message = language === 'german' ? 
-            'Klicke auf die Bilder zum Üben. Drücke ▶️ für das Spiel!' : 
-            'Click on pictures to practice. Press ▶️ for the game!';
+            'Klicke auf die Bilder zum Üben. Drücke ▶️ um das Spiel zu starten!' : 
+            'Click on pictures to practice. Press ▶️ to start the game!';
         } else {
           message = language === 'german' ? 
             'Höre zu und wähle das richtige Bild!' : 
@@ -1453,12 +1455,12 @@ export function pitches() {
       } else if (this.mode === '1_5_pitches_memory-game') {
         if (this.memoryFreePlay) {
           message = language === 'german' ? 
-            'Drücke frei auf die Tasten zum Üben. Drücke ▶️ für das Spiel!' : 
-            'Press keys freely to practice. Press ▶️ for the game!';
+            'Drücke frei auf die Tasten zum Üben. Drücke ▶️ um das Spiel zu starten!' : 
+            'Press keys freely to practice. Press ▶️ to start the game!';
         } else {
           message = language === 'german' ? 
-            'Höre dir die Melodie an und tippe dann auf die farbigen Knöpfe in der gleichen Reihenfolge!' : 
-            'Listen to the melody, then tap the colored buttons in the same order!';
+            'Höre dir die Melodie an und tippe dann auf die farbigen Tasten in der gleichen Reihenfolge!' : 
+            'Listen to the melody, then tap the colored keys in the same order!';
         }
       }
       
@@ -1695,12 +1697,12 @@ export function pitches() {
           'de': 'Höre dir die Note an und wähle, ob sie hoch oder tief ist!'
         },
         '1_2_pitches_match-sounds': {
-          'en': 'Listen to the Note and choose if it is of a high or low pitch!',
-          'de': 'Höre dir die Note an und wähle, ob sie hoch oder tief ist!'
+          'en': 'Listen to the Melody and choose if it is ascending or descending!',
+          'de': 'Höre dir die Melodie an und wähle, ob sie auf- oder absteigend ist!'
         },
         '1_3_pitches_draw': {
-          'en': 'Draw your own melody! Where does your line go?',
-          'de': 'Zeichne deine eigene Melodie! Wohin geht deine Linie?'
+          'en': 'Draw and listen – your line becomes music!',
+          'de': 'Male und hör zu – deine Linie wird zu Musik!'
         },
         '1_4_pitches_does-it-sound-right': {
           'en': 'Listen to the melody! Does it sound right? Or is there a wrong note?',
