@@ -3,9 +3,18 @@
  * Implements interactive chord learning experiences for children
  */
 
+// External library imports
+import * as Tone from 'tone';
+
 // Export specific functions from each module
 // Common Module
 export { testCommonModuleImport } from './2_chords/common.js';
+
+// Chord Modules - Modular approach
+import { testChordColorMatchingModuleImport, newColorMatchingQuestion, checkColorAnswer } from './2_chords/2_1_chord_color_matching.js';
+
+// Feedback utilities - central import
+import { showCompleteSuccess, playSuccessSound } from './shared/feedback.js';
 
 // Chord Color Matching Module
 export { 
@@ -28,6 +37,9 @@ export { testChordCharactersModuleImport } from './2_chords/2_5_chord_characters
 
 // Import debug utilities
 import { debugLog } from '../utils/debug.js';
+
+// Import chord styles
+import '../styles/2_chords.css';
 
 export function chords() {
   return {
@@ -99,6 +111,7 @@ export function chords() {
       // Setup navigation elements after DOM is fully loaded
       document.addEventListener('DOMContentLoaded', () => {
         this.setupNavigation();
+        this.setupFullHeightContainers();
       });
     },
     
@@ -119,6 +132,8 @@ export function chords() {
         if (!audioEngine._isInitialized) {
           debugLog('CHORDS', 'Initializing central audio engine for chord playback');
           await audioEngine.initialize();
+          // Force a Tone.start() to handle browser autoplay restrictions
+          await Tone.start();
           debugLog('CHORDS', 'Central audio engine initialized for chord playback');
         } else {
           debugLog('CHORDS', 'Audio engine already initialized');
@@ -136,7 +151,7 @@ export function chords() {
      * @param {string} chordType - The type of chord (major, minor, etc.)
      * @param {string} rootNote - The root note of the chord (e.g., 'C4')
      */
-    async playChord(chordType, rootNote = 'C4') {
+    async playChord(chordType, rootNote = 'C4', options = { duration: 2 }) {
       this.stopAllSounds();
       
       try {
@@ -147,6 +162,33 @@ export function chords() {
         const audioEngine = (await import('./audio-engine.js')).default;
         if (!audioEngine._isInitialized) {
           await this.initAudio();
+        }
+        
+        // Force Tone.js to start if needed (critical for sound playback)
+        if (Tone.context.state !== "running") {
+          debugLog('CHORDS', 'Tone.js context not running, attempting to start');
+          try {
+            await Tone.start();
+            debugLog('CHORDS', 'Tone.js started successfully in playChord');
+          } catch (error) {
+            debugLog('CHORDS', `Failed to start Tone.js: ${error.message}`);
+            // Try a user interaction fallback
+            const startTone = async () => {
+              try {
+                await Tone.start();
+                debugLog('CHORDS', 'Tone.js started via user interaction');
+                document.removeEventListener('click', startTone);
+                document.removeEventListener('touchstart', startTone);
+                // Try playing the chord again after successful start
+                setTimeout(() => this.playChord(chordType, rootNote, options), 100);
+              } catch (e) {
+                debugLog('CHORDS', `Still failed to start Tone.js: ${e.message}`);
+              }
+            };
+            document.addEventListener('click', startTone, { once: true });
+            document.addEventListener('touchstart', startTone, { once: true });
+            return; // Exit early and wait for user interaction
+          }
         }
         
         // Get chord definition
@@ -221,7 +263,7 @@ export function chords() {
         debugLog('CHORDS', `Playing chord notes: ${noteNames.join(', ')}`);
         
         // Play all notes together as a chord with the audio engine
-        audioEngine.playChord(noteNames, { duration: 2 });
+        audioEngine.playChord(noteNames, { duration: options.duration || 2 });
         
         this.isPlaying = true;
         debugLog('CHORDS', `Playing ${chord.name} chord on ${rootNote} using central audio engine`);
@@ -373,6 +415,18 @@ export function chords() {
     },
     
     /**
+     * Ensure all activity containers have proper height
+     */
+    setupFullHeightContainers() {
+      // External CSS is now loaded from 2_chords.css
+      debugLog('CHORDS', 'Using external stylesheet for chord activities');
+      // No need to inject styles here anymore as they're loaded from the CSS file
+      
+      
+      console.log('CHORDS: Set up full-height containers for chord activities');
+    },
+    
+    /**
      * Get a random chord type from available chords
      * @returns {string} A random chord type
      */
@@ -407,29 +461,297 @@ export function chords() {
     },
     
     checkColorAnswer(selectedColor) {
-      checkColorAnswer(this, selectedColor);
+      // Call the imported function
+      const result = checkColorAnswer(this, selectedColor);
+      
+      // Show rainbow success if correct in 2_1_chord_color_matching
+      // Result is undefined because the imported function does not return a value
+      // We'll check directly if the answer was correct based on our state
+      if (this.showFeedback && this.feedbackMessage && this.feedbackMessage.includes('Great job')) {
+        debugLog('CHORDS', '2_1_chord_color_matching: Correct answer, showing rainbow');
+        showCompleteSuccess();
+      }
+      
+      return result;
     },
     
-    // Mood Landscapes Activity Methods
-    updateLandscape(chordType) {
-      // This would update the visual landscape based on chord type
+    // 2_2_chord_mood_landscapes Activity Methods
+    // 2_2_chord_mood_landscapes - Map chord types to emotions and landscapes
+    getMoodLandscapes() {
+      return {
+        major: {
+          emotion: 'Happy / Bright',
+          landscapes: [
+            { src: './images/landscapes/sunny-field.jpg', name: 'Sunny Field' },
+            { src: './images/landscapes/beach-sunrise.jpg', name: 'Beach Sunrise' },
+            { src: './images/landscapes/flower-garden.jpg', name: 'Flower Garden' }
+          ],
+          description: 'Major chords sound bright, happy, and stable. They evoke feelings of joy and optimism.'
+        },
+        minor: {
+          emotion: 'Sad / Melancholic',
+          landscapes: [
+            { src: './images/landscapes/rainy-forest.jpg', name: 'Rainy Forest' },
+            { src: './images/landscapes/autumn-leaves.jpg', name: 'Autumn Leaves' },
+            { src: './images/landscapes/foggy-lake.jpg', name: 'Foggy Lake' }
+          ],
+          description: 'Minor chords sound sad, melancholic, and introspective. They can create feelings of sadness or contemplation.'
+        },
+        diminished: {
+          emotion: 'Tense / Mysterious',
+          landscapes: [
+            { src: './images/landscapes/misty-mountains.jpg', name: 'Misty Mountains' },
+            { src: './images/landscapes/dark-cave.jpg', name: 'Dark Cave' },
+            { src: './images/landscapes/abandoned-house.jpg', name: 'Abandoned House' }
+          ],
+          description: 'Diminished chords sound tense, unstable, and mysterious. They create a sense of suspense or unease.'
+        },
+        augmented: {
+          emotion: 'Dreamy / Magical',
+          landscapes: [
+            { src: './images/landscapes/lightning-storm.jpg', name: 'Lightning Storm' },
+            { src: './images/landscapes/starry-night.jpg', name: 'Starry Night' },
+            { src: './images/landscapes/aurora-borealis.jpg', name: 'Aurora Borealis' }
+          ],
+          description: 'Augmented chords sound dreamy, floating, and magical. They create a sense of wonder or fantasy.'
+        },
+        sus4: {
+          emotion: 'Open / Floating',
+          landscapes: [
+            { src: './images/landscapes/windy-plains.jpg', name: 'Windy Plains' },
+            { src: './images/landscapes/ocean-waves.jpg', name: 'Ocean Waves' },
+            { src: './images/landscapes/mountain-peak.jpg', name: 'Mountain Peak' }
+          ],
+          description: 'Suspended 4th chords sound open, floating, and unresolved. They create a feeling of anticipation.'
+        },
+        sus2: {
+          emotion: 'Light / Airy',
+          landscapes: [
+            { src: './images/landscapes/meadow.jpg', name: 'Meadow' },
+            { src: './images/landscapes/clouds.jpg', name: 'Clouds' },
+            { src: './images/landscapes/light-forest.jpg', name: 'Light Forest' }
+          ],
+          description: 'Suspended 2nd chords sound light, airy, and open. They create a feeling of lightness or spaciousness.'
+        },
+        // Add more chord types as needed
+      };
+    },
+    
+    async updateLandscape(chordType) {
+      // Update the visual landscape and play the chord
       const landscapeImage = document.getElementById('landscape-image');
+      const emotionText = document.getElementById('emotion-text');
+      const descriptionText = document.getElementById('chord-description');
+      const moodData = this.getMoodLandscapes()[chordType];
+      
+      if (!moodData) {
+        debugLog('CHORDS', `No mood data found for chord type: ${chordType}`);
+        return;
+      }
+      
+      // Show rainbow success when updating landscape
+      showRainbowSuccess();
+      
+      // Update visual elements if they exist
       if (landscapeImage) {
-        // Map chord types to landscape images
-        const landscapes = {
-          major: './images/landscapes/sunny-field.jpg',
-          minor: './images/landscapes/rainy-forest.jpg',
-          diminished: './images/landscapes/misty-mountains.jpg',
-          augmented: './images/landscapes/lightning-storm.jpg',
-          sus4: './images/landscapes/windy-plains.jpg',
-          sus2: './images/landscapes/meadow.jpg'
-        };
+        // Get a random landscape from the available options
+        const landscape = moodData.landscapes[Math.floor(Math.random() * moodData.landscapes.length)];
+        landscapeImage.src = landscape.src;
+        landscapeImage.alt = landscape.name;
         
-        landscapeImage.src = landscapes[chordType] || landscapes.major;
+        // Add a title or caption if needed
+        if (landscapeImage.parentElement) {
+          const caption = landscapeImage.parentElement.querySelector('.landscape-caption') || 
+                         document.createElement('div');
+          if (!caption.classList.contains('landscape-caption')) {
+            caption.classList.add('landscape-caption');
+            landscapeImage.parentElement.appendChild(caption);
+          }
+          caption.textContent = `${landscape.name} - ${moodData.emotion}`;
+        }
+      }
+      
+      // Update emotion text if element exists
+      if (emotionText) {
+        emotionText.textContent = moodData.emotion;
+      }
+      
+      // Update description if element exists
+      if (descriptionText) {
+        descriptionText.textContent = moodData.description;
+      }
+      
+      // Play the chord using audio engine
+      try {
+        debugLog('CHORDS', `Playing chord for mood landscape: ${chordType}`);
+        // Get and initialize audioEngine if needed
+        const audioEngine = (await import('./audio-engine.js')).default;
+        if (!audioEngine._isInitialized) {
+          await audioEngine.initialize();
+        }
+        
+        // Play the chord with a longer duration for mood ambience
+        this.playChord(chordType, 'C4', { duration: 3.0 });
+        
+        // Optional: play a progression after a short delay
+        setTimeout(async () => {
+          if (chordType === 'major') {
+            // Play a I-IV-V progression
+            await this.playChord('major', 'C4', { duration: 1.0 }); // I
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            await this.playChord('major', 'F4', { duration: 1.0 }); // IV
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            await this.playChord('major', 'G4', { duration: 1.5 }); // V
+          } else if (chordType === 'minor') {
+            // Play a i-iv-v progression
+            await this.playChord('minor', 'C4', { duration: 1.0 }); // i
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            await this.playChord('minor', 'F4', { duration: 1.0 }); // iv
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            await this.playChord('minor', 'G4', { duration: 1.5 }); // v
+          }
+        }, 3500);
+      } catch (error) {
+        debugLog('CHORDS', `Error playing chord for mood landscape: ${error.message}`);
       }
     },
     
     // Chord Building Activity Methods
+    // Create a button to play the full chord
+    addPlayChordButton() {
+      // First check if button already exists
+      let playButton = document.getElementById('play-full-chord-button');
+      
+      // If button doesn't exist yet, create it
+      if (!playButton) {
+        // Find the container in different possible locations
+        let container = document.querySelector('.chord-blocks') || 
+                       document.querySelector('.chord-building-container') ||
+                       document.querySelector('.chord-activity-container');
+        
+        if (container) {
+          // Create a container for the button to style it separately
+          const buttonContainer = document.createElement('div');
+          buttonContainer.style.marginTop = '15px';
+          buttonContainer.style.textAlign = 'center';
+          buttonContainer.style.clear = 'both';
+          buttonContainer.style.position = 'relative';
+          buttonContainer.style.zIndex = '100'; // Ensure it's above other elements
+          
+          // Create the button itself
+          playButton = document.createElement('button');
+          playButton.id = 'play-full-chord-button';
+          playButton.className = 'play-chord-button';
+          playButton.textContent = 'Play Full Chord';
+          playButton.style.padding = '8px 16px';
+          playButton.style.fontSize = '16px';
+          playButton.style.backgroundColor = '#4CAF50';
+          playButton.style.color = 'white';
+          playButton.style.border = 'none';
+          playButton.style.borderRadius = '4px';
+          playButton.style.cursor = 'pointer';
+          
+          // Add hover effect
+          playButton.onmouseover = () => {
+            playButton.style.backgroundColor = '#45a049';
+          };
+          playButton.onmouseout = () => {
+            playButton.style.backgroundColor = '#4CAF50';
+          };
+          
+          // Add click handler
+          playButton.onclick = () => this.playBuiltChord();
+          
+          // Create a fixed container at the bottom of the screen
+          const fixedContainer = document.createElement('div');
+          fixedContainer.id = 'play-full-chord-button-container';
+          
+          // Add to DOM - both in the flow and fixed position
+          buttonContainer.appendChild(playButton.cloneNode(true));
+          container.parentNode.insertBefore(buttonContainer, container.nextSibling);
+          
+          // Add fixed button
+          fixedContainer.appendChild(playButton);
+          document.body.appendChild(fixedContainer);
+          
+          debugLog('CHORDS', '2_3_chord_building: Added play chord button');
+        }
+      }
+    },
+    
+    // Play the currently built chord
+    async playBuiltChord() {
+      debugLog('CHORDS', '2_3_chord_building: Playing built chord');
+      
+      // If we have a recognized chord type, play it using the audio engine
+      if (this.recognizedChordType) {
+        try {
+          // Get and initialize audioEngine if needed
+          const audioEngine = (await import('./audio-engine.js')).default;
+          if (!audioEngine._isInitialized) {
+            await audioEngine.initialize();
+          }
+          
+          // Play the chord with the central audio engine
+          this.playChord(this.recognizedChordType, 'C4', { duration: 2.5 });
+          
+          // Visual feedback
+          const playButton = document.getElementById('play-full-chord-button');
+          if (playButton) {
+            const originalText = playButton.textContent;
+            playButton.textContent = '▶ Playing...'; 
+            playButton.disabled = true;
+            
+            setTimeout(() => {
+              playButton.textContent = originalText;
+              playButton.disabled = false;
+            }, 2500);
+          }
+        } catch (error) {
+          debugLog('CHORDS', `Error playing built chord: ${error.message}`);
+        }
+      } 
+      // Otherwise, play the individual notes in sequence
+      else if (this.builtChordIntervals && this.builtChordIntervals.length > 0) {
+        // Play each note in sequence (bottom to top)
+        const sortedIntervals = [...this.builtChordIntervals].sort((a, b) => a - b);
+        
+        try {
+          // Get and initialize audioEngine if needed
+          const audioEngine = (await import('./audio-engine.js')).default;
+          if (!audioEngine._isInitialized) {
+            await audioEngine.initialize();
+          }
+          
+          for (const interval of sortedIntervals) {
+            const noteBlocks = document.querySelectorAll('.chord-block');
+            if (noteBlocks[sortedIntervals.indexOf(interval)]) {
+              noteBlocks[sortedIntervals.indexOf(interval)].classList.add('playing');
+            }
+            
+            // Calculate note name
+            const noteNames = this.getNoteNamesFromIntervals(['C4'], [interval]);
+            if (noteNames && noteNames.length > 0) {
+              await audioEngine.playNote(noteNames[0], { duration: 0.5 });
+              await new Promise(resolve => setTimeout(resolve, 500));
+            }
+            
+            if (noteBlocks[sortedIntervals.indexOf(interval)]) {
+              noteBlocks[sortedIntervals.indexOf(interval)].classList.remove('playing');
+            }
+          }
+          
+          // Then play them together
+          const noteNames = this.getNoteNamesFromIntervals(['C4'], sortedIntervals);
+          if (noteNames && noteNames.length > 0) {
+            await audioEngine.playChord(noteNames, { duration: 1.5 });
+          }
+        } catch (error) {
+          debugLog('CHORDS', `Error playing built notes: ${error.message}`);
+        }
+      }
+    },
+    
     addNoteToChord(interval) {
       if (!this.audioContext) {
         this.initAudio();
@@ -503,9 +825,18 @@ export function chords() {
         }
       });
       
+      // Add play button if we built a recognized chord
       if (recognizedChord) {
         this.showFeedback = true;
         this.feedbackMessage = `You built a ${this.chords[recognizedChord].name} chord!`;
+        this.recognizedChordType = recognizedChord; // Store for play button
+        
+        // Show rainbow success effect for 2_3_chord_building
+        showCompleteSuccess();
+        
+        // Add a play button if it doesn't exist yet
+        this.addPlayChordButton();
+        
         setTimeout(() => this.showFeedback = false, 3000);
       }
     },
@@ -567,6 +898,9 @@ export function chords() {
         this.feedbackMessage = this.$store.strings.success_message || 'Great job! That\'s correct!';
         this.correctAnswers++;
         
+        // Show rainbow success effect
+        showCompleteSuccess();
+        
         // Play the complete chord
         setTimeout(() => {
           this.playChord(this.currentChordType);
@@ -615,6 +949,9 @@ export function chords() {
         this.feedbackMessage = this.$store.strings.success_message || 'Great job! That\'s correct!';
         this.correctAnswers++;
         
+        // Show rainbow success effect for 2_5_chord_characters
+        showCompleteSuccess();
+        
         // Set up a new chord after a delay
         setTimeout(() => {
           const chordTypes = ['major', 'minor', 'diminished', 'augmented'];
@@ -656,6 +993,9 @@ export function chords() {
         setTimeout(() => this.showFeedback = false, 2000);
         return;
       }
+      
+      // Show small rainbow effect for 2_6_harmony_gardens when adding a chord
+      showRainbowSuccess();
       
       // Add the chord to the sequence
       const slots = document.querySelectorAll('.chord-slot');
@@ -715,6 +1055,9 @@ export function chords() {
         setTimeout(() => this.showFeedback = false, 2000);
         return;
       }
+      
+      // Show big rainbow success when playing a complete chord sequence in 2_6_harmony_gardens
+      showBigRainbowSuccess();
       
       // Stop any playing sounds
       this.stopAllSounds();

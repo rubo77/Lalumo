@@ -11,13 +11,34 @@ TODO
 
   - **2_1_chords_color-matching**:
    - Implementiere Tone.js Audio-Engine-Integration für Akkord-Wiedergabe
+
+   Uncaught runtime errors:
+ERROR
+checkColorAnswer is not defined
+chords/<.checkColorAnswer<@webpack-internal:///./src/components/chords.js:605:23
+checkColorAnswer@webpack-internal:///./src/components/chords.js:598:34
+anonymous@http://localhost:9091/main.6db226c628573e08bd2a.js line 162 > eval line 493 > AsyncFunction:3:32
+generateEvaluatorFromString/<@webpac
+
   - **2_2_chords_mood-landscapes**:
+   - es spielt noch kein sound
     - Aktiviere Audio-Wiedergabe für Akkordprogressionen
     - schlage landschaften vor
-  - **2_3_chords_chord-building**: Füge Button hinzu, um den vollständigen gebauten Akkord abzuspielen
+
+  - **2_3_chords_chord-building**:
+     - Füge einen neuen Button hinzu, um den vollständigen gebauten Akkord dann auch  abzuspielen
+
+  - **2_4_chords_missing-note**:
+    - Vereinfache die Aktivität für jüngere Kinder, so ist sie viel zu schwer
+    - schlage etwas vor
+
   - **2_5_chords_characters**:
+   - es spielt noch kein sound
    - Implementiere Tone.js Audio-Engine-Integration für Akkord-Wiedergabe
-  - **2_6_chords_harmony-gardens**: Aktiviere Audio-Wiedergabe für Akkordsequenzen
+   
+  - **2_6_chords_harmony-gardens**:
+   - es spielt noch kein sound
+   - Aktiviere Audio-Wiedergabe für Akkordsequenzen
 
 dabei:
 - Überprüfe ob alle mit tone.js umgesetzt wurden
