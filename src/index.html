@@ -237,7 +237,7 @@
             🔄 <span x-text="$store.strings?.reset_current_activity || 'Reset Current Activity'"></span>
           </button>
           
-          <button @click="active = 'settings'" :class="{ 'active': active === 'settings' }" class="settings-button" x-show="username">
+          <button @click="active = 'settings'; window.innerWidth < 1024 ? menuOpen = false : null" :class="{ 'active': active === 'settings' }" class="settings-button" x-show="username">
             <div class="user-avatar" x-show="username">
               <span x-text="username ? username.charAt(0) : '?'"></span>
             </div>
@@ -247,13 +247,13 @@
         
         <!-- Legal Section -->
         <div class="menu-legal">
-          <button @click="active = 'impressum'" :class="{ 'active': active === 'impressum' }">
+          <button @click="active = 'impressum'; window.innerWidth < 1024 ? menuOpen = false : null" :class="{ 'active': active === 'impressum' }">
             ℹ️ <span x-text="$store.strings?.menu_impressum || 'Impressum'"></span>
           </button>
-          <button @click="active = 'datenschutz'" :class="{ 'active': active === 'datenschutz' }">
+          <button @click="active = 'datenschutz'; window.innerWidth < 1024 ? menuOpen = false : null" :class="{ 'active': active === 'datenschutz' }">
             🔒 <span x-text="$store.strings?.menu_datenschutz || 'Datenschutz'"></span>
           </button>
-          <button @click="active = 'credits'" :class="{ 'active': active === 'credits' }">
+          <button @click="active = 'credits'; window.innerWidth < 1024 ? menuOpen = false : null" :class="{ 'active': active === 'credits' }">
             🏆 <span x-text="$store.strings?.menu_credits || 'Credits'"></span>
           </button>
         </div>

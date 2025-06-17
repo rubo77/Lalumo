@@ -87,7 +87,6 @@ Dies soll in allen aktionen:
 
 - Verschiedene Instrumente
 
-- wenn man preferences, credits, datenschutz oder impressum drückt, dann soll das hamburger menu sich schliessen
 
 - store username and language in export string in Preferences
 
@@ -101,6 +100,8 @@ reset-button:
 - wenn der auto-detect immer geht, dann kann der parameter currentMode in der funktion ja weg in function resetCurrentActivity(currentMode)
 - hilfstexte selbst einsprechen oder einmal generieren lassen als mp3
 - volume level einstellbar machen
+
+- ganz viel ist noch strings hartkodiert mit isGerman
 
 # vermarkten
 - erstelle ein concept, wie wir die app vermarkten können
@@ -175,4 +176,4 @@ reset-button:
 
 # most important
 
-- Reset all your game progress and start fresh funktioniert nichtd mehr
+- wenn man preferences, credits, datenschutz oder impressum drückt, dann soll das hamburger menu sich schliessen
