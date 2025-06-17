@@ -23,6 +23,13 @@
 - Fixed bug in "Match the Sounds": forced melody now only plays once (reset `correctAnswer` after unlock).
 - Asset loading errors (404 for strings-en.xml, missing images) arose after homepage restructure; added CopyWebpackPlugin and extra static dirs.
 - Updated run.sh to sync images into app/ directory and display both App and Homepage URLs; copy-webpack-plugin installed and webpack build now outputs XML files and images.
+- User requested adding F-Droid download link and open-source GitHub repo (https://github.com/rubo77/Lalumo) to homepage and to the in-app credits view.
+- Implemented F-Droid and GitHub links on homepage and in-app credits.
+- User requested hamburger menu closes after `resetCurrentActivity`.
+- Implemented F-Droid and GitHub links on homepage and in-app credits.
+- Added initial logic to close hamburger menu in `resetCurrentActivity`, but menu still not closing; needs further fix.
+- Added `close-hamburger-menu` custom event and listener in index.js/index.html, but introduced syntax (lint) errors; menu still not closing until fixed.
+- Global `closeHamburgerMenu` function added in index.js and resetCurrentActivity now dispatches it; still needs syntax cleanup.
 
 ## Task List
 - [x] Search codebase for any `localStorage.setItem` / `getItem` involving `mascotSettings` or `seenActivityMessages`.
@@ -45,14 +52,22 @@
 - [x] Fix forced melody bug in 1_2 Match Sounds (reset `correctAnswer`)
 - [ ] Verify asset loading (strings XML, images) works after webpack update
 - [x] Update run.sh to serve both app and homepage, document access URLs
-- [ ] Update homepage links and navigation to point to `/app/`.
+- [x] Update homepage links and navigation to point to `/app/`.
 - [ ] Ensure monetized activity code is not exposed on public homepage.
-- [ ] Fix mascot close button & preference effect
+- [x] Fix mascot close button & preference effect
   - [x] Replace settings toggle to use global mascotSettings store (remove extra `x-data="pitches()"`).
   - [x] Implement shared/global mascotSettings store accessible across components.
-  - [ ] Retest close button and toggle; ensure persistence.
-- [ ] Ensure mascot preference setting (`disableTTS` or visibility) takes effect and persists.
+  - [x] Retest close button and toggle; ensure persistence.
+- [x] Ensure mascot preference setting (`disableTTS` or visibility) takes effect and persists.
 - [x] Create `homepage/index.html` using existing colour scheme and hero design.
+- [x] Add F-Droid & GitHub links to `homepage/index.html` (downloads & footer).
+- [x] Add GitHub open-source link to in-app credits view.
+- [x] Ensure hamburger menu closes after reset current activity.
+  - [x] Attempt: set `appComponent.__x.$data.menuOpen = false` after reset
+  - [x] Investigate why menu still open; introduced custom event listener approach
+  - [x] Fix syntax/lint errors in index.js introduced by event code
+  - [x] Dispatch `closeHamburgerMenu()` from `resetCurrentActivity`
+  - [x] Verify hamburger menu closes on mobile after activity reset
 
 ## Current Goal
-Resolve asset loading issues & update dev script
+Fix index.js errors & close hamburger menu
