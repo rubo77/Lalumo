@@ -271,7 +271,7 @@
             <div class="mascot-speech-bubble">
               <p x-text="mascotMessage || ''"></p>
             </div>
-            <button class="close-mascot-button" @click="hideAndSaveMascotPreference()">&times;</button>
+            <button class="close-mascot-button" @click="$store.mascotSettings.showMascot = false; $store.mascotSettings.showHelpMessages = false">&times;</button>
           </div>
         </div>
         
@@ -960,15 +960,15 @@
         <div class="help-messages-section">
           <p x-text="$store.strings?.help_messages_desc || 'Control when mascot help messages appear:'"></p>
           <div class="help-options">
-            <div x-data="pitches()" x-init="init()" class="toggle-container">
+            <div class="toggle-container">
               <button 
                 class="toggle-button" 
-                :class="{'active': mascotSettings.showHelpMessages}" 
-                @click="toggleHelpMessages()" 
-                :aria-label="mascotSettings.showHelpMessages ? 'Disable help messages' : 'Enable help messages'" 
+                :class="{'active': $store.mascotSettings.showHelpMessages}" 
+                @click="$store.mascotSettings.showHelpMessages = !$store.mascotSettings.showHelpMessages" 
+                :aria-label="$store.mascotSettings.showHelpMessages ? 'Disable help messages' : 'Enable help messages'" 
                 aria-a11y="mascot_help_toggle">
-                <span class="toggle-slider" :class="{'active': mascotSettings.showHelpMessages}"></span>
-                <span class="toggle-text" x-text="mascotSettings.showHelpMessages ? ($store.strings?.help_messages_on || 'Show Help Messages') : ($store.strings?.help_messages_off || 'Help Messages Hidden')"></span>
+                <span class="toggle-slider" :class="{'active': $store.mascotSettings.showHelpMessages}"></span>
+                <span class="toggle-text" x-text="$store.mascotSettings.showHelpMessages ? ($store.strings?.help_messages_on || 'Show Help Messages') : ($store.strings?.help_messages_off || 'Help Messages Hidden')"></span>
               </button>
             </div>
           </div>

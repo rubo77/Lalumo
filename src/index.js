@@ -31,6 +31,64 @@ debugLog('App', 'Application initializing');
 // Initialize Alpine store for state management
 Alpine.store('pitchMode', 'main'); // Default is the main selection screen with clickable image
 
+// Initialize global mascot settings store
+Alpine.store('mascotSettings', {
+  showHelpMessages: true,
+  seenActivityMessages: {},
+  disableTTS: true,
+  
+  // Load settings from localStorage
+  init() {
+    try {
+      const savedSettings = localStorage.getItem('lalumo_mascot_settings');
+      if (savedSettings) {
+        const loadedSettings = JSON.parse(savedSettings);
+        // Merge with defaults to ensure new flags are set
+        Object.assign(this, {
+          showHelpMessages: true,
+          seenActivityMessages: {},
+          disableTTS: true,
+          ...loadedSettings
+        });
+        // Reset seen messages on app start
+        this.seenActivityMessages = {};
+        console.log('MASCOT_STORE: Loaded settings and reset seen messages:', this);
+      }
+      this.save();
+    } catch (error) {
+      console.error('MASCOT_STORE: Error loading settings:', error);
+    }
+  },
+  
+  // Save settings to localStorage
+  save() {
+    try {
+      localStorage.setItem('lalumo_mascot_settings', JSON.stringify({
+        showHelpMessages: this.showHelpMessages,
+        seenActivityMessages: this.seenActivityMessages,
+        disableTTS: this.disableTTS
+      }));
+      console.log('MASCOT_STORE: Settings saved');
+    } catch (error) {
+      console.error('MASCOT_STORE: Error saving settings:', error);
+    }
+  },
+  
+  // Toggle help messages
+  toggleHelpMessages() {
+    this.showHelpMessages = !this.showHelpMessages;
+    this.save();
+    console.log('MASCOT_STORE: Help messages toggled:', this.showHelpMessages);
+  },
+  
+  // Hide help messages (called by close button)
+  hideHelpMessages() {
+    this.showHelpMessages = false;
+    this.save();
+    console.log('MASCOT_STORE: Help messages disabled via close button');
+  }
+});
+
 // Register Alpine components
 Alpine.data('app', app);
 Alpine.data('tonecolors', tonecolors);
@@ -56,3 +114,8 @@ document.addEventListener('DOMContentLoaded', () => {
 // Start Alpine
 window.Alpine = Alpine;
 Alpine.start();
+
+// Initialize mascot settings after Alpine starts
+Alpine.store('mascotSettings').init();
+
+debugLog('App', 'Application started successfully');

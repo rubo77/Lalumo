@@ -287,7 +287,7 @@ export function pitches() {
             ...loadedSettings        // Saved values override defaults
           };
           // Reset seenActivityMessages on every app start
-          this.mascotSettings.seenActivityMessages = {};
+          this.$store.mascotSettings.seenActivityMessages = {};
           console.log('Loaded mascot settings and reset seen messages:', this.mascotSettings);
         }
         // Always save back to localStorage to persist any new default flags
@@ -1619,7 +1619,7 @@ export function pitches() {
       this.showMascot = false;
       
       // Update settings to not show help messages
-      this.mascotSettings.showHelpMessages = false;
+      this.$store.mascotSettings.showHelpMessages = false;
       
       // Save the settings to localStorage
       try {
@@ -1638,25 +1638,25 @@ export function pitches() {
     toggleHelpMessages(show = null) {
       // If no value provided, toggle the current value
       if (show === null) {
-        this.mascotSettings.showHelpMessages = !this.mascotSettings.showHelpMessages;
+        this.$store.mascotSettings.showHelpMessages = !this.$store.mascotSettings.showHelpMessages;
       } else {
-        this.mascotSettings.showHelpMessages = show;
+        this.$store.mascotSettings.showHelpMessages = show;
       }
       
       // When enabling, clear the history of seen messages to allow them to appear again
-      if (this.mascotSettings.showHelpMessages) {
-        this.mascotSettings.seenActivityMessages = {};
+      if (this.$store.mascotSettings.showHelpMessages) {
+        this.$store.mascotSettings.seenActivityMessages = {};
       }
       
       // Save settings to localStorage
       try {
         localStorage.setItem('lalumo_mascot_settings', JSON.stringify(this.mascotSettings));
-        console.log(`Help messages ${this.mascotSettings.showHelpMessages ? 'enabled' : 'disabled'}`);
+        console.log(`Help messages ${this.$store.mascotSettings.showHelpMessages ? 'enabled' : 'disabled'}`);
       } catch (error) {
         console.error('Error saving mascot settings:', error);
       }
       
-      return this.mascotSettings.showHelpMessages;
+      return this.$store.mascotSettings.showHelpMessages;
     },
     
     /**
@@ -1666,20 +1666,20 @@ export function pitches() {
      */
     showMascotMessage(message, activityId = null, delaySeconds = 2) {
       // Check if we should show mascot messages based on user settings
-      if (!this.mascotSettings.showHelpMessages) {
+      if (!this.$store.mascotSettings.showHelpMessages) {
         console.log('Skipping mascot message - user has disabled help messages');
         return;
       }
       
       // Check if we've already shown a message for this activity
-      if (activityId && this.mascotSettings.seenActivityMessages[activityId]) {
+      if (activityId && this.$store.mascotSettings.seenActivityMessages[activityId]) {
         console.log(`Skipping mascot message for ${activityId} - already shown once`);
         return;
       }
       
       // Mark this activity as having shown a message
       if (activityId) {
-        this.mascotSettings.seenActivityMessages[activityId] = true;
+        this.$store.mascotSettings.seenActivityMessages[activityId] = true;
         // Save settings
         try {
           localStorage.setItem('lalumo_mascot_settings', JSON.stringify(this.mascotSettings));
@@ -1735,8 +1735,8 @@ export function pitches() {
       console.log('MASCOT_DISPLAY: Showing mascot message:', message, 'TTS available:', this.ttsAvailable, 'Using native TTS:', this.usingNativeAndroidTTS);
       
       // Check TTS settings before attempting speech
-      console.log('MASCOT_TTS: TTS disabled:', this.mascotSettings.disableTTS);
-      if (!this.mascotSettings.disableTTS) {
+      console.log('MASCOT_TTS: TTS disabled:', this.$store.mascotSettings.disableTTS);
+      if (!this.$store.mascotSettings.disableTTS) {
         // Check if we can use the native Android TTS bridge
         if (this.usingNativeAndroidTTS && window.AndroidTTS) {
           try {
