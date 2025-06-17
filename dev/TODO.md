@@ -69,11 +69,13 @@ unter chrome auf dem handy android 15:
     - Sektionenkommentare zur besseren Navigation
     - nicht benutzte stile entfernen
 
-- mascot message
+# mascot message:
+    - tts disablen
     - die richtige zugehörige mascot message überall soll direkt wenn man die activity öffnet kommen. im moment kommt die alte message, wo man vorher war in dem mascot message container
     - es soll niemals eine mascot message starten, wenn man in irgendeiner activity auf den play button drückt
     - die einstellungen haben erst nach einem neuladen effekt, ohne bleibt die message bleibt verschwunden
     - in preferences ein kleines mascot bild neben die einstellung zum hiden
+    - hilfstexte selbst einsprechen oder einmal generieren lassen als mp3
 
 - reachable via a hash-anchor-link: make this link go directly to the 1_1_pitches_high_or_low activity: https://lalumo.z11.de/#1_pitches-1_1_pitches_high_or_low
 
@@ -98,7 +100,7 @@ Dies soll in allen aktionen:
 
 reset-button:
 - wenn der auto-detect immer geht, dann kann der parameter currentMode in der funktion ja weg in function resetCurrentActivity(currentMode)
-- hilfstexte selbst einsprechen oder einmal generieren lassen als mp3
+
 - volume level einstellbar machen
 
 - ganz viel ist noch strings hartkodiert mit `isGerman`

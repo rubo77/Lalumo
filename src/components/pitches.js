@@ -1466,7 +1466,7 @@ export function pitches() {
       
       // Show the message using the existing function
       if (message) {
-        this.showMascotMessage(message);
+        this.showMascotMessage(message, this.mode, 0.5);
       }
     },
     
@@ -1639,7 +1639,7 @@ export function pitches() {
      * @param {string} message - The message to display and speak
      * @param {string} activityId - Optional ID of the current activity to prevent duplicate messages
      */
-    showMascotMessage(message, activityId = null) {
+    showMascotMessage(message, activityId = null, delaySeconds = 2) {
       // Check if we should show mascot messages based on user settings
       if (!this.mascotSettings.showHelpMessages) {
         console.log('Skipping mascot message - user has disabled help messages');
@@ -1663,8 +1663,41 @@ export function pitches() {
         }
       }
       
+      // Clear any existing mascot timers and force hide current message
+      if (this.mascotShowTimer) {
+        clearTimeout(this.mascotShowTimer);
+        this.mascotShowTimer = null;
+      }
+      if (this.mascotHideTimer) {
+        clearTimeout(this.mascotHideTimer);
+        this.mascotHideTimer = null;
+      }
+      
+      // Force hide any currently visible mascot message
+      this.showMascot = false;
+      
+      // Store message and show mascot after configurable delay
       this.mascotMessage = message;
-      this.showMascot = true;
+      
+      this.mascotShowTimer = setTimeout(() => {
+        this.showMascot = true;
+        console.log(`MASCOT_DISPLAY: Showing after ${delaySeconds}s delay:`, message);
+        
+        // Give Alpine.js 100ms to react, then check if DOM fallback needed
+        setTimeout(() => {
+          const mascotOverlay = document.querySelector(".mascot-message-overlay");
+          if (mascotOverlay && window.getComputedStyle(mascotOverlay).display === "none") {
+            console.log("MASCOT_DEBUG: Alpine failed after 100ms, forcing display via DOM");
+            mascotOverlay.style.display = "block";
+          }
+        }, 100);
+        
+        // Auto-hide after 20 seconds with ease transition
+        this.mascotHideTimer = setTimeout(() => {
+          this.showMascot = false;
+          console.log("MASCOT_DISPLAY: Auto-hiding after 10s");
+        }, 10000);
+      }, delaySeconds * 1000);
       console.log('Showing mascot message:', message, 'TTS available:', this.ttsAvailable, 'Using native TTS:', this.usingNativeAndroidTTS);
       
       // Check if we can use the native Android TTS bridge
