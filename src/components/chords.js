@@ -156,6 +156,7 @@ export function chords() {
      * @param {string} chordType - The type of chord (major, minor, etc.)
      * @param {string} rootNote - The root note of the chord (e.g., 'C4')
      * @activity all
+     * @used_by 2_4, 
      */
     async playChord(chordType, rootNote = 'C4', options = { duration: 2 }) {
       this.stopAllSounds();
@@ -537,6 +538,12 @@ export function chords() {
       }
     },
     
+    /**
+     * Add a note to the chord
+     * 
+     * @param {*} interval The interval of the note to add
+     * @activity 2_3_chord_building
+     */
     addNoteToChord(interval) {
       if (!this.audioContext) {
         this.initAudio();
@@ -596,6 +603,11 @@ export function chords() {
       return colors[interval] || '#CCCCCC';
     },
     
+    /**
+     * Check if a recognized chord has been built
+     * 
+     * @activity 2_3_chord_building
+     */
     checkBuiltChord() {
       if (!this.builtChordIntervals || this.builtChordIntervals.length < 3) return;
       
@@ -667,6 +679,12 @@ export function chords() {
       debugLog('CHORDS', `Missing interval: ${this.missingInterval}`);
     },
     
+    /**
+     * Check if the missing note is correct
+     * 
+     * @param {*} noteInterval The interval of the note to check
+     * @activity 2_4_chords_missing-note
+     */
     checkMissingNote(noteInterval) {
       if (!this.missingInterval) {
         this.playIncompleteChord(); // Initialize if not yet done

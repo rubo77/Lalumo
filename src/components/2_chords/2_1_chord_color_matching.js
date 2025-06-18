@@ -25,6 +25,7 @@ export function testChordColorMatchingModuleImport() {
  * @param {Object} component - Reference to the Alpine.js component
  */
 export function addPlayChordButton(component) {
+  debugLog('CHORDS', '2_1_color_matching: addPlayChordButton() Adding play chord button');
   // Initialize first question immediately so currentChordType is always set
   newColorMatchingQuestion(component);
   
