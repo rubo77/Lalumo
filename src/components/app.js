@@ -27,6 +27,14 @@ export function app() {
     importData: '',
     preferredLanguage: 'english',
     
+    // Referral system state
+    isUsernameLocked: false,     // Ob der Benutzername fixiert ist
+    lockedUsername: '',          // Der fixierte Benutzername
+    referralCode: '',            // Der Referral-Code
+    referralCount: 0,            // Anzahl der erhaltenen Referrals
+    friendCode: '',              // Eingegebener Freundes-Referral-Code
+    isChordChapterUnlocked: false, // Ob das Akkorde-Kapitel freigeschaltet ist
+    
     /**
      * Mapping of chapters and activities to new ID format
      * Format: <chapter-id>_<chapter-name>_<activity-id>_<activity-name>
@@ -141,6 +149,218 @@ export function app() {
       });
     },
     
+    resetSpeech() {
+      // Reset speech synthesis
+      window.speechSynthesis.cancel();
+      this.isSpeaking = false;
+    },
+    
+    /**
+     * Referral System Functions
+     */
+    
+    /**
+     * Save referral data to localStorage
+     */
+    saveReferralData() {
+      const referralData = {
+        isUsernameLocked: this.isUsernameLocked,
+        lockedUsername: this.lockedUsername,
+        referralCode: this.referralCode,
+        referralCount: this.referralCount,
+        isChordChapterUnlocked: this.isChordChapterUnlocked
+      };
+      
+      localStorage.setItem('lalumo_referral_data', JSON.stringify(referralData));
+      console.log('Referral data saved:', referralData);
+    },
+    
+    /**
+     * Lock username and get referral code
+     */
+    async lockUsername() {
+      if (!this.username) {
+        console.error('No username to lock');
+        return;
+      }
+      
+      try {
+        const response = await fetch('/referral.php', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ username: this.username })
+        });
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        
+        // Store the received referral code and lock username
+        this.referralCode = data.referralCode;
+        this.isUsernameLocked = true;
+        this.lockedUsername = this.username;
+        
+        // Save to localStorage
+        this.saveReferralData();
+        
+        console.log('Username locked:', this.username, 'Referral code:', this.referralCode);
+        
+        // Show success feedback
+        this.showToast(this.$store.strings?.username_registered || 'Username registered successfully!');
+      } catch (error) {
+        console.error('Error locking username:', error);
+        this.showToast('Error: ' + error.message);
+      }
+    },
+    
+    /**
+     * Copy referral code to clipboard
+     */
+    async copyReferralCode() {
+      if (!this.referralCode) return;
+      
+      try {
+        await navigator.clipboard.writeText(this.referralCode);
+        this.showToast(this.$store.strings?.copied || 'Copied!');
+      } catch (error) {
+        console.error('Error copying to clipboard:', error);
+        
+        // Fallback for browsers without clipboard API
+        const textArea = document.createElement('textarea');
+        textArea.value = this.referralCode;
+        textArea.style.position = 'fixed'; // Avoid scrolling
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        
+        try {
+          const successful = document.execCommand('copy');
+          if (successful) {
+            this.showToast(this.$store.strings?.copied || 'Copied!');
+          } else {
+            this.showToast('Failed to copy');
+          }
+        } catch (err) {
+          console.error('Fallback: Oops, unable to copy', err);
+        }
+        
+        document.body.removeChild(textArea);
+      }
+    },
+    
+    /**
+     * Share referral code using Web Share API or fallback to clipboard
+     */
+    async shareReferralCode() {
+      if (!this.referralCode) return;
+      
+      const shareTitle = this.$store.strings?.share_title || 'Lalumo Referral Code';
+      const shareText = (this.$store.strings?.share_text || 'Try Lalumo and use my referral code') + ': ' + this.referralCode;
+      const shareUrl = 'https://lalumo.app'; // Your app's URL
+      
+      // Check if the Web Share API is available
+      if (navigator.share) {
+        try {
+          await navigator.share({
+            title: shareTitle,
+            text: shareText,
+            url: shareUrl
+          });
+          console.log('Content shared successfully');
+        } catch (error) {
+          console.error('Error sharing content:', error);
+          // Fall back to clipboard if sharing was cancelled or failed
+          this.copyReferralCode();
+        }
+      } else {
+        // If Web Share API is not available, use clipboard instead
+        await this.copyReferralCode();
+        this.showToast(this.$store.strings?.share_fallback || 'The referral code has been copied to your clipboard. Share it with your friends!');
+      }
+    },
+    
+    /**
+     * Validate and redeem a friend code
+     */
+    async redeemFriendCode() {
+      if (!this.friendCode) return;
+      
+      // Validate code format (basic validation)
+      const codePattern = /^[A-Z0-9]{12}$/;
+      if (!codePattern.test(this.friendCode)) {
+        this.showToast(this.$store.strings?.invalid_code || 'Invalid referral code format. Please check and try again.');
+        return;
+      }
+      
+      // Here you would typically send the code to your server for validation
+      // For this implementation, we'll just simulate a successful redemption
+      
+      // In a real implementation, you would make an API call like:
+      // const response = await fetch('/validate-code.php', { method: 'POST', ... });
+      
+      // Simulate successful redemption
+      setTimeout(() => {
+        // Increase referral count
+        this.referralCount = (this.referralCount || 0) + 1;
+        
+        // Check if the chapter should be unlocked
+        if (this.referralCount >= 3 && !this.isChordChapterUnlocked) {
+          this.isChordChapterUnlocked = true;
+        }
+        
+        // Clear the input field
+        this.friendCode = '';
+        
+        // Save to localStorage
+        this.saveReferralData();
+        
+        // Show success message
+        this.showToast(this.$store.strings?.code_redeemed || 'Friend code redeemed successfully!');
+      }, 1000);
+    },
+    
+    /**
+     * Show a toast message
+     */
+    showToast(message, duration = 3000) {
+      // Create toast element if it doesn't exist
+      let toast = document.getElementById('lalumo-toast');
+      
+      if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'lalumo-toast';
+        toast.style.position = 'fixed';
+        toast.style.bottom = '20px';
+        toast.style.left = '50%';
+        toast.style.transform = 'translateX(-50%)';
+        toast.style.backgroundColor = 'rgba(60, 60, 60, 0.9)';
+        toast.style.color = 'white';
+        toast.style.padding = '10px 20px';
+        toast.style.borderRadius = '20px';
+        toast.style.zIndex = '1000';
+        toast.style.textAlign = 'center';
+        toast.style.transition = 'opacity 0.3s ease-in-out';
+        document.body.appendChild(toast);
+      }
+      
+      // Set toast message
+      toast.textContent = message;
+      toast.style.opacity = '1';
+      
+      // Hide after duration
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        setTimeout(() => {
+          if (toast.parentNode) {
+            toast.parentNode.removeChild(toast);
+          }
+        }, 300);
+      }, duration);
+    },  
     async init() {
       // We'll initialize audio only on first user interaction
       this.isAudioEnabled = false;
@@ -296,6 +516,27 @@ export function app() {
           this.showUsernamePrompt = true;
         }
         
+        // Load referral system data from localStorage
+        const savedReferralData = localStorage.getItem('lalumo_referral_data');
+        if (savedReferralData) {
+          try {
+            const referralData = JSON.parse(savedReferralData);
+            this.isUsernameLocked = referralData.isUsernameLocked || false;
+            this.lockedUsername = referralData.lockedUsername || '';
+            this.referralCode = referralData.referralCode || '';
+            this.referralCount = referralData.referralCount || 0;
+            this.isChordChapterUnlocked = referralData.isChordChapterUnlocked || false;
+            console.log('Referral data loaded:', { 
+              isUsernameLocked: this.isUsernameLocked,
+              referralCode: this.referralCode,
+              referralCount: this.referralCount,
+              isChordChapterUnlocked: this.isChordChapterUnlocked
+            });
+          } catch (e) {
+            console.error('Error parsing referral data:', e);
+          }
+        }
+        
         // Load language preference from localStorage
         const savedLanguage = localStorage.getItem('lalumo_language');
         // If no language is set, try to detect from browser
@@ -320,13 +561,30 @@ export function app() {
         }
         
         // Load menu lock state from localStorage
-        const savedLockState = localStorage.getItem('lalumo_menu_locked');
-        if (savedLockState) {
-          this.menuLocked = (savedLockState === 'true');
-          console.log('Menu lock state loaded:', this.menuLocked);
+        const savedMenuLock = localStorage.getItem('lalumo_menu_locked');
+        if (savedMenuLock === 'true') {
+          this.menuLocked = true;
         }
-      } catch (e) {
-        console.log('Error loading user data', e);
+        
+        // Load referral data from localStorage
+        const referralData = localStorage.getItem('lalumo-referral');
+        if (referralData) {
+          try {
+            const data = JSON.parse(referralData);
+            this.isUsernameLocked = data.isUsernameLocked || false;
+            this.lockedUsername = data.lockedUsername || '';
+            this.referralCode = data.referralCode || '';
+            this.referralCount = data.referralCount || 0;
+            this.isChordChapterUnlocked = data.isChordChapterUnlocked || false;
+            
+            console.log('Loaded referral data:', data);
+          } catch (parseError) {
+            console.error('Error parsing referral data:', parseError);
+          }
+        }
+        
+      } catch (error) {
+        console.error('Error loading user data:', error);
       }
     },
     
@@ -1401,6 +1659,168 @@ export function app() {
         console.error(`Failed to calculate frequency for ${noteName}:`, e);
         return 440; // A4 als Fallback
       }
+    },
+    
+    /**
+     * Speichert Referral-Daten im localStorage
+     */
+    saveReferralData() {
+      try {
+        const referralData = {
+          isUsernameLocked: this.isUsernameLocked,
+          lockedUsername: this.lockedUsername,
+          referralCode: this.referralCode,
+          referralCount: this.referralCount,
+          isChordChapterUnlocked: this.isChordChapterUnlocked
+        };
+        
+        localStorage.setItem('lalumo-referral', JSON.stringify(referralData));
+        console.log('Saved referral data:', referralData);
+      } catch (error) {
+        console.error('Error saving referral data:', error);
+      }
+    },
+    
+    /**
+     * Fixiert den Benutzernamen und sendet ihn an den Server,
+     * um einen Referral-Code zu erhalten
+     */
+    async lockUsername() {
+      if (!this.username) {
+        console.error('Kein Benutzername gesetzt!');
+        return;
+      }
+      
+      try {
+        // Lade-Status anzeigen (hier könnte ein UI-Indikator sein)
+        console.log('Username wird fixiert und Referral-Code wird generiert...');
+        
+        // POST-Anfrage an den Server senden
+        const response = await fetch('referral.php', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            username: this.username
+          })
+        });
+        
+        if (!response.ok) {
+          throw new Error(`Server-Fehler: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        
+        if (data.success) {
+          // Referral-Code und fixierten Username speichern
+          this.isUsernameLocked = true;
+          this.lockedUsername = this.username;
+          this.referralCode = data.referralCode;
+          
+          // Daten im localStorage speichern
+          this.saveReferralData();
+          
+          console.log('Referral-Code erfolgreich generiert:', this.referralCode);
+        } else {
+          console.error('Fehler bei der Generierung des Referral-Codes:', data.error);
+        }
+      } catch (error) {
+        console.error('Fehler beim Fixieren des Benutzernamens:', error);
+      }
+    },
+    
+    /**
+     * Kopiert den Referral-Code in die Zwischenablage
+     */
+    copyReferralCode() {
+      if (!this.referralCode) {
+        console.error('Kein Referral-Code vorhanden!');
+        return;
+      }
+      
+      // Code in die Zwischenablage kopieren
+      navigator.clipboard.writeText(this.referralCode)
+        .then(() => {
+          console.log('Referral-Code in die Zwischenablage kopiert');
+          
+          // Visuelles Feedback (hier könnte eine UI-Benachrichtigung sein)
+          const button = document.querySelector('.referral-code-container .secondary-button');
+          if (button) {
+            const originalText = button.textContent;
+            button.textContent = this.$store.strings?.copied || 'Copied!';
+            
+            setTimeout(() => {
+              button.textContent = originalText;
+            }, 2000);
+          }
+        })
+        .catch(err => {
+          console.error('Fehler beim Kopieren des Referral-Codes:', err);
+        });
+    },
+    
+    /**
+     * Teilt den Referral-Code über die native Share-API
+     */
+    shareReferralCode() {
+      if (!this.referralCode) {
+        console.error('Kein Referral-Code vorhanden!');
+        return;
+      }
+      
+      const shareText = `${this.$store.strings?.share_text || 'Try Lalumo and use my referral code'}: ${this.referralCode}`;
+      
+      // Web Share API verwenden, wenn verfügbar
+      if (navigator.share) {
+        navigator.share({
+          title: this.$store.strings?.share_title || 'Lalumo Referral Code',
+          text: shareText,
+          url: window.location.href
+        }).then(() => {
+          console.log('Erfolgreich geteilt');
+        }).catch((error) => {
+          console.error('Fehler beim Teilen:', error);
+        });
+      } else {
+        // Fallback für Browser ohne Share API
+        this.copyReferralCode();
+        alert(this.$store.strings?.share_fallback || 'The referral code has been copied to your clipboard. Share it with your friends!');
+      }
+    },
+    
+    /**
+     * Löst einen Freundes-Referral-Code ein
+     */
+    redeemFriendCode() {
+      if (!this.friendCode) {
+        console.error('Kein Freundes-Code eingegeben!');
+        return;
+      }
+      
+      // Code-Format validieren (einfache Prüfung)
+      const codePattern = /^[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}$/;
+      if (!codePattern.test(this.friendCode)) {
+        alert(this.$store.strings?.invalid_code || 'Invalid referral code format. Please check and try again.');
+        return;
+      }
+      
+      // In echter Implementierung würde hier eine Server-Validierung erfolgen
+      // Für jetzt simulieren wir eine erfolgreiche Einlösung
+      console.log('Freundes-Code eingelöst:', this.friendCode);
+      
+      // Akkorde-Kapitel freischalten, wenn 3 oder mehr Referrals erreicht
+      this.referralCount += 1;
+      if (this.referralCount >= 3) {
+        this.isChordChapterUnlocked = true;
+      }
+      
+      // Daten speichern
+      this.saveReferralData();
+      
+      // UI-Feedback
+      this.friendCode = ''; // Eingabefeld zurücksetzen
+      alert(this.$store.strings?.code_redeemed || 'Friend code redeemed successfully!');
     }
   };
 }

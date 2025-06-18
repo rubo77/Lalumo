@@ -11,6 +11,7 @@ Musici/Lalumo - Marketing- und Monetarisierungsstrategie
 - Fehler-Erkennung: Korrekte Melodie-Wiedergabe
 - Altersgerecht: Spielerisch für Kinder unter 4 Jahren
 - Bildungsaspekt: Solide musikalische Grundlage
+siehe auch PLAY_STORE.md
 
 # Marketing-Kanäle
 
@@ -75,7 +76,19 @@ Musici/Lalumo - Marketing- und Monetarisierungsstrategie
 
 # nächste Schritte
 
-## Phase 1: Community-Aufbau (erste 3 Monate)
+## Phase 1: Referral-System (Monat 2-4)
+
+1. **Serverbasierte Referral-Codes implementieren**
+   - Code-Generierung auf dem server
+   - Serverseitige Validierung programmieren
+   - Ping-Pong-Bestätigungssystem implementieren
+
+2. **Belohnungsstruktur definieren**
+   - Nach 3 erfolgreichen Referrals: Premium-Level freischalten
+   - Nach 5 Referrals: Alle zukünftigen Updates kostenlos
+
+## Phase 2: Community-Aufbau (Monat 4-6)
+
 1. **Social Media Präsenz aufbauen**
    - Instagram-Account erstellen (@lalumo_app oder ähnlich)
    - 3-5 Eltern-Facebook-Gruppen identifizieren und beitreten
@@ -91,17 +104,9 @@ Musici/Lalumo - Marketing- und Monetarisierungsstrategie
    - 5 Musikschulen für Kooperationen ansprechen
    - Eltern-Magazine/Blogs für Artikel-Platzierungen
 
-## Phase 2: Referral-System (Monat 4-6)
-1. **Serverlose Referral-Codes implementieren**
-   - Code-Generierung in der App
-   - Lokale Validierung programmieren
-   - Ping-Pong-Bestätigungssystem entwickeln
 
-2. **Belohnungsstruktur definieren**
-   - Nach 3 erfolgreichen Referrals: Premium-Level freischalten
-   - Nach 5 Referrals: Alle zukünftigen Updates kostenlos
+## Phase 3: Monetarisierung (Monat 6-8)
 
-## Phase 3: Monetarisierung (Monat 6+)
 1. **Crowdfunding vorbereiten**
    - In-App Crowdfunding-Button implementieren
    - Meilensteine definieren (1000€ = 5 neue Levels)
@@ -113,6 +118,6 @@ Musici/Lalumo - Marketing- und Monetarisierungsstrategie
    - Fortgeschrittene Ton-Erkennung
 
 ## Messbare Ziele
-- **Monat 3**: 1000 Downloads, 100 aktive Nutzer/Woche
-- **Monat 6**: 5000 Downloads, 10 Kindergarten-Kooperationen
-- **Monat 12**: Erstes Crowdfunding-Ziel erreicht, 2-3 Premium-Levels live
+- **Monat 2**: 1000 Downloads, 100 aktive Nutzer/Woche
+- **Monat 4**: 5000 Downloads, 10 Kindergarten-Kooperationen
+- **Monat 6**: Erstes Crowdfunding-Ziel erreicht, 2-3 Premium-Levels live
