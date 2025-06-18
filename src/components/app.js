@@ -168,6 +168,7 @@ export function app() {
         lockedUsername: this.lockedUsername,
         referralCode: this.referralCode,
         referralCount: this.referralCount,
+        referralClickCount: this.referralClickCount || 0,
         isChordChapterUnlocked: this.isChordChapterUnlocked
       };
       
@@ -185,7 +186,10 @@ export function app() {
       }
       
       try {
-        const response = await fetch('/referral.php', {
+        // API endpoint URL (relative to the app root)
+        const apiUrl = 'http://localhost:8080/referral.php';
+        
+        const response = await fetch(apiUrl, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -198,6 +202,11 @@ export function app() {
         }
         
         const data = await response.json();
+        console.log('API response:', data);
+        
+        if (!data.success) {
+          throw new Error(data.error || 'Unknown error');
+        }
         
         // Store the received referral code and lock username
         this.referralCode = data.referralCode;
@@ -207,6 +216,9 @@ export function app() {
         // Save to localStorage
         this.saveReferralData();
         
+        // After locking, fetch referral count
+        this.fetchReferralCount();
+        
         console.log('Username locked:', this.username, 'Referral code:', this.referralCode);
         
         // Show success feedback
@@ -214,6 +226,41 @@ export function app() {
       } catch (error) {
         console.error('Error locking username:', error);
         this.showToast('Error: ' + error.message);
+      }
+    },
+    
+    /**
+     * Fetch referral count for the current user
+     */
+    async fetchReferralCount() {
+      if (!this.lockedUsername) return;
+      
+      try {
+        const apiUrl = `http://localhost:8080/referral.php?username=${encodeURIComponent(this.lockedUsername)}`;
+        const response = await fetch(apiUrl);
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        console.log('Referral count data:', data);
+        
+        if (data.success) {
+          // Update referral counts
+          this.referralCount = data.registrationCount || 0;
+          this.referralClickCount = data.clickCount || 0;
+          
+          // Check if the chapter should be unlocked
+          if (this.referralCount >= 3 && !this.isChordChapterUnlocked) {
+            this.isChordChapterUnlocked = true;
+          }
+          
+          // Save updated data
+          this.saveReferralData();
+        }
+      } catch (error) {
+        console.error('Error fetching referral count:', error);
       }
     },
     
@@ -289,38 +336,58 @@ export function app() {
     async redeemFriendCode() {
       if (!this.friendCode) return;
       
+      // Normalisieren (Bindestriche entfernen)
+      const normalizedCode = this.friendCode.replace(/-/g, '');
+      
       // Validate code format (basic validation)
       const codePattern = /^[A-Z0-9]{12}$/;
-      if (!codePattern.test(this.friendCode)) {
+      if (!codePattern.test(normalizedCode)) {
         this.showToast(this.$store.strings?.invalid_code || 'Invalid referral code format. Please check and try again.');
         return;
       }
       
-      // Here you would typically send the code to your server for validation
-      // For this implementation, we'll just simulate a successful redemption
-      
-      // In a real implementation, you would make an API call like:
-      // const response = await fetch('/validate-code.php', { method: 'POST', ... });
-      
-      // Simulate successful redemption
-      setTimeout(() => {
-        // Increase referral count
+      try {
+        const apiUrl = 'http://localhost:8080/referral.php';
+        
+        const response = await fetch(apiUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ redeemCode: this.friendCode })
+        });
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        console.log('Redeem response:', data);
+        
+        if (!data.success) {
+          throw new Error(data.error || 'Invalid referral code');
+        }
+        
+        // Aktualisiere Daten nach erfolgreicher Einlösung
         this.referralCount = (this.referralCount || 0) + 1;
         
-        // Check if the chapter should be unlocked
+        // Prüfe, ob das Kapitel freigeschaltet werden soll
         if (this.referralCount >= 3 && !this.isChordChapterUnlocked) {
           this.isChordChapterUnlocked = true;
         }
         
-        // Clear the input field
+        // Leere das Eingabefeld
         this.friendCode = '';
         
-        // Save to localStorage
+        // Speichere in localStorage
         this.saveReferralData();
         
-        // Show success message
+        // Zeige Erfolgsmeldung
         this.showToast(this.$store.strings?.code_redeemed || 'Friend code redeemed successfully!');
-      }, 1000);
+      } catch (error) {
+        console.error('Error redeeming friend code:', error);
+        this.showToast('Error: ' + error.message);
+      }
     },
     
     /**
@@ -525,13 +592,23 @@ export function app() {
             this.lockedUsername = referralData.lockedUsername || '';
             this.referralCode = referralData.referralCode || '';
             this.referralCount = referralData.referralCount || 0;
+            this.referralClickCount = referralData.referralClickCount || 0;
             this.isChordChapterUnlocked = referralData.isChordChapterUnlocked || false;
             console.log('Referral data loaded:', { 
               isUsernameLocked: this.isUsernameLocked,
+              lockedUsername: this.lockedUsername,
               referralCode: this.referralCode,
               referralCount: this.referralCount,
+              referralClickCount: this.referralClickCount,
               isChordChapterUnlocked: this.isChordChapterUnlocked
             });
+            
+            // Wenn der Benutzer bereits registriert ist, aktuelle Referral-Zahlen von der Datenbank abrufen
+            if (this.isUsernameLocked && this.lockedUsername) {
+              console.log('User is registered, fetching current referral counts from database...');
+              // Nach kurzer Verzögerung aufrufen, um sicherzustellen, dass die App vollständig initialisiert ist
+              setTimeout(() => this.fetchReferralCount(), 1000);
+            }
           } catch (e) {
             console.error('Error parsing referral data:', e);
           }

@@ -40,6 +40,11 @@ Der username ist ja bisher nur lokal gespeichert, wenn man am referral-system te
 
 # TODO:
 
+- es muss in der localstorage gespeichert werden, dass man schon registriert ist.
+
+- wenn man registriert ist, muss beim aufruf der seite gecheckt werden, wieviele referrals man schon hat in der db
+
+
 dabei gibt es 2 schritte: wenn ein user sixh nur auf den link geklickt hat, dann ist er ja noch nciht registriert, das tut er nur, wenn er auch einen referal link generieren will. 
 - der empfehlende bekommt einen referral punkt , wenn  mman auf den link klickt
 - einen weiteren, wenn man im game auch einen user anlegt
@@ -49,4 +54,6 @@ dabei gibt es 2 schritte: wenn ein user sixh nur auf den link geklickt hat, dann
 - wenn man referral drückt, dann soll das hamburger menu sich schliessen
 
 - ich brauche einen admin mode, in dem ich sehen kann, welche user registriert sin d in der db und wieviele referrer punkte sie schon haben
+
+- teste selbst mit wegt http://localhost:9091/admin.php und mache node test und erstelle einen unittest um das alles zu testen und zu korrigieren
 
