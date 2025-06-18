@@ -38,16 +38,15 @@ Der username ist ja bisher nur lokal gespeichert, wenn man am referral-system te
 
 - die usernamen sollen in einer sqlite db gespeichert werden, und es muss geloggt werden, wieviele user schon den referral code benutzt haben und sich darüber eingeloggt haben.
 
+# TODO:
+
 dabei gibt es 2 schritte: wenn ein user sixh nur auf den link geklickt hat, dann ist er ja noch nciht registriert, das tut er nur, wenn er auch einen referal link generieren will. 
 - der empfehlende bekommt einen referral punkt , wenn  mman auf den link klickt
 - einen weiteren, wenn man im game auch einen user anlegt
 
-# zu klären:
-muss nginx configuriert werden, dass das php script erreichbar ist lokal? oder kann man das mit webpack erreichen?
 
-nginx php-fpm php-sqlite3 ist installiert 
 
-sudo touch /etc/nginx/sites-available/lalumo
-sudo ln -s /etc/nginx/sites-available/lalumo /etc/nginx/sites-enabled/lalumo
-sudo chown ruben:ruben /etc/nginx/sites-available/lalumo
+- wenn man referral drückt, dann soll das hamburger menu sich schliessen
+
+- ich brauche einen admin mode, in dem ich sehen kann, welche user registriert sin d in der db und wieviele referrer punkte sie schon haben
 

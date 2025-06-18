@@ -198,4 +198,6 @@ reset-button:
 
 # most important
 
-- wenn man preferences, credits, datenschutz oder impressum drückt, dann soll das hamburger menu sich schliessen
+- wenn man referral drückt, dann soll das hamburger menu sich schliessen
+
+- ich brauche einen admin mode, in dem ich sehen kann, welche user registriert sin d in der db und wieviele referrer punkte sie schon haben
