@@ -568,7 +568,7 @@
           </div>
         </div>
         
-        <!-- Color Matching Activity -->
+        <!-- 2_1 Chords - Color Matching Activity -->
         <div x-show="mode === '2_1_chords_color-matching'" class="chord-activity">
           <div class="mode-header">
             <button class="back-to-main" @click="setMode('main')" aria-label="Back to main menu">
@@ -584,7 +584,7 @@
             </div>
             
             <div class="play-chord-button-container">
-              <button @click="playChord(currentChordType)" class="play-button">
+              <button @click="playChord($store.currentChordType)" class="play-button">
                 <span>🔈</span>
                 <span x-text="$store.strings?.play_chord || 'Play Chord'">Play Chord</span>
               </button>
@@ -592,32 +592,32 @@
             
             <div class="color-grid">
               <div class="color-option" 
-                   @click="checkColorAnswer('#FFD700')" 
+                   @click="checkColorAnswer($store, '#FFD700')" 
                    style="background-color: #FFD700;">
                 <span>Major</span>
               </div>
               <div class="color-option" 
-                   @click="checkColorAnswer('#4682B4')" 
+                   @click="checkColorAnswer($store, '#4682B4')" 
                    style="background-color: #4682B4;">
                 <span>Minor</span>
               </div>
               <div class="color-option" 
-                   @click="checkColorAnswer('#800080')" 
+                   @click="checkColorAnswer($store, '#800080')" 
                    style="background-color: #800080;">
                 <span>Diminished</span>
               </div>
               <div class="color-option" 
-                   @click="checkColorAnswer('#FF4500')" 
+                   @click="checkColorAnswer($store, '#FF4500')" 
                    style="background-color: #FF4500;">
                 <span>Augmented</span>
               </div>
               <div class="color-option" 
-                   @click="checkColorAnswer('#32CD32')" 
+                   @click="checkColorAnswer($store, '#32CD32')" 
                    style="background-color: #32CD32;">
                 <span>Sus4</span>
               </div>
               <div class="color-option" 
-                   @click="checkColorAnswer('#00BFFF')" 
+                   @click="checkColorAnswer($store, '#00BFFF')" 
                    style="background-color: #00BFFF;">
                 <span>Sus2</span>
               </div>
@@ -633,7 +633,7 @@
           </div>
         </div>
         
-        <!-- Mood Landscapes Activity -->
+        <!-- 2_2 Chords - Mood Landscapes Activity -->
         <div x-show="mode === '2_2_chords_mood-landscapes'" class="chord-activity">
           <div class="mode-header">
             <button class="back-to-main" @click="setMode('main')" aria-label="Back to main menu">
@@ -679,7 +679,7 @@
           </div>
         </div>
         
-        <!-- Chord Building Activity -->
+        <!-- 2_3 Chords - Chord Building Activity -->
         <div x-show="mode === '2_3_chords_chord-building'" class="chord-activity">
           <div class="mode-header">
             <button class="back-to-main" @click="setMode('main')" aria-label="Back to main menu">
@@ -711,7 +711,7 @@
           </div>
         </div>
         
-        <!-- Missing Note Activity -->
+        <!-- 2_4 Chords - Missing Note Activity -->
         <div x-show="mode === '2_4_chords_missing-note'" class="chord-activity">
           <div class="mode-header">
             <button class="back-to-main" @click="setMode('main')" aria-label="Back to main menu">
@@ -746,7 +746,7 @@
           </div>
         </div>
         
-        <!-- Character Matching Activity -->
+        <!-- 2_5 Chords - Character Matching Activity -->
         <div x-show="mode === '2_5_chords_characters'" class="chord-activity">
           <div class="mode-header">
             <button class="back-to-main" @click="setMode('main')" aria-label="Back to main menu">
@@ -804,7 +804,7 @@
           </div>
         </div>
         
-        <!-- Harmony Gardens Activity -->
+        <!-- 2_6 Chords - Harmony Gardens Activity -->
         <div x-show="mode === '2_6_chords_harmony-gardens'" class="chord-activity">
           <div class="mode-header">
             <button class="back-to-main" @click="setMode('main')" aria-label="Back to main menu">

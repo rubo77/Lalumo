@@ -10,36 +10,41 @@ import * as Tone from 'tone';
 // Common Module
 export { testCommonModuleImport } from './2_chords/common.js';
 
-// Chord Modules - Modular approach
-import { testChordColorMatchingModuleImport, newColorMatchingQuestion, checkColorAnswer } from './2_chords/2_1_chord_color_matching.js';
-
 // Feedback utilities - central import
 import { showCompleteSuccess, playSuccessSound } from './shared/feedback.js';
 
-// Chord Color Matching Module
-export { 
+// 2_1 Chord Color Matching Module
+import { 
   testChordColorMatchingModuleImport,
   newColorMatchingQuestion,
   checkColorAnswer
 } from './2_chords/2_1_chord_color_matching.js';
 
-// Chord Mood Landscapes Module
-export { testChordMoodLandscapesModuleImport } from './2_chords/2_2_chord_mood_landscapes.js';
+// 2_2 Chord Mood Landscapes Module
+import { testChordMoodLandscapesModuleImport } from './2_chords/2_2_chord_mood_landscapes.js';
 
-// Chord Building Module
-export { testChordBuildingModuleImport } from './2_chords/2_3_chord_building.js';
+// 2_3 Chord Building Module
+import { testChordBuildingModuleImport,
+          addPlayChordButton
+        } from './2_chords/2_3_chord_building.js';
 
-// Missing Note Module
-export { testMissingNoteModuleImport } from './2_chords/2_4_missing_note.js';
+// 2_4 Missing Note Module
+import { testMissingNoteModuleImport } from './2_chords/2_4_missing_note.js';
 
-// Chord Characters Module
-export { testChordCharactersModuleImport } from './2_chords/2_5_chord_characters.js';
+// 2_5 Chord Characters Module
+import { testChordCharactersModuleImport } from './2_chords/2_5_chord_characters.js';
+
+// 2_6 Chord Characters Module
+import { test2_6_harmmony_gardenModuleImport } from './2_chords/2_6_harmmony_garden.js';
 
 // Import debug utilities
 import { debugLog } from '../utils/debug.js';
 
 // Import chord styles
 import '../styles/2_chords.css';
+
+// test-chords-module.js
+import { testChordsModuleImport } from './test-chords-modules.js';
 
 export function chords() {
   return {
@@ -153,6 +158,7 @@ export function chords() {
      */
     async playChord(chordType, rootNote = 'C4', options = { duration: 2 }) {
       this.stopAllSounds();
+      debugLog('CHORDS', 'playChord called with chordType:', chordType, 'rootNote:', rootNote);
       
       try {
         // Import debug utils for logging
@@ -454,36 +460,6 @@ export function chords() {
       debugLog('CHORDS', 'Started color matching activity using modular function');
     },
     
-    // These functions are now imported from the module
-    // Wrapper functions to maintain compatibility with existing code
-    async newColorMatchingQuestion() {
-      // Import the module function dynamically and call it
-      const colorMatchingModule = await this.loadColorMatchingModule();
-      if (colorMatchingModule && typeof colorMatchingModule.newColorMatchingQuestion === 'function') {
-        colorMatchingModule.newColorMatchingQuestion(this);
-      } else {
-        debugLog('CHORDS', 'Error: newColorMatchingQuestion not available');
-      }
-    },
-    
-    async checkColorAnswer(selectedColor) {
-      // Import the module function dynamically and call it
-      const colorMatchingModule = await this.loadColorMatchingModule();
-      if (colorMatchingModule && typeof colorMatchingModule.checkColorAnswer === 'function') {
-        const result = colorMatchingModule.checkColorAnswer(this, selectedColor);
-        
-        // Show rainbow success if correct
-        if (this.showFeedback && this.feedbackMessage && this.feedbackMessage.includes('Great job')) {
-          debugLog('CHORDS', '2_1_chord_color_matching: Correct answer, showing rainbow');
-          showCompleteSuccess();
-        }
-        
-        return result;
-      } else {
-        debugLog('CHORDS', 'Error: checkColorAnswer not available');
-      }
-    },
-    
     // 2_2_chord_mood_landscapes Activity Methods
     // Dynamic loader for the mood landscapes module
     async loadMoodLandscapesModule() {
@@ -523,69 +499,12 @@ export function chords() {
     },
     
     // Chord Building Activity Methods
-    // Create a button to play the full chord
-    addPlayChordButton() {
-      // First check if button already exists
-      let playButton = document.getElementById('play-full-chord-button');
-      
-      // If button doesn't exist yet, create it
-      if (!playButton) {
-        // Find the container in different possible locations
-        let container = document.querySelector('.chord-blocks') || 
-                       document.querySelector('.chord-building-container') ||
-                       document.querySelector('.chord-activity-container');
-        
-        if (container) {
-          // Create a container for the button to style it separately
-          const buttonContainer = document.createElement('div');
-          buttonContainer.style.marginTop = '15px';
-          buttonContainer.style.textAlign = 'center';
-          buttonContainer.style.clear = 'both';
-          buttonContainer.style.position = 'relative';
-          buttonContainer.style.zIndex = '100'; // Ensure it's above other elements
-          
-          // Create the button itself
-          playButton = document.createElement('button');
-          playButton.id = 'play-full-chord-button';
-          playButton.className = 'play-chord-button';
-          playButton.textContent = 'Play Full Chord';
-          playButton.style.padding = '8px 16px';
-          playButton.style.fontSize = '16px';
-          playButton.style.backgroundColor = '#4CAF50';
-          playButton.style.color = 'white';
-          playButton.style.border = 'none';
-          playButton.style.borderRadius = '4px';
-          playButton.style.cursor = 'pointer';
-          
-          // Add hover effect
-          playButton.onmouseover = () => {
-            playButton.style.backgroundColor = '#45a049';
-          };
-          playButton.onmouseout = () => {
-            playButton.style.backgroundColor = '#4CAF50';
-          };
-          
-          // Add click handler
-          playButton.onclick = () => this.playBuiltChord();
-          
-          // Create a fixed container at the bottom of the screen
-          const fixedContainer = document.createElement('div');
-          fixedContainer.id = 'play-full-chord-button-container';
-          
-          // Add to DOM - both in the flow and fixed position
-          buttonContainer.appendChild(playButton.cloneNode(true));
-          container.parentNode.insertBefore(buttonContainer, container.nextSibling);
-          
-          // Add fixed button
-          fixedContainer.appendChild(playButton);
-          document.body.appendChild(fixedContainer);
-          
-          debugLog('CHORDS', '2_3_chord_building: Added play chord button');
-        }
-      }
-    },
     
-    // Play the currently built chord
+    
+    /* Play the currently built chord
+     * 
+     * @activity 2_3_chord_building
+     */
     async playBuiltChord() {
       debugLog('CHORDS', '2_3_chord_building: Playing built chord');
       
@@ -741,7 +660,7 @@ export function chords() {
         showCompleteSuccess();
         
         // Add a play button if it doesn't exist yet
-        this.addPlayChordButton();
+        addPlayChordButton(this);
         
         setTimeout(() => this.showFeedback = false, 3000);
       }

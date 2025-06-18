@@ -5,20 +5,17 @@ TODO
 
 - enhance and Optimize Chord User Experience
   - Alle activities sollen bei erfolg den Regenbogen anzeigen (aus feedback.js)
-  - **2_4_chords_missing-note**: Vereinfache die Aktivität für jüngere Kinder
-  - Stelle sicher, dass alle Akkordaktivitäten eine konsistente UI haben
-  - Implementiere kindgerechtes visuelles Feedback bei Akkordwiedergabe
 
   - **2_1_chords_color-matching**:
-   - Implementiere Tone.js Audio-Engine-Integration für Akkord-Wiedergabe
-
-   Uncaught runtime errors:
-ERROR
-checkColorAnswer is not defined
-chords/<.checkColorAnswer<@webpack-internal:///./src/components/chords.js:605:23
-checkColorAnswer@webpack-internal:///./src/components/chords.js:598:34
-anonymous@http://localhost:9091/main.6db226c628573e08bd2a.js line 162 > eval line 493 > AsyncFunction:3:32
-generateEvaluatorFromString/<@webpac
+   - Implementiere Tone.js Audio-Engine-Integration für Akkord-Wiedergab
+   - progression:
+    - at first only minor or major
+    - if 10 right level 2: add Diminished
+    - if 10 right level 3: add Augmented
+    - if 10 right level 4: add Sus4
+    - if 10 right level 5: add Sus2 
+   - add a free play mode where the user can play any chord by clicking on the color
+    
 
   - **2_2_chords_mood-landscapes**:
    - es spielt noch kein sound
@@ -30,6 +27,8 @@ generateEvaluatorFromString/<@webpac
 
   - **2_4_chords_missing-note**:
     - Vereinfache die Aktivität für jüngere Kinder, so ist sie viel zu schwer
+    - Stelle sicher, dass alle Akkordaktivitäten eine konsistente UI haben
+    - Implementiere kindgerechtes visuelles Feedback bei Akkordwiedergabe
     - schlage etwas vor
 
   - **2_5_chords_characters**:

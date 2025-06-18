@@ -156,3 +156,9 @@ export function checkColorAnswer(component, selectedColor) {
     newColorMatchingQuestion(component);
   }, 2000);
 }
+
+/* *************************************************** *
+make variables global available, 
+e.g. for diagnosis purposes to be used in the developer console
+*******************************************************/
+window.checkColorAnswer = checkColorAnswer;
