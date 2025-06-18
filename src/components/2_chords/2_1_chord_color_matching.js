@@ -20,20 +20,82 @@ export function testChordColorMatchingModuleImport() {
   return true;
 }
 
+
+/**
+ * Hilfsfunktion, um einen zufälligen Grundton zu generieren
+ * @returns {string} Ein zufälliger Grundton (z.B. 'C4')
+ */
+function getRandomRootNote() {
+  const rootNotes = ['C4', 'D4', 'E4', 'F4', 'G4', 'A4', 'B4'];
+  return rootNotes[Math.floor(Math.random() * rootNotes.length)];
+}
+
+/**
+ * Hilfsfunktion, um einen zufälligen Akkordtyp zu generieren
+ * @returns {string} Ein zufälliger Akkordtyp (major, minor, etc.)
+ */
+function getRandomChordType() {
+  const chordTypes = [
+    'major',
+    'minor',
+    'diminished',
+    'augmented',
+    'major7',
+    'minor7',
+    'dominant7'
+  ];
+  return chordTypes[Math.floor(Math.random() * chordTypes.length)];
+}
+
 /**
  * Add Play Chord button to the DOM and initialize the first question
  * @param {Object} component - Reference to the Alpine.js component
  */
 export function addPlayChordButton(component) {
-  debugLog('CHORDS', '2_1_color_matching: addPlayChordButton() Adding play chord button');
-  // Initialize first question immediately so currentChordType is always set
+  debugLog('CHORDS', '2_1_color_matching: addPlayChordButton() Adding play chord button handler');
+  
+  // Always initialize first question immediately so currentChordType is always set
   newColorMatchingQuestion(component);
   
-  // Check if we already have a play button
-  if (document.querySelector('#play-chord-button')) {
-    debugLog('CHORDS', 'Play chord button already exists');
+  // Finde den Container für die Color-Matching-Aktivität
+  const colorMatchingContainer = document.querySelector('.color-matching-container');
+  if (!colorMatchingContainer) {
+    debugLog('CHORDS', 'Error: Could not find color-matching-container');
     return;
   }
+  
+  // Finde den Play-Button innerhalb des Containers
+  const playButtonsInActivity = document.querySelectorAll('.play-button');
+  let existingButton = null;
+  
+  // Durchsuche alle Play-Buttons und finde den, der zur Color-Matching-Aktivität gehört
+  for (const button of playButtonsInActivity) {
+    if (button.closest('.color-matching-container') || 
+        button.closest('.chord-chapters-view[data-mode="2_1_chords_color-matching"]')) {
+      existingButton = button;
+      break;
+    }
+  }
+  
+  if (existingButton) {
+    debugLog('CHORDS', 'Found existing play button in 2_1 color matching view, adding click handler');
+    
+    // Add click handler to the existing button
+    existingButton.onclick = function() {
+      debugLog('CHORDS', `Play Chord button clicked, currentChordType=${component.currentChordType}`);
+      // Ensure we have a valid chord type
+      if (!component.currentChordType) {
+        debugLog('CHORDS', 'No current chord type, generating new question');
+        newColorMatchingQuestion(component);
+      }
+      // Verwende die lokale getRandomRootNote Funktion
+      component.playChord(component.currentChordType, getRandomRootNote());
+    };
+    
+    return; // Exit after setting up the existing button
+  }
+  
+  // If no button exists yet, create one
   
   // Find container
   const container = document.querySelector('.color-matching-container');
@@ -42,15 +104,8 @@ export function addPlayChordButton(component) {
     return;
   }
   
-  // Check if button already exists
-  let buttonContainer = container.querySelector('.play-chord-button-container');
-  if (buttonContainer) {
-    debugLog('CHORDS', 'Play chord button already exists for 2_1');
-    return;
-  }
-  
   // Create button container
-  buttonContainer = document.createElement('div');
+  const buttonContainer = document.createElement('div');
   buttonContainer.className = 'play-chord-button-container';
   
   // Create button
@@ -58,15 +113,22 @@ export function addPlayChordButton(component) {
   playButton.className = 'play-chord-button';
   playButton.innerText = 'Play Chord Again';
   
-  // Add click handler - directly play the current chord
-  playButton.onclick = () => {
-    // Always play the current chord (which should be set)
-    component.playChord(component.currentChordType, component.getRandomRootNote());
+  // Add click handler with additional logging
+  playButton.onclick = function() {
+    debugLog('CHORDS', `Dynamic Play Chord button clicked, currentChordType=${component.currentChordType}`);
+    // Ensure we have a valid chord type
+    if (!component.currentChordType) {
+      debugLog('CHORDS', 'No current chord type, generating new question');
+      newColorMatchingQuestion(component);
+    }
+    // Verwende lokale getRandomRootNote Funktion
+    component.playChord(component.currentChordType, getRandomRootNote());
   };
   
   // Add to DOM
   buttonContainer.appendChild(playButton);
   container.appendChild(buttonContainer);
+  debugLog('CHORDS', 'Created and added new play chord button');
   
   // Create fixed button container for bottom of screen
   const fixedContainer = document.createElement('div');
@@ -87,24 +149,15 @@ export function addPlayChordButton(component) {
  */
 export function newColorMatchingQuestion(component) {
   try {
-    // Verify component has the required methods
-    if (typeof component.getRandomChordType !== 'function') {
-      debugLog('CHORDS', 'Error: component.getRandomChordType is not a function');
-      return;
-    }
-    
-    if (typeof component.getRandomRootNote !== 'function') {
-      debugLog('CHORDS', 'Error: component.getRandomRootNote is not a function');
-      return;
-    }
-    
+    // Verify component has the required playChord method
     if (typeof component.playChord !== 'function') {
       debugLog('CHORDS', 'Error: component.playChord is not a function');
       return;
     }
     
-    const chordType = component.getRandomChordType();
-    const rootNote = component.getRandomRootNote();
+    // Verwende lokale Hilfsfunktionen statt component-Methoden
+    const chordType = getRandomChordType();
+    const rootNote = getRandomRootNote();
     
     // Verify we got valid values
     if (!chordType || !rootNote) {
