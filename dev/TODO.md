@@ -201,3 +201,5 @@ reset-button:
 - wenn man referral drückt, dann soll das hamburger menu sich schliessen
 
 - ich brauche einen admin mode, in dem ich sehen kann, welche user registriert sin d in der db und wieviele referrer punkte sie schon haben
+
+- das android icon als favicon to the app index page und das selbe favicon auch zur homepage add

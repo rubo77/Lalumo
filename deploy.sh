@@ -16,8 +16,10 @@ cp -r public/sitemap.xml dist/
 rsync -avz --no-perms --no-owner --no-group --delete dist/ root@vm06.eclabs:/var/kunden/webs/ruben/www/lalumo.z11.de/
 
 # 5. Upload homepage files to lalumo.eu
-rsync -avz --no-perms --no-owner --no-group --delete homepage/ root@vm06.eclabs:/var/kunden/webs/ruben/www/lalumo.eu/
-
+rsync -avz --no-perms --no-owner --no-group homepage/ root@vm06.eclabs:/var/kunden/webs/ruben/www/lalumo.eu/
+rsync -avz --no-perms --no-owner --no-group app/homepage/images/ root@vm06.eclabs:/var/kunden/webs/ruben/www/lalumo.eu/images/
+rsync -avz --no-perms --no-owner --no-group app/images/backgrounds/ root@vm06.eclabs:/var/kunden/webs/ruben/www/lalumo.eu/images/backgrounds/
+rsync -avz --no-perms --no-owner --no-group public/images/logo_bird_sings.jpg root@vm06.eclabs:/var/kunden/webs/ruben/www/lalumo.eu/images/
 echo "Deployment complete! All files including images have been uploaded."
 
 echo "upload the git repo:"

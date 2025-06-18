@@ -10,7 +10,7 @@ pkill -f 'webpack.*serve' 2>/dev/null || echo "No webpack process found"
 
 # 3. rsync images from public directory to app
 echo "Syncing images..."
-rsync -a --progress --exclude='images/backgrounds/original/' --delete public/images/ app/images/
+rsync -a --progress --delete public/images/ app/images/
 
 echo "Starting webpack development server..."
 # Starte webpack-Server im Hintergrund

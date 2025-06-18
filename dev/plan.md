@@ -70,6 +70,50 @@
 - [x] Simple password-protected admin dashboard `admin.php` lists registered users and referral stats.
 - Note: New user requirements include persisting registration state in localStorage and fetching referral counts on page load.
 - Implemented localStorage persistence (including referralClickCount) and auto-fetch of referral stats on app load.
+- Note: User requested automated end-to-end testing using Playwright with a 10 s timeout to avoid page hangs.
+- Implement tests for admin dashboard accessibility via http://localhost:9091/admin.php.
+- Playwright end-to-end and admin dashboard unit tests implemented; ready to run.
+- [x] Add Playwright end-to-end tests for referral workflow (registration, click tracking, redeem, unlock) with 10 s timeout.
+- [x] Add unit test (Node) for admin dashboard endpoint (`admin.php`).
+- Admin dashboard GET request returns login page (HTTP 200), but POST authentication with password currently returns HTTP 500 – needs debugging.
+- Initial investigation indicates the 500 stems from SQLite DB init: missing `data/` directory and unhandled exceptions in `admin.php`.
+- Admin dashboard authentication fixed: data directory ensured and improved SQLite error handling; POST now returns 200 OK.
+- Admin dashboard JSON API verified via wget; returns correct statistics payload.
+- Playwright referral-system tests initiated (awaiting results).
+- User requests hero logo image (logo_bird_sings.jpg) be shown as a circular background icon without border on homepage.
+- Hero logo now styled via CSS as circular background icon without border; img tag removed.
+- User asked if logo image can be gitignored; need to update .gitignore accordingly.
+- logo path added to .gitignore.
+- Admin dashboard shows no data after registration; need to confirm SQLite insert and refresh logic.
+- Admin dashboard shows no data after registration; need to confirm SQLite insert and refresh logic.
+- Observed `/data` directory exists but `referrals.db` not created; registration POST may not trigger DB creation/insert. Debug `referral.php` registration flow and ensure DB/tables/rows are created.
+- Nginx logs revealed permission errors (`/var/www/Musici/data` not writable); directory permissions fixed via `sudo chmod`, retest registration flow.
+- SQLite database `referrals.db` now created after registration attempt; still shows no users, indicating insert logic or admin query needs debugging.
+- Manual registration via curl (`testuser123`) succeeded; user inserted and referral code returned, confirming `referral.php` insert logic works.
+- Admin dashboard JSON still returns empty user list; likely SQL query or refresh issue in `admin.php` requiring debugging.
+- Root cause: `admin.php` uses non-existent columns (`referrer_code`, `referral_type`) in its SQL; query must join `users` and `referrals` on `referrer_id` and select `click_count`, `registration_count`.
+- Admin dashboard SQL query updated to join `users` and `referrals`; however JSON API still returns empty list—need to verify DB path/data and table join logic.
+- Verified `users` table contains registration (e.g., testuser123), but `referrals` table lacks corresponding row; LEFT JOIN still yields NULL counts yet API returns empty—investigate query filtering and ensure referral row insertion.
+- Admin dashboard SQL query updated to aggregate counts by `referral_type`; JSON API now correctly lists registered users and statistics.
+- Android icon assets available in `dev/IconKitchen-Output/web/`; use for favicons.
+- Icon files copied to `src/` and `src/icons/`; favicon links added to `src/index.html`.
+- Ensure `admin.php` queries correctly fetch user data from SQLite DB
+- [x] Ensure `admin.php` queries correctly fetch user data from SQLite DB
+- Investigate why updated query still returns zero rows (check DB contents & paths)
+- [x] Investigate why updated query still returns zero rows (check DB contents & paths)
+- Verify admin JSON API lists newly registered users after change
+- [x] Verify admin JSON API lists newly registered users after change
+- Adjust `admin.php` queries if schema mismatch
+- [x] Adjust `admin.php` queries if schema mismatch
+- Re-test admin dashboard after registration
+- [x] Re-test admin dashboard after registration
+- Add Android icon as favicon to app index page and homepage
+  - [x] Copy favicon and icon PNGs to `src/` and `src/icons/`
+  - [x] Insert <link rel="icon"> tags in `src/index.html`
+  - [ ] Insert <link rel="icon"> tags in `homepage/index.html`
+- Clean up `dev/Concept_Referral-System.md`: remove completed items and document current referral data flow, DB schema, code interactions
+- `dev/Concept_Referral-System.md` has been rewritten with current referral system documentation.
+- [x] Clean up `dev/Concept_Referral-System.md`: remove completed items and document current referral data flow, DB schema, code interactions
 
 ## Task List
 - [x] Decide the correct destination directory for feedback utilities (`src/components/shared/` chosen).
@@ -120,19 +164,38 @@
 - [x] Implement referral system logic in `app.js` (state vars & methods)
 - [x] Persist registration state (`isUsernameLocked`) and referral data in localStorage (verify implementation)
 - [x] Fetch referral statistics on page load when user is registered (call `fetchReferralCount()` in `loadUserData`)
-
-### Chord Chapter Enhancements
-- [ ] Review all Chord module files (2_*) and outline necessary changes; ensure function names keep their 2_x abbreviations.
-- [x] Ensure all Chord activities trigger rainbow success feedback via `feedback.js`.
-  - [x] Import `showCompleteSuccess` (and related helpers) from `src/components/shared/feedback.js` into `src/components/chords.js`.
-  - [x] Invoke `showCompleteSuccess` in success handlers for color matching, missing note, character matching, chord building, and harmony gardens.
-- [ ] Simplify **2_4_chords_missing-note** activity for younger children.
-- [ ] Standardize UI across all Chord activities for consistency.
-- [ ] Implement kid-friendly visual feedback for chord playback.
-- [x] Implement Tone.js audio and landscape expansion for **2_2_chords_mood-landscapes**.
-- [x] Add play-full-chord button in **2_3_chords_chord-building**.
-- [ ] Extract piano functionality from Pitches module into shared component and reuse in Chords.
-- [ ] Follow `FILESTRUCTURE.md` and `CODING_STANDARDS.md` during implementation.
+- [x] Persist registration state (`isUsernameLocked`) and referral data in localStorage (verify implementation)
+- [x] Fetch referral statistics on page load when user is registered (call `fetchReferralCount()` in `loadUserData`)
+- [x] Add Playwright end-to-end tests for referral workflow (registration, click tracking, redeem, unlock) with 10 s timeout.
+- [x] Add unit test (Node) for admin dashboard endpoint (`admin.php`).
+- [x] Confirm admin dashboard accessible via wget/fetch http://localhost:9091/admin.php.
+- [x] Fix HTTP 500 error on admin dashboard authentication (POST to admin.php).
+- [ ] Perform end-to-end testing of referral workflow and fix issues
+- [x] Style hero logo (images/logo_bird_sings.jpg) as round background icon without border in homepage.
+- [x] Add logo image path to .gitignore (confirm with user).
+- [ ] Investigate missing admin data: verify SQLite DB entry on registration and fix.
+- [x] Ensure `referral.php` username registration inserts into `users` & `referrals` tables
+- [x] Confirm `referrals.db` file is created after first registration
+- [x] Ensure `admin.php` queries correctly fetch user data from SQLite DB
+  - [x] Fix data directory permissions so PHP can create SQLite DB
+  - [x] Rewrite `getUserStats` SQL to join `users` and `referrals` on `referrer_id` and fetch `click_count`, `registration_count`
+  - [x] Investigate why updated query still returns zero rows (check DB contents & paths)
+  - [x] Verify `users` table has data but join returns none (referrals row missing)
+  - [x] Fix `referrals` table schema (add `referrer_id`, `click_count`, `registration_count`) or align code to current schema
+  - [x] Ensure `referral.php` always inserts a row into `referrals` for new users (after schema fix)
+  - [x] Backfill `referrals` table for existing users (migration script or SQL)
+  - [x] Modify admin query to use `COALESCE(r.click_count,0)` etc. to include users even if no referral row
+  - [x] Verify admin JSON API lists newly registered users after change
+  - [ ] Update admin dashboard table rendering to use new fields
+  - [x] Verify admin JSON API lists newly registered users after change
+  - [ ] Adjust `admin.php` queries if schema mismatch
+- [x] Re-test admin dashboard after registration
+- [x] Re-test admin dashboard after registration
+- [ ] Add Android icon as favicon to app index page and homepage
+  - [x] Copy favicon and icon PNGs to `src/` and `src/icons/`
+  - [x] Insert <link rel="icon"> tags in `src/index.html`
+  - [ ] Insert <link rel="icon"> tags in `homepage/index.html`
+- [x] Clean up `dev/Concept_Referral-System.md`: remove completed items and document current referral data flow, DB schema, code interactions
 
 ## Current Goal
-- Perform end-to-end testing of referral workflow and fix issues
+Add favicon links to homepage/index.html

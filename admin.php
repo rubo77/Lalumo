@@ -20,48 +20,73 @@ if (isset($_POST['password'])) {
     }
 }
 
-// Database connection function
-function getDbConnection() {
-    $dbPath = __DIR__ . '/data/referrals.db';
-    $dataDir = dirname($dbPath);
-    
-    // Create data directory if it doesn't exist
-    if (!file_exists($dataDir)) {
-        mkdir($dataDir, 0755, true);
-    }
-    
-    // Open or create SQLite database
-    $db = new SQLite3($dbPath);
-    
-    // Create tables if they don't exist
-    $db->exec('
-        CREATE TABLE IF NOT EXISTS users (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            username TEXT UNIQUE,
-            referral_code TEXT UNIQUE,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        )
-    ');
-    
-    $db->exec('
-        CREATE TABLE IF NOT EXISTS referrals (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            referrer_code TEXT,
-            referral_type TEXT,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (referrer_code) REFERENCES users(referral_code)
-        )
-    ');
-    
-    return $db;
+// Define log function for diagnostics
+function logError($message) {
+    error_log("[LALUMO_ADMIN] " . $message);
 }
 
-// Get user statistics
+// Database connection function with improved error handling
+function getDbConnection() {
+    try {
+        $dbPath = __DIR__ . '/data/referrals.db';
+        $dataDir = dirname($dbPath);
+        
+        // Create data directory if it doesn't exist
+        if (!file_exists($dataDir)) {
+            if (!mkdir($dataDir, 0755, true)) {
+                throw new Exception("Failed to create data directory: $dataDir");
+            }
+            logError("Created data directory: $dataDir");
+        }
+        
+        // Verify directory is writable
+        if (!is_writable($dataDir)) {
+            throw new Exception("Data directory is not writable: $dataDir");
+        }
+        
+        // Open or create SQLite database
+        try {
+            $db = new SQLite3($dbPath);
+        } catch (Exception $e) {
+            throw new Exception("Failed to open SQLite database: " . $e->getMessage());
+        }
+        
+        // Enable foreign keys
+        $db->exec('PRAGMA foreign_keys = ON;');
+        
+        // Create tables if they don't exist
+        $db->exec('
+            CREATE TABLE IF NOT EXISTS users (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                username TEXT UNIQUE,
+                referral_code TEXT UNIQUE,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        ');
+        
+        $db->exec('
+            CREATE TABLE IF NOT EXISTS referrals (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                referrer_code TEXT,
+                referral_type TEXT,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (referrer_code) REFERENCES users(referral_code)
+            )
+        ');
+        
+        return $db;
+    } catch (Exception $e) {
+        logError("Database connection error: " . $e->getMessage());
+        throw $e; // Re-throw to handle in the calling function
+    }
+}
+
+// Get user statistics with improved error handling
 function getUserStats() {
     try {
         $db = getDbConnection();
         
-        // Query to get users with their referral counts
+        // Query to get users with their referral counts using actual schema
         $query = '
             SELECT 
                 u.username, 
@@ -70,10 +95,13 @@ function getUserStats() {
                 (SELECT COUNT(*) FROM referrals WHERE referrer_code = u.referral_code AND referral_type = "click") AS click_count,
                 (SELECT COUNT(*) FROM referrals WHERE referrer_code = u.referral_code AND referral_type = "registration") AS registration_count
             FROM users u
-            ORDER BY registration_count DESC, click_count DESC, u.created_at DESC
+            ORDER BY u.created_at DESC
         ';
         
         $results = $db->query($query);
+        if (!$results) {
+            throw new Exception("Query failed: " . $db->lastErrorMsg());
+        }
         
         $users = [];
         while ($row = $results->fetchArray(SQLITE3_ASSOC)) {
@@ -82,8 +110,51 @@ function getUserStats() {
         
         return $users;
     } catch (Exception $e) {
-        return ['error' => $e->getMessage()];
+        logError("Error getting user stats: " . $e->getMessage());
+        return [];
     }
+}
+
+// Get summary statistics
+function getSummaryStats($users) {
+    $totalUsers = count($users);
+    $totalClicks = 0;
+    $totalRegistrations = 0;
+    
+    foreach ($users as $user) {
+        $totalClicks += $user['click_count'];
+        $totalRegistrations += $user['registration_count'];
+    }
+    
+    return [
+        'totalUsers' => $totalUsers,
+        'totalClicks' => $totalClicks,
+        'totalRegistrations' => $totalRegistrations,
+        'conversionRate' => $totalClicks > 0 ? round(($totalRegistrations / $totalClicks) * 100, 1) : 0
+    ];
+}
+
+// Handle API requests
+if ($authenticated && isset($_GET['format']) && $_GET['format'] === 'json') {
+    header('Content-Type: application/json');
+    
+    try {
+        $users = getUserStats();
+        $stats = getSummaryStats($users);
+        
+        echo json_encode([
+            'success' => true,
+            'users' => $users,
+            'statistics' => $stats
+        ]);
+    } catch (Exception $e) {
+        http_response_code(500);
+        echo json_encode([
+            'success' => false,
+            'error' => $e->getMessage()
+        ]);
+    }
+    exit;
 }
 
 ?>

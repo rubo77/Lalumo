@@ -370,15 +370,26 @@
         .feature-card {
             animation: fadeInUp 0.8s ease;
         }
+        
+        /* Rundes Logo im Hintergrund ohne Rand */
+        .logo {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin: 0 auto 1.5rem;
+            background-image: url('images/logo_bird_sings.jpg');
+            background-size: cover;
+            background-position: center;
+            box-shadow: 0 0 25px rgba(0,0,0,0.15);
+        }
     </style>
 </head>
 <body>
     <!-- Header / Hero Section -->
     <header class="header">
         <div class="hero-content">
-            <div class="logo">
-                <img src="../src/images/mascot.png" alt="Lalumo Maskottchen">
-            </div>
+            <div class="logo" title="Lalumo Maskottchen"></div>
             
             <h1 class="hero-title">🎵 Lalumo</h1>
             <p class="hero-subtitle">Musik lernen durch Hören und Spielen</p>
