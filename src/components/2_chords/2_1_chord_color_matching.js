@@ -21,11 +21,18 @@ export function testChordColorMatchingModuleImport() {
 }
 
 /**
- * Add a Play Chord button to the color matching container
+ * Add Play Chord button to the DOM and initialize the first question
  * @param {Object} component - Reference to the Alpine.js component
  */
 export function addPlayChordButton(component) {
-  debugLog('CHORDS', 'Adding Play Chord button to 2_1 color matching');
+  // Initialize first question immediately so currentChordType is always set
+  newColorMatchingQuestion(component);
+  
+  // Check if we already have a play button
+  if (document.querySelector('#play-chord-button')) {
+    debugLog('CHORDS', 'Play chord button already exists');
+    return;
+  }
   
   // Find container
   const container = document.querySelector('.color-matching-container');
@@ -50,13 +57,10 @@ export function addPlayChordButton(component) {
   playButton.className = 'play-chord-button';
   playButton.innerText = 'Play Chord Again';
   
-  // Add click handler
+  // Add click handler - directly play the current chord
   playButton.onclick = () => {
-    if (component.currentChordType) {
-      component.playChord(component.currentChordType, component.getRandomRootNote());
-    } else {
-      newColorMatchingQuestion(component);
-    }
+    // Always play the current chord (which should be set)
+    component.playChord(component.currentChordType, component.getRandomRootNote());
   };
   
   // Add to DOM
@@ -162,3 +166,4 @@ make variables global available,
 e.g. for diagnosis purposes to be used in the developer console
 *******************************************************/
 window.checkColorAnswer = checkColorAnswer;
+window.newColorMatchingQuestion = newColorMatchingQuestion;

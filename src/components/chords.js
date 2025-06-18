@@ -40,6 +40,9 @@ import { test2_6_harmmony_gardenModuleImport } from './2_chords/2_6_harmmony_gar
 // Import debug utilities
 import { debugLog } from '../utils/debug.js';
 
+// Import the audio engine
+import audioEngine from './audio-engine.js';
+
 // Import chord styles
 import '../styles/2_chords.css';
 
@@ -94,10 +97,7 @@ export function chords() {
      * Initialize the component
      */
     init() {
-      // Import debug utils
-      import('../utils/debug').then(({ debugLog }) => {
-        debugLog('CHORDS', 'Chords component initialized');
-      });
+      debugLog('CHORDS', 'Chords component initialized');
       
       // Set up audio context when user interacts
       document.addEventListener('click', this.initAudio.bind(this), { once: true });
@@ -155,21 +155,19 @@ export function chords() {
      * Play a chord based on type and root note
      * @param {string} chordType - The type of chord (major, minor, etc.)
      * @param {string} rootNote - The root note of the chord (e.g., 'C4')
+     * @activity all
      */
     async playChord(chordType, rootNote = 'C4', options = { duration: 2 }) {
       this.stopAllSounds();
       debugLog('CHORDS', 'playChord called with chordType:', chordType, 'rootNote:', rootNote);
       
+      // Early validation of chord type
+      if (!chordType) {
+        debugLog('CHORDS', 'ERROR: Chord type is null or undefined! Stack trace:', new Error().stack);
+        return; // Exit early instead of using fallback
+      }
+      
       try {
-        // Import debug utils for logging
-        const { debugLog } = await import('../utils/debug');
-        
-        // Get and initialize audioEngine if needed
-        const audioEngine = (await import('./audio-engine.js')).default;
-        if (!audioEngine._isInitialized) {
-          await this.initAudio();
-        }
-        
         // Force Tone.js to start if needed (critical for sound playback)
         if (Tone.context.state !== "running") {
           debugLog('CHORDS', 'Tone.js context not running, attempting to start');
@@ -200,8 +198,8 @@ export function chords() {
         // Get chord definition
         const chord = this.chords[chordType];
         if (!chord) {
-          console.error(`Unknown chord type: ${chordType}`);
-          return;
+          debugLog('CHORDS', `ERROR: Unknown chord type: ${chordType}! Stack trace:`, new Error().stack);
+          return; // Exit early instead of using fallback
         }
         
         debugLog('CHORDS', `Playing ${chordType} chord with root ${rootNote}`);
@@ -214,10 +212,6 @@ export function chords() {
       this.activeChord = [];
       
       try {
-        // Get the audio engine
-        const audioEngine = (await import('./audio-engine.js')).default;
-        const { debugLog } = await import('../utils/debug');
-        
         // Get root note frequency and validate
         const rootFreq = this.baseNotes[rootNote];
         if (!rootFreq) {
@@ -285,13 +279,6 @@ export function chords() {
      */
     async playNote(frequency, delay = 0) {
       try {
-        // Import the central audio engine
-        const audioEngine = (await import('./audio-engine.js')).default;
-        
-        if (!audioEngine._isInitialized) {
-          await this.initAudio();
-        }
-        
         // Convert frequency to closest note name
         // A4 = 440Hz, and each semitone is the 12th root of 2 higher
         const a4 = 440;
@@ -328,14 +315,6 @@ export function chords() {
      */
     async stopAllSounds() {
       try {
-        // Import the central audio engine
-        const audioEngine = (await import('./audio-engine.js')).default;
-        
-        if (!audioEngine._isInitialized) {
-          console.warn('Audio engine not initialized, cannot stop sounds');
-          return;
-        }
-        
         // Use the audio engine's stopAll method
         audioEngine.stopAll();
         
@@ -343,8 +322,6 @@ export function chords() {
         this.activeChord = [];
         this.isPlaying = false;
         
-        // Import debug utils
-        const { debugLog } = await import('../utils/debug');
         debugLog('CHORDS', 'Stopped all sounds using central audio engine');
       } catch (error) {
         console.error('Error stopping sounds:', error);
@@ -365,17 +342,15 @@ export function chords() {
         window.Alpine.store('chordMode', mode);
       }
       
-      // Import debug utils
-      import('../utils/debug').then(({ debugLog }) => {
-        debugLog('CHORDS', `Switched to ${mode} mode`);
-      });
+      debugLog('CHORDS', `Switched to ${mode} mode`);
     },
     
     /**
      * Reset the current activity state
      */
     resetActivity() {
-      this.currentChordType = null;
+      // Don't reset currentChordType to avoid "Unknown chord type: null" errors
+      // Instead, we'll ensure it's properly set before use
       this.selectedColors = [];
       this.correctAnswers = 0;
       this.totalQuestions = 0;
@@ -414,10 +389,7 @@ export function chords() {
         }
       });
       
-      // Import debug utils
-      import('../utils/debug').then(({ debugLog }) => {
-        debugLog('CHORDS', 'Navigation elements configured');
-      });
+      debugLog('CHORDS', 'Navigation elements configured');
     },
     
     /**
@@ -511,12 +483,6 @@ export function chords() {
       // If we have a recognized chord type, play it using the audio engine
       if (this.recognizedChordType) {
         try {
-          // Get and initialize audioEngine if needed
-          const audioEngine = (await import('./audio-engine.js')).default;
-          if (!audioEngine._isInitialized) {
-            await audioEngine.initialize();
-          }
-          
           // Play the chord with the central audio engine
           this.playChord(this.recognizedChordType, 'C4', { duration: 2.5 });
           
@@ -542,12 +508,6 @@ export function chords() {
         const sortedIntervals = [...this.builtChordIntervals].sort((a, b) => a - b);
         
         try {
-          // Get and initialize audioEngine if needed
-          const audioEngine = (await import('./audio-engine.js')).default;
-          if (!audioEngine._isInitialized) {
-            await audioEngine.initialize();
-          }
-          
           for (const interval of sortedIntervals) {
             const noteBlocks = document.querySelectorAll('.chord-block');
             if (noteBlocks[sortedIntervals.indexOf(interval)]) {
@@ -704,10 +664,7 @@ export function chords() {
         }
       });
       
-      // Import debug utils to log the missing interval
-      import('../utils/debug').then(({ debugLog }) => {
-        debugLog('CHORDS', `Missing interval: ${this.missingInterval}`);
-      });
+      debugLog('CHORDS', `Missing interval: ${this.missingInterval}`);
     },
     
     checkMissingNote(noteInterval) {
@@ -733,7 +690,8 @@ export function chords() {
         
         // Set up a new chord after a delay
         setTimeout(() => {
-          this.currentChordType = null; // Reset for next question
+          // Don't reset currentChordType to null here
+          // Instead, playIncompleteChord will ensure it's properly set
           this.showFeedback = false;
           this.playIncompleteChord();
         }, 2000);

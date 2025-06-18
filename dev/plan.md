@@ -39,10 +39,20 @@
 - Migrated `getMoodLandscapes` to **2_2_chord_mood_landscapes.js** and added dynamic wrapper in `chords.js` (duplicate removed).
 - Migrated `updateLandscape` to **2_2_chord_mood_landscapes.js**; wrapper replacement in `chords.js` is now complete.
 - Build succeeded after deduplication; user requests similar refactor process for other modules following FILESTRUCTURE.md lines 180-196.
+- Bug: `currentChordType` undefined in index.html Play Chord button; need to set/handle variable.
 - Note: addPlayChordButton task broken down into subtasks:
   - Implement addPlayChordButton function in **2_1_chord_color_matching.js**.
   - Ensure addPlayChordButton is invoked when activity loads.
   - Verify Play Chord button is visible and clickable.
+- Fixed: Fallback approach eliminated; `currentChordType` is now initialized on activity load, ensuring it's always defined before button use.
+- After fallback removal, the UI still logs "Unknown chord type: null"—need to trace where `currentChordType` becomes `null` before `playChord` is invoked.
+- Redundant audioEngine initialization blocks were stripped; a single, reliable `initAudio` call in `chords.js` now guarantees the engine is ready. Remaining step: verify it fires before any chord playback.
+- Identified multiple `currentChordType = null` resets in `chords.js` that may trigger "Unknown chord type: null"; need lifecycle audit.
+- [x] Centralize audioEngine initialization in `chords.js` (`initAudio`) and remove scattered checks.
+- Removed fallback logic from `playChord`; now logs error and exits when `chordType` is null or unknown, complying with no-fallback rule.
+- Unnecessary `currentChordType = null` resets removed in `resetActivity` and post-chord `setTimeout`; lifecycle audit confirms no further null resets remain.
+- [x] Optionally add assertion/logging in `playChord` when `chordType` is null to aid debugging.
+- Build warning: `audioEngine` named export not found; correct import in `chords.js` required.
 
 ## Task List
 - [x] Decide the correct destination directory for feedback utilities (`src/components/shared/` chosen).
@@ -56,6 +66,7 @@
 - [ ] Run build/tests to ensure no path errors remain.
 - [x] Fix runtime error `checkColorAnswer` undefined in `2_1_chords_color-matching`.
 - [ ] Fix Tone.js sound playback in **2_1_chords_color-matching**.
+- [x] Fix undefined `currentChordType` reference in index.html Play Chord button.
 - [ ] Fix Tone.js sound playback and button responsiveness in **2_2_chords_mood-landscapes**.
 - [ ] Debug Play Full Chord button visibility/clickability in **2_3_chords_chord-building** and ensure UI elements fit viewport.
 - [ ] Verify sound playback now works in **2_1_chords_color-matching** and **2_2_chords_mood-landscapes** after Tone.js initialization fix.
@@ -77,6 +88,13 @@
   - [x] Remove updateLandscape from `chords.js` and add wrapper with dynamic import
 - [ ] Deduplicate & migrate logic for **2_4_chords_missing-note** into its module.
 - [ ] Deduplicate & migrate logic for **2_6_harmmony_garden** into its module.
+- [x] Refactor Play Chord button logic to eliminate fallback; initialize first question on activity load so `currentChordType` is always defined.
+- [ ] Investigate and fix "Unknown chord type: null" error in color-matching flow (ensure `currentChordType` is never cleared before use).
+  - [x] Remove resets at lines 349 and 695 in `chords.js`.
+  - [x] Confirmed lines 713 & 724 assign valid chord types (not null) – no change required.
+  - [x] Optionally add assertion/logging in `playChord` when `chordType` is null to aid debugging.
+- [x] Centralize audioEngine initialization in `chords.js` (`initAudio`) and remove scattered checks.
+- [ ] Fix incorrect `audioEngine` import in `chords.js` (use default export or proper named export).
 
 ### Chord Chapter Enhancements
 - [ ] Review all Chord module files (2_*) and outline necessary changes; ensure function names keep their 2_x abbreviations.
@@ -92,4 +110,4 @@
 - [ ] Follow `FILESTRUCTURE.md` and `CODING_STANDARDS.md` during implementation.
 
 ## Current Goal
-- Finish deduplicating remaining chord modules
+-Fix audioEngine import mismatch in chords.js

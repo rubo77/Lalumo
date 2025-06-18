@@ -584,7 +584,7 @@
             </div>
             
             <div class="play-chord-button-container">
-              <button @click="playChord($store.currentChordType)" class="play-button">
+              <button @click="playChord(currentChordType)" class="play-button">
                 <span>🔈</span>
                 <span x-text="$store.strings?.play_chord || 'Play Chord'">Play Chord</span>
               </button>
