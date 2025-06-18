@@ -178,9 +178,9 @@ Dieser Ansatz minimiert den Umstrukturierungsaufwand und das Fehlerrisiko, währ
    - 1_5_memory_game.js
 
 3. **Code blockweise verschieben**: Für jede Aktivität:
-   - Identifizieren aller zugehörigen Funktionen in pitches.js: 
+   - Identifizieren aller zugehörigen Funktionen in pitches.js (bzw. chords.js): 
     - add `* @activity 1_1_high_or_low`, ... to function comments
-   - Kopieren dieser Funktionen in das entsprechende Modul (e.g. 1_1_high_or_low.js)
+   - Verschieben dieser Funktionen in das entsprechende Modul (e.g. 1_1_high_or_low.js)
    - Exportieren der Funktionen aus dem Modul:
       - füge `export` hinzu, e.g. `export function resetHighOrLow() { ... }`
       - falls `this` innerhalb der Funktionen verwendet wird:

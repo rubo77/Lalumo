@@ -21,6 +21,61 @@ export function testChordColorMatchingModuleImport() {
 }
 
 /**
+ * Add a Play Chord button to the color matching container
+ * @param {Object} component - Reference to the Alpine.js component
+ */
+export function addPlayChordButton(component) {
+  debugLog('CHORDS', 'Adding Play Chord button to 2_1 color matching');
+  
+  // Find container
+  const container = document.querySelector('.color-matching-container');
+  if (!container) {
+    debugLog('CHORDS', 'Error: Could not find color-matching-container');
+    return;
+  }
+  
+  // Check if button already exists
+  let buttonContainer = container.querySelector('.play-chord-button-container');
+  if (buttonContainer) {
+    debugLog('CHORDS', 'Play chord button already exists for 2_1');
+    return;
+  }
+  
+  // Create button container
+  buttonContainer = document.createElement('div');
+  buttonContainer.className = 'play-chord-button-container';
+  
+  // Create button
+  const playButton = document.createElement('button');
+  playButton.className = 'play-chord-button';
+  playButton.innerText = 'Play Chord Again';
+  
+  // Add click handler
+  playButton.onclick = () => {
+    if (component.currentChordType) {
+      component.playChord(component.currentChordType, component.getRandomRootNote());
+    } else {
+      newColorMatchingQuestion(component);
+    }
+  };
+  
+  // Add to DOM
+  buttonContainer.appendChild(playButton);
+  container.appendChild(buttonContainer);
+  
+  // Create fixed button container for bottom of screen
+  const fixedContainer = document.createElement('div');
+  fixedContainer.id = 'play-chord-button-fixed-container';
+  
+  // Add fixed button
+  fixedContainer.appendChild(playButton.cloneNode(true));
+  fixedContainer.firstChild.onclick = playButton.onclick;
+  document.body.appendChild(fixedContainer);
+  
+  debugLog('CHORDS', '2_1_color_matching: Added play chord button');
+}
+
+/**
  * Generate a new color matching question
  * Plays a random chord and sets it as the current chord type
  * @param {Object} component - Reference to the Alpine.js component

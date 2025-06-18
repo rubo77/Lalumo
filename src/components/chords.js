@@ -456,163 +456,69 @@ export function chords() {
     
     // These functions are now imported from the module
     // Wrapper functions to maintain compatibility with existing code
-    newColorMatchingQuestion() {
-      newColorMatchingQuestion(this);
+    async newColorMatchingQuestion() {
+      // Import the module function dynamically and call it
+      const colorMatchingModule = await this.loadColorMatchingModule();
+      if (colorMatchingModule && typeof colorMatchingModule.newColorMatchingQuestion === 'function') {
+        colorMatchingModule.newColorMatchingQuestion(this);
+      } else {
+        debugLog('CHORDS', 'Error: newColorMatchingQuestion not available');
+      }
     },
     
-    checkColorAnswer(selectedColor) {
-      // Call the imported function
-      const result = checkColorAnswer(this, selectedColor);
-      
-      // Show rainbow success if correct in 2_1_chord_color_matching
-      // Result is undefined because the imported function does not return a value
-      // We'll check directly if the answer was correct based on our state
-      if (this.showFeedback && this.feedbackMessage && this.feedbackMessage.includes('Great job')) {
-        debugLog('CHORDS', '2_1_chord_color_matching: Correct answer, showing rainbow');
-        showCompleteSuccess();
+    async checkColorAnswer(selectedColor) {
+      // Import the module function dynamically and call it
+      const colorMatchingModule = await this.loadColorMatchingModule();
+      if (colorMatchingModule && typeof colorMatchingModule.checkColorAnswer === 'function') {
+        const result = colorMatchingModule.checkColorAnswer(this, selectedColor);
+        
+        // Show rainbow success if correct
+        if (this.showFeedback && this.feedbackMessage && this.feedbackMessage.includes('Great job')) {
+          debugLog('CHORDS', '2_1_chord_color_matching: Correct answer, showing rainbow');
+          showCompleteSuccess();
+        }
+        
+        return result;
+      } else {
+        debugLog('CHORDS', 'Error: checkColorAnswer not available');
       }
-      
-      return result;
     },
     
     // 2_2_chord_mood_landscapes Activity Methods
-    // 2_2_chord_mood_landscapes - Map chord types to emotions and landscapes
-    getMoodLandscapes() {
-      return {
-        major: {
-          emotion: 'Happy / Bright',
-          landscapes: [
-            { src: './images/landscapes/sunny-field.jpg', name: 'Sunny Field' },
-            { src: './images/landscapes/beach-sunrise.jpg', name: 'Beach Sunrise' },
-            { src: './images/landscapes/flower-garden.jpg', name: 'Flower Garden' }
-          ],
-          description: 'Major chords sound bright, happy, and stable. They evoke feelings of joy and optimism.'
-        },
-        minor: {
-          emotion: 'Sad / Melancholic',
-          landscapes: [
-            { src: './images/landscapes/rainy-forest.jpg', name: 'Rainy Forest' },
-            { src: './images/landscapes/autumn-leaves.jpg', name: 'Autumn Leaves' },
-            { src: './images/landscapes/foggy-lake.jpg', name: 'Foggy Lake' }
-          ],
-          description: 'Minor chords sound sad, melancholic, and introspective. They can create feelings of sadness or contemplation.'
-        },
-        diminished: {
-          emotion: 'Tense / Mysterious',
-          landscapes: [
-            { src: './images/landscapes/misty-mountains.jpg', name: 'Misty Mountains' },
-            { src: './images/landscapes/dark-cave.jpg', name: 'Dark Cave' },
-            { src: './images/landscapes/abandoned-house.jpg', name: 'Abandoned House' }
-          ],
-          description: 'Diminished chords sound tense, unstable, and mysterious. They create a sense of suspense or unease.'
-        },
-        augmented: {
-          emotion: 'Dreamy / Magical',
-          landscapes: [
-            { src: './images/landscapes/lightning-storm.jpg', name: 'Lightning Storm' },
-            { src: './images/landscapes/starry-night.jpg', name: 'Starry Night' },
-            { src: './images/landscapes/aurora-borealis.jpg', name: 'Aurora Borealis' }
-          ],
-          description: 'Augmented chords sound dreamy, floating, and magical. They create a sense of wonder or fantasy.'
-        },
-        sus4: {
-          emotion: 'Open / Floating',
-          landscapes: [
-            { src: './images/landscapes/windy-plains.jpg', name: 'Windy Plains' },
-            { src: './images/landscapes/ocean-waves.jpg', name: 'Ocean Waves' },
-            { src: './images/landscapes/mountain-peak.jpg', name: 'Mountain Peak' }
-          ],
-          description: 'Suspended 4th chords sound open, floating, and unresolved. They create a feeling of anticipation.'
-        },
-        sus2: {
-          emotion: 'Light / Airy',
-          landscapes: [
-            { src: './images/landscapes/meadow.jpg', name: 'Meadow' },
-            { src: './images/landscapes/clouds.jpg', name: 'Clouds' },
-            { src: './images/landscapes/light-forest.jpg', name: 'Light Forest' }
-          ],
-          description: 'Suspended 2nd chords sound light, airy, and open. They create a feeling of lightness or spaciousness.'
-        },
-        // Add more chord types as needed
-      };
+    // Dynamic loader for the mood landscapes module
+    async loadMoodLandscapesModule() {
+      try {
+        const module = await import('./2_chords/2_2_chord_mood_landscapes.js');
+        return module;
+      } catch (error) {
+        console.error('Failed to load mood landscapes module:', error);
+        debugLog('CHORDS', `Error loading mood landscapes module: ${error.message}`);
+        return null;
+      }
     },
     
+    // Wrapper to maintain backward compatibility
+    async getMoodLandscapes() {
+      const moodLandscapesModule = await this.loadMoodLandscapesModule();
+      if (moodLandscapesModule && typeof moodLandscapesModule.getMoodLandscapes === 'function') {
+        return moodLandscapesModule.getMoodLandscapes();
+      } else {
+        debugLog('CHORDS', 'Error: getMoodLandscapes function not found in module');
+        // Return empty object as fallback
+        return {};
+      }
+    },
+    
+    // Dynamic wrapper for updateLandscape function from the module
     async updateLandscape(chordType) {
-      // Update the visual landscape and play the chord
-      const landscapeImage = document.getElementById('landscape-image');
-      const emotionText = document.getElementById('emotion-text');
-      const descriptionText = document.getElementById('chord-description');
-      const moodData = this.getMoodLandscapes()[chordType];
+      // Import the module function dynamically and call it
+      const moodLandscapesModule = await this.loadMoodLandscapesModule();
       
-      if (!moodData) {
-        debugLog('CHORDS', `No mood data found for chord type: ${chordType}`);
-        return;
-      }
-      
-      // Show rainbow success when updating landscape
-      showRainbowSuccess();
-      
-      // Update visual elements if they exist
-      if (landscapeImage) {
-        // Get a random landscape from the available options
-        const landscape = moodData.landscapes[Math.floor(Math.random() * moodData.landscapes.length)];
-        landscapeImage.src = landscape.src;
-        landscapeImage.alt = landscape.name;
-        
-        // Add a title or caption if needed
-        if (landscapeImage.parentElement) {
-          const caption = landscapeImage.parentElement.querySelector('.landscape-caption') || 
-                         document.createElement('div');
-          if (!caption.classList.contains('landscape-caption')) {
-            caption.classList.add('landscape-caption');
-            landscapeImage.parentElement.appendChild(caption);
-          }
-          caption.textContent = `${landscape.name} - ${moodData.emotion}`;
-        }
-      }
-      
-      // Update emotion text if element exists
-      if (emotionText) {
-        emotionText.textContent = moodData.emotion;
-      }
-      
-      // Update description if element exists
-      if (descriptionText) {
-        descriptionText.textContent = moodData.description;
-      }
-      
-      // Play the chord using audio engine
-      try {
-        debugLog('CHORDS', `Playing chord for mood landscape: ${chordType}`);
-        // Get and initialize audioEngine if needed
-        const audioEngine = (await import('./audio-engine.js')).default;
-        if (!audioEngine._isInitialized) {
-          await audioEngine.initialize();
-        }
-        
-        // Play the chord with a longer duration for mood ambience
-        this.playChord(chordType, 'C4', { duration: 3.0 });
-        
-        // Optional: play a progression after a short delay
-        setTimeout(async () => {
-          if (chordType === 'major') {
-            // Play a I-IV-V progression
-            await this.playChord('major', 'C4', { duration: 1.0 }); // I
-            await new Promise(resolve => setTimeout(resolve, 1000));
-            await this.playChord('major', 'F4', { duration: 1.0 }); // IV
-            await new Promise(resolve => setTimeout(resolve, 1000));
-            await this.playChord('major', 'G4', { duration: 1.5 }); // V
-          } else if (chordType === 'minor') {
-            // Play a i-iv-v progression
-            await this.playChord('minor', 'C4', { duration: 1.0 }); // i
-            await new Promise(resolve => setTimeout(resolve, 1000));
-            await this.playChord('minor', 'F4', { duration: 1.0 }); // iv
-            await new Promise(resolve => setTimeout(resolve, 1000));
-            await this.playChord('minor', 'G4', { duration: 1.5 }); // v
-          }
-        }, 3500);
-      } catch (error) {
-        debugLog('CHORDS', `Error playing chord for mood landscape: ${error.message}`);
+      if (moodLandscapesModule && typeof moodLandscapesModule.updateLandscape === 'function') {
+        // Call the module function, passing the component (this) and chordType
+        await moodLandscapesModule.updateLandscape(this, chordType);
+      } else {
+        debugLog('CHORDS', 'Error: updateLandscape function not found in module');
       }
     },
     

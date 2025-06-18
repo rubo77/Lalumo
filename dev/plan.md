@@ -10,17 +10,86 @@
 - After relocating, all import paths across the codebase must be updated.
 - Update dev/FILESTRUCTURE.md to match the new, real structure.
 - Adhere to user global rules: no fallback code, no unnecessary deployment, add diagnostics if needed.
+- User confirmed file structure is correct; focus shifts to enhancing Chord Chapter user experience.
+- User requested to review Chord code first and keep 2_x abbreviations in function names.
+- Main Chords entry file is `src/components/chords.js`; sub-modules `2_*` will be migrated later.
+- Rainbow feedback integrated into `chords.js` across all chord activities.
+- Runtime error `checkColorAnswer is not defined` observed in `chords.js`; must fix.
+- `checkColorAnswer` now imported into chords.js, error resolved.
+- Tone.js audio and richer landscapes integrated into 2_2 mood landscapes.
+- Play-full-chord button implemented in 2_3 chord-building.
+- Audio-engine singleton (`src/components/audio-engine.js`) now powers all chord sounds; initAudio simply ensures `audioEngine.initialize()` is called upon first user gesture.
+- User reports no sound in 2_1 and 2_2, and missing/unresponsive Play Full Chord button in 2_3; suspect off-screen buttons—set containers to 100% viewport height and debug Tone.js initialization / Transport start.
+- Initial fixes committed: forced Tone.start() in initAudio, added full-height CSS for activity containers, and improved Play Full Chord button container lookup; awaiting user verification.
+- `setupFullHeightContainers` function has been implemented to enforce 100vh containers and style rules.
+- Replaced require usage in setupFullHeightContainers to avoid bundler issues; enhanced Tone.js auto-start logic and fixed Play Full Chord button positioning.
+- User requested moving injected CSS rules into external stylesheet `src/styles/2_chords.css` and setting `.chord-chapters-view` height to 800px.
+- Created external stylesheet `src/styles/2_chords.css` including chord activity styles and `.chord-chapters-view` height rule.
+- Stylesheet now imported in `chords.js`, and inline CSS injection removed from `setupFullHeightContainers`.
+- Injected existing `audioEngine` & Tone import into **2_1_chord_color_matching**, **2_2_chords_mood-landscapes**, **2_4_chords_missing-note**, and **2_6_harmmony_garden** to enable sound; awaiting verification.
+- `2_6_harmmony_garden.js` module has been created and initial audio imports added.
+- User explicitly said not to add a new audio engine; must reuse existing AudioEngine implementation already powering other chapters.
+- User identified duplicate functions (e.g., `newColorMatchingQuestion`, `checkColorAnswer`) existing both in `chords.js` and `2_x` module files; wants duplicates removed and logic housed only in the respective `2_chords/*` files.
+- `chords.js` should act as orchestrator/importer; all activity-specific logic must live inside `src/components/2_chords/` modules.
+- Need a visible "Play Chord" button in **2_1 color-matching** activity.
+- Clean up duplicate code introduced in commit `236a1f3` and ensure single source of truth per function.
+- addPlayChordButton function implemented and invoked via dynamic import in **2_1_chord_color_matching.js**; Play button should now appear.
+- Duplicate color-matching functions removed from `chords.js`; wrappers now dynamically import the module.
+- addPlayChordButton now auto-initializes on module load; Play button confirmed in UI.
+- Migrated `getMoodLandscapes` to **2_2_chord_mood_landscapes.js** and added dynamic wrapper in `chords.js` (duplicate removed).
+- Migrated `updateLandscape` to **2_2_chord_mood_landscapes.js**; wrapper replacement in `chords.js` is now complete.
+- Build succeeded after deduplication; user requests similar refactor process for other modules following FILESTRUCTURE.md lines 180-196.
+- Note: addPlayChordButton task broken down into subtasks:
+  - Implement addPlayChordButton function in **2_1_chord_color_matching.js**.
+  - Ensure addPlayChordButton is invoked when activity loads.
+  - Verify Play Chord button is visible and clickable.
 
 ## Task List
 - [x] Decide the correct destination directory for feedback utilities (`src/components/shared/` chosen).
 - [x] Create the destination directory.
 - [x] Move `src/effects/feedback.js` to the chosen destination.
 - [x] Update every import/export statement that references `effects/feedback.js` (one manual fix applied).
-- [ ] Scan `src/**/*.js` for files stored outside their intended directories per FILESTRUCTURE.md.
-- [ ] Produce a list of mis-located files and agree on new paths with user if necessary.
-- [ ] Relocate the additional mis-placed files and adjust corresponding imports.
+- [x] Scan `src/**/*.js` for files stored outside their intended directories per FILESTRUCTURE.md.
+- [x] Produce a list of mis-located files and agree on new paths with user if necessary (none found; structure confirmed).
+- [x] Relocate the additional mis-placed files and adjust corresponding imports.
 - [ ] Update `dev/FILESTRUCTURE.md` sections to reflect the new file locations.
 - [ ] Run build/tests to ensure no path errors remain.
+- [x] Fix runtime error `checkColorAnswer` undefined in `2_1_chords_color-matching`.
+- [ ] Fix Tone.js sound playback in **2_1_chords_color-matching**.
+- [ ] Fix Tone.js sound playback and button responsiveness in **2_2_chords_mood-landscapes**.
+- [ ] Debug Play Full Chord button visibility/clickability in **2_3_chords_chord-building** and ensure UI elements fit viewport.
+- [ ] Verify sound playback now works in **2_1_chords_color-matching** and **2_2_chords_mood-landscapes** after Tone.js initialization fix.
+- [ ] Verify Play Full Chord button is visible and clickable in **2_3_chords_chord-building** after UI adjustments.
+- [x] Create external stylesheet `src/styles/2_chords.css` with chord activity styles.
+- [x] Ensure `.chord-chapters-view` has fixed height of 800px.
+- [x] Link `2_chords.css` stylesheet in app (imported in `chords.js`).
+- [x] Remove inline CSS injection from `setupFullHeightContainers` now that external stylesheet is loaded.
+- [ ] Fix Tone.js sound playback in **2_4_chords_missing-note**.
+- [x] Locate or verify **2_6_chords** module file (created as 2_6_harmmony_garden.js).
+- [ ] Fix Tone.js sound playback in **2_6_chords** module.
+- [x] Move duplicate functions from `chords.js` into **2_1_chord_color_matching.js** and remove from `chords.js`.
+- [ ] Move other activity-specific functions from `chords.js` into their respective `2_chords/*` files and import them.
+- [ ] Delete remaining duplicate code blocks caused by commit `236a1f3`.
+- [ ] Deduplicate & migrate logic for **2_2_chord_mood_landscapes** into its module.
+  - [x] Move getMoodLandscapes to module
+  - [x] Remove getMoodLandscapes from `chords.js` and add wrapper with dynamic import
+  - [x] Move updateLandscape logic to module
+  - [x] Remove updateLandscape from `chords.js` and add wrapper with dynamic import
+- [ ] Deduplicate & migrate logic for **2_4_chords_missing-note** into its module.
+- [ ] Deduplicate & migrate logic for **2_6_harmmony_garden** into its module.
+
+### Chord Chapter Enhancements
+- [ ] Review all Chord module files (2_*) and outline necessary changes; ensure function names keep their 2_x abbreviations.
+- [x] Ensure all Chord activities trigger rainbow success feedback via `feedback.js`.
+  - [x] Import `showCompleteSuccess` (and related helpers) from `src/components/shared/feedback.js` into `src/components/chords.js`.
+  - [x] Invoke `showCompleteSuccess` in success handlers for color matching, missing note, character matching, chord building, and harmony gardens.
+- [ ] Simplify **2_4_chords_missing-note** activity for younger children.
+- [ ] Standardize UI across all Chord activities for consistency.
+- [ ] Implement kid-friendly visual feedback for chord playback.
+- [x] Implement Tone.js audio and landscape expansion for **2_2_chords_mood-landscapes**.
+- [x] Add play-full-chord button in **2_3_chords_chord-building**.
+- [ ] Extract piano functionality from Pitches module into shared component and reuse in Chords.
+- [ ] Follow `FILESTRUCTURE.md` and `CODING_STANDARDS.md` during implementation.
 
 ## Current Goal
-Scan for other misplaced files
+- Finish deduplicating remaining chord modules
