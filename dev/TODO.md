@@ -179,7 +179,8 @@ reset-button:
 
 1_5 memory game:
  - # bereit zur veröffentlichung
-
+ - feedback sound soll mit verzögerung abgespielt werden
+ 
 -------------------------------------------
 # mobile-build.sh:
 - die find funktion, die nur das kopieren soll was benutzt wird passiert zu spät, es wird vorher schon mit rsync alles von public/ nach dist/ kopiert. ich habe den original folder da hinzugefügt, aber es wäre schöner, wenn das automatisch nicht gersnynct würde, wenn es nicht bnutzt wird
