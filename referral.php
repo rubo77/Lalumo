@@ -1,4 +1,8 @@
 <?php
+// Fehlerausgabe aktivieren für Debugging
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 /**
  * Referral Code API Endpoint für Lalumo
  * 
@@ -38,6 +42,7 @@ if ($initDb) {
             id INTEGER PRIMARY KEY,
             username TEXT UNIQUE,
             referral_code TEXT UNIQUE,
+            password TEXT,
             created_at TEXT
         );
         CREATE TABLE referrals (
@@ -143,11 +148,16 @@ if ($method === 'POST') {
     $stmt->bindValue(':password', $password, SQLITE3_TEXT);
     
     try {
+        // Debug-Ausgabe für die SQL-Abfrage
+        error_log("SQL statement being executed: INSERT INTO users (username, referral_code, password, created_at)");
+        error_log("Username: {$username}, Code: {$referralCode}, Password: {$password}");
+        
         $result = $stmt->execute();
         
         if ($result) {
             // Referral-Eintrag erstellen
             $userId = $db->lastInsertRowID();
+            error_log("User created with ID: {$userId}");
             $db->exec("INSERT INTO referrals (referrer_id, click_count, registration_count) VALUES ($userId, 0, 0)");
             
             // Formatierten Code und Passwort zurückgeben
