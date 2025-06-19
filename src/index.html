@@ -944,76 +944,8 @@
       </div>
     </section>
     
-    <!-- Referral Code Page -->
-    <section x-show="active === 'referral-code' && (window.innerWidth >= 1024 || !menuOpen)" x-transition class="settings-page referral-code-page">
-      <h2 x-text="$store.strings?.unlock_chords || 'Unlock Chords Chapter'"></h2>
-      <div class="settings-section">
-        <div class="referral-section">
-          <p x-text="$store.strings?.referral_instruction || 'Share Lalumo with your friends to unlock the Chords Chapter!'"></p>
-          <div class="referral-info">
-            <p><span class="referral-highlight">3</span> <span x-text="$store.strings?.referrals_premium || 'successful referrals: Unlock Chords Chapter'"></span></p>
-            <p><span class="referral-highlight">5</span> <span x-text="$store.strings?.referrals_future || 'successful referrals: Get future updates for free'"></span></p>
-          </div>
-          
-          <!-- Username section - first step of referral process -->
-          <template x-if="!isUsernameLocked">
-            <div class="username-lock-section">
-              <h3 x-text="$store.strings?.register_username || 'Register Your Username'"></h3>
-              <p class="warning-text" x-text="$store.strings?.username_lock_warning || 'After registering, you will no longer be able to change your username.'"></p>
-              <div class="current-username-display">
-                <strong x-text="$store.strings?.current_username || 'Current username:'"></strong>
-                <span x-text="username || $store.strings?.no_username_set || 'No username set'"></span>
-              </div>
-              <button class="primary-button" @click="lockUsername()" x-text="$store.strings?.register_button || 'Register Username'" :disabled="!username"></button>
-              <p class="help-text" x-show="!username" x-text="$store.strings?.set_username_first || 'Please set a username in Settings first.'"></p>
-            </div>
-          </template>
-          
-          <!-- Referral code section - visible after username is locked -->
-          <template x-if="isUsernameLocked">
-            <div class="registered-user-section">
-              <h3 x-text="$store.strings?.your_referral_code || 'Your Referral Code'"></h3>
-              <div class="registered-username">
-                <strong x-text="$store.strings?.registered_as || 'Registered as:'"></strong>
-                <span x-text="lockedUsername"></span>
-              </div>
-              <div class="referral-code-container">
-                <input type="text" readonly x-model="referralCode" class="referral-code-input">
-                <button class="secondary-button" @click="copyReferralCode()" x-text="$store.strings?.copy_referral_code || 'Copy Code'"></button>
-              </div>
-              <div class="referral-actions">
-                <div class="referral-stats">
-                  <p class="referral-status">
-                    <strong><span x-text="$store.strings?.registrations || 'Registrations'"></span>:</strong>
-                    <span x-text="(referralCount || '0') + '/3'"></span>
-                    <template x-if="referralCount >= 3">
-                      <span class="referral-unlocked">✓ <span x-text="$store.strings?.chords_unlocked || 'Chords unlocked!'"></span></span>
-                    </template>
-                  </p>
-                  <p class="referral-status">
-                    <strong><span x-text="$store.strings?.link_clicks || 'Link clicks'"></span>:</strong>
-                    <span x-text="referralClickCount || '0'"></span>
-                  </p>
-                  <template x-if="referralCount < 3">
-                    <p class="referral-hint" x-text="$store.strings?.referral_hint || 'Ask your friends to use your code when registering!'"></p>
-                  </template>
-                </div>
-                <button class="primary-button" @click="shareReferralCode()" x-text="$store.strings?.share_app || 'Share App'"></button>
-              </div>
-            </div>
-          </template>
-        </div>
-        
-        <!-- Friend code redemption section -->
-        <div class="friend-code-section">
-          <h3 x-text="$store.strings?.friend_code || 'Have a Friend Code?'"></h3>
-          <div class="friend-code-container">
-            <input type="text" x-model="friendCode" class="friend-code-input" :placeholder="$store.strings?.enter_friend_code || 'Enter friend code here'">
-            <button class="primary-button" @click="redeemFriendCode()" x-text="$store.strings?.redeem_code || 'Redeem Code'"></button>
-          </div>
-        </div>
-      </div>
-    </section>
+    <!-- Referral Code Page - included from partials/referrals.html -->
+    <div data-include="/partials/referrals.html"></div>
     
     <!-- Settings Page -->
     <section x-show="active === 'settings' && (window.innerWidth >= 1024 || !menuOpen)" x-transition class="settings-page">

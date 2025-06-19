@@ -65,6 +65,17 @@ module.exports = (env, argv) => {
             filename: 'images/[name][ext]'
           }
         },
+        {
+          test: /\.html$/,
+          exclude: /index\.html$/,
+          use: {
+            loader: 'html-loader',
+            options: {
+              minimize: false,
+              esModule: false
+            }
+          }
+        },
       ],
     },
     plugins: [

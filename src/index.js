@@ -8,6 +8,9 @@ import './styles/clickable-map.css';
 // Import Debug Utility
 import { checkStoredDebugSettings, debugLog } from './utils/debug';
 
+// Import HTML include utility
+import { loadHtmlPartials } from './utils/html-include';
+
 // Initialize debug mode first, before any other operations
 checkStoredDebugSettings();
 
@@ -113,7 +116,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Start Alpine
 window.Alpine = Alpine;
+// Start Alpine.js
 Alpine.start();
+
+// Load HTML partials after Alpine is initialized
+loadHtmlPartials();
 
 // Initialize mascot settings after Alpine starts
 Alpine.store('mascotSettings').init();
