@@ -4,7 +4,7 @@ play store entry
 
 ## Kurze Beschreibung
 
-Musik lernen mit tierischen Freunden, Melodien und Rätseln - spielerisch und bunt!
+Musik lernen mit Tierbildern, Melodien und Rätseln - spielerisch und bunt!
 
 ## Vollständige Beschreibung
 
@@ -66,4 +66,3 @@ The scenes resemble hand-painted picture books: warm, calm and full of charm.
 Fully usable offline, distraction-free - just music, play, and joy.
 
 Perfect for preschoolers, parents who want to support early musical learning, and educators who want to introduce children to worlds of sound.
-

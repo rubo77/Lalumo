@@ -97,7 +97,14 @@
 - Admin dashboard SQL query updated to aggregate counts by `referral_type`; JSON API now correctly lists registered users and statistics.
 - Android icon assets available in `dev/IconKitchen-Output/web/`; use for favicons.
 - Icon files copied to `src/` and `src/icons/`; favicon links added to `src/index.html`.
+- Icon files copied to `src/` and `src/icons/`; favicon links added to `src/index.html`.
+- Favicon links added to `homepage/index.html` and `favicon.ico` copied to project root; favicon setup complete.
 - 404 for `/favicon.ico` in webpack dev server resolved by copying `favicon.ico` to `public/` directory; curl now returns 200.
+- User requested enhanced frontend feedback for username registration: spinner on button while awaiting response, visual success (show password) or error messages, and a hint indicating the username will be locked.
+- User requested enhanced frontend feedback for username registration: spinner on button while awaiting response, visual success (show password) or error messages, and a hint indicating the username will be locked.
+- Registration UI feedback (spinner, success/error messages, password display) integrated into index.html; `isRegistering` bound and explanatory text added.
+- - `copyToClipboard` function in app.js generalized (including improved fallback) to copy arbitrary text, enabling password copy.
+- - Missing registration feedback strings (`registration_success`, `registration_error`, `username_exists`) added to `strings-de.xml`.
 - Ensure `admin.php` queries correctly fetch user data from SQLite DB
 - [x] Ensure `admin.php` queries correctly fetch user data from SQLite DB
 - Investigate why updated query still returns zero rows (check DB contents & paths)
@@ -111,10 +118,18 @@
 - Add Android icon as favicon to app index page and homepage
   - [x] Copy favicon and icon PNGs to `src/` and `src/icons/`
   - [x] Insert <link rel="icon"> tags in `src/index.html`
-  - [ ] Insert <link rel="icon"> tags in `homepage/index.html`
+  - [x] Insert <link rel="icon"> tags in `homepage/index.html`
+  - [x] Copy `favicon.ico` to `public/` for dev server
 - Clean up `dev/Concept_Referral-System.md`: remove completed items and document current referral data flow, DB schema, code interactions
 - `dev/Concept_Referral-System.md` has been rewritten with current referral system documentation.
 - [x] Clean up `dev/Concept_Referral-System.md`: remove completed items and document current referral data flow, DB schema, code interactions
+- lockUsername UI feedback (spinner, success/error messages, password display) variables added in `app.js`; implementation incomplete and introduced syntax errors to be fixed.
+- [ ] Fix syntax errors in `app.js` stemming from `lockUsername()` refactor and ensure build passes
+- [ ] Consolidate duplicate `lockUsername()` implementations into one version (with spinner, success/error handling, password display)
+- [x] Bind `isRegistering` to UI: show spinner & disable Register button during request
+- [x] Add missing strings (`registration_success`, `registration_error`, `username_exists`) to `strings-de.xml`
+- [x] Add explanatory text before Register button about username locking
+- [x] Generalize `copyToClipboard` to accept arbitrary text & use for password copying
 
 ## Task List
 - [x] Decide the correct destination directory for feedback utilities (`src/components/shared/` chosen).
@@ -192,11 +207,17 @@
   - [ ] Adjust `admin.php` queries if schema mismatch
 - [x] Re-test admin dashboard after registration
 - [x] Re-test admin dashboard after registration
-- [ ] Add Android icon as favicon to app index page and homepage
+- [x] Add Android icon as favicon to app index page and homepage
   - [x] Copy favicon and icon PNGs to `src/` and `src/icons/`
   - [x] Insert <link rel="icon"> tags in `src/index.html`
-  - [ ] Insert <link rel="icon"> tags in `homepage/index.html`
+  - [x] Insert <link rel="icon"> tags in `homepage/index.html`
+  - [x] Copy `favicon.ico` to `public/` for dev server
+- [ ] Update `referral.php` to reject duplicate usernames and generate password
+- [ ] Extend `lockUsername()` flow to show spinner, disable button, and display success (password) or detailed error messages
+- [x] Add explanatory text before Register button about username locking
 - [x] Clean up `dev/Concept_Referral-System.md`: remove completed items and document current referral data flow, DB schema, code interactions
 
 ## Current Goal
-Add favicon links to homepage/index.html
+- Implement username existence check & password generation in referral.php
+- Add UI spinner and feedback for username registration
+- Fix lockUsername syntax errors & finish registration UI feedback

@@ -45,7 +45,8 @@
   <!-- Scripts and more styles will be injected by webpack -->
 </head>
 <body>
-  <main x-data="app()" x-init="init(); initLazyLoading();" @click="unlockAudio()" @touchstart="unlockAudio()" class="container">
+  <!-- app.js -->
+  <main id="app" x-data="app()" x-init="init(); initLazyLoading();" @click="unlockAudio()" @touchstart="unlockAudio()" class="container">
     
     <!-- Username Prompt Modal -->
     <div class="modal-overlay" x-show="showUsernamePrompt" x-transition
@@ -156,6 +157,8 @@
           <button @click="active = 'referral-code'; window.innerWidth < 1024 ? menuOpen = false : null" :class="{ 'active': active === 'referral-code' }" class="locked-chapter">
             <span>🔒 <span x-text="$store.strings?.menu_chords || 'Chords'"></span></span>
           </button>
+          <!-- TODO: extra button always visible for debug-->
+         
         </div>
 
         <div class="menu-chapters" x-show="isChordChapterUnlocked">
@@ -1207,7 +1210,7 @@
     window.addEventListener('popstate', function(event) {
       // Testen, ob wir in einer App sind oder im Browser
       if (isAndroid) {
-        // In Android: Zurück zum Menü, wenn nicht gesperrt
+        // In Android: Zurück zum Menü, wenn nicht gesperrt , TODO: select by 'id="app"' instead
         const app = Alpine.getScope(document.querySelector('[x-data="app()"]'));
         if (app && !app.menuLocked) {
           // Wenn nicht im Hauptmenü, zurück zum Hauptmenü gehen

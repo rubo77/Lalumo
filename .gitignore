@@ -84,3 +84,4 @@ yarn-error.log*
 /test-results/
 /tests/*png
 /public/strings*.xml
+/data/referrals.db

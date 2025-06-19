@@ -178,56 +178,9 @@ export function app() {
     
     /**
      * Lock username and get referral code
+     * Implementiert UI-Feedback während der Registrierung (Spinner, Erfolgs-/Fehlermeldungen)
+     * Erstellt einen permanenten Benutzeraccount und generiert einen Referral-Code
      */
-    async lockUsername() {
-      if (!this.username) {
-        console.error('No username to lock');
-        return;
-      }
-      
-      try {
-        // API endpoint URL (relative to the app root)
-        const apiUrl = 'http://localhost:8080/referral.php';
-        
-        const response = await fetch(apiUrl, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ username: this.username })
-        });
-        
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        
-        const data = await response.json();
-        console.log('API response:', data);
-        
-        if (!data.success) {
-          throw new Error(data.error || 'Unknown error');
-        }
-        
-        // Store the received referral code and lock username
-        this.referralCode = data.referralCode;
-        this.isUsernameLocked = true;
-        this.lockedUsername = this.username;
-        
-        // Save to localStorage
-        this.saveReferralData();
-        
-        // After locking, fetch referral count
-        this.fetchReferralCount();
-        
-        console.log('Username locked:', this.username, 'Referral code:', this.referralCode);
-        
-        // Show success feedback
-        this.showToast(this.$store.strings?.username_registered || 'Username registered successfully!');
-      } catch (error) {
-        console.error('Error locking username:', error);
-        this.showToast('Error: ' + error.message);
-      }
-    },
     
     /**
      * Fetch referral count for the current user
@@ -958,54 +911,87 @@ export function app() {
     /**
      * Copy the exported progress code to the clipboard
      */
-    copyToClipboard() {
-      if (!this.exportedData) {
-        console.error('ExportedData ist leer, nichts zu kopieren');
-        alert('No data to copy. Please export your progress first.');
+    /**
+     * Kopiert beliebigen Text in die Zwischenablage
+     * @param {string} text - Der zu kopierende Text (optional, verwendet this.exportedData wenn nicht angegeben)
+     * @param {boolean} showAlert - Ob eine Bestätigung angezeigt werden soll (default: true)
+     */
+    copyToClipboard(text, showAlert = true) {
+      // Den zu kopierenden Text bestimmen
+      const contentToCopy = text || this.exportedData;
+      
+      // Prüfen, ob überhaupt etwas zu kopieren ist
+      if (!contentToCopy) {
+        console.error('Nichts zu kopieren - kein Text angegeben');
+        if (showAlert) {
+          alert('No data to copy.');
+        }
         return;
       }
       
-      console.log('Versuche zu kopieren:', this.exportedData);
+      console.log('Versuche zu kopieren:', contentToCopy);
       
       try {
         // Moderne Clipboard API verwenden, wenn verfügbar
         if (navigator.clipboard && navigator.clipboard.writeText) {
-          navigator.clipboard.writeText(this.exportedData)
+          navigator.clipboard.writeText(contentToCopy)
             .then(() => {
-              console.log('Progress code copied to clipboard using Clipboard API!');
-              alert('Progress code copied to clipboard!');
+              console.log('Text copied to clipboard using Clipboard API!');
+              if (showAlert) {
+                alert('Copied to clipboard!');
+              }
             })
             .catch(err => {
               console.error('Clipboard API failed:', err);
               // Fallback zur alten Methode
-              this.copyToClipboardFallback();
+              this.copyToClipboardFallback(contentToCopy, showAlert);
             });
         } else {
           // Fallback für ältere Browser
-          this.copyToClipboardFallback();
+          this.copyToClipboardFallback(contentToCopy, showAlert);
         }
       } catch (e) {
         console.error('Failed to copy to clipboard:', e);
-        alert('Failed to copy. Please select and copy the text manually.');
+        if (showAlert) {
+          alert('Failed to copy. Please select and copy the text manually.');
+        }
       }
     },
     
-    copyToClipboardFallback() {
+    /**
+     * Fallback-Methode zum Kopieren in die Zwischenablage für ältere Browser
+     * @param {string} text - Der zu kopierende Text
+     * @param {boolean} showAlert - Ob eine Bestätigung angezeigt werden soll
+     */
+    copyToClipboardFallback(text, showAlert = true) {
       // Fallback-Methode für ältere Browser
       try {
-        // Auf das tatsächliche Textfeld zugreifen
-        const textarea = document.querySelector('.export-textarea');
-        if (textarea) {
-          textarea.select();
-          const success = document.execCommand('copy');
-          if (success) {
-            console.log('Progress code copied to clipboard using fallback!');
-            alert('Progress code copied to clipboard!');
-          } else {
-            throw new Error('execCommand returned false');
+        // Temporäres Textfeld erstellen
+        const textarea = document.createElement('textarea');
+        textarea.value = text;
+        textarea.style.position = 'fixed'; // Verhindern, dass ein Scrolling verursacht wird
+        textarea.style.opacity = '0';
+        textarea.style.left = '-9999px'; // Außerhalb des sichtbaren Bereichs platzieren
+        
+        // Zum DOM hinzufügen und auswählen
+        document.body.appendChild(textarea);
+        textarea.focus();
+        textarea.select();
+        
+        // Kopieren ausführen und Erfolg prüfen
+        const success = document.execCommand('copy');
+        
+        // Aufräumen - Element wieder entfernen
+        document.body.removeChild(textarea);
+        
+        // Erfolgs- oder Fehlermeldung
+        if (success) {
+          console.log('Text copied to clipboard using fallback!');
+          if (showAlert) {
+            alert('Copied to clipboard!');
           }
         } else {
-          throw new Error('Textarea not found');
+          throw new Error('execCommand returned false');
         }
       } catch (e) {
         console.error('Fallback copy failed:', e);
@@ -1758,6 +1744,13 @@ export function app() {
       }
     },
     
+    // Statusvariablen für UI-Feedback
+    isRegistering: false,         // Ob gerade eine Registrierung läuft
+    registrationMessage: '',      // Feedback-Nachricht für die Registrierung
+    registrationSuccess: false,   // Ob die Registrierung erfolgreich war
+    registrationError: false,     // Ob ein Fehler bei der Registrierung aufgetreten ist
+    generatedPassword: '',        // Das generierte Passwort bei erfolgreicher Registrierung
+    
     /**
      * Fixiert den Benutzernamen und sendet ihn an den Server,
      * um einen Referral-Code zu erhalten
@@ -1768,12 +1761,23 @@ export function app() {
         return;
       }
       
+      // Reset vorheriger Meldungen
+      this.registrationMessage = '';
+      this.registrationSuccess = false;
+      this.registrationError = false;
+      this.generatedPassword = '';
+      
+      // Lade-Status aktivieren
+      this.isRegistering = true;
+      
       try {
-        // Lade-Status anzeigen (hier könnte ein UI-Indikator sein)
         console.log('Username wird fixiert und Referral-Code wird generiert...');
         
+        // API endpoint URL (relative to the app root)
+        const apiUrl = 'http://localhost:8080/referral.php';
+        
         // POST-Anfrage an den Server senden
-        const response = await fetch('referral.php', {
+        const response = await fetch(apiUrl, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -1783,10 +1787,7 @@ export function app() {
           })
         });
         
-        if (!response.ok) {
-          throw new Error(`Server-Fehler: ${response.status}`);
-        }
-        
+        // Antwort verarbeiten
         const data = await response.json();
         
         if (data.success) {
@@ -1795,15 +1796,41 @@ export function app() {
           this.lockedUsername = this.username;
           this.referralCode = data.referralCode;
           
+          // Passwort speichern, falls zurückgegeben
+          if (data.password) {
+            this.generatedPassword = data.password;
+          }
+          
+          // Erfolg anzeigen
+          this.registrationSuccess = true;
+          this.registrationMessage = this.$store.strings?.registration_success || 'Username erfolgreich registriert!';
+          
           // Daten im localStorage speichern
           this.saveReferralData();
           
-          console.log('Referral-Code erfolgreich generiert:', this.referralCode);
-        } else {
-          console.error('Fehler bei der Generierung des Referral-Codes:', data.error);
+          // Referral-Statistiken abrufen
+          this.fetchReferralCount();
+          
+          // Prüfen, ob der Benutzer genügend Referrals hat, um das Chords-Kapitel freizuschalten
+          this.checkChapterUnlock();
+        } else if (data.error) {
+          // Fehler anzeigen
+          this.registrationError = true;
+          
+          // Spezifische Fehlermeldungen
+          if (data.error === 'username_exists') {
+            this.registrationMessage = this.$store.strings?.username_exists || 'Dieser Benutzername ist bereits registriert. Bitte wähle einen anderen Namen.';
+          } else {
+            this.registrationMessage = data.message || (this.$store.strings?.registration_error || 'Ein Fehler ist aufgetreten. Bitte versuche es später erneut.');
+          }
         }
       } catch (error) {
-        console.error('Fehler beim Fixieren des Benutzernamens:', error);
+        console.error('Fehler beim Registrieren:', error);
+        this.registrationError = true;
+        this.registrationMessage = this.$store.strings?.registration_error || 'Ein Fehler ist aufgetreten. Bitte versuche es später erneut.';
+      } finally {
+        // Lade-Status beenden
+        this.isRegistering = false;
       }
     },
     
