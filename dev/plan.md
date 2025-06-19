@@ -97,6 +97,7 @@
 - Admin dashboard SQL query updated to aggregate counts by `referral_type`; JSON API now correctly lists registered users and statistics.
 - Android icon assets available in `dev/IconKitchen-Output/web/`; use for favicons.
 - Icon files copied to `src/` and `src/icons/`; favicon links added to `src/index.html`.
+- 404 for `/favicon.ico` in webpack dev server resolved by copying `favicon.ico` to `public/` directory; curl now returns 200.
 - Ensure `admin.php` queries correctly fetch user data from SQLite DB
 - [x] Ensure `admin.php` queries correctly fetch user data from SQLite DB
 - Investigate why updated query still returns zero rows (check DB contents & paths)
