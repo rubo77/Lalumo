@@ -71,6 +71,8 @@ export function pitches() {
     currentHighlightedNote: null, // For highlighting piano keys during playback
     longPressTimer: null,
     longPressThreshold: 800, // milliseconds for long press
+    lastSelectedPatternType: null, // Speichert den letzten ausgewählten Pattern-Typ
+    consecutivePatternCount: 0,    // Zählt, wie oft das gleiche Pattern hintereinander ausgewählt wurde
     
     // Progress tracking
     progress: {
@@ -1328,9 +1330,35 @@ export function pitches() {
           // Use forced pattern (newly unlocked wave/jump)
           selectedType = this.correctAnswer;
           console.log('PATTERN_FORCE_DEBUG: Using forced pattern:', selectedType);
+          
+          // Reset consecutive counter for forced patterns
+          if (selectedType !== this.lastSelectedPatternType) {
+            this.consecutivePatternCount = 1;
+            this.lastSelectedPatternType = selectedType;
+          }
         } else {
-          // Random selection from available patterns
-          selectedType = availableTypes[Math.floor(Math.random() * availableTypes.length)];
+          // Random selection from available patterns, but avoid more than 3 of the same type in a row
+          let attempts = 0;
+          const maxAttempts = 10; // Prevent infinite loop
+          
+          do {
+            selectedType = availableTypes[Math.floor(Math.random() * availableTypes.length)];
+            attempts++;
+            
+            // If we've tried too many times or have different patterns, break the loop
+            if (attempts >= maxAttempts || selectedType !== this.lastSelectedPatternType || this.consecutivePatternCount < 3) {
+              break;
+            }
+          } while (selectedType === this.lastSelectedPatternType && this.consecutivePatternCount >= 3);
+          
+          // Update pattern tracking
+          if (selectedType === this.lastSelectedPatternType) {
+            this.consecutivePatternCount++;
+          } else {
+            this.consecutivePatternCount = 1;
+            this.lastSelectedPatternType = selectedType;
+          }
+          
           this.correctAnswer = selectedType;
         }
         
@@ -1349,6 +1377,8 @@ export function pitches() {
         // Store the generated melody for later replay
         this.currentSequence = pattern;
         this.matchingPattern = pattern; // Specifically for match mode
+        
+        console.log(`Pattern selected: ${this.correctAnswer}, consecutive count: ${this.consecutivePatternCount}`);
       }
       
       // Only play the sound if explicitly requested
@@ -3290,10 +3320,17 @@ export function pitches() {
       return index > 0 ? this.availableNotes[index - 1] : this.availableNotes[0];
     },
     
+    
+    /** *****************************************************
+     * 1_5 Memory Game Activity
+     ******************************************************** */
+    
     /**
      * Setup for the memory mode
      * @param {boolean} playSound - Whether to play the melody
      * @param {boolean} generateNew - Whether to generate a new melody
+     * @activity 1_5_memory_game
+     
      */
     setupMemoryMode_1_5(playSound = false, generateNew = true) {
       // Use the specific C, D, E, G, A notes for the memory game (skipping F and H/B)
@@ -3566,6 +3603,10 @@ export function pitches() {
     /**
      * Play the current melody for the active mode (match, sound judgment, memory)
      * This is called by the shared Play button in the UI
+     * @activity common
+     * @used_by 1_2_match_sounds
+     * @used_by 1_4_pitches_does-it-sound-right
+     * @used_by 1_5_pitches_memory-game
      */
     playCurrentMelody() {
       // activity IDs

@@ -121,7 +121,9 @@
   - [x] Insert <link rel="icon"> tags in `homepage/index.html`
   - [x] Copy `favicon.ico` to `public/` for dev server
 - Clean up `dev/Concept_Referral-System.md`: remove completed items and document current referral data flow, DB schema, code interactions
-- `dev/Concept_Referral-System.md` has been rewritten with current referral system documentation.
+- Concept doc now lists new TODOs: duplicate-username check, automatic password generation, richer UI feedback, admin user deletion, and deploy sync requirements
+- Duplicate username check and automatic password generation implemented in referral.php; POST returns password and 409 on duplicates.
+- [x] Update `referral.php` to reject duplicate usernames and generate password
 - [x] Clean up `dev/Concept_Referral-System.md`: remove completed items and document current referral data flow, DB schema, code interactions
 - Legacy `lockUsername()` implementation removed; consolidated version starting at line ~1757 remains and includes UI feedback logic. Need final cleanup & build fix.
 - Initial removal of the first (legacy) `lockUsername()` implementation done; still need to clean up leftover comment and verify single definitive version compiles.
@@ -165,10 +167,19 @@
   - [x] Insert <link rel="icon"> tags in `src/index.html`
   - [x] Insert <link rel="icon"> tags in `homepage/index.html`
   - [x] Copy `favicon.ico` to `public/` for dev server
-- [ ] Update `referral.php` to reject duplicate usernames and generate password
+- [x] Update `referral.php` to reject duplicate usernames and generate password
 - [ ] Extend `lockUsername()` flow to show spinner, disable button, and display success (password) or detailed error messages
 - [x] Add explanatory text before Register button about username locking
 - [ ] Clean up `dev/Concept_Referral-System.md`: remove completed items and document current referral data flow, DB schema, code interactions
+- [ ] Implement delete-user functionality in admin dashboard
+- [ ] Ensure `deploy.sh` syncs PHP files and initializes SQLite DB on production server
+- User requested limiting consecutive identical pitch patterns to a maximum of three; requires update in `pitches.js` pattern selection logic.
+- Initial implementation committed but introduced extensive syntax/lint errors in `pitches.js`; needs cleanup and verification.
+- [x] Update `referral.php` to reject duplicate usernames and generate password
+- [ ] Limit consecutive pattern repetitions to max 3 in `pitches.js` matching mode
+  - [ ] Fix syntax/lint errors introduced in `pitches.js` and finalize pattern limit logic
+  - [x] Remove duplicated second `data()` block (lines ~2849-2893)
+  - [ ] Remove any remaining duplicate `methods` block / stray code and ensure build passes
 
 ## Current Goal
-Resolve 403 error and verify registration flow
+- Implement pattern repetition limit in pitches.js and fix lint errors
