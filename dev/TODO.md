@@ -199,3 +199,4 @@ reset-button:
 # most important
 
 - wenn man referral drückt, dann soll das hamburger menu sich schliessen
+- class .debug-elements always hidden in production

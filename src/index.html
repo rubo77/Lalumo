@@ -157,8 +157,10 @@
           <button @click="active = 'referral-code'; window.innerWidth < 1024 ? menuOpen = false : null" :class="{ 'active': active === 'referral-code' }" class="locked-chapter">
             <span>🔒 <span x-text="$store.strings?.menu_chords || 'Chords'"></span></span>
           </button>
-          <!-- TODO: extra button always visible for debug-->
-         
+          <!-- extra button always visible for debug-->
+          <button class="debug-elements" @click="active = 'chords'; $dispatch('set-chord-mode', 'main')" :class="{ 'active': active === 'chords' }">
+            <span x-text="$store.strings?.menu_chords || 'Chords'"></span>
+          </button>
         </div>
 
         <div class="menu-chapters" x-show="isChordChapterUnlocked">
