@@ -123,69 +123,22 @@
 - Clean up `dev/Concept_Referral-System.md`: remove completed items and document current referral data flow, DB schema, code interactions
 - `dev/Concept_Referral-System.md` has been rewritten with current referral system documentation.
 - [x] Clean up `dev/Concept_Referral-System.md`: remove completed items and document current referral data flow, DB schema, code interactions
-- lockUsername UI feedback (spinner, success/error messages, password display) variables added in `app.js`; implementation incomplete and introduced syntax errors to be fixed.
-- [ ] Fix syntax errors in `app.js` stemming from `lockUsername()` refactor and ensure build passes
-- [ ] Consolidate duplicate `lockUsername()` implementations into one version (with spinner, success/error handling, password display)
-- [x] Bind `isRegistering` to UI: show spinner & disable Register button during request
-- [x] Add missing strings (`registration_success`, `registration_error`, `username_exists`) to `strings-de.xml`
-- [x] Add explanatory text before Register button about username locking
-- [x] Generalize `copyToClipboard` to accept arbitrary text & use for password copying
-
-## Task List
-- [x] Decide the correct destination directory for feedback utilities (`src/components/shared/` chosen).
-- [x] Create the destination directory.
-- [x] Move `src/effects/feedback.js` to the chosen destination.
-- [x] Update every import/export statement that references `effects/feedback.js` (one manual fix applied).
-- [x] Scan `src/**/*.js` for files stored outside their intended directories per FILESTRUCTURE.md.
-- [x] Produce a list of mis-located files and agree on new paths with user if necessary (none found; structure confirmed).
-- [x] Relocate the additional mis-placed files and adjust corresponding imports.
-- [ ] Update `dev/FILESTRUCTURE.md` sections to reflect the new file locations.
-- [ ] Run build/tests to ensure no path errors remain.
-- [x] Fix runtime error `checkColorAnswer` undefined in `2_1_chords_color-matching`.
-- [ ] Fix Tone.js sound playback in **2_1_chords_color-matching**.
-- [x] Fix undefined `currentChordType` reference in index.html Play Chord button.
-- [ ] Fix Tone.js sound playback and button responsiveness in **2_2_chords_mood-landscapes**.
-- [ ] Debug Play Full Chord button visibility/clickability in **2_3_chords_chord-building** and ensure UI elements fit viewport.
-- [ ] Verify sound playback now works in **2_1_chords_color-matching** and **2_2_chords_mood-landscapes** after Tone.js initialization fix.
-- [ ] Verify Play Full Chord button is visible and clickable in **2_3_chords_chord-building** after UI adjustments.
-- [x] Create external stylesheet `src/styles/2_chords.css` with chord activity styles.
-- [x] Ensure `.chord-chapters-view` has fixed height of 800px.
-- [x] Link `2_chords.css` stylesheet in app (imported in `chords.js`).
-- [x] Remove inline CSS injection from `setupFullHeightContainers` now that external stylesheet is loaded.
-- [ ] Fix Tone.js sound playback in **2_4_chords_missing-note**.
-- [x] Locate or verify **2_6_chords** module file (created as 2_6_harmmony_garden.js).
-- [ ] Fix Tone.js sound playback in **2_6_chords** module.
-- [x] Move duplicate functions from `chords.js` into **2_1_chord_color_matching.js** and remove from `chords.js`.
-- [ ] Move other activity-specific functions from `chords.js` into their respective `2_chords/*` files and import them.
-- [ ] Delete remaining duplicate code blocks caused by commit `236a1f3`.
-- [ ] Deduplicate & migrate logic for **2_2_chord_mood_landscapes** into its module.
-  - [x] Move getMoodLandscapes to module
-  - [x] Remove getMoodLandscapes from `chords.js` and add wrapper with dynamic import
-  - [x] Move updateLandscape logic to module
-  - [x] Remove updateLandscape from `chords.js` and add wrapper with dynamic import
-- [ ] Deduplicate & migrate logic for **2_4_chords_missing-note** into its module.
-- [ ] Deduplicate & migrate logic for **2_6_harmmony_garden** into its module.
-- [x] Refactor Play Chord button logic to eliminate fallback; initialize first question on activity load so `currentChordType` is always defined.
-- [ ] Investigate and fix "Unknown chord type: null" error in color-matching flow (ensure `currentChordType` is never cleared before use).
-  - [x] Remove resets at lines 349 and 695 in `chords.js`.
-  - [x] Confirmed lines 713 & 724 assign valid chord types (not null) – no change required.
-  - [x] Optionally add assertion/logging in `playChord` when `chordType` is null to aid debugging.
-  - [ ] Verify `newColorMatchingQuestion` sets `currentChordType` before the first `playChord` call and audit any remaining resets.
-- [x] Centralize audioEngine initialization in `chords.js` (`initAudio`) and remove scattered checks.
-- [x] Fix incorrect `audioEngine` import in `chords.js` (use default export).
-- [x] Fix incorrect `audioEngine` import in `chords.js` (use default export or proper named export).
-- [x] Implement lockUsername() to handle username locking and referral code generation.
-- [x] Implement dynamic visibility for Chords chapter button based on referral status
-- [x] Add referral system strings to `strings-de.xml`
-- [x] Implement referral system logic in `app.js` (state vars & methods)
-- [x] Persist registration state (`isUsernameLocked`) and referral data in localStorage (verify implementation)
-- [x] Fetch referral statistics on page load when user is registered (call `fetchReferralCount()` in `loadUserData`)
-- [x] Persist registration state (`isUsernameLocked`) and referral data in localStorage (verify implementation)
-- [x] Fetch referral statistics on page load when user is registered (call `fetchReferralCount()` in `loadUserData`)
-- [x] Add Playwright end-to-end tests for referral workflow (registration, click tracking, redeem, unlock) with 10 s timeout.
-- [x] Add unit test (Node) for admin dashboard endpoint (`admin.php`).
-- [x] Confirm admin dashboard accessible via wget/fetch http://localhost:9091/admin.php.
-- [x] Fix HTTP 500 error on admin dashboard authentication (POST to admin.php).
+- Legacy `lockUsername()` implementation removed; consolidated version starting at line ~1757 remains and includes UI feedback logic. Need final cleanup & build fix.
+- Initial removal of the first (legacy) `lockUsername()` implementation done; still need to clean up leftover comment and verify single definitive version compiles.
+- Legacy `lockUsername()` implementation removed; consolidated version starting at line ~1757 remains and includes UI feedback logic.
+- API URL updated to http://localhost:8080/referral.php and header comment clarified.
+- API URL updated to http://localhost:8080/referral.php and header comment clarified.
+- Build now passes after lockUsername refactor.
+- Frontend registration fetch fails due to CORS (duplicate/missing Access-Control-Allow-Origin header); need to fix server headers.
+- Duplicate CORS headers removed from `referral.php`; Nginx now exclusively sets CORS headers.
+- [x] Fix CORS headers for referral.php (single Access-Control-Allow-Origin)
+- [x] Fix `referral.php` GET endpoint for `username` stats to return correct JSON and avoid HTTP 500
+- Backend: Improved `referral.php` GET handler for `username` to avoid 500 errors, auto-create referral rows when missing.
+- Encountering `403 Forbidden` when accessing `http://localhost:8080`; likely Nginx root/permissions issue—must resolve to test UI. Temporarily started PHP dev server on http://127.0.0.1:8000 for testing; need permanent fix.
+- [ ] Verify UI feedback works, registration succeeds, password displayed and stats fetched after fixes
+- [ ] Test frontend via http://127.0.0.1:8000 with PHP dev server and run registration flow
+- [ ] Fix 403 Forbidden on `http://localhost:8080` so the frontend is accessible for testing (Nginx root / permissions)
+- [ ] Update `fetchReferralCount()` to parse updated payload and robustly handle errors
 - [ ] Perform end-to-end testing of referral workflow and fix issues
 - [x] Style hero logo (images/logo_bird_sings.jpg) as round background icon without border in homepage.
 - [x] Add logo image path to .gitignore (confirm with user).
@@ -215,9 +168,7 @@
 - [ ] Update `referral.php` to reject duplicate usernames and generate password
 - [ ] Extend `lockUsername()` flow to show spinner, disable button, and display success (password) or detailed error messages
 - [x] Add explanatory text before Register button about username locking
-- [x] Clean up `dev/Concept_Referral-System.md`: remove completed items and document current referral data flow, DB schema, code interactions
+- [ ] Clean up `dev/Concept_Referral-System.md`: remove completed items and document current referral data flow, DB schema, code interactions
 
 ## Current Goal
-- Implement username existence check & password generation in referral.php
-- Add UI spinner and feedback for username registration
-- Fix lockUsername syntax errors & finish registration UI feedback
+Resolve 403 error and verify registration flow

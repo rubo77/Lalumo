@@ -139,11 +139,11 @@ reset-button:
 ## nach kapitel
 
 1_1 "High or Low?" (1_1_pitches_high_or_low) 
+- die tiefen töne sind eine oktave zu tief
 - # bereit zur veröffentlichung
 - der reset button in der navi muss auch die fortschrittsanzeige aktualisieren
 - ändere, dass man immer 1s warten muss, bis man wählen kann, welche Taste man drückt. man soll sofort, wenn man den ton hört schon wählen dürfen
 - die Welle muss Sägezahn sein ohne Brandung 
-- die tiefen töne sind eine oktave zu tief
 - im master level dürfen die töne maximal 3 halbtöne auseinander sein und der erste ton muss nicht mehr C5 sein, sondern kann jeder beliebige sein, es wird nur getestet, ob der 2. ton dann höher oder tiefer ist
 - die erfolgsmeldung muss sich ab level 3 aendern in "der ton war höher" anstatt "hoch" und "der ton war tiefer" anstatt "tief"
 - Entferne alle Überbleibsel der alten "Listen to melodies"-Funktionalität:
@@ -199,7 +199,3 @@ reset-button:
 # most important
 
 - wenn man referral drückt, dann soll das hamburger menu sich schliessen
-
-- ich brauche einen admin mode, in dem ich sehen kann, welche user registriert sin d in der db und wieviele referrer punkte sie schon haben
-
-- das android icon als favicon to the app index page und das selbe favicon auch zur homepage add

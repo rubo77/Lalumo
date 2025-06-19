@@ -993,7 +993,7 @@ export function pitches() {
       console.log('Checking High or Low answer:', answer, 'for stage:', stage);
       
       let isCorrect = false;
-      let correctAnswer = '';
+      let correctHiOrLowAnswer = '';
       
       // Different logic based on stage
       if (stage >= 3) {
@@ -1007,7 +1007,7 @@ export function pitches() {
         const expectedAnswer = this.currentHighOrLowSequence.expectedAnswer;
         isCorrect = answer === expectedAnswer;
         
-        correctAnswer = expectedAnswer;
+        correctHiOrLowAnswer = expectedAnswer;
         console.log('Checking answer:', answer, 'against expected:', expectedAnswer, 'isCorrect:', isCorrect);
       } else {
         // Guard against null sequence which can happen when clicking rapidly
@@ -1019,7 +1019,7 @@ export function pitches() {
         // For single tone stages, use the stored expected answer for consistency
         const expectedAnswer = this.currentHighOrLowSequence?.expectedAnswer || this.currentHighOrLowTone;
         isCorrect = answer === expectedAnswer;
-        correctAnswer = expectedAnswer;
+        correctHiOrLowAnswer = expectedAnswer;
         console.log('Checking answer:', answer, 'against expected:', expectedAnswer);
       }
       
@@ -1077,13 +1077,13 @@ export function pitches() {
           if (stage >= 3) {
             // For comparison stages
             this.feedback = (this.$store.strings?.high_or_low_correct_comparison || 'Correct! The second tone was {0}!')
-              .replace('{0}', correctAnswer === 'high' ? 
+              .replace('{0}', correctHiOrLowAnswer === 'high' ? 
                 (this.$store.strings?.high_choice || 'higher') : 
                 (this.$store.strings?.low_choice || 'lower'));
           } else {
             // For single tone stages
             this.feedback = (this.$store.strings?.high_or_low_correct_single || 'Correct! The tone was {0}!')
-              .replace('{0}', correctAnswer === 'high' ? 
+              .replace('{0}', correctHiOrLowAnswer === 'high' ? 
                 (this.$store.strings?.high_choice || 'high') : 
                 (this.$store.strings?.low_choice || 'low'));
           }
@@ -1093,13 +1093,13 @@ export function pitches() {
         if (stage >= 3) {
           // For comparison stages
           this.feedback = (this.$store.strings?.high_or_low_wrong_comparison || 'Try again. The second tone was {0}.')
-            .replace('{0}', correctAnswer === 'high' ? 
+            .replace('{0}', correctHiOrLowAnswer === 'high' ? 
               (this.$store.strings?.high_choice || 'higher') : 
               (this.$store.strings?.low_choice || 'lower'));
         } else {
           // For single tone stages
           this.feedback = (this.$store.strings?.high_or_low_wrong_single || 'Try again. The tone was {0}.')
-            .replace('{0}', correctAnswer === 'high' ? 
+            .replace('{0}', correctHiOrLowAnswer === 'high' ? 
               (this.$store.strings?.high_choice || 'high') : 
               (this.$store.strings?.low_choice || 'low'));
         }
@@ -1303,9 +1303,72 @@ export function pitches() {
      ******************************************************** */
     
     /**
+     * Setup for the matching mode
+     * @activity 1_2_match_sounds
+     */
+    setupMatchingMode_1_2(playSound = false, generateNew = true) {
+      this.animationInProgress = false;
+      this.showActivityIntroMessage('match');
+      this.updateMatchingBackground(); // Update background based on progress
+      this.updateMatchSoundsPitchCardLayout(); // Aktualisiere Pitch-Card-Layout basierend auf Freischaltungsstatus
+      
+      // If not in game mode, allow free exploration of all patterns
+      if (!this.gameMode) {
+        // In free play mode, do nothing special - user can click any pattern
+        return;
+      }
+      
+      // Game mode: use only unlocked patterns
+      if (generateNew) {
+        // Only use unlocked patterns for the game
+        // Check if pattern was forced (e.g., after unlock) before random selection
+        const availableTypes = this.unlockedPatterns;
+        let selectedType;
+        if ((this.currentProgress == 10 || this.currentProgress == 20) && this.correctAnswer && availableTypes.includes(this.correctAnswer)) {
+          // Use forced pattern (newly unlocked wave/jump)
+          selectedType = this.correctAnswer;
+          console.log('PATTERN_FORCE_DEBUG: Using forced pattern:', selectedType);
+        } else {
+          // Random selection from available patterns
+          selectedType = availableTypes[Math.floor(Math.random() * availableTypes.length)];
+          this.correctAnswer = selectedType;
+        }
+        
+        // Generate the appropriate melody for the selected type
+        let pattern;
+        if (selectedType === 'up') {
+          pattern = this.generateUpPattern();
+        } else if (selectedType === 'down') {
+          pattern = this.generateDownPattern();
+        } else if (selectedType === 'wave') {
+          pattern = this.generateWavyPattern();
+        } else if (selectedType === 'jump') {
+          pattern = this.generateJumpyPattern();
+        }
+        
+        // Store the generated melody for later replay
+        this.currentSequence = pattern;
+        this.matchingPattern = pattern; // Specifically for match mode
+      }
+      
+      // Only play the sound if explicitly requested
+      if (playSound) {
+        // Use the stored melody
+        const pattern = this.matchingPattern || this.currentSequence;
+        
+        // Play melody without animating the correct answer element
+        this.isPlaying = true;
+        
+        // Play notes in sequence
+        const noteArray = [...pattern];
+        this.playNoteSequence(noteArray, 0);
+      }
+    },
+    
+    /**
      * Check if the user selected the correct image
      * @param {string} selected - User's selection
-     * @activity 1_2_match-sounds
+     * @activity 1_2_match_sounds
      */
     checkMatch(selected) {
       // First stop any currently playing melody
@@ -1334,7 +1397,9 @@ export function pitches() {
       // Show appropriate animation based on result
       if (isCorrect) {
         // Track the correct answer for progressive difficulty
-        this.addCorrectAnswer();
+        this.correctAnswersCount++;
+        this.saveDifficultyProgress();
+        this.checkPatternUnlocks();
         
         // Create and show rainbow success animation
         showRainbowSuccess();
@@ -1385,7 +1450,62 @@ export function pitches() {
         // For wrong answers, don't generate new melody so user can try the same one again
       }, 2000);
     },
+
+    /**
+     * Save difficulty progress to localStorage
+     * @activity 1_2_match_sounds
+     */
+    saveDifficultyProgress() {
+      try {
+        const difficultyData = {
+          correctAnswersCount: this.correctAnswersCount,
+          unlockedPatterns: this.unlockedPatterns
+        };
+        localStorage.setItem('lalumo_difficulty', JSON.stringify(difficultyData));
+      } catch (e) {
+        console.log('Could not save difficulty progress');
+      }
+    },
     
+    /**
+     * Check if new patterns should be unlocked based on correct answers
+     * @activity 1_2_match_sounds
+     */
+    checkPatternUnlocks() {
+      let unlocked = false;
+      
+      // Unlock wave pattern at 10 correct answers
+      if (this.correctAnswersCount >= 10 && !this.unlockedPatterns.includes('wave')) {
+        this.unlockedPatterns.push('wave');
+        this.correctAnswer = 'wave'; // PATTERN_FORCE_DEBUG: Force wave pattern next
+        
+        unlocked = true;
+        const message = window.Alpine?.store('strings')?.mascot_wave_unlocked || 'Great! You unlocked wavy melodies! :wave:';
+        this.showMascotMessage(message);
+      }
+      
+      // Unlock jump pattern at 20 correct answers  
+      if (this.correctAnswersCount >= 20 && !this.unlockedPatterns.includes('jump')) {
+        this.unlockedPatterns.push('jump');
+        this.correctAnswer = 'jump'; // PATTERN_FORCE_DEBUG: Force jump pattern next
+        
+        unlocked = true;
+        const message = window.Alpine?.store('strings')?.mascot_jump_unlocked || 'Amazing! You unlocked random jump melodies! :frog:';
+        this.showMascotMessage(message);
+      }
+      
+      // Wenn ein neues Pattern freigeschaltet wurde und wir im Match-Sounds-Modus sind,
+      // aktualisieren wir das Layout der Pitch-Cards
+      if (unlocked && this.mode === '1_2_pitches_match-sounds') {
+        console.log('Pattern unlocked, updating Match Sounds layout');
+        this.updateMatchSoundsPitchCardLayout();
+      }
+      
+      if (unlocked) {
+        this.saveDifficultyProgress();
+      }
+    },
+
     /**
      * Generate a random jumpy pattern with unpredictable jumps
      * @activity 1_2_match_sounds
@@ -2061,7 +2181,7 @@ export function pitches() {
     /**
      * Play a sequence of notes based on the selected pattern
      * @param {string} type - Type of pattern ('up', 'down', 'wave', 'jump')
-     * @activity 1_2_match-sounds
+     * @activity 1_2_match_sounds
      */
     activity1_2_matchSoundsPlaySequence(type) {
       // Enhanced logging for diagnosis
@@ -2123,69 +2243,6 @@ export function pitches() {
         
         console.log('AUDIO: Pattern animation and playback complete');
       }, totalDuration);
-    },
-    
-    /**
-     * Setup for the matching mode
-     * @activity 1_2_match_sounds
-     */
-    setupMatchingMode_1_2(playSound = false, generateNew = true) {
-      this.animationInProgress = false;
-      this.showActivityIntroMessage('match');
-      this.updateMatchingBackground(); // Update background based on progress
-      this.updateMatchSoundsPitchCardLayout(); // Aktualisiere Pitch-Card-Layout basierend auf Freischaltungsstatus
-      
-      // If not in game mode, allow free exploration of all patterns
-      if (!this.gameMode) {
-        // In free play mode, do nothing special - user can click any pattern
-        return;
-      }
-      
-      // Game mode: use only unlocked patterns
-      if (generateNew) {
-        // Only use unlocked patterns for the game
-        // Check if pattern was forced (e.g., after unlock) before random selection
-        const availableTypes = this.unlockedPatterns;
-        let selectedType;
-        if ((this.currentProgress == 10 || this.currentProgress == 20) && this.correctAnswer && availableTypes.includes(this.correctAnswer)) {
-          // Use forced pattern (newly unlocked wave/jump)
-          selectedType = this.correctAnswer;
-          console.log('PATTERN_FORCE_DEBUG: Using forced pattern:', selectedType);
-        } else {
-          // Random selection from available patterns
-          selectedType = availableTypes[Math.floor(Math.random() * availableTypes.length)];
-          this.correctAnswer = selectedType;
-        }
-        
-        // Generate the appropriate melody for the selected type
-        let pattern;
-        if (selectedType === 'up') {
-          pattern = this.generateUpPattern();
-        } else if (selectedType === 'down') {
-          pattern = this.generateDownPattern();
-        } else if (selectedType === 'wave') {
-          pattern = this.generateWavyPattern();
-        } else if (selectedType === 'jump') {
-          pattern = this.generateJumpyPattern();
-        }
-        
-        // Store the generated melody for later replay
-        this.currentSequence = pattern;
-        this.matchingPattern = pattern; // Specifically for match mode
-      }
-      
-      // Only play the sound if explicitly requested
-      if (playSound) {
-        // Use the stored melody
-        const pattern = this.matchingPattern || this.currentSequence;
-        
-        // Play melody without animating the correct answer element
-        this.isPlaying = true;
-        
-        // Play notes in sequence
-        const noteArray = [...pattern];
-        this.playNoteSequence(noteArray, 0);
-      }
     },
     
     /**
@@ -3295,7 +3352,7 @@ export function pitches() {
     
     /**
      * Play the memory sequence for the user
-     * @activity 1_5_memory
+     * @activity 1_5_memory_game
      */
     playMemorySequence() {
       console.log('DEBUG: Starting memory sequence playback');
@@ -3355,7 +3412,7 @@ export function pitches() {
     /**
      * Add a note to the user's sequence
      * @param {string} note - The note to add
-     * @activity 1_5_memory
+     * @activity 1_5_memory_game
      * @used_by index (piano-keyboard)
      */
     addToSequence(note) {
@@ -3425,7 +3482,7 @@ export function pitches() {
     
     /**
      * Check if the user's sequence matches the original
-     * @activity 1_5_memory
+     * @activity 1_5_memory_game
      */
     checkMemorySequence() {
       // First stop any currently playing melody
@@ -3619,10 +3676,10 @@ export function pitches() {
       this.melodyHasWrongNote = false;
       this.currentMelodyName = '';
   
-  // Clear any existing melody name display immediately
-  document.querySelectorAll('.sound-status').forEach(el => {
-    el.textContent = 'Generiere neue Melodie...';
-  });
+      // Clear any existing melody name display immediately
+      document.querySelectorAll('.sound-status').forEach(el => {
+        el.textContent = 'Generiere neue Melodie...';
+      });
       this.currentMelodyId = null;
       this.showFeedback = false;
       this.feedback = '';
@@ -4415,68 +4472,6 @@ export function pitches() {
       this.memoryFreePlay = false;
       this.setupMemoryMode_1_5(true, true); // Play sound and generate new
       this.showContextMessage(); // Update instructions
-    },
-
-    /**
-     * Save difficulty progress to localStorage
-     */
-    saveDifficultyProgress() {
-      try {
-        const difficultyData = {
-          correctAnswersCount: this.correctAnswersCount,
-          unlockedPatterns: this.unlockedPatterns
-        };
-        localStorage.setItem('lalumo_difficulty', JSON.stringify(difficultyData));
-      } catch (e) {
-        console.log('Could not save difficulty progress');
-      }
-    },
-    
-    /**
-     * Check if new patterns should be unlocked based on correct answers
-     */
-    checkPatternUnlocks() {
-      let unlocked = false;
-      
-      // Unlock wave pattern at 10 correct answers
-      if (this.correctAnswersCount >= 10 && !this.unlockedPatterns.includes('wave')) {
-        this.unlockedPatterns.push('wave');
-        this.correctAnswer = 'wave'; // PATTERN_FORCE_DEBUG: Force wave pattern next
-        
-        unlocked = true;
-        const message = window.Alpine?.store('strings')?.mascot_wave_unlocked || 'Great! You unlocked wavy melodies! :wave:';
-        this.showMascotMessage(message);
-      }
-      
-      // Unlock jump pattern at 20 correct answers  
-      if (this.correctAnswersCount >= 20 && !this.unlockedPatterns.includes('jump')) {
-        this.unlockedPatterns.push('jump');
-        this.correctAnswer = 'jump'; // PATTERN_FORCE_DEBUG: Force jump pattern next
-        
-        unlocked = true;
-        const message = window.Alpine?.store('strings')?.mascot_jump_unlocked || 'Amazing! You unlocked random jump melodies! :frog:';
-        this.showMascotMessage(message);
-      }
-      
-      // Wenn ein neues Pattern freigeschaltet wurde und wir im Match-Sounds-Modus sind,
-      // aktualisieren wir das Layout der Pitch-Cards
-      if (unlocked && this.mode === '1_2_pitches_match-sounds') {
-        console.log('Pattern unlocked, updating Match Sounds layout');
-        this.updateMatchSoundsPitchCardLayout();
-      }
-      
-      if (unlocked) {
-        this.saveDifficultyProgress();
-      }
-    },
-    
-    /**
-     * Add a correct answer and check for unlocks
-     */
-    addCorrectAnswer() {
-      this.correctAnswersCount++;
-      this.saveDifficultyProgress();
-      this.checkPatternUnlocks();
     },
 
     /**

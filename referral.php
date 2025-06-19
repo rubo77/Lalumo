@@ -11,10 +11,7 @@
 
 header('Content-Type: application/json');
 
-// CORS Headers für alle Anfragen
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type');
+// CORS-Header werden bereits auf Nginx-Ebene gesetzt
 
 // Bei OPTIONS direkt antworten (CORS preflight)
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
@@ -180,25 +177,55 @@ elseif ($method === 'GET') {
     elseif (isset($_GET['username'])) {
         $username = $_GET['username'];
         
-        $stmt = $db->prepare('
-            SELECT r.click_count, r.registration_count 
-            FROM users u 
-            JOIN referrals r ON u.id = r.referrer_id 
-            WHERE u.username = :username
-        ');
-        $stmt->bindValue(':username', $username, SQLITE3_TEXT);
-        $result = $stmt->execute();
-        $row = $result->fetchArray(SQLITE3_ASSOC);
-        
-        if ($row) {
-            echo json_encode([
-                'success' => true,
-                'clickCount' => $row['click_count'],
-                'registrationCount' => $row['registration_count']
-            ]);
-        } else {
+        try {
+            // Zuerst prüfen, ob der Benutzer existiert
+            $userStmt = $db->prepare('SELECT id FROM users WHERE username = :username');
+            $userStmt->bindValue(':username', $username, SQLITE3_TEXT);
+            $userResult = $userStmt->execute();
+            $userRow = $userResult->fetchArray(SQLITE3_ASSOC);
+            
+            if ($userRow) {
+                // Benutzer existiert, referral Daten abrufen
+                $userId = $userRow['id'];
+                
+                // Referral-Daten abrufen, wenn vorhanden
+                $refStmt = $db->prepare('SELECT click_count, registration_count FROM referrals WHERE referrer_id = :id');
+                $refStmt->bindValue(':id', $userId, SQLITE3_INTEGER);
+                $refResult = $refStmt->execute();
+                $refRow = $refResult->fetchArray(SQLITE3_ASSOC);
+                
+                if ($refRow) {
+                    // Referral-Eintrag gefunden
+                    echo json_encode([
+                        'success' => true,
+                        'clickCount' => $refRow['click_count'],
+                        'registrationCount' => $refRow['registration_count']
+                    ]);
+                } else {
+                    // Benutzer existiert, aber keine Referral-Daten gefunden
+                    // Erstelle einen Referral-Eintrag für den Benutzer
+                    $db->exec("INSERT INTO referrals (referrer_id, click_count, registration_count) VALUES ($userId, 0, 0)");
+                    
+                    echo json_encode([
+                        'success' => true,
+                        'clickCount' => 0,
+                        'registrationCount' => 0
+                    ]);
+                }
+            } else {
+                // Benutzer nicht gefunden
+                echo json_encode([
+                    'success' => false,
+                    'clickCount' => 0,
+                    'registrationCount' => 0
+                ]);
+            }
+        } catch (Exception $e) {
+            // Fehlerbehandlung: Bei einem Fehler geben wir eine hilfreiche Fehlermeldung zurück
+            http_response_code(500);
             echo json_encode([
                 'success' => false,
+                'error' => 'Database error: ' . $e->getMessage(),
                 'clickCount' => 0,
                 'registrationCount' => 0
             ]);

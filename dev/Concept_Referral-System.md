@@ -126,6 +126,8 @@ Ein passwortgeschütztes Admin-Dashboard ist unter `/admin.php` verfügbar:
 - Zeigt alle registrierten Benutzer und deren Statistiken
 - Bietet zusammengefasste Statistiken (Gesamtbenutzer, Klicks, Registrierungen)
 - Unterstützt HTML- und JSON-Format (für API-Zugriff)
+# TODO
+- löschen einzelner user
 
 ## Sonstige Funktionen
 

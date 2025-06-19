@@ -1117,10 +1117,10 @@ export function app() {
     async unlockAudio() {
       // Import debug utils for consistent logging
       const { debugLog } = await import('../utils/debug');
-      debugLog('AUDIO', 'Attempting to unlock audio...');
+      // debugLog('AUDIO', 'Attempting to unlock audio...');
       
       if (this.isAudioEnabled && this.audioContext && this.audioContext.state === 'running') {
-        debugLog('AUDIO', 'Audio already unlocked and running');
+        // debugLog('AUDIO', 'Audio already unlocked and running');
         return;
       }
       
@@ -1725,7 +1725,22 @@ export function app() {
     },
     
     /**
-     * Speichert Referral-Daten im localStorage
+     * Prüft, ob der Benutzer genügend Referrals hat, um das Akkorde-Kapitel freizuschalten
+     * Wird nach erfolgreicher Registrierung und beim App-Start aufgerufen
+     */
+    checkChapterUnlock() {
+      // Ein Benutzer bekommt das Chord-Kapitel freigeschaltet, wenn er mindestens 3 erfolgreiche Referrals hat
+      const minReferrals = 3;
+      
+      // Prüfen, ob die Bedingungen erfüllt sind
+      if (this.referralCount >= minReferrals) {
+        this.isChordChapterUnlocked = true;
+        this.saveReferralData(); // Freischaltung speichern
+      }
+    },
+    
+    /**
+     * Speichert die Referral-Daten im localStorage
      */
     saveReferralData() {
       try {
@@ -1734,9 +1749,9 @@ export function app() {
           lockedUsername: this.lockedUsername,
           referralCode: this.referralCode,
           referralCount: this.referralCount,
+          referralClickCount: this.referralClickCount || 0, // Klick-Zähler hinzugefügt
           isChordChapterUnlocked: this.isChordChapterUnlocked
         };
-        
         localStorage.setItem('lalumo-referral', JSON.stringify(referralData));
         console.log('Saved referral data:', referralData);
       } catch (error) {
@@ -1750,6 +1765,7 @@ export function app() {
     registrationSuccess: false,   // Ob die Registrierung erfolgreich war
     registrationError: false,     // Ob ein Fehler bei der Registrierung aufgetreten ist
     generatedPassword: '',        // Das generierte Passwort bei erfolgreicher Registrierung
+    referralClickCount: 0,        // Anzahl der Klicks auf den Referral-Link
     
     /**
      * Fixiert den Benutzernamen und sendet ihn an den Server,
