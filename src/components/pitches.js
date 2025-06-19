@@ -1981,15 +1981,7 @@ export function pitches() {
       }
     },
     
-    
-    /**
-     * Play a specific melodic sequence
-     */
-    /**
-     * Animiert ein Muster-Element (Rakete, Rutsche, usw.) während die Melodie abgespielt wird
-     * Extrahiert, um Codeduplizierung zu vermeiden und an mehreren Stellen verwendbar zu sein
-     * @param {string} elementType - Typ des zu animierenden Elements ('up', 'down', 'wave', 'jump')
-     */
+  
     /**
      * Spielt eine Sequenz von Noten mit Timing ab - verwendet die zentrale Audio-Engine
      * @param {Array} noteArray - Array mit Noten, die abgespielt werden sollen

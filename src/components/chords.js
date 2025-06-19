@@ -423,7 +423,15 @@ export function chords() {
       return rootNotes[Math.floor(Math.random() * rootNotes.length)];
     },
     
-    // Color Matching Activity Methods
+    /** *************************************************
+     * ******** 2_1 Color Matching Activity Methods ********
+     * *************************************************** */
+    
+    /**
+     * Start the color matching activity
+     * 
+     * @activity 2_1_chord_color_matching
+     */
     startColorMatching() {
       this.resetActivity();
       // Use the imported function with 'this' as the component reference
@@ -433,8 +441,15 @@ export function chords() {
       debugLog('CHORDS', 'Started color matching activity using modular function');
     },
     
-    // 2_2_chord_mood_landscapes Activity Methods
-    // Dynamic loader for the mood landscapes module
+    /** *************************************************
+     * ******** 2_2_chord_mood_landscapes Activity Methods ********
+     * *************************************************** */
+    
+    /**
+     * Dynamic loader for the mood landscapes module
+     * 
+     * @activity 2_2_chord_mood_landscapes
+     */
     async loadMoodLandscapesModule() {
       try {
         const module = await import('./2_chords/2_2_chord_mood_landscapes.js');
@@ -446,7 +461,11 @@ export function chords() {
       }
     },
     
-    // Wrapper to maintain backward compatibility
+    /**
+     * Wrapper to maintain backward compatibility
+     * 
+     * @activity 2_2_chord_mood_landscapes
+     */
     async getMoodLandscapes() {
       const moodLandscapesModule = await this.loadMoodLandscapesModule();
       if (moodLandscapesModule && typeof moodLandscapesModule.getMoodLandscapes === 'function') {
@@ -458,7 +477,11 @@ export function chords() {
       }
     },
     
-    // Dynamic wrapper for updateLandscape function from the module
+    /**
+     * Dynamic wrapper for updateLandscape function from the module
+     * 
+     * @activity 2_2_chord_mood_landscapes
+     */
     async updateLandscape(chordType) {
       // Import the module function dynamically and call it
       const moodLandscapesModule = await this.loadMoodLandscapesModule();
@@ -471,7 +494,9 @@ export function chords() {
       }
     },
     
-    // Chord Building Activity Methods
+    /** *************************************************
+     * ******** 2_3_chord_building Activity Methods ********
+     * *************************************************** */
     
     
     /* Play the currently built chord
@@ -638,7 +663,16 @@ export function chords() {
       }
     },
     
-    // Missing Note Activity Methods
+    /** **********************************************
+     * ***** 2_4 Missing Note Activity Methods ********
+     * *********************************************** */
+
+
+    /**
+     * Play an incomplete chord for the missing note activity
+     * 
+     * @activity 2_4_chords_missing-note
+     */
     playIncompleteChord() {
       this.stopAllSounds();
       
@@ -725,7 +759,14 @@ export function chords() {
       this.totalQuestions++;
     },
     
-    // Character Matching Activity Methods
+    /** *************************************************
+     * ******** Character Matching Activity Methods ********
+     * *************************************************** */
+    /**
+     * Play the current chord for the character matching activity
+     * 
+     * @activity 2_5_chord_characters
+     */
     playCurrentChord() {
       if (!this.currentChordType) {
         // Random chord if none selected yet
@@ -771,7 +812,14 @@ export function chords() {
       this.totalQuestions++;
     },
     
-    // Harmony Gardens Activity Methods
+    /** *************************************************
+     * ******** Harmony Gardens Activity Methods ********
+     * *************************************************** */
+    /**
+     * Select a chord slot for the harmony gardens activity
+     * 
+     * @activity 2_6_chord_gardens
+     */
     selectChordSlot(index) {
       this.selectedSlotIndex = index;
       
@@ -786,6 +834,11 @@ export function chords() {
       });
     },
     
+    /**
+     * Plant a chord in the garden for the harmony gardens activity
+     * 
+     * @activity 2_6_chord_gardens
+     */
     plantChordInGarden(chordType) {
       if (this.selectedSlotIndex === null) {
         // No slot selected yet
@@ -820,6 +873,11 @@ export function chords() {
       }
     },
     
+    /**
+     * Add a plant emoji to the garden for the harmony gardens activity
+     * 
+     * @activity 2_6_chord_gardens
+     */
     addPlantToGarden(chordType) {
       const garden = document.querySelector('.garden-canvas');
       if (!garden) return;
@@ -849,6 +907,11 @@ export function chords() {
       garden.appendChild(plant);
     },
     
+    /**
+     * Play the chord sequence for the harmony gardens activity
+     * 
+     * @activity 2_6_chord_gardens
+     */
     playChordSequence() {
       if (!this.chordSequence || !this.chordSequence.filter(chord => chord).length) {
         this.showFeedback = true;

@@ -24,7 +24,9 @@ test.setTimeout(10000);
  *    - Wählt das Aufwärts-Muster
  * 
  * Hinweis: Dieser Test sollte mit einem Timeout ausgeführt werden, um zu verhindern,
- * dass er hängen bleibt, z.B.: npx playwright test tests/match-sounds.spec.js --timeout=10000
+ * dass er hängen bleibt, z.B.: 
+ * cd /var/www/Musici && \
+ * npx playwright test tests/match-sounds.spec.js --timeout=10000 --headed
  */
 test.describe('Lalumo Match Sounds Activity', () => {
   // Globales Timeout von 10 Sekunden setzen, damit Tests nicht hängen bleiben

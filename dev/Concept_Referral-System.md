@@ -17,14 +17,17 @@ Das Lalumo Referral-System ermöglicht es Benutzern, ihre Freunde zur App einzul
    - Benutzer klickt auf "Register" in der referral-view
    - `lockUsername()`-Funktion sendet POST-Request an `/referral.php` mit dem Benutzernamen
    - Frontend speichert Antwort in Alpine-State und localStorage
+   - [x] Hinweis, dass beim erstellen des codes der username gelockt wird
    # TODO:
    - [ ] visuelles feedback der antwort: 
      - [ ] erfolg: das neue passwort des users anzeigen
      - [ ] error: 
        - [ ] user existiert schon: nach passwort fragen oder hinweis, dass man sich einen anderen usernamen wählen muss
        - [ ] sonstige errormeldung anzeigen
+   - [ ] man darf sienen eigenen redeem code nicht redeemen
+   - [ ] für die link clicks muss angezeigt werden, wie der link ist zum teilen
+   - [ ] 
        
-   - [x] Hinweis, dass beim erstellen des codes der username gelockt wird
 
 2. **Backend (referral.php)**:
    - Empfängt Benutzername via POST-Request
@@ -50,11 +53,11 @@ Das Lalumo Referral-System ermöglicht es Benutzern, ihre Freunde zur App einzul
 ### 3. Einlösen eines Referral-Codes
 
 1. **Frontend**:
-   - Benutzer gibt Referral-Code im Eingabefeld ein
-   - `redeemFriendCode()`-Funktion sendet POST-Request an `/referral.php`
-   - Bei Erfolg wird das UI aktualisiert und der Status im localStorage gespeichert
+   - [x] Benutzer gibt Referral-Code im Eingabefeld ein
+   - [x] `redeemFriendCode()`-Funktion sendet POST-Request an `/referral.php`
+   - [x] Bei Erfolg wird das UI aktualisiert und der Status im localStorage gespeichert
+   - [x] visuelles feedback der antwort: erfolg/error, als js alert
    # TODO:
-   - [ ] visuelles feedback der antwort: erfolg/error, sichtbar machen
    - [x] Hinweis, dass beim einlösen des codes der codes der username gelockt wird
 
 2. **Backend (referral.php)**:
