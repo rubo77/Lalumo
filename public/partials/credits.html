@@ -1,0 +1,22 @@
+<!-- Legal: Credits -->
+<section x-show="active === 'credits' && (window.innerWidth >= 1024 || !menuOpen)" x-transition>
+  <h2 x-text="$store.strings?.credits_header || 'Credits'"></h2>
+  <div class="legal-content">
+    <h3 x-text="$store.strings?.version_label || 'Version'"></h3>
+    <p id="app-version">Loading version...</p>
+    
+    <h3 x-text="$store.strings?.app_development_label || 'App-Entwicklung'"></h3>
+    <p><a href="https://eclabs.de" target="_blank">Eastcoast Laboratories</a></p>
+    
+    <h3 x-text="$store.strings?.graphics_label || 'Grafiken &amp; Illustrationen'"></h3>
+    <p x-text="$store.strings?.graphics_content || 'Images created with ChatGpt - mindfull, lovingly crafted prompts'"></p>
+    
+    <h3 x-text="$store.strings?.technologies_label || 'Technologien'"></h3>
+    <ul>
+      <li>Alpine.js</li>
+      <li>Webpack</li>
+      <li>HTML5 & CSS3</li>
+      <li>Tone.js</li>
+    </ul>
+  </div>
+</section>

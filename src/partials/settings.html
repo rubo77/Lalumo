@@ -1,0 +1,77 @@
+<!-- Settings Page -->
+<section x-show="active === 'settings' && (window.innerWidth >= 1024 || !menuOpen)" x-transition class="settings-page">
+  <h2 x-text="$store.strings?.player_settings || 'Player Settings'"></h2>
+  <div x-show="username" class="settings-section">
+    <h3 x-text="$store.strings?.your_profile || 'Your Profile'"></h3>
+    <div class="profile-section">
+      <div class="profile-avatar">
+        <span x-text="username ? username.charAt(0) : '?' "></span>
+      </div>
+      <div class="profile-details">
+        <p class="profile-name" x-text="username"></p>
+        <div class="username-edit">
+          <input type="text" x-model="editableUsername" class="username-input" :placeholder="$store.strings?.enter_name || 'Enter your name'" maxlength="20">
+          <button class="secondary-button" @click="saveUsername()" x-text="$store.strings?.button_save_name || 'Save Name'"></button>
+        </div>
+        <button class="secondary-button" @click="setUsername()" x-text="$store.strings?.button_generate_name || 'Generate Random Name'"></button>
+      </div>
+    </div>
+    <h3 x-text="$store.strings?.language_preference || 'Language Preference'"></h3>
+    <div class="language-section">
+      <p x-text="$store.strings?.select_language || 'Select your preferred language:'"></p>
+      <div class="language-options">
+        <button class="language-button" :class="{ 'active': preferredLanguage === 'english' }" @click="setLanguage('english')" x-text="$store.strings?.language_english || 'English'"></button>
+        <button style="opacity: 1;" class="language-button" :class="{ 'active': preferredLanguage === 'german' }" @click="setLanguage('german')" x-text="$store.strings?.language_german || 'Deutsch'"></button>
+      </div>
+    </div>
+    
+    <!-- Help Messages Settings -->
+    <h3 x-text="$store.strings?.help_messages || 'Help Messages'"></h3>
+    <div class="help-messages-section">
+      <p x-text="$store.strings?.help_messages_desc || 'Control when mascot help messages appear:'"></p>
+      <div class="help-options">
+        <div class="toggle-container">
+          <button 
+            class="toggle-button" 
+            :class="{'active': $store.mascotSettings.showHelpMessages}" 
+            @click="$store.mascotSettings.showHelpMessages = !$store.mascotSettings.showHelpMessages" 
+            :aria-label="$store.mascotSettings.showHelpMessages ? 'Disable help messages' : 'Enable help messages'" 
+            aria-a11y="mascot_help_toggle">
+            <span class="toggle-slider" :class="{'active': $store.mascotSettings.showHelpMessages}"></span>
+            <span class="toggle-text" x-text="$store.mascotSettings.showHelpMessages ? ($store.strings?.help_messages_on || 'Show Help Messages') : ($store.strings?.help_messages_off || 'Help Messages Hidden')"></span>
+          </button>
+        </div>
+      </div>
+    </div>
+    
+    <h3 x-text="$store.strings?.game_progress || 'Game Progress'"></h3>
+    <div class="progress-section">
+      <p x-text="$store.strings?.export_progress || 'Export your progress to save or transfer to another device:'"></p>
+      <button class="primary-button" @click="exportProgress()" x-text="$store.strings?.button_export_progress || 'Export Progress'"></button>
+      <div x-show="exportedData" class="export-data">
+        <p x-text="$store.strings?.copy_progress_code || 'Copy this code and save it:'"></p>
+        <textarea x-model="exportedData" readonly></textarea>
+        <button class="secondary-button" @click="copyExportedData()" x-text="$store.strings?.button_copy_progress || 'Copy Code'"></button>
+      </div>
+      <hr>
+      <p x-text="$store.strings?.import_progress || 'Import your progress from another device:'"></p>
+      <div class="import-progress">
+        <textarea x-model="importData" :placeholder="$store.strings?.paste_progress_code || 'Paste your progress code here'"></textarea>
+        <button class="primary-button" @click="importProgress()" x-text="$store.strings?.button_import_progress || 'Import Progress'"></button>
+      </div>
+      
+      <div class="reset-section">
+        <h3 x-text="$store.strings?.reset_progress || 'Reset Progress'"></h3>
+        <p x-text="$store.strings?.reset_progress_desc || 'Reset all your game progress and start fresh:'"></p>
+        <div class="reset-buttons">
+          <button class="warning-button" @click="showResetConfirm = true" x-show="!showResetConfirm" x-text="$store.strings?.button_reset_progress || 'Reset All Progress'"></button>
+          <div class="confirm-reset" x-show="showResetConfirm">
+            <p x-text="$store.strings?.reset_confirm || 'Are you sure? This cannot be undone.'"></p>
+            <button class="danger-button" @click="resetAllProgress()" x-text="$store.strings?.button_confirm_reset || 'Yes, Reset Everything'"></button>
+            <button class="secondary-button" @click="showResetConfirm = false" x-text="$store.strings?.button_cancel || 'Cancel'"></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

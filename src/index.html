@@ -895,131 +895,18 @@
       <p>Coming soon!</p>
     </section>
     
-    <!-- Legal: Impressum -->
-    <section x-show="active === 'impressum' && (window.innerWidth >= 1024 || !menuOpen)" x-transition>
-      <h2 x-text="$store.strings?.impressum_header || 'Impressum'"></h2>
-      <div class="legal-content">
-        <p x-text="$store.strings?.impressum_app_description || 'Lalumo App - Musik lernen für Kinder'"></p>
-        <p x-text="$store.strings?.impressum_responsible || 'Verantwortlich für den Inhalt:'"></p>
-        <p x-html="$store.strings?.impressum_contact || 'Ruben Barkow-Kuder<br>Knickweg 16<br>24114 Kiel<br>'"></p>
-        <a href="mailto:lalumo-support@it.z11.de">lalumo-support@it.z11.de</a>
-      </div>
-    </section>
+    <!-- Legal: Impressum & Datenschutz - included from partials/impress.html -->
+    <div data-include="/partials/impress.html"></div>
     
-    <!-- Legal: Datenschutz -->
-    <section x-show="active === 'datenschutz' && (window.innerWidth >= 1024 || !menuOpen)" x-transition>
-      <h2 x-text="$store.strings?.datenschutz_header || 'Datenschutz'"></h2>
-      <div class="legal-content">
-        <p x-text="$store.strings?.privacy_intro || 'Datenschutzerklärung für die Lalumo App'"></p>
-        <p x-text="$store.strings?.privacy_statement || 'Wir nehmen den Schutz Ihrer persönlichen Daten sehr ernst. Alle Daten werden lokal auf Ihrem Gerät gespeichert und nicht an Server übertragen.'"></p>
-        <h3 x-text="$store.strings?.privacy_local_storage_header || 'Lokale Speicherung'"></h3>
-        <p x-text="$store.strings?.privacy_local_storage_desc || 'Die App speichert Folgendes lokal auf Ihrem Gerät:'"></p>
-        <ul>
-          <li x-text="$store.strings?.privacy_username_item || 'Benutzername'"></li>
-          <li x-text="$store.strings?.privacy_progress_item || 'Lernfortschritte'"></li>
-        </ul>
-      </div>
-    </section>
-    
-    <!-- Legal: Credits -->
-    <section x-show="active === 'credits' && (window.innerWidth >= 1024 || !menuOpen)" x-transition>
-      <h2 x-text="$store.strings?.credits_header || 'Credits'"></h2>
-      <div class="legal-content">
-        <h3 x-text="$store.strings?.version_label || 'Version'"></h3>
-        <p id="app-version">Loading version...</p>
-        
-        <h3 x-text="$store.strings?.app_development_label || 'App-Entwicklung'"></h3>
-        <p><a href="https://eclabs.de" target="_blank">Eastcoast Laboratories</a></p>
-        
-        <h3 x-text="$store.strings?.graphics_label || 'Grafiken &amp; Illustrationen'"></h3>
-        <p x-text="$store.strings?.graphics_content || 'Images created with ChatGpt - mindfull, lovingly crafted prompts'"></p>
-        
-        <h3 x-text="$store.strings?.technologies_label || 'Technologien'"></h3>
-        <ul>
-          <li>Alpine.js</li>
-          <li>Webpack</li>
-          <li>HTML5 & CSS3</li>
-          <li>Tone.js</li>
-        </ul>
-      </div>
-    </section>
+    <!-- Legal: Credits - included from partials/credits.html -->
+    <div data-include="/partials/credits.html"></div>
     
     <!-- Referral Code Page - included from partials/referrals.html -->
     <div data-include="/partials/referrals.html"></div>
     
-    <!-- Settings Page -->
-    <section x-show="active === 'settings' && (window.innerWidth >= 1024 || !menuOpen)" x-transition class="settings-page">
-      <h2 x-text="$store.strings?.player_settings || 'Player Settings'"></h2>
-      <div x-show="username" class="settings-section">
-        <h3 x-text="$store.strings?.your_profile || 'Your Profile'"></h3>
-        <div class="profile-section">
-          <div class="profile-avatar">
-            <span x-text="username ? username.charAt(0) : '?' "></span>
-          </div>
-          <div class="profile-details">
-            <p class="profile-name" x-text="username"></p>
-            <div class="username-edit">
-              <input type="text" x-model="editableUsername" class="username-input" :placeholder="$store.strings?.enter_name || 'Enter your name'" maxlength="20">
-              <button class="secondary-button" @click="saveUsername()" x-text="$store.strings?.button_save_name || 'Save Name'"></button>
-            </div>
-            <button class="secondary-button" @click="setUsername()" x-text="$store.strings?.button_generate_name || 'Generate Random Name'"></button>
-          </div>
-        </div>
-        <h3 x-text="$store.strings?.language_preference || 'Language Preference'"></h3>
-        <div class="language-section">
-          <p x-text="$store.strings?.select_language || 'Select your preferred language:'"></p>
-          <div class="language-options">
-            <button class="language-button" :class="{ 'active': preferredLanguage === 'english' }" @click="setLanguage('english')" x-text="$store.strings?.language_english || 'English'"></button>
-            <button style="opacity: 1;" class="language-button" :class="{ 'active': preferredLanguage === 'german' }" @click="setLanguage('german')" x-text="$store.strings?.language_german || 'Deutsch'"></button>
-          </div>
-        </div>
-        
-        <!-- Help Messages Settings -->
-        <h3 x-text="$store.strings?.help_messages || 'Help Messages'"></h3>
-        <div class="help-messages-section">
-          <p x-text="$store.strings?.help_messages_desc || 'Control when mascot help messages appear:'"></p>
-          <div class="help-options">
-            <div class="toggle-container">
-              <button 
-                class="toggle-button" 
-                :class="{'active': $store.mascotSettings.showHelpMessages}" 
-                @click="$store.mascotSettings.showHelpMessages = !$store.mascotSettings.showHelpMessages" 
-                :aria-label="$store.mascotSettings.showHelpMessages ? 'Disable help messages' : 'Enable help messages'" 
-                aria-a11y="mascot_help_toggle">
-                <span class="toggle-slider" :class="{'active': $store.mascotSettings.showHelpMessages}"></span>
-                <span class="toggle-text" x-text="$store.mascotSettings.showHelpMessages ? ($store.strings?.help_messages_on || 'Show Help Messages') : ($store.strings?.help_messages_off || 'Help Messages Hidden')"></span>
-              </button>
-            </div>
-          </div>
-        </div>
-        
-        <h3 x-text="$store.strings?.game_progress || 'Game Progress'"></h3>
-        <div class="progress-section">
-          <p x-text="$store.strings?.export_progress || 'Export your progress to save or transfer to another device:'"></p>
-          <button class="primary-button" @click="exportProgress()" x-text="$store.strings?.button_export_progress || 'Export Progress'"></button>
-          <div x-show="exportedData" class="export-data">
-            <p x-text="$store.strings?.copy_code || 'Copy this code to save your progress:'"></p>
-            <textarea x-model="exportedData" readonly class="export-textarea"></textarea>
-            <button class="secondary-button" @click="copyToClipboard()" x-text="$store.strings?.button_copy_clipboard || 'Copy to Clipboard'"></button>
-          </div>
-          <p class="import-label" x-text="$store.strings?.import_progress || 'Import your progress from another device:'"></p>
-          <textarea :placeholder="$store.strings?.paste_progress || 'Paste your progress data here...'" x-model="importData" class="import-textarea"></textarea>
-          <button class="primary-button" @click="importProgress()" x-text="$store.strings?.button_import_progress || 'Import Progress'"></button>
-          <div class="reset-section">
-            <h3 x-text="$store.strings?.reset_progress || 'Reset Progress'"></h3>
-            <p x-text="$store.strings?.reset_progress_desc || 'Reset all your game progress and start fresh:'"></p>
-            <div class="reset-buttons">
-              <button class="warning-button" @click="showResetConfirm = true" x-show="!showResetConfirm" x-text="$store.strings?.button_reset_progress || 'Reset All Progress'"></button>
-              <div class="confirm-reset" x-show="showResetConfirm">
-                <p x-text="$store.strings?.reset_confirm || 'Are you sure? This cannot be undone.'"></p>
-                <button class="danger-button" @click="resetAllProgress()" x-text="$store.strings?.button_confirm_reset || 'Yes, Reset Everything'"></button>
-                <button class="secondary-button" @click="showResetConfirm = false" x-text="$store.strings?.button_cancel || 'Cancel'"></button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
+    <!-- Settings Page - included from partials/settings.html -->
+    <div data-include="/partials/settings.html"></div>
+               
 
     <!-- Global footer for all activities with an invers edge
     <div class="bottom_round_edge">

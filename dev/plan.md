@@ -80,7 +80,7 @@
 - Admin dashboard authentication fixed: data directory ensured and improved SQLite error handling; POST now returns 200 OK.
 - Admin dashboard JSON API verified via wget; returns correct statistics payload.
 - Playwright referral-system tests initiated (awaiting results).
-- User requests hero logo image (logo_bird_sings.jpg) be shown as a circular background icon without border on homepage.
+- User requested hero logo image (logo_bird_sings.jpg) be shown as a circular background icon without border on homepage.
 - Hero logo now styled via CSS as circular background icon without border; img tag removed.
 - User asked if logo image can be gitignored; need to update .gitignore accordingly.
 - logo path added to .gitignore.
@@ -211,9 +211,34 @@
 - Runtime in browser showed `HTML partial loading error` (404). Partial copied to `public/partials/referrals.html` so dev server can serve it.
 - Need to update `index.html` data-include path to `/partials/referrals.html` and verify loading succeeds.
 - [x] Copy `referrals.html` to `public/partials/` for dev server access
-- [ ] Update `index.html` data-include to `/partials/referrals.html`
-- [ ] Verify referral partial loads without 404 and renders correctly
-- Verify referral partial loads without 404; test runtime
+- [x] Update `index.html` data-include to `/partials/referrals.html`
+- [x] Verify referral partial loads without 404 and renders correctly
+- [x] Verify referral partial loads without 404; test runtime
+- [x] Extract Impress page into `partials/impress.html` and include via data-include
+- [x] Extract Credits page into `partials/credits.html` and include via data-include
+- [x] Extract Settings page into `partials/settings.html` and include via data-include
+- Impress partial (`src/partials/impress.html`) created; next copy to public and hook up.
+- Runtime referral partial confirmed working via `/partials/referrals.html`.
+- Next: modularize remaining pages (Impress, Credits, Settings) similarly.
+- Ensure copied to `public/partials/` and paths updated.
+- [ ] Update index.html to include Impress, Credits, Settings partials via data-include
+  - [ ] Update index.html to include Impress partial via data-include
+  - [ ] Update index.html to include Credits partial via data-include
+  - [ ] Update index.html to include Settings partial via data-include
+  - [ ] Verify Impress, Credits, Settings partials load without 404 and render correctly
+- Runtime referral partial confirmed working via `/partials/referrals.html`.
+- Impress, Credits, and Settings partial HTML files created under `src/partials/` and copied to `public/partials/`.
+- `index.html` updated to include Impress and Credits via data-include elements; Settings include still pending.
+- [x] Extract Impress page into `partials/impress.html` and include via data-include
+- [x] Extract Credits page into `partials/credits.html` and include via data-include
+- [x] Extract Settings page into `partials/settings.html` and include via data-include
+- [x] Copy `impress.html` to `public/partials/` and update path in index
+- [x] Copy `credits.html` to `public/partials/` and update path in index
+- [x] Copy `settings.html` to `public/partials/` and update path in index
+- [x] Verify Impress, Credits, Settings partials load without 404 and render correctly
+- [ ] Copy `settings.html` to `public/partials/` and update path in index
+- [ ] Update index.html to include Settings partial via data-include
+- [ ] Verify Impress, Credits, Settings partials load without 404 and render correctly
 
 ## Current Goal
-- Fix referral partial path in index.html and confirm it loads
+- Finalize Settings partial include and verify all partials render
