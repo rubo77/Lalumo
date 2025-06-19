@@ -18,13 +18,13 @@ Das Lalumo Referral-System ermöglicht es Benutzern, ihre Freunde zur App einzul
    - `lockUsername()`-Funktion sendet POST-Request an `/referral.php` mit dem Benutzernamen
    - Frontend speichert Antwort in Alpine-State und localStorage
    # TODO:
-   - visuelles feedback der antwort: 
-     - erfolg: das neue passwort des users anzeigen
-     - error: 
-       - user existiert schon: nach passwort fragen oder hinweis, dass man sich einen anderen usernamen wählen muss
-       - sonstige errormeldung anzeigen
+   - [ ] visuelles feedback der antwort: 
+     - [ ] erfolg: das neue passwort des users anzeigen
+     - [ ] error: 
+       - [ ] user existiert schon: nach passwort fragen oder hinweis, dass man sich einen anderen usernamen wählen muss
+       - [ ] sonstige errormeldung anzeigen
        
-   - Hinweis, dass beim erstellen des codes der username gelockt wird
+   - [x] Hinweis, dass beim erstellen des codes der username gelockt wird
 
 2. **Backend (referral.php)**:
    - Empfängt Benutzername via POST-Request
@@ -32,8 +32,8 @@ Das Lalumo Referral-System ermöglicht es Benutzern, ihre Freunde zur App einzul
    - Speichert Benutzer in der `users`-Tabelle der SQLite-Datenbank
    - Sendet JSON-Antwort mit generiertem Referral-Code zurück
    # TODO:
-   - checken ob der username schon existiert, wenn ja, errormeldung
-   - passwort zum user beim anlegen eines neuen users generieren (falls keins im post request), und in der db speichern und mit in der json antwort schicken
+   - [x] checken ob der username schon existiert, wenn ja, errormeldung
+   - [x] passwort zum user beim anlegen eines neuen users generieren (falls keins im post request), und in der db speichern und mit in der json antwort schicken
 
 ### 2. Referral-Link-Tracking
 
@@ -54,8 +54,8 @@ Das Lalumo Referral-System ermöglicht es Benutzern, ihre Freunde zur App einzul
    - `redeemFriendCode()`-Funktion sendet POST-Request an `/referral.php`
    - Bei Erfolg wird das UI aktualisiert und der Status im localStorage gespeichert
    # TODO:
-   - visuelles feedback der antwort: erfolg/error, sichtbar machen
-   - Hinweis, dass beim einlösen des codes der codes der username gelockt wird
+   - [ ] visuelles feedback der antwort: erfolg/error, sichtbar machen
+   - [x] Hinweis, dass beim einlösen des codes der codes der username gelockt wird
 
 2. **Backend (referral.php)**:
    - Empfängt Einlösungs-Request via POST mit `redeemCode`-Parameter
@@ -63,7 +63,7 @@ Das Lalumo Referral-System ermöglicht es Benutzern, ihre Freunde zur App einzul
    - Erhöht Registrierungszähler, wenn der Code gültig ist
    - Sendet JSON-Antwort mit Erfolgs- oder Fehlermeldung zurück
    # TODO:
-   - checken auf doppeltes einlösen eines codes vom selben user
+   - [ ] checken auf doppeltes einlösen eines codes vom selben user
 
 ### 4. Statistik-Abfrage
 
@@ -127,7 +127,7 @@ Ein passwortgeschütztes Admin-Dashboard ist unter `/admin.php` verfügbar:
 - Bietet zusammengefasste Statistiken (Gesamtbenutzer, Klicks, Registrierungen)
 - Unterstützt HTML- und JSON-Format (für API-Zugriff)
 # TODO
-- löschen einzelner user
+- [ ] löschen einzelner user
 
 ## Sonstige Funktionen
 
@@ -141,22 +141,22 @@ Die PHP-Dateien (`referral.php`, `admin.php`) und die Datenbankdatei müssen auf
 
 # TODO:
 
-- es muss in der localstorage gespeichert werden, dass man schon registriert ist.
+- [x] es muss in der localstorage gespeichert werden, dass man schon registriert ist.
 
-- wenn man registriert ist, muss beim aufruf der seite gecheckt werden, wieviele referrals man schon hat in der db
+- [x] wenn man registriert ist, muss beim aufruf der seite gecheckt werden, wieviele referrals man schon hat in der db
 
 
 dabei gibt es 2 schritte: wenn ein user sixh nur auf den link geklickt hat, dann ist er ja noch nciht registriert, das tut er nur, wenn er auch einen referal link generieren will. 
-- der empfehlende bekommt einen referral punkt , wenn  mman auf den link klickt
-- einen weiteren, wenn man im game auch einen user anlegt
+- [x] der empfehlende bekommt einen referral punkt , wenn  mman auf den link klickt
+- [x] einen weiteren, wenn man im game auch einen user anlegt
 
 
 
-- wenn man referral drückt, dann soll das hamburger menu sich schliessen
+- [x] wenn man referral drückt, dann soll das hamburger menu sich schliessen
 
-- ich brauche einen admin mode, in dem ich sehen kann, welche user registriert sin d in der db und wieviele referrer punkte sie schon haben
+- [x] ich brauche einen admin mode, in dem ich sehen kann, welche user registriert sin d in der db und wieviele referrer punkte sie schon haben
 
-- teste selbst mit wegt http://localhost:9091/admin.php und mache node test und erstelle einen unittest um das alles zu testen und zu korrigieren. schau dir die bestehen den playwright tests an und baue einen  timeout von 10 s ein damit die seitenn nicht hängen bleiben
+- [x] teste selbst mit wegt http://localhost:9091/admin.php und mache node test und erstelle einen unittest um das alles zu testen und zu korrigieren. schau dir die bestehen den playwright tests an und baue einen  timeout von 10 s ein damit die seitenn nicht hängen bleiben
 
-- wie soll das online laufen? die php files müssen dort ja auch gesynct werden in `deploy.sh`
-- die db muss online sicher auch noch angelegt werden
+- [ ] wie soll das online laufen? die php files müssen dort ja auch gesynct werden in `deploy.sh`
+- [ ] die db muss online sicher auch noch angelegt werden

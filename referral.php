@@ -53,6 +53,22 @@ if ($initDb) {
 // Request-Methode ermitteln
 $method = $_SERVER['REQUEST_METHOD'];
 
+/**
+ * Generiert ein zufälliges Passwort mit der angegebenen Länge
+ * @param int $length Länge des Passworts
+ * @return string Das generierte Passwort
+ */
+function generateRandomPassword($length = 8) {
+    $chars = 'abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // ohne 1, l, 0, O zur besseren Lesbarkeit
+    $password = '';
+    
+    for ($i = 0; $i < $length; $i++) {
+        $password .= $chars[mt_rand(0, strlen($chars) - 1)];
+    }
+    
+    return $password;
+}
+
 // POST: Username registrieren und Referral-Code zurückgeben
 if ($method === 'POST') {
     $data = json_decode(file_get_contents('php://input'), true);
@@ -105,41 +121,53 @@ if ($method === 'POST') {
     $existingUser = $result->fetchArray(SQLITE3_ASSOC);
     
     if ($existingUser) {
-        // Gib den vorhandenen Referral-Code zurück
+        // Benutzername existiert bereits
+        http_response_code(409); // Conflict
         echo json_encode([
-            'success' => true,
-            'username' => $username,
-            'referralCode' => $existingUser['referral_code'],
-            'message' => 'Existing referral code retrieved'
+            'success' => false,
+            'error' => 'Benutzername existiert bereits.'
         ]);
         exit;
     }
     
-    // Erzeuge einen eindeutigen Referral-Code
+    // Neuen Referral-Code generieren
     $referralCode = generateReferralCode($username);
     
-    // In Datenbank speichern (formatierte Version)
-    $stmt = $db->prepare('INSERT INTO users (username, referral_code, created_at) VALUES (:username, :referralCode, :timestamp)');
-    $stmt->bindValue(':username', $username, SQLITE3_TEXT);
-    $stmt->bindValue(':referralCode', $referralCode, SQLITE3_TEXT);
-    $stmt->bindValue(':timestamp', date('Y-m-d H:i:s'), SQLITE3_TEXT);
-    $result = $stmt->execute();
+    // Generiere ein zufälliges Passwort für den Benutzer
+    $password = generateRandomPassword(8);
     
-    // Falls erfolgreich, erstelle Referrals-Eintrag
-    if ($result) {
-        $userId = $db->lastInsertRowID();
-        $db->exec("INSERT INTO referrals (referrer_id, click_count, registration_count) VALUES ($userId, 0, 0)");
+    // In die Datenbank einfügen
+    $stmt = $db->prepare('INSERT INTO users (username, referral_code, password, created_at) VALUES (:username, :code, :password, datetime("now"))');
+    $stmt->bindValue(':username', $username, SQLITE3_TEXT);
+    $stmt->bindValue(':code', $referralCode, SQLITE3_TEXT);
+    $stmt->bindValue(':password', $password, SQLITE3_TEXT);
+    
+    try {
+        $result = $stmt->execute();
         
-        echo json_encode([
-            'success' => true,
-            'username' => $username,
-            'referralCode' => $referralCode,
-            'message' => 'Referral code generated successfully'
-        ]);
-    } else {
+        if ($result) {
+            // Referral-Eintrag erstellen
+            $userId = $db->lastInsertRowID();
+            $db->exec("INSERT INTO referrals (referrer_id, click_count, registration_count) VALUES ($userId, 0, 0)");
+            
+            // Formatierten Code und Passwort zurückgeben
+            echo json_encode([
+                'success' => true,
+                'referralCode' => formatCode($referralCode),
+                'password' => $password
+            ]);
+        } else {
+            http_response_code(500);
+            echo json_encode([
+                'success' => false,
+                'error' => 'Failed to create user'
+            ]);
+        }
+    } catch (Exception $e) {
         http_response_code(500);
         echo json_encode([
-            'error' => 'Failed to create user'
+            'success' => false,
+            'error' => 'Database error: ' . $e->getMessage()
         ]);
     }
 }
