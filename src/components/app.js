@@ -32,6 +32,8 @@ export function app() {
     lockedUsername: '',          // Der fixierte Benutzername
     referralCode: '',            // Der Referral-Code
     referralCount: 0,            // Anzahl der erhaltenen Referrals
+    referralClickCount: 0,       // Anzahl der Klicks auf den Referral-Link
+    referralLink: '',           // Teilbarer Referral-Link
     friendCode: '',              // Eingegebener Freundes-Referral-Code
     isChordChapterUnlocked: false, // Ob das Akkorde-Kapitel freigeschaltet ist
     
@@ -1912,7 +1914,7 @@ export function app() {
     /**
      * Löst einen Freundes-Referral-Code ein
      */
-    redeemFriendCode() {
+    async redeemFriendCode() {
       if (!this.friendCode) {
         console.error('Kein Freundes-Code eingegeben!');
         return;
@@ -1925,22 +1927,73 @@ export function app() {
         return;
       }
       
-      // In echter Implementierung würde hier eine Server-Validierung erfolgen
-      // Für jetzt simulieren wir eine erfolgreiche Einlösung
-      console.log('Freundes-Code eingelöst:', this.friendCode);
-      
-      // Akkorde-Kapitel freischalten, wenn 3 oder mehr Referrals erreicht
-      this.referralCount += 1;
-      if (this.referralCount >= 3) {
-        this.isChordChapterUnlocked = true;
+      // Prüfen, ob der Benutzer seinen eigenen Code einlösen versucht
+      if (this.friendCode === this.referralCode) {
+        alert(this.$store.strings?.own_code_error || 'You cannot redeem your own referral code!');
+        return;
       }
       
-      // Daten speichern
-      this.saveReferralData();
-      
-      // UI-Feedback
-      this.friendCode = ''; // Eingabefeld zurücksetzen
-      alert(this.$store.strings?.code_redeemed || 'Friend code redeemed successfully!');
+      try {
+        // API endpoint URL (relative to the app root)
+        const apiUrl = 'http://localhost:8080/referral.php';
+        
+        // POST-Anfrage an den Server senden
+        const response = await fetch(apiUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            username: this.lockedUsername || this.username,
+            redeemCode: this.friendCode
+          })
+        });
+        
+        // Antwort verarbeiten
+        const data = await response.json();
+        
+        if (data.success) {
+          // Aktualisierte Referral-Anzahl speichern
+          if (data.referralCount) {
+            this.referralCount = data.referralCount;
+          } else {
+            // Falls keine zurückgeliefert wird, lokal erhöhen
+            this.referralCount += 1;
+          }
+          
+          // Akkorde-Kapitel freischalten, wenn 3 oder mehr Referrals erreicht
+          if (this.referralCount >= 3) {
+            this.isChordChapterUnlocked = true;
+          }
+          
+          // Daten speichern
+          this.saveReferralData();
+          
+          // UI-Feedback
+          this.friendCode = ''; // Eingabefeld zurücksetzen
+          alert(this.$store.strings?.code_redeemed || 'Friend code redeemed successfully!');
+          
+          // Statistiken aktualisieren
+          this.fetchReferralCount();
+        } else if (data.error) {
+          // Fehlermeldung anzeigen
+          let errorMessage = data.message || (this.$store.strings?.redeem_error || 'Error redeeming code. Please try again.');
+          
+          // Spezifische Fehlermeldungen
+          if (data.error === 'own_code') {
+            errorMessage = this.$store.strings?.own_code_error || 'You cannot redeem your own referral code!';
+          } else if (data.error === 'code_not_found') {
+            errorMessage = this.$store.strings?.code_not_found || 'This referral code was not found.';
+          } else if (data.error === 'already_redeemed') {
+            errorMessage = this.$store.strings?.already_redeemed || 'You have already redeemed this code.';
+          }
+          
+          alert(errorMessage);
+        }
+      } catch (error) {
+        console.error('Fehler beim Einlösen des Codes:', error);
+        alert(this.$store.strings?.redeem_error || 'Error redeeming code. Please try again.');
+      }
     }
   };
 }

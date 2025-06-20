@@ -10,6 +10,7 @@
 - After relocating, all import paths across the codebase must be updated.
 - Update dev/FILESTRUCTURE.md to match the new, real structure.
 - Adhere to user global rules: no fallback code, no unnecessary deployment, add diagnostics if needed.
+- Git checkout/reset commands are disallowed; repair files manually.
 - User confirmed file structure is correct; focus shifts to enhancing Chord Chapter user experience.
 - User requested to review Chord code first and keep 2_x abbreviations in function names.
 - Main Chords entry file is `src/components/chords.js`; sub-modules `2_*` will be migrated later.
@@ -26,38 +27,22 @@
 - User requested moving injected CSS rules into external stylesheet `src/styles/2_chords.css` and setting `.chord-chapters-view` height to 800px.
 - Created external stylesheet `src/styles/2_chords.css` including chord activity styles and `.chord-chapters-view` height rule.
 - Stylesheet now imported in `chords.js`, and inline CSS injection removed from `setupFullHeightContainers`.
-- Injected existing `audioEngine` & Tone import into **2_1_chord_color_matching**, **2_2_chords_mood-landscapes**, **2_4_chords_missing-note**, and **2_6_harmmony_garden** to enable sound; awaiting verification.
-- `2_6_harmmony_garden.js` module has been created and initial audio imports added.
-- User explicitly said not to add a new audio engine; must reuse existing AudioEngine implementation already powering other chapters.
-- User identified duplicate functions (e.g., `newColorMatchingQuestion`, `checkColorAnswer`) existing both in `chords.js` and `2_x` module files; wants duplicates removed and logic housed only in the respective `2_chords/*` files.
-- `chords.js` should act as orchestrator/importer; all activity-specific logic must live inside `src/components/2_chords/` modules.
-- Need a visible "Play Chord" button in **2_1 color-matching** activity.
-- Clean up duplicate code introduced in commit `236a1f3` and ensure single source of truth per function.
-- addPlayChordButton function implemented and invoked via dynamic import in **2_1_chord_color_matching.js**; Play button should now appear.
-- Duplicate color-matching functions removed from `chords.js`; wrappers now dynamically import the module.
-- addPlayChordButton now auto-initializes on module load; Play button confirmed in UI.
-- Migrated `getMoodLandscapes` to **2_2_chord_mood_landscapes.js** and added dynamic wrapper in `chords.js` (duplicate removed).
-- Migrated `updateLandscape` to **2_2_chord_mood_landscapes.js**; wrapper replacement in `chords.js` is now complete.
-- Build succeeded after deduplication; user requests similar refactor process for other modules following FILESTRUCTURE.md lines 180-196.
-- Bug: `currentChordType` undefined in index.html Play Chord button; need to set/handle variable.
-- Note: addPlayChordButton task broken down into subtasks:
-  - Implement addPlayChordButton function in **2_1_chord_color_matching.js**.
-  - Ensure addPlayChordButton is invoked when activity loads.
-  - Verify Play Chord button is visible and clickable.
-- Fixed: Fallback approach eliminated; `currentChordType` is now initialized on activity load, ensuring it's always defined before button use.
-- After fallback removal, the UI still logs "Unknown chord type: null"—need to trace where `currentChordType` becomes `null` before `playChord` is invoked.
-- Redundant audioEngine initialization blocks were stripped; a single, reliable `initAudio` call in `chords.js` now guarantees the engine is ready. Remaining step: verify it fires before any chord playback.
-- Identified multiple `currentChordType = null` resets in `chords.js` that may trigger "Unknown chord type: null"; need lifecycle audit.
-- [x] Centralize audioEngine initialization in `chords.js` (`initAudio`) and remove scattered checks.
-- Removed fallback logic from `playChord`; now logs error and exits when `chordType` is null or unknown, complying with no-fallback rule.
-- Unnecessary `currentChordType = null` resets removed in `resetActivity` and post-chord `setTimeout`; lifecycle audit confirms no further null resets remain.
-- [x] Optionally add assertion/logging in `playChord` when `chordType` is null to aid debugging.
-- `audioEngine` import corrected to use default export; build warning resolved.
-- [x] Fix incorrect `audioEngine` import in `chords.js` (use default export).
-- [x] Fix incorrect `audioEngine` import in `chords.js` (use default export or proper named export).
-- [x] Update `addPlayChordButton` in **2_1_chord_color_matching.js** to use the correct `.play-button` selector (scoped to activity container).
-- [x] Implement or import `getRandomChordType` (or correct call) inside **2_1_chord_color_matching.js** to prevent runtime error.
-- Local `getRandomChordType` helper added in 2_1 module and `newColorMatchingQuestion` updated to use local helpers; runtime error resolved.
+- Initial background image for 2_5 chord characters added in index.html activity container.
+- `updateCharacterBackground` function implemented and wired into `chords.js` (init & after correct answer); progress now persisted in `lalumo_chords_progress` (localStorage).
+- User requested extracting `update_progress_display` helper from pitches.js into a shared `common.js` for reuse.
+- `updateCharacterBackground` function implemented and wired into `chords.js` (init & after correct answer); progress now persisted in `lalumo_chords_progress` (localStorage).
+- User requested extracting `update_progress_display` helper from pitches.js into a shared `common.js` for reuse.
+- Discovery: two separate common.js files already exist (`src/components/pitches/common.js` and `src/components/2_chords/common.js`); need unified location for shared UI helpers.
+- New shared helper module `src/components/shared/ui-helpers.js` created containing `update_progress_display`; imported into `pitches.js`.
+- Shared UI helper now also imported in `chords.js` and used in 2_5 character activity to update progress display.
+- Runtime bug: `$store is not defined` when `update_progress_display` executes inside `chords.js` (Alpine context missing). Must refactor call to avoid direct `$store` reference (use component or Alpine.store()).
+- Need to remove legacy `update_progress_display` method from `pitches.js` and redirect all calls to shared helper.
+- Runtime bug `$store is not defined` in 2_5 progress display has been fixed by constructing strings via `this.$store` before passing to helper.
+- New UI issue: progress display shows duplicate "Correct answers" lines and no unlock hint. Must ensure single element and dynamic hint ("Get 10 correct ...", "Get 20 correct ...") renders correctly.
+- Removed redundant JS progress display in 2_5; Alpine bindings now show correct count and unlock hints.
+- `debug-element` CSS class added to `main.css` to hide debug buttons by default; visibility toggled via `body.dev-mode`.
+- Inline `style="opacity: 0;"` attributes auto-replaced with `class="debug-element"` in index.html via sed.
+- Frontend protection added: users cannot redeem their own referral code (redeemFriendCode now checks against `referralCode`).
 - Index menu restructured: locked Chords chapter button implemented and functional referral-code page added beneath Pitches chapter.
 - Referral backend (PHP) now fully functional; nginx (or web server) configuration and SQLite persistence implemented to track referral clicks & registrations.
 - Alpine main component lives in `src/components/app.js`; referral system state & methods must be implemented there (not inline in index.html).
@@ -103,8 +88,9 @@
 - User requested enhanced frontend feedback for username registration: spinner on button while awaiting response, visual success (show password) or error messages, and a hint indicating the username will be locked.
 - User requested enhanced frontend feedback for username registration: spinner on button while awaiting response, visual success (show password) or error messages, and a hint indicating the username will be locked.
 - Registration UI feedback (spinner, success/error messages, password display) integrated into index.html; `isRegistering` bound and explanatory text added.
-- - `copyToClipboard` function in app.js generalized (including improved fallback) to copy arbitrary text, enabling password copy.
-- - Missing registration feedback strings (`registration_success`, `registration_error`, `username_exists`) added to `strings-de.xml`.
+- Reset section in settings partial restructured; reset buttons correctly embedded and partial copied to `public/partials/`; awaiting UI verification.
+- `copyToClipboard` function in app.js generalized (including improved fallback) to copy arbitrary text, enabling password copy.
+- Missing registration feedback strings (`registration_success`, `registration_error`, `username_exists`) added to `strings-de.xml`.
 - Ensure `admin.php` queries correctly fetch user data from SQLite DB
 - [x] Ensure `admin.php` queries correctly fetch user data from SQLite DB
 - Investigate why updated query still returns zero rows (check DB contents & paths)
@@ -221,11 +207,11 @@
 - Runtime referral partial confirmed working via `/partials/referrals.html`.
 - Next: modularize remaining pages (Impress, Credits, Settings) similarly.
 - Ensure copied to `public/partials/` and paths updated.
-- [ ] Update index.html to include Impress, Credits, Settings partials via data-include
-  - [ ] Update index.html to include Impress partial via data-include
-  - [ ] Update index.html to include Credits partial via data-include
-  - [ ] Update index.html to include Settings partial via data-include
-  - [ ] Verify Impress, Credits, Settings partials load without 404 and render correctly
+- [x] Update index.html to include Impress, Credits, Settings partials via data-include
+  - [x] Update index.html to include Impress partial via data-include
+  - [x] Update index.html to include Credits partial via data-include
+  - [x] Update index.html to include Settings partial via data-include
+  - [x] Verify Impress, Credits, Settings partials load without 404 and render correctly
 - Runtime referral partial confirmed working via `/partials/referrals.html`.
 - Impress, Credits, and Settings partial HTML files created under `src/partials/` and copied to `public/partials/`.
 - `index.html` updated to include Impress and Credits via data-include elements; Settings include still pending.
@@ -236,9 +222,116 @@
 - [x] Copy `credits.html` to `public/partials/` and update path in index
 - [x] Copy `settings.html` to `public/partials/` and update path in index
 - [x] Verify Impress, Credits, Settings partials load without 404 and render correctly
-- [ ] Copy `settings.html` to `public/partials/` and update path in index
-- [ ] Update index.html to include Settings partial via data-include
-- [ ] Verify Impress, Credits, Settings partials load without 404 and render correctly
-
+- [x] Copy `settings.html` to `public/partials/` and update path in index
+- [x] Update index.html to include Settings partial via data-include
+- [x] Verify Impress, Credits, Settings partials load without 404 and render correctly
+- Note: Reset section in settings partial restructured; reset buttons correctly embedded and partial copied to `public/partials/`; awaiting UI verification.
+- Existing file `src/components/pitches/1_2_match_sounds.js` already contains some helper logic.
+- New directory `src/components/1_pitches/` created to hold pitch activity modules; need to consolidate location.
+- New directory `src/components/1_pitches/` was created by mistake; per FILESTRUCTURE.md, activity modules stay under `src/components/pitches/`. Must consolidate to a single canonical path and remove duplicates.
+- New directory `src/components/1_pitches/` was created by mistake; per FILESTRUCTURE.md, activity modules must remain in `src/components/pitches/`. Consolidation required.
+- Duplicate directory `src/components/1_pitches/` has been removed.
+- Migration of 1_2_match_sounds functions to separate module was reverted; related tasks cancelled.
+- [x] Delete duplicate `src/components/1_pitches/1_2_match_sounds.js`
+- [x] Update imports in `pitches.js` to use canonical path
+- [x] Update `pitches.js` to import and delegate to new module (remove duplicates)
+- [ ] Run build & verify 1_2 activity functionality
+- [ ] Fix SyntaxError in `pitches.js` (line ~1297) and any related issues
+- [ ] Re-run build & confirm no errors
+- [ ] Manually inspect `pitches.js` for additional brace/comma mismatches introduced by automated replacements and correct them
+- [ ] Once build passes, test 1_2_match_sounds activity end-to-end
+- Runtime Alpine error: `component.stopCurrentSound is not a function` discovered in 1_2 activity; calling undefined method.
+- Earlier attempt to inline call caused massive syntax errors; must revert and instead export `stopCurrentSound` from pitches.js and import in 1_2 module.
+- Approach: add named export `stopCurrentSound` in pitches.js (no structural rewrite), alias in component (`this.stopCurrentSound` already exists), and import `{ stopCurrentSound }` into 1_2_match_sounds.js; call directly.
+- [ ] Fix `stopCurrentSound` undefined runtime error (expose/export function and import in 1_2 module)
+  - [ ] Revert erroneous inline replacement in pitches.js
+  - [ ] Add `export function stopCurrentSound(component)` helper encapsulating existing logic
+  - [ ] Ensure pitches.js references this helper; keep method intact
+  - [ ] Import and use `stopCurrentSound` directly in 1_2_match_sounds.js instead of `component.stopCurrentSound()`
+  - [ ] Run build & verify 1_2 activity functionality
+  - [ ] Retest 1_2_match_sounds activity end-to-end after fix
+- [ ] Fix `stopCurrentSound` undefined runtime error (expose/export function and import in 1_2 module)
+- [ ] Fix `stopCurrentSound` undefined runtime error (expose/export function and import in 1_2 module)
+- Chords progress tracking system implemented in `chords.js`, mirroring the logic from `pitches.js`; per-activity counts now persist in `lalumo_chords_progress`.
+- `checkColorAnswer` now increments `totalQuestions` and writes progress after each answer.
+- Color grid in index.html currently passes `$store` to `checkColorAnswer`, causing `currentChordType` to be undefined – need to pass the chords component (`$data`) instead.
+- Color grid click handlers updated to use `$data`; answers now recognized.
+- Scope bug in `playChord` fixed (outer `chord` variable); ReferenceError resolved.
+- [x] Fix color grid click handlers in index.html to pass chords component to `checkColorAnswer`.
+  - [ ] Verify rainbow / error feedback effects and audio playback trigger correctly after fix.
+  - Note: Fixing this bug revealed a new issue with audio playback not working as expected.
+- [ ] Fix audio playback issue in color-matching activity.
+- New issue: `ReferenceError: chord is not defined` inside `playChord`; likely variable scope bug preventing audio playback.
+- [x] Fix `ReferenceError: chord is not defined` in `playChord` and ensure sound plays.
+  - [ ] Verify audio playback works after fix.
+- New runtime error: `audioEngine.playChord is not a function`; need chord playback method in AudioEngine or adjust call in chords.js.
+- [ ] Fix audio playback issue in color-matching activity.
+  - [ ] Implement `playChord` method in `audio-engine.js` (poly-synth plays multiple notes) or refactor `chords.js` to use existing API
+  - [ ] Verify chord audio playback in 2_1 and 2_2 after fix
+- New runtime error resolved: `playChord` method implemented in AudioEngine; need sound verification.
+- Requested enhancement: `debugLog` should accept an array of tags and prepend them.
+- [x] Implement `playChord` method in `audio-engine.js` (poly-synth plays multiple notes) or refactor `chords.js` to use existing API
+- [ ] Verify chord audio playback in 2_1 and 2_2 after fix
+- [x] Update `debugLog` utility to accept array of tags
+- debugLog utility now accepts array of tags.
+- Naming conflict detected: two playChord functions (chords.js vs audio-engine.js); must resolve.
+- playChord function in chords.js renamed to playChordByType; internal and 2_1 module references updated.
+- [ ] Update all references to component.playChord to playChordByType in 2_chords modules and chords.js wrappers
+  - [ ] Replace playChord calls in 2_1_chord_color_matching.js
+  - [x] Replace playChord calls in 2_2_chord_mood_landscapes.js
+  - [ ] Remove/adjust guards that check typeof component.playChord
+  - [ ] Run build & verify no missing method errors
+- [ ] Run build & verify chord audio playback in 2_1 and 2_2 after refactor
+- [x] Resolve playChord naming conflict between chords.js and audio-engine.js (renamed to playChordByType)
+- [ ] Update all references to component.playChord to playChordByType in 2_chords modules and chords.js wrappers
+  - [x] Replace playChord calls in 2_1_chord_color_matching.js
+  - [ ] Replace playChord calls in 2_2_chord_mood_landscapes.js
+  - [x] Remove/adjust guards that check typeof component.playChord
+  - [ ] Run build & verify no missing method errors
+- [ ] Run build & verify chord audio playback in 2_1 and 2_2 after refactor
+- User requested dynamic background progression for 2_5 chord characters based on correct answer milestones (0, 10, 20) with specific images.
+- [x] Remove/adjust guards that check typeof component.playChord
+- [x] Replace playChord calls in 2_1_chord_color_matching.js
+- [x] Remove/adjust guards that check typeof component.playChord
+- [ ] Run build & verify chord audio playback in 2_1 and 2_2 after refactor
+- # New tasks for 2_5 chord character activity
+- [x] Update index.html 2_5 activity container to use initial background image `/public/images/backgrounds/2_5_chords_dog_cat_owl_no_squirrel_no_octopus.png`.
+- [ ] Implement progress-based background updates for 2_5 chord characters:
+  - [x] Add `updateCharacterBackground()` (similar to pitches.updateMatchingBackground).
+  - [x] Change background to *_squirrel_no_octopus at 10 correct answers.
+  - [x] Change background to *_squirrel_octopus at 20 correct answers.
+  - [x] Store & read progress in `lalumo_chords_progress`.
+  - [x] Wire `updateCharacterBackground` call in `chords.js` on init & after correct answer.
+  - [ ] Verify visuals during gameplay.
+- `updateCharacterBackground` helper implemented in `2_5_chord_characters.js` to switch backgrounds at 0/10/20 correct answers.
+- `updateCharacterBackground` now imported into `chords.js`; wiring to events pending.
+- [ ] Implement progress-based background updates for 2_5 chord characters:
+  - [x] Add `updateCharacterBackground()` (similar to pitches.updateMatchingBackground).
+  - [x] Change background to *_squirrel_no_octopus at 10 correct answers.
+  - [x] Change background to *_squirrel_octopus at 20 correct answers.
+  - [x] Store & read progress in `lalumo_chords_progress`.
+  - [x] Wire `updateCharacterBackground` call in `chords.js` on init & after correct answer.
+  - [ ] Verify visuals during gameplay.
+- Note: Wiring updateCharacterBackground and storing progress in lalumo_chords_progress is now complete.
+- Progress display added to **2_5** activity in index.html showing correct count and unlock hints.
+- [x] Verify visuals during gameplay.
+- User requested using the shared `update_progress_display` in 2_5 character activity.
+- [x] Remove local `update_progress_display` method from pitches.js and update calls to use shared helper
+- [x] Ensure build passes after refactor
+- [x] Integrate shared `update_progress_display` into 2_5 character activity (update index/chords logic)
 ## Current Goal
-- Finalize Settings partial include and verify all partials render
+- [x] Fix `$store` undefined error in 2_5 progress display
+- [x] Deduplicate progress display in 2_5 activity and inject unlock-hint text (10/20 thresholds)
+- [x] Add configurable CSS class to hide debug buttons (opacity 0) with toggle for local development
+## Current Goal
+- Implement CSS class for hiding debug buttons
+- Note: Added debug-element CSS class to hide debug buttons by default; visibility toggled via body.dev-mode.
+- [x] Add `.debug-element` class to main.css with opacity control and `body.dev-mode` override
+- [x] Replace inline `style="opacity: 0;"` on debug buttons with `class="debug-element"`
+- [x] Document/enable dev-mode body class toggle for local development
+- [x] Add configurable CSS class to hide debug buttons (opacity 0) with toggle for local development
+- [ ] Display shareable referral link with click count in UI
+## Current Goal
+- Implement backend self-redeem protection & share link display
+- Note: Frontend self-redeem protection implemented; users cannot redeem their own referral code.
+- [x] Implement backend self-redeem protection in `referral.php`
