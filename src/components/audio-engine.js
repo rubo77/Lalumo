@@ -344,6 +344,73 @@ export class AudioEngine {
   }
   
   /**
+   * Spielt mehrere Noten gleichzeitig als Akkord
+   * @param {Array<string>} notes - Array mit Notennamen (z.B. ['C4', 'E4', 'G4'])
+   * @param {Object} options - Optionen für den Akkord
+   * @param {number} options.duration - Dauer in Sekunden (default: 2)
+   * @param {number} options.velocity - Lautstärke (0-1, default: 0.7)
+   */
+  playChord(notes, options = {}) {
+    if (!this._isInitialized) {
+      console.warn('Audio-Engine nicht initialisiert. Initialisiere zuerst mit initialize()');
+      return false;
+    }
+    
+    if (!notes || notes.length === 0) {
+      console.warn('Leeres Noten-Array, nichts abzuspielen');
+      return false;
+    }
+    
+    // Standardoptionen
+    const duration = options.duration || 2;
+    const velocity = options.velocity || 0.7;
+    
+    // Bisherige Töne stoppen
+    this.stopAll();
+    
+    // Alle gültigen Noten sammeln
+    const validNotes = [];
+    
+    notes.forEach(note => {
+      const parsedNote = this._parseNoteString(note);
+      if (parsedNote) {
+        validNotes.push(parsedNote);
+      } else {
+        console.warn(`Ungültige Note ignoriert: ${note}`);
+      }
+    });
+    
+    if (validNotes.length === 0) {
+      console.warn('Keine gültigen Noten im Akkord');
+      return false;
+    }
+    
+    console.log(`AUDIO: Spiele Akkord mit Noten: ${validNotes.join(', ')}, Dauer: ${duration}s`);
+    
+    try {
+      // Alle Noten gleichzeitig abspielen
+      this._synth.triggerAttackRelease(validNotes, duration, Tone.now(), velocity);
+      
+      // Noten als aktiv markieren
+      validNotes.forEach(note => {
+        this._notesPlaying.add(note);
+      });
+      
+      // Nach Ablauf der Noten aus der aktiven Liste entfernen
+      Tone.Transport.scheduleOnce(() => {
+        validNotes.forEach(note => {
+          this._notesPlaying.delete(note);
+        });
+      }, `+${duration}`);
+      
+      return true;
+    } catch (error) {
+      console.error('Fehler beim Abspielen des Akkords:', error);
+      return false;
+    }
+  }
+  
+  /**
    * Stoppt alle aktiven Sequenzen und Noten
    */
   stopAll() {
