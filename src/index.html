@@ -583,7 +583,7 @@
             </div>
             
             <div class="play-chord-button-container">
-              <button @click="playChord(currentChordType)" class="play-button">
+              <button @click="playChordByType(currentChordType)" class="play-button">
                 <span>🔈</span>
                 <span x-text="$store.strings?.play_chord || 'Play Chord'">Play Chord</span>
               </button>
@@ -665,22 +665,22 @@
             </div>
             
             <div class="chord-selector">
-              <button @click="playChord('major'); updateLandscape('major')" class="chord-button">
+              <button @click="playChordByType('major'); updateLandscape('major')" class="chord-button">
                 <span>🌞</span>
                 <span>Major</span>
               </button>
               
-              <button @click="playChord('minor'); updateLandscape('minor')" class="chord-button">
+              <button @click="playChordByType('minor'); updateLandscape('minor')" class="chord-button">
                 <span>☁️</span>
                 <span>Minor</span>
               </button>
               
-              <button @click="playChord('diminished'); updateLandscape('diminished')" class="chord-button">
+              <button @click="playChordByType('diminished'); updateLandscape('diminished')" class="chord-button">
                 <span>🌫️</span>
                 <span>Diminished</span>
               </button>
               
-              <button @click="playChord('augmented'); updateLandscape('augmented')" class="chord-button">
+              <button @click="playChordByType('augmented'); updateLandscape('augmented')" class="chord-button">
                 <span>⚡</span>
                 <span>Augmented</span>
               </button>

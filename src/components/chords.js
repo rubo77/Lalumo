@@ -210,7 +210,7 @@ export function chords() {
      * @activity all
      * @used_by 2_1_chord_color_matching, 2_4_missing_note
      */
-    async playChord(chordType, rootNote = 'C4', options = { duration: 2 }) {
+    async playChordByType(chordType, rootNote = 'C4', options = { duration: 2 }) {
       this.stopAllSounds();
       debugLog('CHORDS', 'playChord called with chordType:', chordType, 'rootNote:', rootNote);
       
@@ -243,7 +243,7 @@ export function chords() {
                 document.removeEventListener('click', startTone);
                 document.removeEventListener('touchstart', startTone);
                 // Try playing the chord again after successful start
-                setTimeout(() => this.playChord(chordType, rootNote, options), 100);
+                setTimeout(() => this.playChordByType(chordType, rootNote, options), 100);
               } catch (e) {
                 debugLog('CHORDS', `Still failed to start Tone.js: ${e.message}`);
               }
@@ -634,7 +634,7 @@ export function chords() {
       if (this.recognizedChordType) {
         try {
           // Play the chord with the central audio engine
-          this.playChord(this.recognizedChordType, 'C4', { duration: 2.5 });
+          this.playChordByType(this.recognizedChordType, 'C4', { duration: 2.5 });
           
           // Visual feedback
           const playButton = document.getElementById('play-full-chord-button');
@@ -861,7 +861,7 @@ export function chords() {
         
         // Play the complete chord
         setTimeout(() => {
-          this.playChord(this.currentChordType);
+          this.playChordByType(this.currentChordType);
         }, 500);
         
         // Set up a new chord after a delay
@@ -898,7 +898,7 @@ export function chords() {
         this.currentChordType = chordTypes[Math.floor(Math.random() * chordTypes.length)];
       }
       
-      this.playChord(this.currentChordType);
+      this.playChordByType(this.currentChordType);
     },
     
     checkCharacterMatch(selectedChordType) {
@@ -1057,7 +1057,7 @@ export function chords() {
       let delay = 0;
       sequence.forEach(chordType => {
         setTimeout(() => {
-          this.playChord(chordType);
+          this.playChordByType(chordType);
         }, delay);
         delay += 1000; // 1 second between chords
       });

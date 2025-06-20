@@ -149,11 +149,11 @@ export async function updateLandscape(component, chordType) {
       await audioEngine.initialize();
     }
     
-    // Use the component's playChord method if available
-    if (component && typeof component.playChord === 'function') {
-      await component.playChord(chordType, 'C4');
+    // Use the component's playChordByType method if available
+    if (component && typeof component.playChordByType === 'function') {
+      await component.playChordByType(chordType, 'C4');
     } else {
-      debugLog('CHORDS', 'Warning: component.playChord not available');
+      debugLog('CHORDS', 'Warning: component.playChordByType not available');
     }
   } catch (error) {
     debugLog('CHORDS', `Error playing chord for mood landscape: ${error.message}`);

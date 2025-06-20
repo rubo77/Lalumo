@@ -90,7 +90,7 @@ export function addPlayChordButton(component) {
         newColorMatchingQuestion(component);
       }
       // Verwende die lokale getRandomRootNote Funktion
-      component.playChord(component.currentChordType, getRandomRootNote());
+      component.playChordByType(component.currentChordType, getRandomRootNote());
     };
     
     return; // Exit after setting up the existing button
@@ -123,7 +123,7 @@ export function addPlayChordButton(component) {
       newColorMatchingQuestion(component);
     }
     // Verwende lokale getRandomRootNote Funktion
-    component.playChord(component.currentChordType, getRandomRootNote());
+    component.playChordByType(component.currentChordType, getRandomRootNote());
   };
   
   // Add to DOM
@@ -150,9 +150,9 @@ export function addPlayChordButton(component) {
  */
 export function newColorMatchingQuestion(component) {
   try {
-    // Verify component has the required playChord method
-    if (typeof component.playChord !== 'function') {
-      debugLog('CHORDS', 'Error: component.playChord is not a function');
+    // Verify component has the required playChordByType method
+    if (typeof component.playChordByType !== 'function') {
+      debugLog('CHORDS', 'Error: component.playChordByType is not a function');
       return;
     }
     
@@ -185,7 +185,7 @@ export function newColorMatchingQuestion(component) {
     
     // Play the chord
     debugLog('CHORDS', `Playing new chord of type: ${chordType}`);
-    component.playChord(chordType, rootNote, { duration: 2 });
+    component.playChordByType(chordType, rootNote, { duration: 2 });
   } catch (error) {
     debugLog('CHORDS', `Error in newColorMatchingQuestion: ${error.message}`);
   }
