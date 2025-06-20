@@ -21,3 +21,5 @@ merke dir:
 - wen du eine logmessage mit einem bestimmten tag schreibst wo schon eine andere existiert, dann ergänze den tag in der bestehenden logmessage
 - statt "Perfekt!" oder "Fertig!" am anfang, beginne die sätze mit einer fortlaufenden nummer gefolgt von abwechselnd mit "Na bitte!", "Gut!", "OK!", "AHA!", „Na dann!“, „So!“, „Nun gut!“ oder "Siehe da!"
 - die finale message, wenn du fertig bist, beginne mit "Fertig!"
+- jede activity muss einen progress im localstorage haben, der auch im globalen reset, activity reset, im-und export berücksichtigt wird
+- die meisten activities haben einen free- und einen game-mode, in dem man die sounds ausprobieren kann (free) oder das game spielt, bei dem man die richtigen buttons drücken muss, der die richtigen effekte zeigt aus `feedback.js`
