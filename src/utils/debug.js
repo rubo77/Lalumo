@@ -56,16 +56,28 @@ const initDebugMode = (forceDebug = false) => {
 
 /**
  * Log a message only if in debug mode
- * @param {string} module - Module or component name
+ * @param {string|string[]} module - Module or component name, or array of module names/tags
  * @param {string} message - The message to log
  * @param {any} data - Optional data to log
  */
 const debugLog = (module, message, data) => {
   if (isDebugMode) {
-    if (data) {
-      console.log(`[${module}] ${message}`, data);
+    // Format the tag prefix based on whether module is a string or array
+    let tagPrefix;
+    
+    if (Array.isArray(module)) {
+      // If module is an array, join all tags with brackets
+      tagPrefix = module.map(tag => `[${tag}]`).join(' ');
     } else {
-      console.log(`[${module}] ${message}`);
+      // If module is a string, use the original format
+      tagPrefix = `[${module}]`;
+    }
+    
+    // Log with the formatted tag prefix
+    if (data) {
+      console.log(`${tagPrefix} ${message}`, data);
+    } else {
+      console.log(`${tagPrefix} ${message}`);
     }
   }
 };
