@@ -158,8 +158,7 @@
             <span>🔒 <span x-text="$store.strings?.menu_chords || 'Chords'"></span></span>
           </button>
           <!-- extra button always visible for debug-->
-          <button class="debug-elements" @click="active = 'chords'; $dispatch('set-chord-mode', 'main')" :class="{ 'active': active === 'chords' }"
-          style="opacity: 0;">
+          <button class="debug-element" @click="active = 'chords'; $dispatch('set-chord-mode', 'main')" :class="{ 'active': active === 'chords' }">
             <span x-text="$store.strings?.menu_chords || 'Chords'"></span>
           </button>
         </div>
@@ -179,7 +178,7 @@
               x-data="{ isActive: false }"
               x-init="$watch('$store.chordMode', value => isActive = value === '2_1_chords_color-matching')"
               :class="{ 'active': isActive }"
-              style="opacity: 0;"
+              class="debug-element"
             >
               🌈 <span x-text="$store.strings?.chord_color_matching || 'Color Matching'"></span>
             </button>
@@ -188,7 +187,7 @@
               x-data="{ isActive: false }"
               x-init="$watch('$store.chordMode', value => isActive = value === '2_2_chords_mood-landscapes')"
               :class="{ 'active': isActive }"
-              style="opacity: 0;"
+              class="debug-element"
             >
               🏞️ <span x-text="$store.strings?.mood_landscapes || 'Mood Landscapes'"></span>
             </button>
@@ -197,7 +196,7 @@
               x-data="{ isActive: false }"
               x-init="$watch('$store.chordMode', value => isActive = value === '2_3_chords_chord-building')"
               :class="{ 'active': isActive }"
-              style="opacity: 0;"
+              class="debug-element"
             >
               🧱 <span x-text="$store.strings?.chord_building || 'Chord Building'"></span>
             </button>
@@ -206,7 +205,7 @@
               x-data="{ isActive: false }"
               x-init="$watch('$store.chordMode', value => isActive = value === '2_4_chords_missing-note')"
               :class="{ 'active': isActive }"
-              style="opacity: 0;"
+              class="debug-element"
             >
               🎼 <span x-text="$store.strings?.missing_note || 'Missing Note'"></span>
             </button>
@@ -223,7 +222,7 @@
               x-data="{ isActive: false }"
               x-init="$watch('$store.chordMode', value => isActive = value === '2_6_chords_harmony-gardens')"
               :class="{ 'active': isActive }"
-              style="opacity: 0;"
+              class="debug-element"
             >
               🌸 <span x-text="$store.strings?.harmony_gardens || 'Harmony Gardens'"></span>
             </button>

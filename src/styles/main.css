@@ -4,6 +4,21 @@
   color-scheme: light only;
 }
 
+/* Debug-Element Sichtbarkeitskontrolle */
+.debug-element {
+  opacity: 0; /* Standardmäßig ausgeblendet */
+}
+
+/* Wenn die Entwicklungsumgebung aktiv ist (über body-Klasse steuerbar) */
+body.dev-mode .debug-element {
+  opacity: 1; /* In der Entwicklungsumgebung sichtbar */
+}
+
+/* Custom icon styles */
+.custom-icon {
+  color-scheme: light only;
+}
+
 /* Mascot Message Overlay */
 .mascot-message-overlay {
   position: fixed;
