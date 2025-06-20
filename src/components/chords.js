@@ -10,8 +10,20 @@ import * as Tone from 'tone';
 // Common Module
 export { testCommonModuleImport } from './2_chords/common.js';
 
-// Feedback utilities - central import
-import { showCompleteSuccess, playSuccessSound } from './shared/feedback.js';
+// Import shared feedback utilities
+import { 
+  showRainbowSuccess, 
+  showBigRainbowSuccess, 
+  showShakeError, 
+  showCompleteSuccess, 
+  showCompleteBigSuccess, 
+  showCompleteError,
+  showActivityProgressBar,
+  hideActivityProgressBar
+} from '../components/shared/feedback.js';
+
+// Import shared UI helpers
+import { update_progress_display } from '../components/shared/ui-helpers.js';
 
 // 2_1 Chord Color Matching Module
 import { 
@@ -457,6 +469,8 @@ export function chords() {
         debugLog('CHORDS', 'Initializing character matching activity');
         // Hintergrundänderung basierend auf Fortschritt
         updateCharacterBackground(this);
+        
+        // Alpine.js übernimmt die Anzeige der Fortschrittsnachrichten über die x-text-Bindungen
       } else if (mode === '2_6_chords_harmony-gardens') {
         // Initialisierung für Harmony Gardens
         debugLog('CHORDS', 'Initializing harmony gardens activity');
@@ -923,6 +937,8 @@ export function chords() {
         
         // Aktualisiere den Hintergrund basierend auf dem neuen Fortschritt
         updateCharacterBackground(this);
+        
+        // Alpine.js übernimmt die Anzeige der Fortschrittsnachrichten über die x-text-Bindungen
         
         // Show rainbow success effect for 2_5_chord_characters
         showCompleteSuccess();
