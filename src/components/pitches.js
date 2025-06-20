@@ -21,6 +21,9 @@ import {
   hideActivityProgressBar
 } from '../components/shared/feedback.js';
 
+// Import shared UI helpers
+import { update_progress_display as sharedUpdateProgressDisplay } from '../components/shared/ui-helpers.js';
+
 
 // Importiere Test-Funktionen aus den Modulen
 // Direct imports from individual modules
@@ -3771,28 +3774,7 @@ export function pitches() {
      * @used-by 1_4_sound_judgment.js
      */
     update_progress_display() {
-      // Finde das Level-Anzeigeelement im DOM
-      const levelDisplay = document.querySelector('.sound-judgment-level');
-      
-      // Wenn kein Element vorhanden ist, erstellen wir eines
-      if (!levelDisplay) {
-        // Erstelle neues Element für die Level-Anzeige
-        const levelElement = document.createElement('div');
-        levelElement.className = 'sound-judgment-level progress-display';
-        
-        // Füge es zum Activity-Container hinzu
-        // CSS-Selektoren, die mit Zahlen beginnen, müssen maskiert werden
-        const activityContainer = document.querySelector('[id="1_4_pitches"]');
-        if (activityContainer) {
-          // Füge es als letztes Element ein
-          activityContainer.appendChild(levelElement);
-          console.log('SOUND JUDGMENT: Level display added to activity container');
-        } else {
-          console.error('SOUND JUDGMENT: Could not find activity container with id 1_4_pitches to append level display');
-        }
-      }
-      
-      // Aktualisiere den Text mit Level-Informationen
+      // Verwende die gemeinsame Hilfsfunktion aus ui-helpers.js
       const levelDescriptions = {
         1: 'Level 1: 2 falsche Noten, keine Pause',
         2: 'Level 2: 2 falsche Noten, mit Pausen',
@@ -3806,29 +3788,32 @@ export function pitches() {
       const levelText = levelDescriptions[this.soundJudgmentLevel] || `Level ${this.soundJudgmentLevel}`;
       const streakInfo = this.soundJudgmentCorrectStreak > 0 ? ` (${this.soundJudgmentCorrectStreak}/3)` : '';
       
-      // Update all level displays
-      document.querySelectorAll('.sound-judgment-level').forEach(el => {
-        el.textContent = levelText + streakInfo;
-      });
-      
-      // Add visual progress bar using reusable function
-      const isGerman = document.documentElement.lang === "de";
-      const progressbarDescription = "";
-      
-      showActivityProgressBar({
-        appendToContainer: "#feedback_message_1_4_pitches",
-        progressClass: "sound-judgment-progress",
-        currentCount: this.soundJudgmentCorrectStreak || 0,
-        totalCount: 3,
-        currentLevel: this.soundJudgmentLevel || 1,
-        notesCount: null,
-        barOnly: true,
-        activityName: progressbarDescription,
-        positioning: {
-          position: "fixed",
-          bottom: "16px",
-          width: "min(100%, 477px)",
-          left: "max(-11px, min(20%, calc(-477px + 94vw)))"
+      // Rufe die gemeinsame Hilfsfunktion auf
+      sharedUpdateProgressDisplay({
+        selector: '.sound-judgment-level',
+        containerSelector: '[id="1_4_pitches"]',
+        className: 'sound-judgment-level progress-display',
+        content: levelText + streakInfo,
+        onUpdate: () => {
+          // Add visual progress bar using reusable function
+          const progressbarDescription = "";
+          
+          showActivityProgressBar({
+            appendToContainer: "#feedback_message_1_4_pitches",
+            progressClass: "sound-judgment-progress",
+            currentCount: this.soundJudgmentCorrectStreak || 0,
+            totalCount: 3,
+            currentLevel: this.soundJudgmentLevel || 1,
+            notesCount: null,
+            barOnly: true,
+            activityName: progressbarDescription,
+            positioning: {
+              position: "fixed",
+              bottom: "16px",
+              width: "min(100%, 477px)",
+              left: "max(-11px, min(20%, calc(-477px + 94vw)))"
+            }
+          });
         }
       });
     },
