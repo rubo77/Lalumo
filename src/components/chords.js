@@ -92,12 +92,17 @@ export function chords() {
     totalQuestions: 0,
     feedbackMessage: '',
     showFeedback: false,
+    progress: null,
     
     /**
      * Initialize the component
      */
     init() {
       debugLog('CHORDS', 'Chords component initialized');
+      
+      // Register this component globally
+      window.chordsComponent = this;
+      debugLog('CHORDS', 'Registering chords component globally: window.chordsComponent is now:', !!window.chordsComponent);
       
       // Set up audio context when user interacts
       document.addEventListener('click', this.initAudio.bind(this), { once: true });
@@ -106,17 +111,64 @@ export function chords() {
       // Listen for global events
       window.addEventListener('lalumo:stopallsounds', this.stopAllSounds.bind(this));
       
-      // Listen for chord mode changes
+      // Try to load saved progress from localStorage
+      try {
+        const savedProgress = localStorage.getItem('lalumo_chords_progress');
+        if (savedProgress) {
+          this.progress = JSON.parse(savedProgress);
+          
+          // Ensure all activity progress fields exist
+          if (!this.progress['2_1_chords_color-matching']) this.progress['2_1_chords_color-matching'] = 0;
+          if (!this.progress['2_2_chords_mood-landscapes']) this.progress['2_2_chords_mood-landscapes'] = 0;
+          if (!this.progress['2_3_chords_chord-building']) this.progress['2_3_chords_chord-building'] = 0;
+          if (!this.progress['2_4_chords_missing-note']) this.progress['2_4_chords_missing-note'] = 0;
+          if (!this.progress['2_5_chords_characters']) this.progress['2_5_chords_characters'] = 0;
+          if (!this.progress['2_6_chords_harmony-gardens']) this.progress['2_6_chords_harmony-gardens'] = 0;
+          
+          debugLog('CHORDS', 'Loaded chords progress data:', this.progress);
+          
+          // Initialize activity progress from saved data
+          this.totalQuestions = this.progress[this.mode] || 0;
+          debugLog('CHORDS', `Initialized current activity progress from localStorage: ${this.totalQuestions}`);
+        } else {
+          // Initialize with empty progress object
+          this.progress = {
+            '2_1_chords_color-matching': 0,
+            '2_2_chords_mood-landscapes': 0,
+            '2_3_chords_chord-building': 0,
+            '2_4_chords_missing-note': 0,
+            '2_5_chords_characters': 0,
+            '2_6_chords_harmony-gardens': 0
+          };
+        }
+      } catch (e) {
+        debugLog('CHORDS', 'Could not load saved progress:', e);
+      }
+      
+      // Listen for chord mode changes via event
       document.addEventListener('set-chord-mode', (event) => {
         const mode = event.detail || 'main';
-        this.mode = mode;
-        console.log('Chord mode changed to:', mode);
+        debugLog('CHORDS', `Received chord mode change event: ${mode}`);
+        // Call our own setMode method to ensure proper initialization
+        this.setMode(mode);
       });
       
       // Setup navigation elements after DOM is fully loaded
       document.addEventListener('DOMContentLoaded', () => {
         this.setupNavigation();
         this.setupFullHeightContainers();
+      });
+      
+      // Debug: Initial mode und state
+      debugLog('CHORDS_2_1_DEBUG', `Initial chords component state: mode=${this.mode}, currentChordType=${this.currentChordType}, totalQuestions=${this.totalQuestions}`);
+      
+      // Debug log für Alpine.js Lebenszyklusereignisse
+      document.addEventListener('alpine:initialized', () => {
+        debugLog('CHORDS_2_1_DEBUG', 'Alpine.js initialized event fired');
+      });
+      
+      window.addEventListener('load', () => {
+        debugLog('CHORDS_2_1_DEBUG', `Window load event, current mode: ${this.mode}`);
       });
     },
     
@@ -156,16 +208,20 @@ export function chords() {
      * @param {string} chordType - The type of chord (major, minor, etc.)
      * @param {string} rootNote - The root note of the chord (e.g., 'C4')
      * @activity all
-     * @used_by 2_4, 
+     * @used_by 2_1_chord_color_matching, 2_4_missing_note
      */
     async playChord(chordType, rootNote = 'C4', options = { duration: 2 }) {
       this.stopAllSounds();
       debugLog('CHORDS', 'playChord called with chordType:', chordType, 'rootNote:', rootNote);
       
-      // Early validation of chord type
+      // Debug information for 2_1 activity
+      debugLog('CHORDS_2_1_DEBUG', `playChord called with chordType: ${chordType}, component has currentChordType: ${this.currentChordType}`);
+      debugLog('CHORDS_2_1_DEBUG', `Current component state: mode=${this.mode}, totalQuestions=${this.totalQuestions}`);
+      //debugLog('CHORDS_2_1_DEBUG', `Call stack: ${new Error().stack}`);
+
       if (!chordType) {
-        debugLog('CHORDS', 'ERROR: Chord type is null or undefined! Stack trace:', new Error().stack);
-        return; // Exit early instead of using fallback
+        debugLog('CHORDS_2_1_DEBUG', 'ERROR: Chord type is null or undefined! Stack trace:', new Error().stack);
+        return false;
       }
       
       try {
@@ -335,12 +391,57 @@ export function chords() {
      */
     setMode(mode) {
       this.stopAllSounds();
+      
+      debugLog('CHORDS_2_1_DEBUG', `setMode called, changing from ${this.mode} to ${mode}`);
+      debugLog('CHORDS_2_1_DEBUG', `Before mode change: currentChordType=${this.currentChordType}`);
+      
+      // Speichere den bisherigen Fortschritt für die aktuelle Aktivität
+      if (this.mode && this.mode !== 'main' && this.progress) {
+        this.progress[this.mode] = this.totalQuestions;
+        localStorage.setItem('lalumo_chords_progress', JSON.stringify(this.progress));
+        debugLog('CHORDS', `Saved progress for ${this.mode}: ${this.totalQuestions}`);
+      }
+      
       this.mode = mode;
       this.resetActivity();
+      
+      // Lade den Fortschritt für die neue Aktivität
+      if (mode !== 'main' && this.progress && this.progress[mode] !== undefined) {
+        this.totalQuestions = this.progress[mode];
+        debugLog('CHORDS', `Loaded progress for ${mode}: ${this.totalQuestions}`);
+      }
       
       // Update Alpine store
       if (window.Alpine?.store) {
         window.Alpine.store('chordMode', mode);
+      }
+      
+      // Aktivität initialisieren, wenn zur Farb-Matching-Aktivität gewechselt wird
+      if (mode === '2_1_chords_color-matching') {
+        debugLog('CHORDS_2_1_DEBUG', `Starting color matching activity from setMode`);
+        this.startColorMatching();
+        debugLog('CHORDS_2_1_DEBUG', `After startColorMatching: currentChordType=${this.currentChordType}`);
+        debugLog('CHORDS', 'Initialized color matching activity with a new chord');
+      } else if (mode === '2_2_chords_mood-landscapes') {
+        // Initialisierung für Mood Landscapes
+        debugLog('CHORDS', 'Initializing mood landscapes activity');
+        // Hier den Init-Code für diese Aktivität einfügen
+      } else if (mode === '2_3_chords_chord-building') {
+        // Initialisierung für Chord Building
+        debugLog('CHORDS', 'Initializing chord building activity');
+        // Hier den Init-Code für diese Aktivität einfügen
+      } else if (mode === '2_4_chords_missing-note') {
+        // Initialisierung für Missing Note
+        debugLog('CHORDS', 'Initializing missing note activity');
+        // Hier den Init-Code für diese Aktivität einfügen
+      } else if (mode === '2_5_chords_characters') {
+        // Initialisierung für Character Matching
+        debugLog('CHORDS', 'Initializing character matching activity');
+        // Hier den Init-Code für diese Aktivität einfügen
+      } else if (mode === '2_6_chords_harmony-gardens') {
+        // Initialisierung für Harmony Gardens
+        debugLog('CHORDS', 'Initializing harmony gardens activity');
+        // Hier den Init-Code für diese Aktivität einfügen
       }
       
       debugLog('CHORDS', `Switched to ${mode} mode`);
@@ -433,9 +534,15 @@ export function chords() {
      * @activity 2_1_chord_color_matching
      */
     startColorMatching() {
+      // Enhanced debug logging
+      debugLog('CHORDS_2_1_DEBUG', `startColorMatching called with mode=${this.mode}, current state: totalQuestions=${this.totalQuestions}, currentChordType=${this.currentChordType}`);
+      
       this.resetActivity();
+      
       // Use the imported function with 'this' as the component reference
+      debugLog('CHORDS_2_1_DEBUG', 'About to call newColorMatchingQuestion from startColorMatching');
       newColorMatchingQuestion(this);
+      debugLog('CHORDS_2_1_DEBUG', `After newColorMatchingQuestion call: currentChordType=${this.currentChordType}`);
       
       // Log that we're using the modular function
       debugLog('CHORDS', 'Started color matching activity using modular function');
