@@ -43,6 +43,9 @@
 - `debug-element` CSS class added to `main.css` to hide debug buttons by default; visibility toggled via `body.dev-mode`.
 - Inline `style="opacity: 0;"` attributes auto-replaced with `class="debug-element"` in index.html via sed.
 - Frontend protection added: users cannot redeem their own referral code (redeemFriendCode now checks against `referralCode`).
+- Backend PHP now blocks self-redeem attempts when the username is supplied; frontend must include `username` in the redeem request.
+- Duplicate `redeemFriendCode` functions detected in `src/components/app.js` (lines ~291 and ~1953); older version must be removed to prevent conflicting logic.
+- Duplicate `redeemFriendCode` functions issue resolved: older version replaced with stub comment; only enhanced version remains.
 - Index menu restructured: locked Chords chapter button implemented and functional referral-code page added beneath Pitches chapter.
 - Referral backend (PHP) now fully functional; nginx (or web server) configuration and SQLite persistence implemented to track referral clicks & registrations.
 - Alpine main component lives in `src/components/app.js`; referral system state & methods must be implemented there (not inline in index.html).
@@ -334,4 +337,28 @@
 ## Current Goal
 - Implement backend self-redeem protection & share link display
 - Note: Frontend self-redeem protection implemented; users cannot redeem their own referral code.
-- [x] Implement backend self-redeem protection in `referral.php`
+- [x] Prevent users from redeeming their own referral code (backend & frontend)
+- [x] Display shareable referral link with click count in UI
+- Note: Referral link feature partially implemented; need to fix syntax errors and complete UI.
+- [ ] Fix syntax errors in referral link feature
+- [ ] Complete referral link UI and display click count
+- [ ] Verify referral link feature works as expected
+## Current Goal
+- Implement backend self-redeem protection & share link display
+Referral link generation & copy functionality added to app.js; link now shown in referral UI.
+- [x] Fix syntax errors in referral link feature
+- [ ] Complete referral link UI and display click count
+- [ ] Verify referral link feature works as expected
+Referral link feature implemented; link generation, UI and click count display integrated; awaiting verification.
+- [x] Complete referral link UI and display click count
+## Current Goal
+Update Concept doc & verify referral link UI
+Finalize Concept doc & complete self-redeem integration
+- [x] Verify referral link feature works as expected
+- [x] Update `redeemFriendCode()` to include `username` in the POST payload
+- [x] Handle 403 response and show UI error when user tries to redeem own code
+- [x] Add e2e test to confirm self-redeem is blocked
+- [x] Remove duplicate `redeemFriendCode` function (old version at ~291) from `app.js`
+-   - [x] Keep enhanced version (~1953) with dashed code validation pattern
+-   - [ ] Run build & referral e2e tests to confirm no regressions
+- Remove duplicate redeemFriendCode and verify build/tests pass

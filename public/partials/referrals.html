@@ -35,6 +35,14 @@
             <input type="text" readonly x-model="referralCode" class="referral-code-input">
             <button class="secondary-button" @click="copyReferralCode()" x-text="$store.strings?.copy_referral_code || 'Copy Code'"></button>
           </div>
+          
+          <!-- Teilbarer Link -->
+          <div class="referral-link-container">
+            <h4 x-text="$store.strings?.shareable_link || 'Shareable link:'"></h4>
+            <input type="text" readonly x-model="referralLink" class="referral-link-input" x-init="generateReferralLink()">
+            <button class="secondary-button" @click="copyReferralLink()" x-text="$store.strings?.copy_link || 'Copy Link'"></button>
+            <p class="help-text"><small x-text="$store.strings?.link_explanation || 'Share this link with friends - they get points for clicking and you get credit when they register!'"></small></p>
+          </div>
           <div class="referral-actions">
             <div class="referral-stats">
               <p class="referral-status">

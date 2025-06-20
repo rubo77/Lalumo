@@ -164,3 +164,13 @@ dabei gibt es 2 schritte: wenn ein user sixh nur auf den link geklickt hat, dann
 
 - [ ] wie soll das online laufen? die php files müssen dort ja auch gesynct werden in `deploy.sh`
 - [ ] die db muss online sicher auch noch angelegt werden
+- [ ] wenn man geworben wurde, durch einen link, dann soll das in den player settings sichtbar sein, durch wen, oder falls der username nicht bekannt ist, wenigstens, dass man durch einen referral link ddie seite besucht hat. (beachte dabei, db aenderungen nur mit migration)
+- die datenbank soll gegen sql-attacks sicher sein
+- das passwort muss in einer konfiguration gespeichert werden, die nicht im git repo liegt. am besten in einer globalen config, die nicht im git liegt, environment oder so
+
+- Es darf im json reply keine sprache übergeben werden, sondern codifizierte sprache, damit diese in der app beim empfangen der antwort in die eingestellte sprache umgewandelt werden kann.
+
+
+ergänze im konzept die häkchen bei den punkten die schon erledigt sind uund ergänue [ ] häkchen, was noch nciht erledigt ist. passe das konzept ggf an, so dass es einer dokumentation wird, wie das referral system funktioniert.
+
+dann mach weiter im plan

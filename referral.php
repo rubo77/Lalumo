@@ -79,11 +79,27 @@ if ($method === 'POST') {
     $data = json_decode(file_get_contents('php://input'), true);
     
     // Prüfen ob Code-Einlösung
-    if (isset($data['redeemCode'])) {
+    if (isset($data['redeemCode']) && isset($data['username'])) {
         $code = $data['redeemCode'];
+        $username = $data['username'];
         
         // Code-Format prüfen (ohne Bindestriche für Vergleich)
         $code = str_replace('-', '', $code);
+        
+        // Prüfe, ob der Benutzer versucht, seinen eigenen Code einzulösen
+        $stmtOwn = $db->prepare('SELECT referral_code FROM users WHERE username = :username');
+        $stmtOwn->bindValue(':username', $username, SQLITE3_TEXT);
+        $resultOwn = $stmtOwn->execute();
+        $userRow = $resultOwn->fetchArray(SQLITE3_ASSOC);
+        
+        if ($userRow && (str_replace('-', '', $userRow['referral_code']) === $code || $userRow['referral_code'] === $code)) {
+            http_response_code(403); // Forbidden
+            echo json_encode([
+                'success' => false,
+                'error' => 'Du kannst deinen eigenen Referral-Code nicht einlösen.'
+            ]);
+            exit;
+        }
         
         // Finde den Referrer anhand des Codes
         $stmt = $db->prepare('SELECT id FROM users WHERE referral_code = :code OR referral_code = :formatted_code');

@@ -286,66 +286,6 @@ export function app() {
     },
     
     /**
-     * Validate and redeem a friend code
-     */
-    async redeemFriendCode() {
-      if (!this.friendCode) return;
-      
-      // Normalisieren (Bindestriche entfernen)
-      const normalizedCode = this.friendCode.replace(/-/g, '');
-      
-      // Validate code format (basic validation)
-      const codePattern = /^[A-Z0-9]{12}$/;
-      if (!codePattern.test(normalizedCode)) {
-        this.showToast(this.$store.strings?.invalid_code || 'Invalid referral code format. Please check and try again.');
-        return;
-      }
-      
-      try {
-        const apiUrl = 'http://localhost:8080/referral.php';
-        
-        const response = await fetch(apiUrl, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ redeemCode: this.friendCode })
-        });
-        
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        
-        const data = await response.json();
-        console.log('Redeem response:', data);
-        
-        if (!data.success) {
-          throw new Error(data.error || 'Invalid referral code');
-        }
-        
-        // Aktualisiere Daten nach erfolgreicher Einlösung
-        this.referralCount = (this.referralCount || 0) + 1;
-        
-        // Prüfe, ob das Kapitel freigeschaltet werden soll
-        if (this.referralCount >= 3 && !this.isChordChapterUnlocked) {
-          this.isChordChapterUnlocked = true;
-        }
-        
-        // Leere das Eingabefeld
-        this.friendCode = '';
-        
-        // Speichere in localStorage
-        this.saveReferralData();
-        
-        // Zeige Erfolgsmeldung
-        this.showToast(this.$store.strings?.code_redeemed || 'Friend code redeemed successfully!');
-      } catch (error) {
-        console.error('Error redeeming friend code:', error);
-        this.showToast('Error: ' + error.message);
-      }
-    },
-    
-    /**
      * Show a toast message
      */
     showToast(message, duration = 3000) {
@@ -1746,12 +1686,18 @@ export function app() {
      */
     saveReferralData() {
       try {
+        // Referral-Link generieren, falls noch nicht vorhanden
+        if (this.referralCode && !this.referralLink) {
+          this.generateReferralLink();
+        }
+        
         const referralData = {
           isUsernameLocked: this.isUsernameLocked,
           lockedUsername: this.lockedUsername,
           referralCode: this.referralCode,
           referralCount: this.referralCount,
-          referralClickCount: this.referralClickCount || 0, // Klick-Zähler hinzugefügt
+          referralClickCount: this.referralClickCount || 0,
+          referralLink: this.referralLink || '',
           isChordChapterUnlocked: this.isChordChapterUnlocked
         };
         localStorage.setItem('lalumo-referral', JSON.stringify(referralData));
@@ -1759,6 +1705,36 @@ export function app() {
       } catch (error) {
         console.error('Error saving referral data:', error);
       }
+    },
+    
+    /**
+     * Generiert einen teilbaren Referral-Link
+     */
+    generateReferralLink() {
+      if (!this.referralCode) {
+        console.error('Kein Referral-Code vorhanden!');
+        return '';
+      }
+      
+      // Basis-URL bestimmen (aktuelle Origin)
+      const baseUrl = window.location.origin;
+      
+      // Link generieren mit Referral-Code als Parameter
+      this.referralLink = `${baseUrl}/?ref=${this.referralCode}`;
+      
+      return this.referralLink;
+    },
+    
+    /**
+     * Kopiert den Referral-Link in die Zwischenablage
+     */
+    copyReferralLink() {
+      if (!this.referralLink) {
+        // Wenn kein Link im State, neu generieren
+        this.generateReferralLink();
+      }
+      
+      this.copyToClipboard(this.referralLink, '.referral-link-container .secondary-button');
     },
     
     // Statusvariablen für UI-Feedback
@@ -1915,17 +1891,24 @@ export function app() {
      * Löst einen Freundes-Referral-Code ein
      */
     async redeemFriendCode() {
+      console.warn('[REDEEM] redeemFriendCode-Methode verwendet.');
       if (!this.friendCode) {
         console.error('Kein Freundes-Code eingegeben!');
         return;
       }
       
-      // Code-Format validieren (einfache Prüfung)
-      const codePattern = /^[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}$/;
-      if (!codePattern.test(this.friendCode)) {
+      // Normalisierte Version zurücksetzen und alle Bindestriche entfernen
+      let normalizedCode = this.friendCode.replace(/[-\s]/g, '');
+      
+      // Flexiblere Code-Format-Validierung (mindestens 8 alphanumerische Zeichen)
+      const codePattern = /^[A-Z0-9]{8,}$/;
+      if (!codePattern.test(normalizedCode)) {
+        console.error('[REDEEM] Invalid referral code format!, tested: ' + this.friendCode + ", normalized: " + normalizedCode);
         alert(this.$store.strings?.invalid_code || 'Invalid referral code format. Please check and try again.');
         return;
       }
+      
+      console.log('[REDEEM] Code format valid - normalized: ' + normalizedCode);
       
       // Prüfen, ob der Benutzer seinen eigenen Code einlösen versucht
       if (this.friendCode === this.referralCode) {
@@ -1949,7 +1932,21 @@ export function app() {
           })
         });
         
-        // Antwort verarbeiten
+        // HTTP-Status prüfen
+        if (!response.ok) {
+          const data = await response.json();
+          if (response.status === 403) {
+            // 403 Forbidden - Benutzer versucht, eigenen Code einzulösen
+            alert(this.$store.strings?.own_code_error || data.error || 'You cannot redeem your own referral code!');
+            return;
+          } else {
+            // Andere API-Fehler
+            alert(data.error || this.$store.strings?.redeem_failed || 'Failed to redeem code. Please try again.');
+            return;
+          }
+        }
+        
+        // Erfolgreiche Antwort verarbeiten
         const data = await response.json();
         
         if (data.success) {
