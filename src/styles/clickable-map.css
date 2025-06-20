@@ -36,7 +36,7 @@
 }
 
 /* Game mode sections - white background with image border */
-.pitch-activity {
+.activity-container {
   background-color: white;
   border-radius: 20px;
   margin: 3% auto 5% auto;

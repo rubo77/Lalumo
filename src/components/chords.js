@@ -24,9 +24,7 @@ import {
 import { testChordMoodLandscapesModuleImport } from './2_chords/2_2_chord_mood_landscapes.js';
 
 // 2_3 Chord Building Module
-import { testChordBuildingModuleImport,
-          addPlayChordButton
-        } from './2_chords/2_3_chord_building.js';
+import { testChordBuildingModuleImport } from './2_chords/2_3_chord_building.js';
 
 // 2_4 Missing Note Module
 import { testMissingNoteModuleImport } from './2_chords/2_4_missing_note.js';
@@ -779,9 +777,6 @@ export function chords() {
         
         // Show rainbow success effect for 2_3_chord_building
         showCompleteSuccess();
-        
-        // Add a play button if it doesn't exist yet
-        addPlayChordButton(this);
         
         setTimeout(() => this.showFeedback = false, 3000);
       }

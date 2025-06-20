@@ -1183,7 +1183,7 @@ body {
   }
   
   /* Make activities take full available space */
-  .pitch-activity {
+  .activity-container {
     width: 100%;
   }
 }
@@ -1345,7 +1345,7 @@ section h2 {
   transform: translateY(-2px);
 }
 
-.pitch-activity {
+.activity-container {
   margin-top: 0 !important;
   margin-bottom: 0 !important;
   padding: 1rem;
@@ -1384,7 +1384,7 @@ section h2 {
 }
 
 
-.pitch-activity h3 {
+.activity-container h3 {
   color: var(--primary-color);
   text-align: center;
   margin-bottom: 1rem;

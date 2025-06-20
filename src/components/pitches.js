@@ -2492,8 +2492,8 @@ export function pitches() {
           </button>
         `;
         
-        // Add the toggle to the pitch-activity container
-        const pitchActivity = document.querySelector('.pitch-activity[x-show="mode === \'1_3_pitches_draw-melody\'"]');
+        // Add the toggle to the activity-container container
+        const pitchActivity = document.querySelector('.activity-container[x-show="mode === \'1_3_pitches_draw-melody\'"]');
         if (pitchActivity) {
           pitchActivity.appendChild(challengeToggle);
           
@@ -2504,7 +2504,7 @@ export function pitches() {
           challengeToggle.style.right = '0';
         } else {
           // Fallback wenn das Element noch nicht existiert
-          console.error('Could not find pitch-activity element for drawing mode');
+          console.error('Could not find activity-container element for drawing mode');
           document.body.appendChild(challengeToggle);
         }
         

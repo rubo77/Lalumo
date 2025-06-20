@@ -111,7 +111,7 @@ test.describe('Lalumo Home Button Navigation', () => {
     await page.waitForTimeout(500);
     
     // Verify we're on the Match Sounds activity
-    const matchActivity = page.locator('.pitch-activity').filter({ has: page.locator('[x-show="mode === \'1_2_pitches_match-sounds\'"]') });
+    const matchActivity = page.locator('.activity-container').filter({ has: page.locator('[x-show="mode === \'1_2_pitches_match-sounds\'"]') });
     await expect(matchActivity).toBeVisible({ timeout: 2000 });
     console.log('Successfully navigated to Match Sounds activity');
     
@@ -132,7 +132,7 @@ test.describe('Lalumo Home Button Navigation', () => {
     await page.waitForTimeout(500);
     
     // Verify we're on the Draw Melody activity
-    const drawActivity = page.locator('.pitch-activity').filter({ has: page.locator('canvas.drawing-canvas') });
+    const drawActivity = page.locator('.activity-container').filter({ has: page.locator('canvas.drawing-canvas') });
     await expect(drawActivity).toBeVisible({ timeout: 2000 });
     console.log('Successfully navigated to Draw Melody activity');
     
@@ -153,7 +153,7 @@ test.describe('Lalumo Home Button Navigation', () => {
     await page.waitForTimeout(500);
     
     // Verify we're on the Memory Game activity
-    const memoryActivity = page.locator('.pitch-activity').filter({ has: page.locator('[x-show="mode === \'1_5_pitches_memory-game\'"]') });
+    const memoryActivity = page.locator('.activity-container').filter({ has: page.locator('[x-show="mode === \'1_5_pitches_memory-game\'"]') });
     await expect(memoryActivity).toBeVisible({ timeout: 2000 });
     console.log('Successfully navigated to Memory Game activity');
     
