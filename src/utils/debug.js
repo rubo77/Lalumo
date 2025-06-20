@@ -70,6 +70,9 @@ const debugLog = (module, message, data) => {
   }
 };
 
+// Make debugLog available globally for HTML templates
+window.debugLog = debugLog;
+
 /**
  * Enable debug mode manually (e.g., from console)
  */

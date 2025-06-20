@@ -53,6 +53,7 @@ function getRandomChordType() {
  */
 export function addPlayChordButton(component) {
   debugLog('CHORDS', '2_1_color_matching: addPlayChordButton() Adding play chord button handler');
+  debugLog('CHORDS_2_1_DEBUG', `addPlayChordButton called with component mode=${component?.mode}`);
   
   // Always initialize first question immediately so currentChordType is always set
   newColorMatchingQuestion(component);
@@ -155,22 +156,36 @@ export function newColorMatchingQuestion(component) {
       return;
     }
     
-    // Verwende lokale Hilfsfunktionen statt component-Methoden
+    // Zufälligen Akkordtyp und Grundton generieren
     const chordType = getRandomChordType();
     const rootNote = getRandomRootNote();
     
-    // Verify we got valid values
-    if (!chordType || !rootNote) {
-      debugLog('CHORDS', `Error: Invalid chord type (${chordType}) or root note (${rootNote})`);
+    debugLog('CHORDS_2_1_DEBUG', `newColorMatchingQuestion: Generated chordType=${chordType}, rootNote=${rootNote}, component=${!!component}, caller=${new Error().stack.split('\n')[2]}`);
+    
+    if (!component) {
+      debugLog('CHORDS_2_1_DEBUG', 'CRITICAL: Component is null in newColorMatchingQuestion');
       return;
     }
     
-    // Play the chord and update component state
-    component.playChord(chordType, rootNote);
+    // Erweitere das Debugging mit mehr Details über den component-Zustand
+    debugLog('CHORDS_2_1_DEBUG', `newColorMatchingQuestion: BEFORE update - component details: mode=${component.mode}, currentComponent type=${typeof component}, props=${Object.keys(component).join(',')}`);
+    
+    // Set the currentChordType on the component so we can use it in the UI
+    debugLog('CHORDS_2_1_DEBUG', `newColorMatchingQuestion: Setting component.currentChordType to ${chordType}`);
     component.currentChordType = chordType;
+    component.currentRootNote = rootNote;
     component.totalQuestions++;
     
-    debugLog('CHORDS', `New color matching question: ${chordType} chord with root ${rootNote}`);
+    debugLog('CHORDS_2_1_DEBUG', `newColorMatchingQuestion: AFTER update, component state: currentChordType=${component.currentChordType}, totalQuestions=${component.totalQuestions}`);
+    
+    // Direkter Test, ob der currentChordType tatsächlich gesetzt wurde
+    if (!component.currentChordType) {
+      debugLog('CHORDS_2_1_DEBUG', 'WARNING: component.currentChordType ist immer noch null nach Zuweisung! component Zone/Scope möglicherweise fehlerhaft.');
+    }
+    
+    // Play the chord
+    debugLog('CHORDS', `Playing new chord of type: ${chordType}`);
+    component.playChord(chordType, rootNote, { duration: 2 });
   } catch (error) {
     debugLog('CHORDS', `Error in newColorMatchingQuestion: ${error.message}`);
   }
@@ -182,6 +197,9 @@ export function newColorMatchingQuestion(component) {
  * @param {string} selectedColor - The color selected by the user
  */
 export function checkColorAnswer(component, selectedColor) {
+  debugLog('CHORDS_2_1_DEBUG', `checkColorAnswer called with currentChordType=${component?.currentChordType}`);
+  debugLog('CHORDS', `Checking color answer: Selected ${selectedColor} for chord type ${component.currentChordType}`);
+  
   // Check if currentChordType is defined
   if (!component.currentChordType) {
     debugLog('CHORDS', 'No current chord type defined, generating new question');
@@ -201,11 +219,21 @@ export function checkColorAnswer(component, selectedColor) {
   
   debugLog('CHORDS', `Color answer check: selected=${selectedColor}, correct=${correctColor}, result=${isCorrect}`);
   
+  // Increment counters regardless of correct/incorrect
+  component.totalQuestions++;
+  
   if (isCorrect) {
     component.correctAnswers++;
     component.feedbackMessage = 'Great job! That\'s the right color!';
   } else {
     component.feedbackMessage = 'Not quite! Let\'s try another one.';
+  }
+  
+  // Save progress to localStorage
+  if (component.progress && component.mode) {
+    component.progress[component.mode] = component.totalQuestions;
+    localStorage.setItem('lalumo_chords_progress', JSON.stringify(component.progress));
+    debugLog('CHORDS', `Saved progress for ${component.mode}: ${component.totalQuestions}`);
   }
   
   component.showFeedback = true;
