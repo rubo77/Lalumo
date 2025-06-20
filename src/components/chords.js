@@ -217,12 +217,14 @@ export function chords() {
       // Debug information for 2_1 activity
       debugLog('CHORDS_2_1_DEBUG', `playChord called with chordType: ${chordType}, component has currentChordType: ${this.currentChordType}`);
       debugLog('CHORDS_2_1_DEBUG', `Current component state: mode=${this.mode}, totalQuestions=${this.totalQuestions}`);
-      //debugLog('CHORDS_2_1_DEBUG', `Call stack: ${new Error().stack}`);
 
       if (!chordType) {
         debugLog('CHORDS_2_1_DEBUG', 'ERROR: Chord type is null or undefined! Stack trace:', new Error().stack);
         return false;
       }
+      
+      // Declare chord variable in outer scope so it's available throughout the method
+      let chord;
       
       try {
         // Force Tone.js to start if needed (critical for sound playback)
@@ -253,13 +255,15 @@ export function chords() {
         }
         
         // Get chord definition
-        const chord = this.chords[chordType];
+        chord = this.chords[chordType];
+        debugLog('CHORDS_2_1_DEBUG', `Retrieved chord definition for ${chordType}:`, chord ? 'found' : 'not found');
+        
         if (!chord) {
-          debugLog('CHORDS', `ERROR: Unknown chord type: ${chordType}! Stack trace:`, new Error().stack);
+          debugLog('CHORDS_2_1_DEBUG', `ERROR: Unknown chord type: ${chordType}! Stack trace:`, new Error().stack);
           return; // Exit early instead of using fallback
         }
         
-        debugLog('CHORDS', `Playing ${chordType} chord with root ${rootNote}`);
+        debugLog('CHORDS_2_1_DEBUG', `Playing ${chordType} chord with root ${rootNote}`);
       } catch (error) {
         console.error('Error preparing chord playback:', error);
         return;
@@ -269,6 +273,12 @@ export function chords() {
       this.activeChord = [];
       
       try {
+        // Verify the chord object is available
+        if (!chord) {
+          debugLog('CHORDS_2_1_DEBUG', 'ERROR: chord is undefined before playing. This should not happen!');
+          return;
+        }
+        
         // Get root note frequency and validate
         const rootFreq = this.baseNotes[rootNote];
         if (!rootFreq) {
@@ -306,7 +316,14 @@ export function chords() {
           }
         }
         
+        // Check if chord.intervals exists
+        if (!chord.intervals) {
+          debugLog('CHORDS_2_1_DEBUG', `ERROR: No intervals found for chord type ${chordType}:`, chord);
+          return;
+        }
+        
         // Calculate all note names in the chord based on intervals
+        debugLog('CHORDS_2_1_DEBUG', `Using intervals for ${chordType}:`, chord.intervals);
         chord.intervals.forEach((interval) => {
           // Calculate the note within the chromatic scale
           const noteIndex = (rootIndex + interval) % 12;
@@ -317,13 +334,13 @@ export function chords() {
           noteNames.push(noteName);
         });
         
-        debugLog('CHORDS', `Playing chord notes: ${noteNames.join(', ')}`);
+        debugLog('CHORDS_2_1_DEBUG', `Playing chord notes: ${noteNames.join(', ')}`);
         
         // Play all notes together as a chord with the audio engine
         audioEngine.playChord(noteNames, { duration: options.duration || 2 });
         
         this.isPlaying = true;
-        debugLog('CHORDS', `Playing ${chord.name} chord on ${rootNote} using central audio engine`);
+        debugLog('CHORDS_2_1_DEBUG', `Playing ${chord.name} chord on ${rootNote} using central audio engine`);
       } catch (error) {
         console.error('Error playing chord:', error);
       }
