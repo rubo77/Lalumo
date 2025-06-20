@@ -340,10 +340,11 @@ export function pitches() {
         }
         
         // Listen for pitch mode changes from the menu
-        window.addEventListener('set-pitch-mode', (e) => {
-        console.log('Received pitch mode change event:', e.detail);
-        this.setMode(e.detail);
-      });
+        window.addEventListener('set-pitch-mode', (event) => {
+          const newMode = event.detail;
+          console.log('Received pitch mode change event:', newMode);
+          this.setMode(newMode);
+        });
       
       // Set initial mode based on Alpine store
       if (this.$store.pitchMode) {
