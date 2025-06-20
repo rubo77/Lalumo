@@ -249,98 +249,98 @@ export function pitches() {
 	      } catch (error) {
 	        console.error("PITCHES_INIT: Error initializing audio engine", error);
 	      }
-	},
-	
-    /**
-     * Initialize the component
-     * @activity common
-     * @used-by all activities
-     */
-    init() {
+    },
+    
+      /**
+       * Initialize the component
+       * @activity common
+       * @used-by all activities
+       */
+      init() {
+        
+        // Register this component globally immediately
+        console.log("PITCHES_INIT: Registering pitches component globally");
+        window.pitchesComponent = this;
+        console.log("PITCHES_INIT: Registration completed. window.pitchesComponent is now:", !!window.pitchesComponent);
+        console.log("PITCHES_INIT: Component mode after registration:", this.mode);
+        
+        // Initialize audio engine asynchronously
+        this.initializeAudioEngine();
       
-      // Register this component globally immediately
-      console.log("PITCHES_INIT: Registering pitches component globally");
-      window.pitchesComponent = this;
-      console.log("PITCHES_INIT: Registration completed. window.pitchesComponent is now:", !!window.pitchesComponent);
-      console.log("PITCHES_INIT: Component mode after registration:", this.mode);
-      
-      // Initialize audio engine asynchronously
-      this.initializeAudioEngine();
-	  
-      // Set up text-to-speech if available - with better debugging
-      this.speechSynthesis = null;
-      this.ttsAvailable = false;
-      this.usingNativeAndroidTTS = false;  // Flag für native Android TTS
-      
-      // Überprüfe zuerst, ob die native Android TTS-Brücke verfügbar ist
-      this.checkAndroidNativeTTS();
-      
-      // Fallback: Verzögerte Initialisierung der Web-Sprachsynthese für bessere Kompatibilität
-      this.initSpeechSynthesis();
-      
-      // Load mascot message settings from localStorage
-      try {
-        const savedMascotSettings = localStorage.getItem('lalumo_mascot_settings');
-        if (savedMascotSettings) {
-          const loadedSettings = JSON.parse(savedMascotSettings);
-          // Merge loaded settings with defaults to ensure new flags are set
-          this.mascotSettings = {
-            ...this.mascotSettings,  // Default values
-            ...loadedSettings        // Saved values override defaults
-          };
-          // Reset seenActivityMessages on every app start
-          this.$store.mascotSettings.seenActivityMessages = {};
-          console.log('Loaded mascot settings and reset seen messages:', this.mascotSettings);
-        }
-        // Always save back to localStorage to persist any new default flags
-        localStorage.setItem('lalumo_mascot_settings', JSON.stringify(this.mascotSettings));
-      } catch (error) {
-        console.error('Error loading mascot settings:', error);
-        // Keep default settings
-      }
-      
-      // Try to load saved progress from localStorage
-      try {
-        const savedProgress = localStorage.getItem('lalumo_progress');
-        if (savedProgress) {
-          this.progress = JSON.parse(savedProgress);
-          
-          // Ensure all activity progress fields exist with the new ID format
-          if (!this.progress['1_1_pitches_high_or_low']) this.progress['1_1_pitches_high_or_low'] = 0;
-          if (!this.progress['1_2_pitches_match-sounds']) this.progress['1_2_pitches_match-sounds'] = 0;
-          if (!this.progress['1_3_pitches_draw-melody']) this.progress['1_3_pitches_draw-melody'] = 0;
-          if (!this.progress['1_4_pitches_does-it-sound-right']) this.progress['1_4_pitches_does-it-sound-right'] = 0;
-          if (!this.progress['1_5_pitches_memory-game']) this.progress['1_5_pitches_memory-game'] = 0;
-          
-          console.log('Loaded progress data with new IDs:', this.progress);
-          
-          // Initialize highOrLowProgress from saved data
-          this.highOrLowProgress = this.progress['1_1_pitches_high_or_low'] || 0;
-          console.log('Initialized highOrLowProgress from localStorage:', this.highOrLowProgress);
-        } else {
-          // Initialize with empty progress object using new IDs
-          this.progress = {
-            '1_1_pitches_high_or_low': 0,
-            '1_2_pitches_match-sounds': 0,
-            '1_3_pitches_draw-melody': 0,
-            '1_4_pitches_does-it-sound-right': 0,
-            '1_5_pitches_memory-game': 0
-          };
+        // Set up text-to-speech if available - with better debugging
+        this.speechSynthesis = null;
+        this.ttsAvailable = false;
+        this.usingNativeAndroidTTS = false;  // Flag für native Android TTS
+        
+        // Überprüfe zuerst, ob die native Android TTS-Brücke verfügbar ist
+        this.checkAndroidNativeTTS();
+        
+        // Fallback: Verzögerte Initialisierung der Web-Sprachsynthese für bessere Kompatibilität
+        this.initSpeechSynthesis();
+        
+        // Load mascot message settings from localStorage
+        try {
+          const savedMascotSettings = localStorage.getItem('lalumo_mascot_settings');
+          if (savedMascotSettings) {
+            const loadedSettings = JSON.parse(savedMascotSettings);
+            // Merge loaded settings with defaults to ensure new flags are set
+            this.mascotSettings = {
+              ...this.mascotSettings,  // Default values
+              ...loadedSettings        // Saved values override defaults
+            };
+            // Reset seenActivityMessages on every app start
+            this.$store.mascotSettings.seenActivityMessages = {};
+            console.log('Loaded mascot settings and reset seen messages:', this.mascotSettings);
+          }
+          // Always save back to localStorage to persist any new default flags
+          localStorage.setItem('lalumo_mascot_settings', JSON.stringify(this.mascotSettings));
+        } catch (error) {
+          console.error('Error loading mascot settings:', error);
+          // Keep default settings
         }
         
-        // Load progressive difficulty data
-        const savedDifficulty = localStorage.getItem('lalumo_difficulty');
-        if (savedDifficulty) {
-          const difficultyData = JSON.parse(savedDifficulty);
-          this.correctAnswersCount = difficultyData.correctAnswersCount || 0;
-          this.unlockedPatterns = difficultyData.unlockedPatterns || ['up', 'down'];
+        // Try to load saved progress from localStorage
+        try {
+          const savedProgress = localStorage.getItem('lalumo_progress');
+          if (savedProgress) {
+            this.progress = JSON.parse(savedProgress);
+            
+            // Ensure all activity progress fields exist with the new ID format
+            if (!this.progress['1_1_pitches_high_or_low']) this.progress['1_1_pitches_high_or_low'] = 0;
+            if (!this.progress['1_2_pitches_match-sounds']) this.progress['1_2_pitches_match-sounds'] = 0;
+            if (!this.progress['1_3_pitches_draw-melody']) this.progress['1_3_pitches_draw-melody'] = 0;
+            if (!this.progress['1_4_pitches_does-it-sound-right']) this.progress['1_4_pitches_does-it-sound-right'] = 0;
+            if (!this.progress['1_5_pitches_memory-game']) this.progress['1_5_pitches_memory-game'] = 0;
+            
+            console.log('Loaded progress data with new IDs:', this.progress);
+            
+            // Initialize highOrLowProgress from saved data
+            this.highOrLowProgress = this.progress['1_1_pitches_high_or_low'] || 0;
+            console.log('Initialized highOrLowProgress from localStorage:', this.highOrLowProgress);
+          } else {
+            // Initialize with empty progress object using new IDs
+            this.progress = {
+              '1_1_pitches_high_or_low': 0,
+              '1_2_pitches_match-sounds': 0,
+              '1_3_pitches_draw-melody': 0,
+              '1_4_pitches_does-it-sound-right': 0,
+              '1_5_pitches_memory-game': 0
+            };
+          }
+          
+          // Load progressive difficulty data
+          const savedDifficulty = localStorage.getItem('lalumo_difficulty');
+          if (savedDifficulty) {
+            const difficultyData = JSON.parse(savedDifficulty);
+            this.correctAnswersCount = difficultyData.correctAnswersCount || 0;
+            this.unlockedPatterns = difficultyData.unlockedPatterns || ['up', 'down'];
+          }
+        } catch (e) {
+          console.log('Could not load saved progress');
         }
-      } catch (e) {
-        console.log('Could not load saved progress');
-      }
-      
-      // Listen for pitch mode changes from the menu
-      window.addEventListener('set-pitch-mode', (e) => {
+        
+        // Listen for pitch mode changes from the menu
+        window.addEventListener('set-pitch-mode', (e) => {
         console.log('Received pitch mode change event:', e.detail);
         this.setMode(e.detail);
       });
@@ -554,20 +554,20 @@ export function pitches() {
     setMode(newMode) {
       console.log('MODSWITCH: Changing mode from', this.mode, 'to', newMode);
   
-  // Clear any existing mascot timers and hide message when switching activities
-  if (this.mascotShowTimer) {
-    clearTimeout(this.mascotShowTimer);
-    this.mascotShowTimer = null;
-    console.log("MASCOT_CLEAR: Cleared show timer on mode switch");
-  }
-  if (this.mascotHideTimer) {
-    clearTimeout(this.mascotHideTimer);
-    this.mascotHideTimer = null;
-    console.log("MASCOT_CLEAR: Cleared hide timer on mode switch");
-  }
-  // Hide any currently visible mascot message
-  this.showMascot = false;
-  console.log("MASCOT_CLEAR: Hidden mascot on mode switch to:", newMode);
+      // Clear any existing mascot timers and hide message when switching activities
+      if (this.mascotShowTimer) {
+        clearTimeout(this.mascotShowTimer);
+        this.mascotShowTimer = null;
+        console.log("MASCOT_CLEAR: Cleared show timer on mode switch");
+      }
+      if (this.mascotHideTimer) {
+        clearTimeout(this.mascotHideTimer);
+        this.mascotHideTimer = null;
+        console.log("MASCOT_CLEAR: Cleared hide timer on mode switch");
+      }
+      // Hide any currently visible mascot message
+      this.showMascot = false;
+      console.log("MASCOT_CLEAR: Hidden mascot on mode switch to:", newMode);
       this.mode = newMode;
       this.resetState();
       

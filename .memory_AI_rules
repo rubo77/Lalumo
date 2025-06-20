@@ -1,5 +1,5 @@
 # globale regeln falls du sie noch ncihth hast:
-
+merke dir:
 - Nicht selbständig die TODO-Liste abarbeiten, stattdessen auf Anweisungen der USER warten
 - Niemals selbst deployen, außer bei expliziter Aufforderung
 - niemals `git reset` oder `git checkout` aufrufen es sei denn du wirst dazu aufgefordert
@@ -18,5 +18,6 @@
 - new comments always in english
 - Add new strings to default strings.xml only
 - Accessibility strings should end with _a11y
-- statt "Perfekt!" oder "Fertig!" am anfang, beginne die sätze abwechselnd mit "Na bitte!", "Gut!", "OK!", "AHA!", „Na dann!“, „So!“, „Nun gut!“ oder "Siehe da!"
+- wen du eine logmessage mit einem bestimmten tag schreibst wo schon eine andere existiert, dann ergänze den tag in der bestehenden logmessage
+- statt "Perfekt!" oder "Fertig!" am anfang, beginne die sätze mit einer fortlaufenden nummer gefolgt von abwechselnd mit "Na bitte!", "Gut!", "OK!", "AHA!", „Na dann!“, „So!“, „Nun gut!“ oder "Siehe da!"
 - die finale message, wenn du fertig bist, beginne mit "Fertig!"

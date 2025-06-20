@@ -30,13 +30,14 @@ Das Lalumo Referral-System ermöglicht es Benutzern, ihre Freunde zur App einzul
        
 
 2. **Backend (referral.php)**:
-   - Empfängt Benutzername via POST-Request
-   - Generiert eindeutigen Referral-Code mittels `generateReferralCode()`
-   - Speichert Benutzer in der `users`-Tabelle der SQLite-Datenbank
+   - [x] Empfängt Benutzername via POST-Request
+   - [x] Generiert eindeutigen Referral-Code mittels `generateReferralCode()`
+   - [x] Speichert Benutzer in der `users`-Tabelle der SQLite-Datenbank
    - Sendet JSON-Antwort mit generiertem Referral-Code zurück
    # TODO:
    - [x] checken ob der username schon existiert, wenn ja, errormeldung
    - [x] passwort zum user beim anlegen eines neuen users generieren (falls keins im post request), und in der db speichern und mit in der json antwort schicken
+   - [ ] wenn änderungen an der datenbank nötig sind, dann nur mit migration
 
 ### 2. Referral-Link-Tracking
 
