@@ -3747,7 +3747,7 @@ export function pitches() {
       }
       
       // Aktualisiere die UI-Anzeige des Levels
-      this.updateSoundJudgmentLevelDisplay();
+      this.update_progress_display();
       
       // Show mascot message first (moved from playback completion)
       this.showMascotMessage(introMessage);
@@ -3766,8 +3766,11 @@ export function pitches() {
     },
     /**
      * Aktualisiert die Anzeige des aktuellen Levels in der UI
+     * @activity common
+     * @used-by 1_1_high_or_low.js
+     * @used-by 1_4_sound_judgment.js
      */
-    updateSoundJudgmentLevelDisplay() {
+    update_progress_display() {
       // Finde das Level-Anzeigeelement im DOM
       const levelDisplay = document.querySelector('.sound-judgment-level');
       
@@ -4475,12 +4478,12 @@ export function pitches() {
         }
         
         // Update level display
-        this.updateSoundJudgmentLevelDisplay();
+        this.update_progress_display();
       } else {
         // Reset streak on wrong answers
         this.soundJudgmentCorrectStreak = 0;
         console.log('SOUND JUDGMENT: Streak reset to 0');
-        this.updateSoundJudgmentLevelDisplay();
+        this.update_progress_display();
       }
       
       // After a delay, reset and prepare for the next melody

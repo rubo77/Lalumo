@@ -2459,7 +2459,7 @@ section h2 {
 }
 
 /* Progress display for High or Low */
-.high-low-progress {
+.high-low-progress, .progress_2_5 {
   position: fixed;
   bottom: 5px;
   background: rgba(255, 255, 255, 0.5);

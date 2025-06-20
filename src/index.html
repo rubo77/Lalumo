@@ -776,6 +776,14 @@
               <p x-text="$store.strings?.character_matching_intro || 'Each chord type has its own personality! Listen to the chord and match it to the right character.'">Each chord type has its own personality! Listen to the chord and match it to the right character.</p>
             </div>
             
+            <!-- Progress display -->
+            <div class="progress-display progress_2_5">
+              <p x-text="($store.strings?.correct_answers_count || 'Correct answers: {0}').replace('{0}', progress['2_5_chords_characters'] || 0)"></p>
+              <p x-show="(progress['2_5_chords_characters'] || 0) < 10" x-text="$store.strings?.unlock_squirrel_message || 'Get 10 correct to unlock the squirrel! 🐿️'"></p>
+              <p x-show="(progress['2_5_chords_characters'] || 0) >= 10 && (progress['2_5_chords_characters'] || 0) < 20" x-text="$store.strings?.unlock_octopus_message || 'Get 20 correct to unlock the octopus! 🐙'"></p>
+              <p x-show="(progress['2_5_chords_characters'] || 0) >= 20" x-text="$store.strings?.all_animals_unlocked || 'All animals unlocked! 🎉'"></p>
+            </div>
+            
             <div class="play-chord-button-container">
               <button @click="playCurrentChord()" class="play-button">
                 <span>🔈</span>

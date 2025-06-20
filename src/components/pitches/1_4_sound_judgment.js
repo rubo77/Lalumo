@@ -37,8 +37,8 @@ export function reset_1_4_SoundJudgment_Progress(component) {
   component.updateProgressPitches();
   
   // Update UI elements immediately if update method exists
-  if (component.updateSoundJudgmentLevelDisplay) {
-    component.updateSoundJudgmentLevelDisplay();
+  if (component.update_progress_display) {
+    component.update_progress_display();
   }
   
   console.log('RESET_SOUND_JUDGMENT: Reset completed successfully');

@@ -103,7 +103,7 @@ Die aktuelle pitches.js-Datei ist sehr umfangreich und enthält die Logik für a
 5. **sound-judgment.js** (1_4):
    - `generateSoundHighOrLowMelody()`
    - `checkSoundJudgmentAnswer()`
-   - `updateSoundJudgmentLevelDisplay()`
+   - `update_progress_display()`
    - `updateSoundJudgmentProgress()`
 
 6. **memory-game.js** (1_5):
