@@ -30,7 +30,10 @@ import { testChordBuildingModuleImport } from './2_chords/2_3_chord_building.js'
 import { testMissingNoteModuleImport } from './2_chords/2_4_missing_note.js';
 
 // 2_5 Chord Characters Module
-import { testChordCharactersModuleImport } from './2_chords/2_5_chord_characters.js';
+import { 
+  testChordCharactersModuleImport,
+  updateCharacterBackground 
+} from './2_chords/2_5_chord_characters.js';
 
 // 2_6 Chord Characters Module
 import { test2_6_harmmony_gardenModuleImport } from './2_chords/2_6_harmmony_garden.js';
@@ -452,7 +455,8 @@ export function chords() {
       } else if (mode === '2_5_chords_characters') {
         // Initialisierung für Character Matching
         debugLog('CHORDS', 'Initializing character matching activity');
-        // Hier den Init-Code für diese Aktivität einfügen
+        // Hintergrundänderung basierend auf Fortschritt
+        updateCharacterBackground(this);
       } else if (mode === '2_6_chords_harmony-gardens') {
         // Initialisierung für Harmony Gardens
         debugLog('CHORDS', 'Initializing harmony gardens activity');
@@ -909,6 +913,16 @@ export function chords() {
       if (isCorrect) {
         this.feedbackMessage = this.$store.strings.success_message || 'Great job! That\'s correct!';
         this.correctAnswers++;
+        
+        // Erhöhe den 2_5_chord_characters Fortschritt bei korrekter Antwort
+        if (!this.progress['2_5_chords_characters']) this.progress['2_5_chords_characters'] = 0;
+        this.progress['2_5_chords_characters']++;
+        
+        // Speichere den Fortschritt in localStorage
+        localStorage.setItem('lalumo_chords_progress', JSON.stringify(this.progress));
+        
+        // Aktualisiere den Hintergrund basierend auf dem neuen Fortschritt
+        updateCharacterBackground(this);
         
         // Show rainbow success effect for 2_5_chord_characters
         showCompleteSuccess();

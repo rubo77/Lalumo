@@ -37,7 +37,6 @@
 
 /* Game mode sections - white background with image border */
 .activity-container {
-  background-color: white;
   border-radius: 20px;
   margin: 3% auto 5% auto;
   padding: 20px;
