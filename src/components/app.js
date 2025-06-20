@@ -1897,16 +1897,18 @@ export function app() {
         return;
       }
       
-      // Normalisierte Version zurücksetzen und alle Bindestriche entfernen
-      let normalizedCode = this.friendCode.replace(/[-\s]/g, '');
+      // Normalisierte Version erstellen (entferne Bindestriche und Leerzeichen)
+      let normalizedCode = this.friendCode.replace(/[-\s]+/g, '').toUpperCase();
       
       // Flexiblere Code-Format-Validierung (mindestens 8 alphanumerische Zeichen)
       const codePattern = /^[A-Z0-9]{8,}$/;
       if (!codePattern.test(normalizedCode)) {
-        console.error('[REDEEM] Invalid referral code format!, tested: ' + this.friendCode + ", normalized: " + normalizedCode);
+        console.error('[REDEEM] Invalid referral code format!, original: ' + this.friendCode + ", normalized: " + normalizedCode);
         alert(this.$store.strings?.invalid_code || 'Invalid referral code format. Please check and try again.');
         return;
       }
+      
+      console.log('[REDEEM] Normalized code: ' + normalizedCode);
       
       console.log('[REDEEM] Code format valid - normalized: ' + normalizedCode);
       

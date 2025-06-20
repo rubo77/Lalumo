@@ -174,9 +174,17 @@ if ($method === 'POST') {
             // Referral-Eintrag erstellen
             $userId = $db->lastInsertRowID();
             error_log("User created with ID: {$userId}");
-            $db->exec("INSERT INTO referrals (referrer_id, click_count, registration_count) VALUES ($userId, 0, 0)");
             
-            // Formatierten Code und Passwort zurückgeben
+            // Erstelle einen passenden Eintrag in der referrals Tabelle
+            $referralStmt = $db->prepare('INSERT INTO referrals (referrer_id, click_count, registration_count) VALUES (:referrer_id, 0, 0)');
+            $referralStmt->bindValue(':referrer_id', $userId, SQLITE3_INTEGER);
+            $referralStmt->execute();
+            
+            // Debug-Ausgabe
+            error_log("Created matching referrals entry for user ID: {$userId}");
+            
+            // Erfolgreiche Rückmeldung
+            header('Content-Type: application/json');
             echo json_encode([
                 'success' => true,
                 'referralCode' => formatCode($referralCode),

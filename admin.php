@@ -86,15 +86,16 @@ function getUserStats() {
     try {
         $db = getDbConnection();
         
-        // Query to get users with their referral counts using actual schema
+        // Query to get users with their referral counts using actual schema from referral.php
         $query = '
             SELECT 
                 u.username, 
                 u.referral_code,
                 u.created_at,
-                (SELECT COUNT(*) FROM referrals WHERE referrer_code = u.referral_code AND referral_type = "click") AS click_count,
-                (SELECT COUNT(*) FROM referrals WHERE referrer_code = u.referral_code AND referral_type = "registration") AS registration_count
+                r.click_count,
+                r.registration_count
             FROM users u
+            LEFT JOIN referrals r ON r.referrer_id = u.id
             ORDER BY u.created_at DESC
         ';
         
