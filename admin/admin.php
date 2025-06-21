@@ -13,7 +13,7 @@ $errorMessage = '';
 if(!isset($_SESSION['authenticated'])) {
     $_SESSION['authenticated'] = false;
 }
-if($_GET['logout'] === 'true') {
+if(isset($_GET['logout']) and $_GET['logout'] === 'true') {
     $_SESSION['authenticated'] = false;
     header("Location: admin.php");
     exit;
@@ -35,7 +35,7 @@ function logError($message) {
 // Database connection function with improved error handling
 function getDbConnection() {
     try {
-        $dbPath = __DIR__ . '/data/referrals.db';
+        $dbPath = __DIR__ . '/../data/referrals.db';
         $dataDir = dirname($dbPath);
         
         // Create data directory if it doesn't exist

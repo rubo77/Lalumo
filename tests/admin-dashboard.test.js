@@ -4,7 +4,7 @@ const fetch = require('node-fetch');
  * Unit tests for the admin dashboard endpoint
  */
 describe('Admin Dashboard API', () => {
-  const ADMIN_URL = 'http://localhost:8080/admin.php';
+  const ADMIN_URL = 'http://localhost:8080/admin/index.php';
   const ADMIN_PASSWORD = 'lalumo2024';
   
   // Test timeout (10s)
