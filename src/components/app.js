@@ -610,9 +610,32 @@ export function app() {
     },
     
     /**
+     * Checks if a username still exists in the server database
+     * only if you are already locked. this can only happen if the server db is deleted or in admin the user
+     * @param {string} username - Username to check
+     * @returns {Promise<boolean>} - True if username exists, false otherwise
+     */
+    async checkUsernameStillExists(username) {
+      try {
+        console.log(`[REFERRAL] Checking if username '${username}' exists on server...`);
+        const response = await fetch(`./referral.php?check_existing=1&username=${encodeURIComponent(username)}`);
+        const data = await response.json();
+        
+        debugLog("REFERRAL", "Username exists: " + data.success);
+        // User exists if the API returns success
+        return data.success === true;
+      } catch (error) {
+        console.error(`[REFERRAL] Error checking if username exists:`, error);
+        // Assume user exists in case of error (to prevent accidental unlock)
+        return true;
+      }
+    },
+    
+    /**
      * Load user data from localStorage
      */
-    loadUserData() {
+    async loadUserData() {
+      debugLog("REFERRAL", "Loading user data");
       try {
         // Load username from localStorage
         const savedUsername = localStorage.getItem('lalumo_username');
@@ -647,11 +670,32 @@ export function app() {
               isChordChapterUnlocked: this.isChordChapterUnlocked
             });
             
-            // Wenn der Benutzer bereits registriert ist, aktuelle Referral-Zahlen von der Datenbank abrufen
+            debugLog("REFERRAL", "Loaded referral data");
+            
+            // Wenn der Benutzer bereits registriert ist, prüfen ob der Username noch existiert
             if (this.isUsernameLocked && this.lockedUsername) {
-              console.log('User is registered, fetching current referral counts from database...');
-              // Nach kurzer Verzögerung aufrufen, um sicherzustellen, dass die App vollständig initialisiert ist
-              setTimeout(() => this.fetchReferralCount(), 1000);
+              console.log('[REFERRAL] User is registered, checking if username still exists...');
+              
+              // Check if username still exists in the server database
+              const usernameExists = await this.checkUsernameStillExists(this.lockedUsername);
+              
+              debugLog("REFERRAL", "Username exists: " + usernameExists);
+              
+              if (!usernameExists) {
+                console.log(`[REFERRAL] Username '${this.lockedUsername}' no longer exists on server, unlocking...`);
+                // Reset username lock and save changes
+                this.isUsernameLocked = false;
+                this.lockedUsername = '';
+                this.referralCode = '';
+                this.saveReferralData();
+                
+                // Show notification to the user
+                this.showToast(this.$store.strings?.username_reset || 'Your user account was reset because it no longer exists on the server.');
+              } else {
+                // Fetch current referral counts if the user still exists
+                console.log('[REFERRAL] Username verified, fetching current referral counts...');
+                setTimeout(() => this.fetchReferralCount(), 1000);
+              }
             }
           } catch (e) {
             console.error('Error parsing referral data:', e);

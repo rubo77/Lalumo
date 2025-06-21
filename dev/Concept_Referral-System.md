@@ -157,7 +157,7 @@ Die PHP-Dateien (`referral.php`, `admin.php`) und die Datenbankdatei müssen auf
 - Es muss im json der antwort in die eingestellte sprache umgewandelt werden kann.
 
 - wenn der username gelockt ist, dan darf der nicht mehr editierbar sein im player settings (grep "' => " referral.php )
-
+- wenn in der localStorage der username gelockt ist, aber auf dem server gelöscht, dann muss der wieder entlockt werden und die localStorage aktualisiert werden
 
 ergänze im konzept die häkchen bei den punkten die schon erledigt sind uund ergänue [ ] häkchen, was noch nciht erledigt ist. passe das konzept ggf an, so dass es einer dokumentation wird, wie das referral system funktioniert.
 
