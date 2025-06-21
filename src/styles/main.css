@@ -1409,6 +1409,51 @@ section h2 {
 #\32 _5_chords_characters{
 }
 
+#play-chord-2_5{
+  opacity: 0;
+  width: 60%;
+  height: min(40vw, 320px);
+  background-color: #fff;
+  border-radius: 20%;
+  margin-top: -26vw;
+  margin-left: 40%;
+}
+
+#play-chord-2_5:hover{
+  opacity: 0.05;
+}
+
+#button_2_5_1_happy, #button_2_5_1_sad, #button_2_5_1_surprised, #button_2_5_1_mysterious{
+  opacity: 0;
+  position: absolute;
+  top: min(47vw, 320px);
+  left: 0;
+  width: min(37vw, 250px);
+  height: min(50vw, 250px);
+  background-color: #fff;
+  border-radius: 20%;
+  color:transparent
+}
+
+#button_2_5_1_happy:hover, #button_2_5_1_sad:hover, #button_2_5_1_surprised:hover, #button_2_5_1_mysterious:hover{
+  opacity: 0.05;
+}
+
+#button_2_5_1_sad{
+  left: min(37vw, 250px);
+  width: min(37vw, 180px);
+}
+
+#button_2_5_1_surprised{
+  left: 70%;
+}
+
+#button_2_5_1_mysterious{
+  top: min(101vw, 600px);
+  width: 100%;
+}
+
+
 .activity-container h3 {
   color: var(--primary-color);
   text-align: center;

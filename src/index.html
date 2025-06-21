@@ -768,13 +768,9 @@
             </button>
           </div>
           
-          <div class="chords-container">
-            <h2 x-text="$store.strings?.chord_characters_title || 'Chord Characters'">Chord Characters</h2>
-            
-            <div class="character-matching-explanation">
-              <p x-text="$store.strings?.character_matching_intro || 'Each chord type has its own personality! Listen to the chord and match it to the right character.'">Each chord type has its own personality! Listen to the chord and match it to the right character.</p>
-            </div>
-            
+          <button id="play-chord-2_5" @click="playCurrentChord()" class="play-button" :title="$store.strings?.play_chord || 'Play Chord'">▶️</button>
+
+          <div class="chords-container">            
             <!-- Progress display -->
             <div class="progress-display progress_2_5">
               <p x-text="($store.strings?.correct_answers_count || 'Correct answers: {0}').replace('{0}', progress['2_5_chords_characters'] || 0)"></p>
@@ -783,40 +779,22 @@
               <p x-show="(progress['2_5_chords_characters'] || 0) >= 20" x-text="$store.strings?.all_animals_unlocked || 'All animals unlocked! 🎉'"></p>
             </div>
             
-            <div class="play-chord-button-container">
-              <button @click="playCurrentChord()" class="play-button">
-                <span>🔈</span>
-                <span x-text="$store.strings?.play_chord || 'Play Chord'">Play Chord</span>
-              </button>
-            </div>
             
             <div class="character-grid">
-              <div class="character" @click="checkCharacterMatch('major')">
-                <div class="character-image">
-                  <span class="character-emoji">😊</span>
-                </div>
-                <div class="character-name">Happy</div>
+              <div id="button_2_5_1_happy" class="character" @click="checkCharacterMatch('major')">
+                <div title="Happy">Happy</div>
               </div>
               
-              <div class="character" @click="checkCharacterMatch('minor')">
-                <div class="character-image">
-                  <span class="character-emoji">😢</span>
-                </div>
-                <div class="character-name">Sad</div>
+              <div id="button_2_5_1_sad" class="character" @click="checkCharacterMatch('minor')">
+                <div title="Sad">Sad</div>
               </div>
               
-              <div class="character" @click="checkCharacterMatch('diminished')">
-                <div class="character-image">
-                  <span class="character-emoji">🧙</span>
-                </div>
-                <div class="character-name">Mysterious</div>
+              <div id="button_2_5_1_surprised" class="character" @click="checkCharacterMatch('augmented')">
+                <div title="Surprised">Surprised</div>
               </div>
               
-              <div class="character" @click="checkCharacterMatch('augmented')">
-                <div class="character-image">
-                  <span class="character-emoji">😮</span>
-                </div>
-                <div class="character-name">Surprised</div>
+              <div id="button_2_5_1_mysterious" class="character" @click="checkCharacterMatch('diminished')">
+                <div title="Mysterious">Mysterious</div>
               </div>
             </div>
             

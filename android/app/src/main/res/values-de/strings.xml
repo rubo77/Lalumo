@@ -81,10 +81,6 @@
     <string name="missing_note_intro">Höre den unvollständigen Akkord und wähle aus, welche Note fehlt.</string>
     <string name="play_incomplete_chord">Unvollständigen Akkord spielen</string>
     
-    <!-- Chords - Character Matching Activity -->
-    <string name="chord_characters_title">Akkord-Charaktere</string>
-    <string name="character_matching_intro">Jeder Akkordtyp hat seine eigene Persönlichkeit! Höre den Akkord und ordne ihn dem richtigen Charakter zu.</string>
-    
     <!-- Chords - Harmony Gardens Activity -->
     <string name="harmony_gardens_title">Harmonie-Gärten</string>
     <string name="harmony_gardens_intro">Erschaffe einen wunderschönen Garten, indem du verschiedene Akkordsequenzen auswählst. Jeder Akkordtyp lässt andere Pflanzen wachsen!</string>

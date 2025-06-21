@@ -41,7 +41,7 @@
 - New UI issue: progress display shows duplicate "Correct answers" lines and no unlock hint. Must ensure single element and dynamic hint ("Get 10 correct ...", "Get 20 correct ...") renders correctly.
 - Removed redundant JS progress display in 2_5; Alpine bindings now show correct count and unlock hints.
 - Admin panel auto-refresh loop fixed; meta refresh now only active after successful authentication.
-- Admin directory initialized as standalone Git repo; first commits (admin.php, index.php) done; remote & submodule link still pending.
+- Admin directory initialized as standalone Git repo; initial commits done and remote placeholder added; submodule link in main repo still pending.
 - `debug-element` CSS class added to `main.css` to hide debug buttons by default; visibility toggled via `body.dev-mode`.
 - Inline `style="opacity: 0;"` attributes auto-replaced with `class="debug-element"` in index.html via sed.
 - Frontend protection added: users cannot redeem their own referral code (redeemFriendCode now checks against `referralCode`).
@@ -387,13 +387,24 @@ Persist referredBy code & verify deep links
 ## New Tasks
 - [x] Fix admin.php auto-refresh causing login redirect (implement conditional refresh post-auth, or AJAX data refresh)
 - Removed auto-refresh loop in admin panel; meta refresh now conditional on authenticated session.
-- Admin directory initialized as standalone Git repo; first commits (admin.php, index.php) done; remote & submodule link still pending.
+- Admin directory initialized as standalone Git repo; initial commits done and remote placeholder added; submodule link in main repo still pending.
 - [ ] Convert `admin/` directory into separate git submodule and add it to `.gitignore` in main repo
   - [x] Add admin/ to .gitignore
   - [x] Initialize git repository inside admin/
   - [x] Commit initial admin code (admin.php, index.php)
-  - [ ] Add remote repository and push admin dashboard code
+  - [x] Add remote repository and push admin dashboard code
   - [ ] Add admin submodule reference to main repo and remove tracked files
+- Admin directory initialized as standalone Git repo; initial commits done and remote placeholder added; submodule link in main repo still pending.
+- [ ] Convert `admin/` directory into separate git submodule and add it to `.gitignore` in main repo
+  - [x] Add admin/ to .gitignore
+  - [x] Initialize git repository inside admin/
+  - [x] Commit initial admin code (admin.php, index.php)
+  - [x] Add remote repository and push admin dashboard code
+  - [ ] Add admin submodule reference to main repo and remove tracked files
+  - [ ] Ensure CI/build scripts ignore admin submodule during frontend builds
+- Admin directory initialized as standalone Git repo; initial commits done and remote placeholder added; submodule link in main repo still pending.
+- Button in 2_5 chord characters activity uses `x-title`; need to change to Alpine `x-bind:title` or plain `title` to localize tooltip.
+- [ ] Fix tooltip attribute on Play Chord button (replace `x-title`)
 
 ## Current Goal
-Set up admin folder as submodule & update git ignore
+Finalize admin submodule setup & fix Play Chord tooltip

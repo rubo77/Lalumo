@@ -80,11 +80,7 @@
     <string name="missing_note_title">Find the Missing Note</string>
     <string name="missing_note_intro">Listen to the incomplete chord and select which note is missing.</string>
     <string name="play_incomplete_chord">Play Incomplete Chord</string>
-    
-    <!-- Chords - Character Matching Activity -->
-    <string name="chord_characters_title">Chord Characters</string>
-    <string name="character_matching_intro">Each chord type has its own personality! Listen to the chord and match it to the right character.</string>
-    
+        
     <!-- Chords - Harmony Gardens Activity -->
     <string name="harmony_gardens_title">Harmony Gardens</string>
     <string name="harmony_gardens_intro">Create a beautiful garden by choosing different chord sequences. Each chord type grows different plants!</string>

@@ -1641,6 +1641,10 @@ export function pitches() {
             'Höre dir die Melodie an und tippe dann auf die farbigen Tasten in der gleichen Reihenfolge!' : 
             'Listen to the melody, then tap the colored keys in the same order!';
         }
+      } else if (this.mode === '2_5_chords_characters') {
+        message = language === 'german' ? 
+          'Jede Chordart hat ihre eigene Persönlichkeit! Höre dir die Chordart an und wähle das passende Bild!' : 
+          'Each chord type has its own personality! Listen to the chord and match it to the right character!';
       }
       
       // Show the message using the existing function
