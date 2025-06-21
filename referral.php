@@ -13,7 +13,16 @@ ini_set('display_errors', 1);
  * - POST mit redeemCode: Löst einen Freundescode ein
  */
 
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type');
 header('Content-Type: application/json');
+
+// Import YAML config helper
+require_once __DIR__ . '/utils/yaml.php';
+
+// Load configuration from central YAML file
+$config = getConfig(__DIR__ . '/config.yaml');
 
 // CORS-Header werden bereits auf Nginx-Ebene gesetzt
 
@@ -227,7 +236,7 @@ elseif ($method === 'GET') {
             $db->exec("UPDATE referrals SET click_count = click_count + 1 WHERE referrer_id = $referrerId");
             
             // Leite zur App mit dem Code in einem URL-Parameter weiter
-            $app_url = 'http://localhost:9091';
+            $app_url = $config['APP_BASE_URL'];
             header('Location: '.$app_url.'/#ref=' . urlencode($code));
             exit;
         } else {

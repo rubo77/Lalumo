@@ -1,3 +1,6 @@
+import { debugLog } from '../utils/debug';
+import config from '../config.js';
+
 /**
  * Main application component
  */
@@ -198,7 +201,7 @@ export function app() {
       console.log('[REFERRAL] Rufe Statistik für User ab:', this.lockedUsername);
       
       try {
-        const apiUrl = `http://localhost:8080/referral.php?username=${encodeURIComponent(this.lockedUsername)}`;
+        const apiUrl = `${config.API_BASE_URL}/referral.php?username=${encodeURIComponent(this.lockedUsername)}`;
         console.log('[REFERRAL] API URL:', apiUrl);
         
         const response = await fetch(apiUrl);
@@ -1919,7 +1922,7 @@ export function app() {
       
       // Feste Backend-URL verwenden, da der Dev-Server (Port 9091) keine PHP-Dateien verarbeitet
       // TODO: im Produktionsmodus sollte dies entsprechend angepasst werden
-      const backendUrl = 'http://localhost:8080';
+      const backendUrl = config.API_BASE_URL;
       
       // Link zum Backend-Endpoint generieren (wichtig: ?code= Format für Klickzählung)
       this.referralLink = `${backendUrl}/referral.php?code=${this.referralCode}`;
@@ -1971,7 +1974,7 @@ export function app() {
         console.log('Username wird fixiert und Referral-Code wird generiert...');
         
         // API endpoint URL (relative to the app root)
-        const apiUrl = 'http://localhost:8080/referral.php';
+        const apiUrl = `${config.API_BASE_URL}/referral.php`;
         
         // POST-Anfrage an den Server senden
         const response = await fetch(apiUrl, {
@@ -2166,7 +2169,7 @@ export function app() {
       
       try {
         // API endpoint URL (relative to the app root)
-        const apiUrl = 'http://localhost:8080/referral.php';
+        const apiUrl = `${config.API_BASE_URL}/referral.php`;
         
         // POST-Anfrage an den Server senden
         const response = await fetch(apiUrl, {

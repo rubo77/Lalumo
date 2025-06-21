@@ -1,0 +1,20 @@
+# Lalumo App Zentrale Konfiguration
+# Enthält umgebungsspezifische Einstellungen für Entwicklung und Produktion
+
+# Entwicklungsumgebung (localhost)
+development:
+  # Backend API URL (PHP)
+  API_BASE_URL: http://localhost:8080
+  # Frontend App URL
+  APP_BASE_URL: http://localhost:9091
+  # Basis-Pfad für Assets
+  APP_BASE_PATH: /
+
+# Produktionsumgebung (lalumo.eu)
+production:
+  # Backend API URL (PHP)
+  API_BASE_URL: https://lalumo.eu/app
+  # Frontend App URL
+  APP_BASE_URL: https://lalumo.eu/app
+  # Basis-Pfad für Assets
+  APP_BASE_PATH: /app/

@@ -1,7 +1,7 @@
 #! /bin/bash
 
-# 1. Build the project
-npm run build
+# 1. Build the project with subdirectory flag for correct asset paths
+npm run build -- --env deploy=subdirectory
 
 # 2. Create images directory in dist if it doesn't exist
 mkdir -p dist/images

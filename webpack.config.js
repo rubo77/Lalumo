@@ -14,7 +14,8 @@ module.exports = (env, argv) => {
       path: path.resolve(__dirname, 'app'),
       filename: '[name].[contenthash].js',
       clean: true,
-      publicPath: '/',
+      // publicPath anpassen für Produktion vs. Entwicklung
+      publicPath: isProduction && env.deploy === 'subdirectory' ? '/app/' : '/',
     },
     // Copy static assets from public directory
     devServer: {
@@ -75,6 +76,10 @@ module.exports = (env, argv) => {
               esModule: false
             }
           }
+        },
+        {
+          test: /\.ya?ml$/,
+          use: 'yaml-loader'
         },
       ],
     },

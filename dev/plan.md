@@ -44,6 +44,13 @@
 - Admin directory initialized as standalone Git repo; initial commits done and remote placeholder added; submodule link in main repo still pending.
 - `debug-element` CSS class added to `main.css` to hide debug buttons by default; visibility toggled via `body.dev-mode`.
 - Inline `style="opacity: 0;"` attributes auto-replaced with `class="debug-element"` in index.html via sed.
+- Central URL config file `src/config.js` created; selects dev vs production and exposes `API_BASE_URL`, `APP_BASE_PATH`.
+- `app.js` now imports central config and uses it for API requests; referral.php and playwright config still need updates.
+- New `config.json` created to store dev/prod URLs; plan is to deprecate JS‐only `config.js` so both JS and PHP share one source of truth.
+- User prefers YAML over JSON for central config; migrate to `config.yaml` for single-source configuration across JS and PHP.
+- js-yaml and yaml-loader dev dependencies installed to support YAML parsing in JS/Webpack.
+- Note: Added webpack yaml-loader to support importing YAML configs.
+- webpack.config.js updated to include yaml-loader rule for importing YAML configs.
 - Frontend protection added: users cannot redeem their own referral code (redeemFriendCode now checks against `referralCode`).
 - Backend PHP now blocks self-redeem attempts when the username is supplied; frontend must include `username` in the redeem request.
 - Duplicate `redeemFriendCode` functions detected in `src/components/app.js` (lines ~291 and ~1953); older version must be removed to prevent conflicting logic.
@@ -74,7 +81,6 @@
 - [x] Call `loadHtmlPartials()` after Alpine initialization to render partials
 - [ ] Validate runtime functionality of referral partial loading and resolve any server port conflicts
 - [ ] Fix fetch path / dev server config so `/src/partials/referrals.html` loads successfully
-- [x] Fix fetch path / dev server config so `/src/partials/referrals.html` loads successfully
 - [x] Fix fetch path / dev server config so `/src/partials/referrals.html` loads successfully
 - Runtime in browser showed `HTML partial loading error` (404). Partial copied to `public/partials/referrals.html` so dev server can serve it.
 - Need to update `index.html` data-include path to `/partials/referrals.html` and verify loading succeeds.
@@ -249,172 +255,64 @@ Finalize Concept doc & complete self-redeem integration
 -   - [ ] Verify referral.php inserts user & referral rows on registration
 -   - [ ] Fix issues and rerun admin dashboard tests
 - [x] Investigate missing admin data: verify SQLite DB entry on registration and fix.
-- [ ] Fix referral code validation for multi-dash codes and add unit/e2e tests
+- Production deploy path issue: scripts requested from `https://lalumo.eu/` instead of `/app/`; need to set correct public path (e.g., webpack `publicPath` or `<base href="/app/">`).
+- [x] Fix asset paths for subdirectory deploy (`/app`) – set webpack `publicPath` or base href
+- webpack.config.js now sets `publicPath` to `/app/` when built with `--env deploy=subdirectory`; deploy.sh updated to pass this flag.
 ## Current Goal
-Implement referral link click tracking
-- [x] Fix multi-dash referral code validation
-- [ ] Implement referral link click tracking
-  - [x] Update referral.php to track link clicks
-  - [x] Update generateReferralLink() to match backend click handler (use ?code= param)
-  - [x] Ensure referral link targets correct host/port (8080 or proxy) so clicks resolve
-  - [ ] Add click tracking to referral link UI
-  - [ ] Verify click tracking works as expected
-- [ ] Run unit and e2e tests for referral link click tracking
-- [ ] Update Concept doc to reflect referral link click tracking
+Automatic username unlock & fix /app asset paths
+- Production deploy path issue: scripts requested from `https://lalumo.eu/` instead of `/app/`; need to set correct public path (e.g., webpack `publicPath` or `<base href="/app/">`).
+- [x] Fix asset paths for subdirectory deploy (`/app`) – set webpack `publicPath` or base href
+- [x] Fix asset paths for subdirectory deploy (`/app`) – set webpack `publicPath` or base href
 ## Current Goal
-Add click count UI & tests
-- [x] Fix referral code display formatting
-  - [x] Update formatCode() in referral.php to insert single dashes (4-4-4)
-  - [x] Migrate/clean existing stored codes if necessary
-  - [x] Add unit tests for formatCode
-- [ ] Implement referral link click tracking
-  - [x] Update referral.php to track link clicks
-  - [x] Update generateReferralLink() to match backend click handler (use ?code= param)
-  - [x] Ensure referral link targets correct host/port (8080 or proxy) so clicks resolve
-  - [ ] Add click tracking to referral link UI
-  - [ ] Verify click tracking works as expected
-- [ ] Run unit and e2e tests for referral link click tracking
-- [ ] Update Concept doc to reflect referral link click tracking
+Automatic username unlock feature & verify /app asset loading
+- Asset paths for subdirectory deploy verified working after live deploy.
+- Automatic username unlock implemented via `checkUsernameStillExists`; server check parameter `check_existing=1`.
+- [x] Add frontend helper `checkUsernameStillExists(username)` calling `referral.php?check_existing=1&username=`
+- [x] Invoke helper during `loadUserData()` when `isUsernameLocked` is true
+- [x] If API indicates missing user, reset `isUsernameLocked` & `lockedUsername`, persist via `saveReferralData()`
+- [x] Show toast informing user that account was reset (translation pending)
+- Translation strings for username_reset are still missing in both English and German resources; must add them.
+- [ ] Add username_reset translation string to `values/strings.xml` (EN)
+- [ ] Add username_reset translation string to `values-de/strings.xml` (DE)
+- [ ] Verify toast uses localized username_reset string at runtime
+- Live deploy verified: assets load correctly from `/app/`.
 ## Current Goal
-Fix referral code formatting & add click-count UI
-- [ ] Add styling to referral link UI to improve readability and visual appeal
-- Issue: Codes displayed to user contain too many dashes (e.g., `EAGE--159-7-67`); root cause is `formatCode()` in referral.php which pads/segments incorrectly—needs fix so codes render like `EAGE-1597-67D0`.
-- Referral code formatting bug fixed: `formatCode()` now strips existing dashes, pads, and formats as `XXXX-XXXX-XXXX`.
-- [ ] Add styling to referral link UI to improve readability and visual appeal
-- [ ] Style 2_5 chord characters container to match 1_1 design (update index.html & CSS)
-{{ ... }}
-- Referral code formatting bug fixed: `formatCode()` now strips existing dashes, pads, and formats as `XXXX-XXXX-XXXX`.
-- New issue: UI still shows 0/3 registrations while admin lists users; need to debug frontend count fetch.
-- [x] Fix referral code display formatting
-  - [x] Update formatCode() in referral.php to insert single dashes (4-4-4)
-  - [x] Migrate/clean existing stored codes if necessary
-  - [x] Add unit tests for formatCode
-- [ ] Debug registration count mismatch between UI and admin
-  - [ ] Verify referral.php GET /?username= returns correct registration_count
-  - [ ] Ensure fetchReferralCount updates referralCount state and UI
-- New issue: UI still shows 0/3 registrations while admin lists users; frontend `fetchReferralCount` or backend response mapping likely incorrect.
-- [x] Style 2_5 chord characters container to match 1_1 design (update index.html & CSS)
-- [x] Update container markup in index.html (id & background-image)
-- [x] Introduce `.chords-container` and chapter-wide `.chapters-view` styles
-- [ ] Debug registration count mismatch between UI and admin
-  - [ ] Verify referral.php GET /?username= returns correct registrationCount JSON field
-  - [ ] Check fetchReferralCount mapping (data.registrationCount vs camelCase)
-  - [ ] Ensure referralCount state saves to localStorage via saveReferralData()
-  - [ ] Update UI bindings so Registrations display matches backend
-- Added verbose logging and error handling to `fetchReferralCount` for easier debugging of registration/count issues.
-- [x] Add detailed diagnostics/logging to fetchReferralCount
-- **Observation:** logs indicate `fetchReferralCount` may never be invoked on startup; need to ensure it runs after loading referral data and on interval.
-- [x] Ensure `fetchReferralCount()` is called after username lock and on app init
-- [ ] Verify backend JSON uses `registrationCount` / `clickCount` fields (camelCase)
-- [ ] Update `fetchReferralCount` mapping if necessary
-- [ ] Persist updated counts via `saveReferralData` and refresh UI bindings
+Add username_reset translations & verify toast
+- Translation strings for username_reset are still missing in both English and German resources; must add them.
+- Hard-coded localhost URLs found in multiple files (`referral.php`, `app.js`, playwright config). User requested a central config so domains can differ between local and production (lalumo.eu).
+- [x] Create centralized config (e.g., `src/config.js` or `.env`) exposing `API_BASE_URL`, `APP_BASE_PATH`
+- [x] Import and use config in `src/components/app.js` instead of hard-coded URLs
+- [ ] Replace `$app_url` in `referral.php` with a value from config or environment variable
+- [ ] Update `playwright.config.js` to consume central config for base URL
+- [ ] Adjust deploy scripts if necessary to pass production values
 ## Current Goal
--Debug registration count mismatch & add click/click-count UI
-- Referral code formatting bug fixed: `formatCode()` now strips existing dashes, pads, and formats as `XXXX-XXXX-XXXX`.
-- New issue: `fetchReferralCount` is not triggered on app init; counts remain stale until another action fires it.
+Add username_reset translations & finalize central URL config
+- New `config.json` created to store dev/prod URLs; plan is to deprecate JS‐only `config.js` so both JS and PHP share one source of truth.
+- [x] Add `config.json` with dev/prod URL settings
+- [x] Import and use config in `src/components/app.js` instead of hard-coded URLs
+- [ ] Replace `config.js` usage with runtime loading of `config.json` across JS
+- [ ] Implement helper to fetch `config.json` before app init
+- [ ] Replace `$app_url` in `referral.php` with value from `config.json` or environment variable
+- [ ] Update `playwright.config.js` to consume central config for base URL
+- [ ] Adjust deploy scripts if necessary to pass production values
+- [ ] Replace `config.json` with `config.yaml` (YAML central config)
+- [ ] Implement YAML loader in JS (webpack yaml-loader or js-yaml) and PHP (`yaml_parse_file` or fallback)
+- [ ] Update app.js, referral.php, playwright.config.js, deploy scripts to read from `config.yaml`
+- [ ] Remove deprecated `config.js` after YAML migration
 ## Current Goal
--Fix registration count mismatch (trigger fetchReferralCount on init) & finish click-count UI
-{{ ... }}
-- **Observation:** logs indicate `fetchReferralCount` may never be invoked on startup; need to ensure it runs after loading referral data and on interval.
-- fetchReferralCount now auto-triggers on app init; next step is translating server messages in app.js.
-- [x] Ensure `fetchReferralCount()` is called after username lock and on app init
-  - [x] Verify UI updates counts correctly after fetch
-  - [x] Schedule periodic refresh (e.g., every 5 min)
-- [ ] Localize backend referral response codes in app.js
-  - [ ] Add `translateReferralMessage(code)` helper
-  - [ ] Use translated messages when showing success/error toasts
-  - [ ] Test translations for DE/EN languages
+Migrate to YAML central config & add username_reset translations
+- User prefers YAML over JSON for central config; migrate to `config.yaml` for single-source configuration across JS and PHP.
+- js-yaml and yaml-loader dev dependencies installed to support YAML parsing in JS/Webpack.
+- Note: Added webpack yaml-loader to support importing YAML configs.
+- webpack.config.js updated to include yaml-loader rule for importing YAML configs.
+- `config.js` now loads `config.yaml` and exposes env config.
+- [x] Replace `config.json` with `config.yaml` (YAML central config)
+- [x] Install js-yaml and yaml-loader dev dependencies
+- [x] Add yaml-loader rule in webpack.config.js (JS YAML loader enabled)
+- [x] Implement YAML loader in PHP (`yaml_parse_file` or fallback)
+- [x] Update app.js, referral.php, playwright.config.js, deploy scripts to read from `config.yaml`
+- [x] Remove deprecated `config.js` after YAML migration
+- Simple YAML parser added at `utils/yaml.php` so PHP can read `config.yaml`.
+- [x] Update `referral.php` to load config via `utils/yaml.php`
 ## Current Goal
-Localize referral messages & verify registration/click counts
-- Server responses from `referral.php` now return codified message keys for localization; app.js must translate them client-side.
-- translateReferralMessage helper implemented in app.js and wired into redeemFriendCode for localized server messages.
-- [ ] Localize backend referral response codes in app.js
-  - [x] Add `translateReferralMessage(code)` helper
-  - [x] Use helper in redeemFriendCode success/error toasts
-  - [x] Integrate helper in fetchReferralCount error handling
-  - [ ] Replace remaining static referral messages with helper
-  - [ ] Test translations for DE/EN languages
-## Current Goal
-Finish localization integration & click-count UI verification
-- Server responses from `referral.php` now return codified message keys for localization; app.js translates them via `translateReferralMessage`.
-- Need to parse URL hash (`#ref=<CODE>`, `#activity=<ID>`) on app startup for referral deep linking and activity navigation.
-- [x] Implement URL hash parsing for deep links
-  - [x] Detect `#ref=<CODE>` on load and pre-fill referral flow
-  - [x] Detect `#activity=<ID>` and auto-start corresponding activity
-  - [ ] Add unit/e2e tests for hash parsing
-- [x] Refine hash cleanup: keep #activity param, remove only #ref and add English inline comment
-## Current Goal
-Verify deep link parsing & click-count UI
-- URL hash parsing implemented in app.js (parseUrlHash in init) to handle #ref and #activity deep links.
-- [x] Detect `#ref=<CODE>` on load and pre-fill referral flow
-- [x] Detect `#activity=<ID>` and auto-start corresponding activity
-- [ ] Add unit/e2e tests for hash parsing
-- Comments must always be written in English (user reminder).
-## Current Goal
-Refine hash cleanup & verify deep links
-- Deep link implementation caused runtime error: `showChordActivity is not a function`; need to add or import this method.
-- Coding standard reminder: comments must always be written in English.
-- [ ] Fix `showChordActivity is not a function` runtime error
-## Current Goal
-Fix showChordActivity runtime error & verify deep links
-- Deep link implementation updated: switched to event dispatching; runtime error fixed.
-- Referral deep link should store the referring code (`referredBy`) instead of pre-filling the input; show this info in Player Settings (e.g., "Friend: <username/code>").
-- [x] Fix `showChordActivity is not a function` runtime error
-- [ ] Persist `referredBy` code from `#ref=` hash into local user data
-  - [ ] Save to localStorage and include in `saveReferralData`
-  - [ ] Display referring friend (code or username) in Player Settings UI
-  - [ ] Adjust parseUrlHash comment / logic accordingly
-## Current Goal
-Persist referredBy code & verify deep links
-- Deep link logic now dispatches `set-pitch-mode` / `set-chord-mode` events instead of calling nonexistent functions; runtime error resolved.
-- Referral hash processing to store `referredBy` code (not auto-fill); will surface in Player Settings.
-- [ ] Persist `referredBy` code from `#ref=` hash into local user data
-  - [ ] Save to localStorage and include in `saveReferralData`
-  - [ ] Display referring friend (code or username) in Player Settings UI
-  - [ ] Adjust parseUrlHash comment / logic accordingly
-- referredBy property added; saveReferralData now persists it and parseUrlHash stores the code & displays info toast.
-- [ ] Persist `referredBy` code from `#ref=` hash into local user data
-  - [x] Save to localStorage and include in `saveReferralData`
-  - [ ] Display referring friend (code or username) in Player Settings UI
-  - [x] Adjust parseUrlHash comment / logic accordingly
-## Current Goal
-- Display referredBy in Settings UI & verify deep links
-[x] Persist `referredBy` code from `#ref=` hash into local user data
-  - [x] Save to localStorage and include in `saveReferralData`
-  - [x] Display referring friend (code or username) in Player Settings UI
-  - [x] Adjust parseUrlHash comment / logic accordingly
-
-## New Tasks
-- [x] Fix admin.php auto-refresh causing login redirect (implement conditional refresh post-auth, or AJAX data refresh)
-- Removed auto-refresh loop in admin panel; meta refresh now conditional on authenticated session.
-- Admin directory initialized as standalone Git repo; initial commits done and remote placeholder added; submodule link in main repo still pending.
-- [ ] Convert `admin/` directory into separate git submodule and add it to `.gitignore` in main repo
-  - [x] Add admin/ to .gitignore
-  - [x] Initialize git repository inside admin/
-  - [x] Commit initial admin code (admin.php, index.php)
-  - [x] Add remote repository and push admin dashboard code
-  - [ ] Add admin submodule reference to main repo and remove tracked files
-- Admin directory initialized as standalone Git repo; initial commits done and remote placeholder added; submodule link in main repo still pending.
-- [ ] Convert `admin/` directory into separate git submodule and add it to `.gitignore` in main repo
-  - [x] Add admin/ to .gitignore
-  - [x] Initialize git repository inside admin/
-  - [x] Commit initial admin code (admin.php, index.php)
-  - [x] Add remote repository and push admin dashboard code
-  - [ ] Add admin submodule reference to main repo and remove tracked files
-- Admin directory initialized as standalone Git repo; initial commits done and remote placeholder added; submodule link in main repo still pending.
-- Button in 2_5 chord characters activity uses `x-title`; need to change to Alpine `x-bind:title` or plain `title` to localize tooltip.
-- [ ] Fix tooltip attribute on Play Chord button (replace `x-title`)
-+# Deployment
-+- User asked to adjust deploy.sh lines 17-24 so the built app is reachable under `lalumo.eu/app` instead of site root; need to update rsync destination paths accordingly.
-+
-+## Task List (continued)
-+{{ ... }}
-- Button in 2_5 chord characters activity uses `x-title`; need to change to Alpine `x-bind:title` or plain `title` to localize tooltip.
-- [x] Fix tooltip attribute on Play Chord button (replace `x-title`)
-+- [x] Fix tooltip attribute on Play Chord button (replace `x-title`)
-+- [ ] Update deploy.sh rsync paths to deploy web app under /app on lalumo.eu
-+
-{{ ... }}
-## Current Goal
--Finalize admin submodule setup & fix Play Chord tooltip
-+Finalize admin submodule setup & update deploy script
+Finalize YAML integration & add username_reset translations
