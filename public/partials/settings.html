@@ -27,29 +27,29 @@
     
     <!-- Help Messages Settings -->
     <!-- Referral Information -->
+    <template x-if="referredBy">
     <h3 x-text="$store.strings?.referral_info || 'Friend Connection'"></h3>
-    <div class="referral-info-section">
+      <div class="referral-info-section">
       <!-- Display referring friend info if available -->
-      <template x-if="referredBy">
         <div class="referred-by-info">
           <p>
             <span x-text="$store.strings?.referred_by || 'Referred by:'" class="referral-label"></span>
             <span x-text="referredBy" class="referral-code"></span>
           </p>
         </div>
-      </template>
-      
-      <!-- Display user's own referral code if available -->
-      <template x-if="referralCode">
-        <div class="referral-code-info">
-          <p>
-            <span x-text="$store.strings?.your_referral_code || 'Your referral code:'" class="referral-label"></span>
-            <span x-text="referralCode" class="referral-code"></span>
-          </p>
-          <p x-text="$store.strings?.share_code_info || 'Share this code with friends to unlock rewards'"></p>
-        </div>
-      </template>
-    </div>
+      </div>
+    </template>
+    
+    <!-- Display user's own referral code if available -->
+    <template x-if="referralCode">
+      <div class="referral-code-info">
+        <p>
+          <span x-text="$store.strings?.your_referral_code || 'Your referral code:'" class="referral-label"></span>
+          <span x-text="referralCode" class="referral-code"></span>
+        </p>
+        <p x-text="$store.strings?.share_code_info || 'Share this code with friends to unlock rewards'"></p>
+      </div>
+    </template>
     
     <h3 x-text="$store.strings?.help_messages || 'Help Messages'"></h3>
     <div class="help-messages-section">
