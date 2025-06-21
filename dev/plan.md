@@ -22,193 +22,17 @@
 - Audio-engine singleton (`src/components/audio-engine.js`) now powers all chord sounds; initAudio simply ensures `audioEngine.initialize()` is called upon first user gesture.
 - User reports no sound in 2_1 and 2_2, and missing/unresponsive Play Full Chord button in 2_3; suspect off-screen buttons—set containers to 100% viewport height and debug Tone.js initialization / Transport start.
 - Initial fixes committed: forced Tone.start() in initAudio, added full-height CSS for activity containers, and improved Play Full Chord button container lookup; awaiting user verification.
-- `setupFullHeightContainers` function has been implemented to enforce 100vh containers and style rules.
-- Replaced require usage in setupFullHeightContainers to avoid bundler issues; enhanced Tone.js auto-start logic and fixed Play Full Chord button positioning.
-- User requested moving injected CSS rules into external stylesheet `src/styles/2_chords.css` and setting `.chord-chapters-view` height to 800px.
-- Created external stylesheet `src/styles/2_chords.css` including chord activity styles and `.chord-chapters-view` height rule.
-- Stylesheet now imported in `chords.js`, and inline CSS injection removed from `setupFullHeightContainers`.
-- Initial background image for 2_5 chord characters added in index.html activity container.
-- `updateCharacterBackground` function implemented and wired into `chords.js` (init & after correct answer); progress now persisted in `lalumo_chords_progress` (localStorage).
-- User requested extracting `update_progress_display` helper from pitches.js into a shared `common.js` for reuse.
-- `updateCharacterBackground` function implemented and wired into `chords.js` (init & after correct answer); progress now persisted in `lalumo_chords_progress` (localStorage).
-- User requested extracting `update_progress_display` helper from pitches.js into a shared `common.js` for reuse.
-- Discovery: two separate common.js files already exist (`src/components/pitches/common.js` and `src/components/2_chords/common.js`); need unified location for shared UI helpers.
-- New shared helper module `src/components/shared/ui-helpers.js` created containing `update_progress_display`; imported into `pitches.js`.
-- Shared UI helper now also imported in `chords.js` and used in 2_5 character activity to update progress display.
-- Runtime bug: `$store is not defined` when `update_progress_display` executes inside `chords.js` (Alpine context missing). Must refactor call to avoid direct `$store` reference (use component or Alpine.store()).
-- Need to remove legacy `update_progress_display` method from `pitches.js` and redirect all calls to shared helper.
-- Runtime bug `$store is not defined` in 2_5 progress display has been fixed by constructing strings via `this.$store` before passing to helper.
-- New UI issue: progress display shows duplicate "Correct answers" lines and no unlock hint. Must ensure single element and dynamic hint ("Get 10 correct ...", "Get 20 correct ...") renders correctly.
-- Removed redundant JS progress display in 2_5; Alpine bindings now show correct count and unlock hints.
-- Admin panel auto-refresh loop fixed; meta refresh now only active after successful authentication.
-- Admin directory initialized as standalone Git repo; initial commits done and remote placeholder added; submodule link in main repo still pending.
-- `debug-element` CSS class added to `main.css` to hide debug buttons by default; visibility toggled via `body.dev-mode`.
-- Inline `style="opacity: 0;"` attributes auto-replaced with `class="debug-element"` in index.html via sed.
-- Central URL config file `src/config.js` created; selects dev vs production and exposes `API_BASE_URL`, `APP_BASE_PATH`.
-- `app.js` now imports central config and uses it for API requests; referral.php and playwright config still need updates.
-- New `config.json` created to store dev/prod URLs; plan is to deprecate JS‐only `config.js` so both JS and PHP share one source of truth.
-- User prefers YAML over JSON for central config; migrate to `config.yaml` for single-source configuration across JS and PHP.
-- js-yaml and yaml-loader dev dependencies installed to support YAML parsing in JS/Webpack.
-- Note: Added webpack yaml-loader to support importing YAML configs.
-- webpack.config.js updated to include yaml-loader rule for importing YAML configs.
-- Frontend protection added: users cannot redeem their own referral code (redeemFriendCode now checks against `referralCode`).
-- Backend PHP now blocks self-redeem attempts when the username is supplied; frontend must include `username` in the redeem request.
-- Duplicate `redeemFriendCode` functions detected in `src/components/app.js` (lines ~291 and ~1953); older version must be removed to prevent conflicting logic.
-- Duplicate `redeemFriendCode` functions issue resolved: older version replaced with stub comment; only enhanced version remains.
-- Referral section being extracted to partial `src/partials/referrals.html`; `html-loader` dev dependency installed to enable inclusion via webpack.
-- Need to update `webpack.config.js` with `html-loader` rule and adjust `index.html` to load partial.
-- [x] Modularize referral code page using html-loader
-  - [x] Create `src/partials/referrals.html` with referral section content
-  - [x] Add `html-loader` rule in `webpack.config.js`
-  - [x] Replace referral section in `src/index.html` with `<div data-include="./partials/referrals.html"></div>` or appropriate require syntax
-  - [x] Verify build & runtime functionality without regressions
-- Note: Updated webpack.config.js with html-loader rule and index.html now includes referral partial.
-- Build currently fails: html-loader not processing referrals.html (Module parse failed). Need to adjust loader rule/import and restore successful build.
-- Note: Updated webpack.config.js with html-loader rule and index.html now includes referral partial.
-- Added `utils/html-include.js` with `loadHtmlPartials()` utility; imported in `index.js` to dynamically render HTML partials.
-- Build currently fails: html-loader not processing referrals.html (Module parse failed). Need to adjust loader rule/import and restore successful build.
-- [x] Fix html-loader rule so partial HTML files are correctly processed (adjust include/exclude pattern)
-- [x] Update or remove import statement in `index.js` to match loader expectations
-- [ ] Verify build & runtime functionality without regressions (build currently failing)
-- [x] Fix html-loader rule so partial HTML files are correctly processed (adjust include/exclude pattern)
-- [x] Update or remove import statement in `index.js` to match loader expectations
-- [x] Call `loadHtmlPartials()` after Alpine initialization to render partials
-- [ ] Validate runtime functionality of referral partial loading and resolve any server port conflicts
-- html-loader build error resolved with `esModule: false`; build now succeeds.
-- Introduced `utils/html-include.js` and `loadHtmlPartials()` runs post-Alpine to inject referral partial at runtime.
-- Runtime in browser shows `HTML partial loading error` (fetch 404 for ./partials/referrals.html); need to adjust dev server path or include utility logic.
-- Path handling updated in html-include.js and index.html to use absolute `/src/partials/referrals.html`; awaiting verification.
-- [x] Call `loadHtmlPartials()` after Alpine initialization to render partials
-- [ ] Validate runtime functionality of referral partial loading and resolve any server port conflicts
-- [ ] Fix fetch path / dev server config so `/src/partials/referrals.html` loads successfully
-- [x] Fix fetch path / dev server config so `/src/partials/referrals.html` loads successfully
-- Runtime in browser showed `HTML partial loading error` (404). Partial copied to `public/partials/referrals.html` so dev server can serve it.
-- Need to update `index.html` data-include path to `/partials/referrals.html` and verify loading succeeds.
-- [x] Copy `referrals.html` to `public/partials/` for dev server access
-- [x] Update `index.html` data-include to `/partials/referrals.html`
-- [x] Verify referral partial loads without 404 and renders correctly
-- [x] Verify referral partial loads without 404; test runtime
-- [x] Extract Impress page into `partials/impress.html` and include via data-include
-- [x] Extract Credits page into `partials/credits.html` and include via data-include
-- [x] Extract Settings page into `partials/settings.html` and include via data-include
-- Impress partial (`src/partials/impress.html`) created; next copy to public and hook up.
-- Runtime referral partial confirmed working via `/partials/referrals.html`.
-- Next: modularize remaining pages (Impress, Credits, Settings) similarly.
-- Ensure copied to `public/partials/` and paths updated.
-- [x] Update index.html to include Impress, Credits, Settings partials via data-include
-  - [x] Update index.html to include Impress partial via data-include
-  - [x] Update index.html to include Credits partial via data-include
-  - [x] Update index.html to include Settings partial via data-include
-  - [x] Verify Impress, Credits, Settings partials load without 404 and render correctly
-- Runtime referral partial confirmed working via `/partials/referrals.html`.
-- Impress, Credits, and Settings partial HTML files created under `src/partials/` and copied to `public/partials/`.
-- `index.html` updated to include Impress and Credits via data-include elements; Settings include still pending.
-- [x] Extract Impress page into `partials/impress.html` and include via data-include
-- [x] Extract Credits page into `partials/credits.html` and include via data-include
-- [x] Extract Settings page into `partials/settings.html` and include via data-include
-- [x] Copy `impress.html` to `public/partials/` and update path in index
-- [x] Copy `credits.html` to `public/partials/` and update path in index
-- [x] Copy `settings.html` to `public/partials/` and update path in index
-- [x] Verify Impress, Credits, Settings partials load without 404 and render correctly
-- [x] Copy `settings.html` to `public/partials/` and update path in index
-- [x] Update index.html to include Settings partial via data-include
-- [x] Verify Impress, Credits, Settings partials load without 404 and render correctly
-- Note: Reset section in settings partial restructured; reset buttons correctly embedded and partial copied to `public/partials/`; awaiting UI verification.
-- Existing file `src/components/pitches/1_2_match_sounds.js` already contains some helper logic.
-- New directory `src/components/1_pitches/` created to hold pitch activity modules; need to consolidate location.
-- New directory `src/components/1_pitches/` was created by mistake; per FILESTRUCTURE.md, activity modules stay under `src/components/pitches/`. Must consolidate to a single canonical path and remove duplicates.
-- New directory `src/components/1_pitches/` was created by mistake; per FILESTRUCTURE.md, activity modules must remain in `src/components/pitches/`. Consolidation required.
-- Duplicate directory `src/components/1_pitches/` has been removed.
-- Migration of 1_2_match_sounds functions to separate module was reverted; related tasks cancelled.
-- [x] Delete duplicate `src/components/1_pitches/1_2_match_sounds.js`
-- [x] Update imports in `pitches.js` to use canonical path
-- [x] Update `pitches.js` to import and delegate to new module (remove duplicates)
-- [ ] Run build & verify 1_2 activity functionality
-- [ ] Fix SyntaxError in `pitches.js` (line ~1297) and any related issues
-- [ ] Re-run build & confirm no errors
-- [ ] Manually inspect `pitches.js` for additional brace/comma mismatches introduced by automated replacements and correct them
-- [ ] Once build passes, test 1_2_match_sounds activity end-to-end
-- Runtime Alpine error: `component.stopCurrentSound is not a function` discovered in 1_2 activity; calling undefined method.
-- Earlier attempt to inline call caused massive syntax errors; must revert and instead export `stopCurrentSound` from pitches.js and import in 1_2 module.
-- Approach: add named export `stopCurrentSound` in pitches.js (no structural rewrite), alias in component (`this.stopCurrentSound` already exists), and import `{ stopCurrentSound }` into 1_2_match_sounds.js; call directly.
-- [ ] Fix `stopCurrentSound` undefined runtime error (expose/export function and import in 1_2 module)
-  - [ ] Revert erroneous inline replacement in pitches.js
-  - [ ] Add `export function stopCurrentSound(component)` helper encapsulating existing logic
-  - [ ] Ensure pitches.js references this helper; keep method intact
-  - [ ] Import and use `stopCurrentSound` directly in 1_2_match_sounds.js instead of `component.stopCurrentSound()`
-  - [ ] Run build & verify 1_2 activity functionality
-  - [ ] Retest 1_2_match_sounds activity end-to-end after fix
-- [ ] Fix `stopCurrentSound` undefined runtime error (expose/export function and import in 1_2 module)
-- [ ] Fix `stopCurrentSound` undefined runtime error (expose/export function and import in 1_2 module)
-- Chords progress tracking system implemented in `chords.js`, mirroring the logic from `pitches.js`; per-activity counts now persist in `lalumo_chords_progress`.
-- `checkColorAnswer` now increments `totalQuestions` and writes progress after each answer.
-- Color grid in index.html currently passes `$store` to `checkColorAnswer`, causing `currentChordType` to be undefined – need to pass the chords component (`$data`) instead.
-- Color grid click handlers updated to use `$data`; answers now recognized.
-- Scope bug in `playChord` fixed (outer `chord` variable); ReferenceError resolved.
-- [x] Fix color grid click handlers in index.html to pass chords component to `checkColorAnswer`.
-  - [ ] Verify rainbow / error feedback effects and audio playback trigger correctly after fix.
-  - Note: Fixing this bug revealed a new issue with audio playback not working as expected.
-- [ ] Fix audio playback issue in color-matching activity.
-- New issue: `ReferenceError: chord is not defined` inside `playChord`; likely variable scope bug preventing audio playback.
-- [x] Fix `ReferenceError: chord is not defined` in `playChord` and ensure sound plays.
-  - [ ] Verify audio playback works after fix.
-- New runtime error: `audioEngine.playChord is not a function`; need chord playback method in AudioEngine or adjust call in chords.js.
-- [ ] Fix audio playback issue in color-matching activity.
-  - [ ] Implement `playChord` method in `audio-engine.js` (poly-synth plays multiple notes) or refactor `chords.js` to use existing API
-  - [ ] Verify chord audio playback in 2_1 and 2_2 after fix
-- New runtime error resolved: `playChord` method implemented in AudioEngine; need sound verification.
-- Requested enhancement: `debugLog` should accept an array of tags and prepend them.
-- [x] Implement `playChord` method in `audio-engine.js` (poly-synth plays multiple notes) or refactor `chords.js` to use existing API
-- [ ] Verify chord audio playback in 2_1 and 2_2 after fix
-- [x] Update `debugLog` utility to accept array of tags
-- debugLog utility now accepts array of tags.
-- Naming conflict detected: two playChord functions (chords.js vs audio-engine.js); must resolve.
-- playChord function in chords.js renamed to playChordByType; internal and 2_1 module references updated.
-- [ ] Update all references to component.playChord to playChordByType in 2_chords modules and chords.js wrappers
-  - [ ] Replace playChord calls in 2_1_chord_color_matching.js
-  - [x] Replace playChord calls in 2_2_chord_mood_landscapes.js
-  - [ ] Remove/adjust guards that check typeof component.playChord
-  - [ ] Run build & verify no missing method errors
-- [ ] Run build & verify chord audio playback in 2_1 and 2_2 after refactor
-- [x] Resolve playChord naming conflict between chords.js and audio-engine.js (renamed to playChordByType)
-- [ ] Update all references to component.playChord to playChordByType in 2_chords modules and chords.js wrappers
-  - [x] Replace playChord calls in 2_1_chord_color_matching.js
-  - [ ] Replace playChord calls in 2_2_chord_mood_landscapes.js
-  - [x] Remove/adjust guards that check typeof component.playChord
-  - [ ] Run build & verify no missing method errors
-- [ ] Run build & verify chord audio playback in 2_1 and 2_2 after refactor
-- User requested dynamic background progression for 2_5 chord characters based on correct answer milestones (0, 10, 20) with specific images.
-- [x] Remove/adjust guards that check typeof component.playChord
-- [x] Replace playChord calls in 2_1_chord_color_matching.js
-- [x] Remove/adjust guards that check typeof component.playChord
-- [ ] Run build & verify chord audio playback in 2_1 and 2_2 after refactor
-- # New tasks for 2_5 chord character activity
-- [x] Update index.html 2_5 activity container to use initial background image `/public/images/backgrounds/2_5_chords_dog_cat_owl_no_squirrel_no_octopus.jpg`.
-- [ ] Implement progress-based background updates for 2_5 chord characters:
-  - [x] Add `updateCharacterBackground()` (similar to pitches.updateMatchingBackground).
-  - [x] Change background to *_squirrel_no_octopus at 10 correct answers.
-  - [x] Change background to *_squirrel_octopus at 20 correct answers.
-  - [x] Store & read progress in `lalumo_chords_progress`.
-  - [x] Wire `updateCharacterBackground` call in `chords.js` on init & after correct answer.
-  - [ ] Verify visuals during gameplay.
-- `updateCharacterBackground` helper implemented in `2_5_chord_characters.js` to switch backgrounds at 0/10/20 correct answers.
-- `updateCharacterBackground` now imported into `chords.js`; wiring to events pending.
-- [ ] Implement progress-based background updates for 2_5 chord characters:
-  - [x] Add `updateCharacterBackground()` (similar to pitches.updateMatchingBackground).
-  - [x] Change background to *_squirrel_no_octopus at 10 correct answers.
-  - [x] Change background to *_squirrel_octopus at 20 correct answers.
-  - [x] Store & read progress in `lalumo_chords_progress`.
-  - [x] Wire `updateCharacterBackground` call in `chords.js` on init & after correct answer.
-  - [ ] Verify visuals during gameplay.
-- Note: Wiring updateCharacterBackground and storing progress in lalumo_chords_progress is now complete.
-- Progress display added to **2_5** activity in index.html showing correct count and unlock hints.
-- [x] Verify visuals during gameplay.
-- User requested using the shared `update_progress_display` in 2_5 character activity.
-- [x] Remove local `update_progress_display` method from pitches.js and update calls to use shared helper
-- [x] Ensure build passes after refactor
-- [x] Integrate shared `update_progress_display` into 2_5 character activity (update index/chords logic)
+- Referral.php CORS headers refactored with explicit allowedOrigins and debug logging (`referral-debug.log`) to resolve cross-origin errors.
+- Debug logging now uses PHP `error_log`; file permission issue resolved.
+- `utils/js_config.php` now shows diagnostics (env & config) when accessed directly.
+- **Nginx config already sets `Access-Control-Allow-Origin` headers, leading to duplicates together with PHP headers.**
+- PHP CORS headers removed in referral.php; Nginx now solely sets CORS, duplicate header issue resolved.
+- `utils/js_config.php` now shows diagnostics (env & config) when accessed directly.
+- [x] Fix `$store` undefined error in 2_5 progress display
+- [x] Deduplicate progress display in 2_5 activity and inject unlock-hint text (10/20 thresholds)
+- [x] Add configurable CSS class to hide debug buttons (opacity 0) with toggle for local development
 ## Current Goal
-Implement referral link click tracking
+Update remaining PHP endpoints to use JS config
 ## Current Goal
 - [x] Fix `$store` undefined error in 2_5 progress display
 - [x] Deduplicate progress display in 2_5 activity and inject unlock-hint text (10/20 thresholds)
@@ -220,7 +44,8 @@ Implement referral link click tracking
 - [x] Replace inline `style="opacity: 0;"` on debug buttons with `class="debug-element"`
 - [x] Document/enable dev-mode body class toggle for local development
 - [x] Add configurable CSS class to hide debug buttons (opacity 0) with toggle for local development
-- [ ] Display shareable referral link with click count in UI
+- [x] Conditionally show `share_code_info` message only when rewards unlocked (settings.html)
+- [x] Fix debug buttons being still clickable despite display none
 ## Current Goal
 Implement backend self-redeem protection & share link display
 - Note: Frontend self-redeem protection implemented; users cannot redeem their own referral code.
@@ -247,10 +72,10 @@ Finalize Concept doc & complete self-redeem integration
 - [x] Add e2e test to confirm self-redeem is blocked
 - [x] Remove duplicate `redeemFriendCode` function (old version at ~291) from `app.js`
 -   - [x] Keep enhanced version (~1953) with dashed code validation pattern
--   - [ ] Run build & referral e2e tests to confirm no regressions
+-   - [ ] Run build & verify no missing method errors
 - Remove duplicate redeemFriendCode and verify build/tests pass
 - [x] Remove duplicate redeemFriendCode (stubbed old version)
--   - [ ] Run build & referral e2e tests to confirm no regressions
+-   - [ ] Run build & verify no missing method errors
 - [ ] Investigate missing user data in admin dashboard (DB insertion/query)
 -   - [ ] Verify referral.php inserts user & referral rows on registration
 -   - [ ] Fix issues and rerun admin dashboard tests
@@ -272,8 +97,8 @@ Automatic username unlock feature & verify /app asset loading
 - [x] If API indicates missing user, reset `isUsernameLocked` & `lockedUsername`, persist via `saveReferralData()`
 - [x] Show toast informing user that account was reset (translation pending)
 - Translation strings for username_reset are still missing in both English and German resources; must add them.
-- [ ] Add username_reset translation string to `values/strings.xml` (EN)
-- [ ] Add username_reset translation string to `values-de/strings.xml` (DE)
+- [x] Add username_reset translation string to `values/strings.xml` (EN)
+- [x] Add username_reset translation string to `values-de/strings.xml` (DE)
 - [ ] Verify toast uses localized username_reset string at runtime
 - Live deploy verified: assets load correctly from `/app/`.
 ## Current Goal
@@ -305,14 +130,91 @@ Migrate to YAML central config & add username_reset translations
 - js-yaml and yaml-loader dev dependencies installed to support YAML parsing in JS/Webpack.
 - Note: Added webpack yaml-loader to support importing YAML configs.
 - webpack.config.js updated to include yaml-loader rule for importing YAML configs.
-- `config.js` now loads `config.yaml` and exposes env config.
-- [x] Replace `config.json` with `config.yaml` (YAML central config)
+- Dev build (direct webpack) now succeeds, confirming loader works when run manually.
+- However, `npm run build:fast` still fails to parse config.yaml – likely different webpack invocation or path rules; must harmonize configs.
 - [x] Install js-yaml and yaml-loader dev dependencies
 - [x] Add yaml-loader rule in webpack.config.js (JS YAML loader enabled)
 - [x] Implement YAML loader in PHP (`yaml_parse_file` or fallback)
 - [x] Update app.js, referral.php, playwright.config.js, deploy scripts to read from `config.yaml`
 - [x] Remove deprecated `config.js` after YAML migration
-- Simple YAML parser added at `utils/yaml.php` so PHP can read `config.yaml`.
-- [x] Update `referral.php` to load config via `utils/yaml.php`
+- [ ] Fix webpack yaml-loader error parsing config.yaml (adjust loader include or file location)  
+  - [x] Verify dev build succeeds after fix  
+  - [x] Ensure `npm run build:fast` compiles without YAML errors  
+  - [x] Revert `config.js` to import YAML (remove hardcoded object)  
+  - [ ] Run build to confirm config loads correctly in both envs
+  - [ ] Investigate yaml-loader output (JSON string) and chain json parsing or adjust import syntax
+- Decision reached with user: Abandon YAML approach entirely; use JS `src/config.js` as single source of truth and let PHP parse it directly.
+- [x] Remove config.yaml and yaml-loader rule from webpack.config.js
+- [ ] Delete utils/yaml.php and any YAML parsing code
+- [ ] Update referral.php and other PHP files to parse values from src/config.js (regex or eval) instead of YAML
+- [ ] Clean up build scripts and docs referencing YAML
 ## Current Goal
-Finalize YAML integration & add username_reset translations
+Remove YAML config & implement PHP parsing of JS config
+- Dev build (direct webpack) now succeeds, confirming loader works when run manually.
+- However, `npm run build:fast` still fails to parse config.yaml – likely different webpack invocation or path rules; must harmonize configs.
+- [x] Fix webpack yaml-loader error parsing config.yaml (obsolete after YAML removal)
+- [ ] Delete utils/yaml.php and update referral.php to parse JS config
+## Current Goal
+- Delete utils/yaml.php & update referral.php to parse JS config
+- Decision reached with user: Abandon YAML approach entirely; use JS `src/config.js` as single source of truth and let PHP parse it directly.
+- New PHP parser `utils/js_config.php` created to extract config from JS for backend use.
+- [x] Remove config.yaml and yaml-loader rule from webpack.config.js
+- [x] Create `utils/js_config.php` to parse JS config (completed)
+- [ ] Update referral.php and other PHP files to use `getJsConfig()` instead of YAML
+- [ ] Delete utils/yaml.php after migration
+- [ ] Clean up build scripts and docs referencing YAML
+## Current Goal
+Update referral.php to use JS config parser & remove yaml.php
+- New PHP parser `utils/js_config.php` created to extract config from JS for backend use.
+- referral.php now imports `utils/js_config.php` and loads `src/config.js` (YAML removed)
+- [x] Remove config.yaml and yaml-loader rule from webpack.config.js
+- [x] Create `utils/js_config.php` to parse JS config (completed)
+- [ ] Update remaining PHP files to use `getJsConfig()` instead of YAML
+- [x] Update referral.php to use `getJsConfig()`
+- [ ] Update other PHP endpoints (admin dashboard, etc.) to use `getJsConfig()`
+## Current Goal
+Delete utils/yaml.php & migrate remaining PHP files to JS config
+- [x] Delete utils/yaml.php
+- [x] Update referral.php to use getJsConfig()
+- [ ] Update remaining PHP endpoints (admin dashboard, etc.) to use getJsConfig()
+## Current Goal
+Migrate remaining PHP endpoints to JS config
+- YAML config fully removed; JS config is now the single source of truth; `utils/yaml.php` deleted.
+- User requested using the shared `update_progress_display` in 2_5 character activity.
+- [x] Remove local `update_progress_display` method from pitches.js and update calls to use shared helper
+- [x] Ensure build passes after refactor
+- [x] Integrate shared `update_progress_display` into 2_5 character activity (update index/chords logic)
+## Current Goal
+Migrate remaining PHP endpoints to JS config & address CORS/domain issue
+- [x] Delete utils/yaml.php
+- [x] Update referral.php to use getJsConfig()
+- [ ] Update remaining PHP endpoints (admin dashboard, etc.) to use getJsConfig()
+- [x] Investigate CORS issue and domain configuration for proper API calls
+## Current Goal
+Migrate remaining PHP endpoints to JS config
+- Referral.php CORS headers refactored with explicit allowedOrigins and debug logging (`referral-debug.log`) to resolve cross-origin errors.
+- Debug logging now uses PHP `error_log`; file permission issue resolved.
+- `utils/js_config.php` now shows diagnostics (env & config) when accessed directly.
+- PHP CORS headers removed in referral.php; Nginx now solely sets CORS, duplicate header issue resolved.
+- `utils/js_config.php` now shows diagnostics (env & config) when accessed directly.
+- [x] Investigate CORS issue and domain configuration for proper API calls
+  - [x] Refactor CORS headers in referral.php with allowedOrigins list & debug log
+- [x] Fix `referral-debug.log` permission error (switched to error_log)
+- [x] Expose diagnostic endpoint in `utils/js_config.php` when accessed via browser (echo env + config)
+- [ ] Update admin dashboard PHP endpoints to include getJsConfig if needed
+## Current Goal
+Update admin dashboard PHP endpoints to JS config
+- [x] Fix `referral-debug.log` permission error (switched to error_log)
+- [x] Expose diagnostic endpoint in `utils/js_config.php` when accessed via browser (echo env + config)
+- [ ] Conditionally show `share_code_info` message only when rewards unlocked (settings.html)
+- [ ] Update admin dashboard PHP endpoints to include getJsConfig if needed
+- Production deploy still requests main bundle from root; need to adjust `base href` or webpack `publicPath` for live site.
+- Debug-element CSS strengthened with `pointer-events:none` and `!important` to prevent clicks.
+- deploy.sh now uploads PHP utils, admin directory and referral.php to `/app`, enabling backend endpoints in production.
+- [x] Conditionally show `share_code_info` message only when rewards unlocked (settings.html)
+- [ ] Fix production asset path issues (main JS loaded from root instead of /app)
+- [ ] Deploy / configure utils/js_config.php and admin endpoints under /app path
+- [ ] Verify production asset loading and endpoint accessibility after deploy
+- [ ] Update admin dashboard PHP endpoints to include getJsConfig if needed
+## Current Goal
+- Fix production asset path issues & verify PHP endpoints
