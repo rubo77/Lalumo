@@ -77,10 +77,8 @@ module.exports = (env, argv) => {
             }
           }
         },
-        {
-          test: /\.ya?ml$/,
-          use: 'yaml-loader'
-        },
+        // YAML support removed - using JS config directly
+
       ],
     },
     plugins: [

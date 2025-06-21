@@ -13,18 +13,26 @@ ini_set('display_errors', 1);
  * - POST mit redeemCode: Löst einen Freundescode ein
  */
 
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type');
+// Import JS Config laden
+require_once __DIR__ . '/utils/js_config.php';
+$config = getJsConfig(__DIR__ . '/src/config.js');
+
+// Debug-Log erstellen mit PHP error_log
+function debugLog($message) {
+    $timestamp = date('Y-m-d H:i:s');
+    error_log("[REFERRAL_DEBUG][$timestamp] $message");
+}
+
+// Debugging: Konfiguration protokollieren
+debugLog('Config loaded: ' . json_encode($config));
+debugLog('Request from: ' . ($_SERVER['HTTP_ORIGIN'] ?? 'unknown'));
+
+// CORS-Header werden durch Nginx gesetzt - nicht hier duplizieren, um Fehler zu vermeiden
+// Siehe: /etc/nginx/sites-available/lalumo
+debugLog('CORS headers will be set by Nginx');
+
+// Nur Content-Type setzen
 header('Content-Type: application/json');
-
-// Import YAML config helper
-require_once __DIR__ . '/utils/yaml.php';
-
-// Load configuration from central YAML file
-$config = getConfig(__DIR__ . '/config.yaml');
-
-// CORS-Header werden bereits auf Nginx-Ebene gesetzt
 
 // Bei OPTIONS direkt antworten (CORS preflight)
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
