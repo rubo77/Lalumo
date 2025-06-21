@@ -6,12 +6,23 @@
 
 /* Debug-Element Sichtbarkeitskontrolle */
 .debug-element {
-  opacity: 0; /* Standardmäßig ausgeblendet */
+  opacity: 0 !important;
+  display: none !important; /* Standardmäßig ausgeblendet */
+  visibility: hidden !important;
+  pointer-events: none !important; /* Verhindert jegliche Klick-Interaktion */
+  position: absolute !important;
+  z-index: -999 !important;
 }
 
 /* Wenn die Entwicklungsumgebung aktiv ist (über body-Klasse steuerbar) */
-body.dev-mode .debug-element {
-  opacity: 1; /* In der Entwicklungsumgebung sichtbar */
+html body.dev-mode .debug-element {
+  /* Für Entwicklungsmodus anpassen */
+  display: inline-block !important;
+  opacity: 0.7 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+  position: static !important;
+  z-index: auto !important;
 }
 
 /* Custom icon styles */

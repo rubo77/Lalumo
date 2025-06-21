@@ -47,7 +47,10 @@
           <span x-text="$store.strings?.your_referral_code || 'Your referral code:'" class="referral-label"></span>
           <span x-text="referralCode" class="referral-code"></span>
         </p>
-        <p x-text="$store.strings?.share_code_info || 'Share this code with friends to unlock rewards'"></p>
+        <!-- Zeige die Share-Info nur an, wenn Belohnungen freigeschaltet sind -->
+        <template x-if="$store.user && $store.user.rewardsUnlocked">
+          <p x-text="$store.strings?.share_code_info || 'Share this code with friends to unlock rewards'"></p>
+        </template>
       </div>
     </template>
     
