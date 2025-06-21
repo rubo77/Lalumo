@@ -227,7 +227,8 @@ elseif ($method === 'GET') {
             $db->exec("UPDATE referrals SET click_count = click_count + 1 WHERE referrer_id = $referrerId");
             
             // Leite zur App mit dem Code in einem URL-Parameter weiter
-            header('Location: /?ref=' . urlencode($code));
+            $app_url = 'http://localhost:9091';
+            header('Location: '.$app_url.'/#ref=' . urlencode($code));
             exit;
         } else {
             http_response_code(404);
