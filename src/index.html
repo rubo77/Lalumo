@@ -284,7 +284,7 @@
     </div>
 
     <!-- Chapter: Pitch Chapters View -->
-    <section x-show="active === 'pitches'" x-transition class="pitch-chapters-view lazyload-bg" data-background-image="./images/x.gif" style="background-size: cover; background-position: top center; border-radius: 0;">
+    <section class="chapters-view" x-show="active === 'pitches'" x-transition>
       <div x-data="pitches()" x-init="init()">
         
         <!-- Mascot Message Overlay -->
@@ -541,7 +541,7 @@
     </section>
 
     <!-- Chapter: Tone Colors -->
-    <section x-show="active === 'tonecolors'" x-transition>
+    <section class="chapters-view" x-show="active === 'tonecolors'" x-transition>
       <div x-data="tonecolors" x-init="init()">
         <h2>Discover Tone Colors</h2>
         <div class="tone-grid">
@@ -558,13 +558,13 @@
     </section>
     
     <!-- Chapter: Rhythm -->
-    <section x-show="active === 'rhythms'" x-transition>
+    <section class="chapters-view" x-show="active === 'rhythms'" x-transition>
       <h2>Rhythm Exercises</h2>
       <p>Coming soon!</p>
     </section>
     
     <!-- Chapter: Chords -->
-    <section x-show="active === 'chords'" x-transition class="chord-chapters-view lazyload-bg" data-background-image="./x.gif" style="background-size: cover; background-position: top center; border-radius: 0;">
+    <section class="chapters-view" x-show="active === 'chords'" x-transition class="chord-chapters-view lazyload-bg" data-background-image="./x.gif" style="background-size: cover; background-position: top center; border-radius: 0;">
       <div x-data="chords()" x-init="init()">
         
         <!-- Main chord activity selection screen -->
@@ -580,7 +580,7 @@
             </button>
           </div>
           
-          <div class="activity-container">
+          <div class="chords-container">
             <h2 x-text="$store.strings?.chord_color_matching_title || 'Match Colors to Chords'">Match Colors to Chords</h2>
             
             <div class="color-matching-explanation">
@@ -655,7 +655,7 @@
             </button>
           </div>
           
-          <div class="activity-container">
+          <div class="chords-container">
             <h2 x-text="$store.strings?.mood_landscapes_title || 'Chord Mood Landscapes'">Chord Mood Landscapes</h2>
             
             <div class="mood-landscapes-explanation">
@@ -701,7 +701,7 @@
             </button>
           </div>
           
-          <div class="activity-container">
+          <div class="chords-container">
             <h2 x-text="$store.strings?.chord_building_title || 'Build Your Own Chords'">Build Your Own Chords</h2>
             
             <div class="chord-building-explanation">
@@ -733,7 +733,7 @@
             </button>
           </div>
           
-          <div class="activity-container">
+          <div class="chords-container">
             <h2 x-text="$store.strings?.missing_note_title || 'Find the Missing Note'">Find the Missing Note</h2>
             
             <div class="missing-note-explanation">
@@ -761,14 +761,14 @@
         </div>
         
         <!-- 2_5 Chords - Character Matching Activity -->
-        <div x-show="mode === '2_5_chords_characters'" class="chord-activity activity-container lazyload-bg" data-background-image="./images/backgrounds/2_5_chords_dog_cat_owl_no_squirrel_no_octopus.png" style="background-size: cover; background-position: top left;">
+        <div id="2_5_chords_characters" x-show="mode === '2_5_chords_characters'" class="chord-activity activity-container lazyload-bg" data-background-image="./images/backgrounds/2_5_chords_dog_cat_owl_no_squirrel_no_octopus.png" style="background-size: cover; background-position: top left;">
           <div class="mode-header">
             <button class="back-to-main" @click="setMode('main')" aria-label="Back to main menu">
               <span style="font-size: 24px;">🏠</span>
             </button>
           </div>
           
-          <div class="activity-container">
+          <div class="chords-container">
             <h2 x-text="$store.strings?.chord_characters_title || 'Chord Characters'">Chord Characters</h2>
             
             <div class="character-matching-explanation">
@@ -834,7 +834,7 @@
             </button>
           </div>
           
-          <div class="activity-container">
+          <div class="chords-container">
             <h2 x-text="$store.strings?.harmony_gardens_title || 'Harmony Gardens'">Harmony Gardens</h2>
             
             <div class="harmony-gardens-explanation">
@@ -896,7 +896,7 @@
     </section>
     
     <!-- Chapter: Free Play -->
-    <section x-show="active === 'freeplay'" x-transition>
+    <section class="chapters-view" x-show="active === 'freeplay'" x-transition>
       <h2>Free Play Mode</h2>
       <p>Coming soon!</p>
     </section>

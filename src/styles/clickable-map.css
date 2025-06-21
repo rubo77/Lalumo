@@ -1,5 +1,5 @@
-/* Pitch Chapters View - Fullscreen styles */
-.pitch-chapters-view {
+/* Chapters View - Fullscreen styles */
+.chapters-view {
   position: fixed;
   top: 0;
   left: 0;
@@ -15,7 +15,7 @@
 
 /* Limit width on larger screens */
 @media (min-width: 1024px) {
-  .pitch-chapters-view > div {
+  .chapters-view > div {
     width: 70%;
     margin: 0 auto;
     position: relative;
