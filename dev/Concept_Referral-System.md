@@ -168,9 +168,9 @@ dabei gibt es 2 schritte: wenn ein user sixh nur auf den link geklickt hat, dann
 - die datenbank soll gegen sql-attacks sicher sein
 - das passwort muss in einer konfiguration gespeichert werden, die nicht im git repo liegt. am besten in einer globalen config, die nicht im git liegt, environment oder so
 
-- Es darf im json reply von referral.php keine sprache übergeben werden, sondern codifizierte sprache, damit diese in der app beim empfangen der antwort in die eingestellte sprache umgewandelt werden kann.
+- Es muss im json der antwort in die eingestellte sprache umgewandelt werden kann.
 
-- wenn der user gelockt ist, dan darf der nicht mehr editierbar sein im player settings
+- wenn der username gelockt ist, dan darf der nicht mehr editierbar sein im player settings (grep "' => " referral.php )
 
 
 ergänze im konzept die häkchen bei den punkten die schon erledigt sind uund ergänue [ ] häkchen, was noch nciht erledigt ist. passe das konzept ggf an, so dass es einer dokumentation wird, wie das referral system funktioniert.

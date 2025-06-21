@@ -235,10 +235,14 @@ export function app() {
           // Check if the chapter should be unlocked
           if (this.referralCount >= 3 && !this.isChordChapterUnlocked) {
             this.isChordChapterUnlocked = true;
+            this.saveReferralData();
           }
-          
-          // Save updated data
-          this.saveReferralData();
+        } else if (data.error) {
+          // Fehlerbehandlung mit übersetzten Nachrichten
+          const errorMessage = this.translateReferralMessage(data.error);
+          console.error('[REFERRAL] Serverfehler:', errorMessage);
+          // Wir zeigen hier keine Alert-Nachricht an, um den Benutzer nicht zu stören
+          // bei automatischen Hintergrundaktualisierungen
         }
       } catch (error) {
         console.error('Error fetching referral count:', error);
@@ -1924,6 +1928,49 @@ export function app() {
     },
     
     /**
+     * Übersetzt Referral-Nachrichtencodes in lokalisierte Strings basierend auf der aktuellen Sprache
+     * @param {string} messageCode - Der Nachrichtencode aus der API-Antwort
+     * @returns {string} Lokalisierter Text 
+     */
+    translateReferralMessage(messageCode) {
+      // Fallback für den Fall, dass kein Store oder keine Strings verfügbar sind
+      if (!this.$store || !this.$store.strings) {
+        console.warn('[TRANSLATE] $store.strings nicht verfügbar, verwende Fallback-Übersetzungen');
+        // Fallback-Übersetzungen
+        const fallbackTranslations = {
+          'invalid_referral_code': 'Invalid referral code format. Please check and try again.',
+          'you_cannot_redeem_your_own_referral_code': 'You cannot redeem your own referral code!',
+          'code_successfully_redeemed': 'Friend code redeemed successfully!',
+          'username_required': 'Username is required to redeem a code.',
+          'username_exists': 'This username is already taken. Please choose another one.',
+          'user_creation_failed': 'Failed to create user account. Please try again.',
+          'database_error': 'A database error occurred. Please try again later.',
+          'invalid_get_parameters': 'Invalid request parameters.',
+          'method_not_allowed': 'This request method is not allowed.'
+        };
+        
+        return fallbackTranslations[messageCode] || messageCode || 'An unknown error occurred.';
+      }
+      
+      // Mapping von API-Nachrichtencodes zu $store.strings-Schlüsseln
+      const messageKeyMap = {
+        'invalid_referral_code': 'invalid_code',
+        'you_cannot_redeem_your_own_referral_code': 'own_code_error',
+        'code_successfully_redeemed': 'code_redeemed',
+        'username_required': 'username_required',
+        'username_exists': 'username_exists',
+        'user_creation_failed': 'user_creation_failed',
+        'database_error': 'database_error',
+        'invalid_get_parameters': 'invalid_parameters',
+        'method_not_allowed': 'method_not_allowed'
+      };
+      
+      // Übersetzten String zurückgeben oder Fallback, wenn nicht gefunden
+      const storeKey = messageKeyMap[messageCode];
+      return this.$store.strings[storeKey] || messageCode || 'An unknown error occurred.';
+    },
+    
+    /**
      * Löst einen Freundes-Referral-Code ein
      */
     async redeemFriendCode() {
@@ -1975,11 +2022,13 @@ export function app() {
           const data = await response.json();
           if (response.status === 403) {
             // 403 Forbidden - Benutzer versucht, eigenen Code einzulösen
-            alert(this.$store.strings?.own_code_error || data.error || 'You cannot redeem your own referral code!');
+            const errorMessage = this.translateReferralMessage(data.error || 'you_cannot_redeem_your_own_referral_code');
+            alert(errorMessage);
             return;
           } else {
             // Andere API-Fehler
-            alert(data.error || this.$store.strings?.redeem_failed || 'Failed to redeem code. Please try again.');
+            const errorMessage = this.translateReferralMessage(data.error || 'redeem_failed');
+            alert(errorMessage);
             return;
           }
         }
@@ -2006,7 +2055,8 @@ export function app() {
           
           // UI-Feedback
           this.friendCode = ''; // Eingabefeld zurücksetzen
-          alert(this.$store.strings?.code_redeemed || 'Friend code redeemed successfully!');
+          const successMessage = this.translateReferralMessage(data.message || 'code_successfully_redeemed');
+          alert(successMessage);
           
           // Statistiken aktualisieren
           this.fetchReferralCount();

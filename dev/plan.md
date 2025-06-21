@@ -302,7 +302,7 @@ Fix referral code formatting & add click count UI
 - Added verbose logging and error handling to `fetchReferralCount` for easier debugging of registration/count issues.
 - [x] Add detailed diagnostics/logging to fetchReferralCount
 - **Observation:** logs indicate `fetchReferralCount` may never be invoked on startup; need to ensure it runs after loading referral data and on interval.
-- [ ] Ensure `fetchReferralCount()` is called after username lock and on app init
+- [x] Ensure `fetchReferralCount()` is called after username lock and on app init
 - [ ] Verify backend JSON uses `registrationCount` / `clickCount` fields (camelCase)
 - [ ] Update `fetchReferralCount` mapping if necessary
 - [ ] Persist updated counts via `saveReferralData` and refresh UI bindings
@@ -313,3 +313,24 @@ Fix referral code formatting & add click count UI
 ## Current Goal
 -Fix registration count mismatch (trigger fetchReferralCount on init) & finish click-count UI
 {{ ... }}
+- **Observation:** logs indicate `fetchReferralCount` may never be invoked on startup; need to ensure it runs after loading referral data and on interval.
+- fetchReferralCount now auto-triggers on app init; next step is translating server messages in app.js.
+- [x] Ensure `fetchReferralCount()` is called after username lock and on app init
+  - [x] Verify UI updates counts correctly after fetch
+  - [x] Schedule periodic refresh (e.g., every 5 min)
+- [ ] Localize backend referral response codes in app.js
+  - [ ] Add `translateReferralMessage(code)` helper
+  - [ ] Use translated messages when showing success/error toasts
+  - [ ] Test translations for DE/EN languages
+## Current Goal
+Localize referral messages & verify registration/click counts
+- Server responses from `referral.php` now return codified message keys for localization; app.js must translate them client-side.
+- translateReferralMessage helper implemented in app.js and wired into redeemFriendCode for localized server messages.
+- [ ] Localize backend referral response codes in app.js
+  - [x] Add `translateReferralMessage(code)` helper
+  - [x] Use helper in redeemFriendCode success/error toasts
+  - [x] Integrate helper in fetchReferralCount error handling
+  - [ ] Replace remaining static referral messages with helper
+  - [ ] Test translations for DE/EN languages
+## Current Goal
+Finish localization integration & click-count UI verification
