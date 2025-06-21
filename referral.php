@@ -333,7 +333,14 @@ function generateReferralCode($username) {
  * Formatiere einen 12-stelligen Code mit Bindestrichen
  */
 function formatCode($code) {
-    $code = str_pad(substr($code, 0, 12), 12, '0');
-    return substr($code, 0, 4) . '-' . substr($code, 4, 4) . '-' . substr($code, 8, 4);
+    // Entferne alle vorhandenen Bindestriche und Leerzeichen
+    $plainCode = preg_replace('/[-\s]+/', '', $code);
+    
+    // Beschränke auf 12 Zeichen und fülle auf falls nötig
+    $plainCode = strtoupper(substr($plainCode, 0, 12));
+    $plainCode = str_pad($plainCode, 12, '0');
+    
+    // Formatiere mit Bindestrichen (XXXX-XXXX-XXXX)
+    return substr($plainCode, 0, 4) . '-' . substr($plainCode, 4, 4) . '-' . substr($plainCode, 8, 4);
 }
 ?>

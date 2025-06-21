@@ -46,129 +46,6 @@
 - Backend PHP now blocks self-redeem attempts when the username is supplied; frontend must include `username` in the redeem request.
 - Duplicate `redeemFriendCode` functions detected in `src/components/app.js` (lines ~291 and ~1953); older version must be removed to prevent conflicting logic.
 - Duplicate `redeemFriendCode` functions issue resolved: older version replaced with stub comment; only enhanced version remains.
-- Index menu restructured: locked Chords chapter button implemented and functional referral-code page added beneath Pitches chapter.
-- Referral backend (PHP) now fully functional; nginx (or web server) configuration and SQLite persistence implemented to track referral clicks & registrations.
-- Alpine main component lives in `src/components/app.js`; referral system state & methods must be implemented there (not inline in index.html).
-- Referral-view layout enhanced with username registration flow; displays username and referral code after locking.
-- `referral.php` extended with SQLite persistence and click tracking; backend endpoint now fully functional (needs frontend integration & testing).
-- Frontend `app.js` now points to `http://localhost:8080/referral.php`; `lockUsername`, new `fetchReferralCount`, and updated `redeemFriendCode` integrate with the backend and persist counts in state.
-- Referral-view page now displays registration and click statistics and unlock state; UI complete.
-- Referral-view UI enhanced with detailed registration/click stats and unlocked-status indicator; ready for e2e testing.
-- [x] Hamburger menu now auto-closes on referral view activation (index.html updated).
-- [x] Simple password-protected admin dashboard `admin.php` lists registered users and referral stats.
-- Note: New user requirements include persisting registration state in localStorage and fetching referral counts on page load.
-- Implemented localStorage persistence (including referralClickCount) and auto-fetch of referral stats on app load.
-- Note: User requested automated end-to-end testing using Playwright with a 10 s timeout to avoid page hangs.
-- Implement tests for admin dashboard accessibility via http://localhost:9091/admin.php.
-- Playwright end-to-end and admin dashboard unit tests implemented; ready to run.
-- [x] Add Playwright end-to-end tests for referral workflow (registration, click tracking, redeem, unlock) with 10 s timeout.
-- [x] Add unit test (Node) for admin dashboard endpoint (`admin.php`).
-- Admin dashboard GET request returns login page (HTTP 200), but POST authentication with password currently returns HTTP 500 – needs debugging.
-- Initial investigation indicates the 500 stems from SQLite DB init: missing `data/` directory and unhandled exceptions in `admin.php`.
-- Admin dashboard authentication fixed: data directory ensured and improved SQLite error handling; POST now returns 200 OK.
-- Admin dashboard JSON API verified via wget; returns correct statistics payload.
-- Playwright referral-system tests initiated (awaiting results).
-- User requested hero logo image (logo_bird_sings.jpg) be shown as a circular background icon without border on homepage.
-- Hero logo now styled via CSS as circular background icon without border; img tag removed.
-- User asked if logo image can be gitignored; need to update .gitignore accordingly.
-- logo path added to .gitignore.
-- Admin dashboard shows no data after registration; need to confirm SQLite insert and refresh logic.
-- Admin dashboard shows no data after registration; need to confirm SQLite insert and refresh logic.
-- Observed `/data` directory exists but `referrals.db` not created; registration POST may not trigger DB creation/insert. Debug `referral.php` registration flow and ensure DB/tables/rows are created.
-- Nginx logs revealed permission errors (`/var/www/Musici/data` not writable); directory permissions fixed via `sudo chmod`, retest registration flow.
-- SQLite database `referrals.db` now created after registration attempt; still shows no users, indicating insert logic or admin query needs debugging.
-- Manual registration via curl (`testuser123`) succeeded; user inserted and referral code returned, confirming `referral.php` insert logic works.
-- Admin dashboard JSON still returns empty user list; likely SQL query or refresh issue in `admin.php` requiring debugging.
-- Root cause: `admin.php` uses non-existent columns (`referrer_code`, `referral_type`) in its SQL; query must join `users` and `referrals` on `referrer_id` and select `click_count`, `registration_count`.
-- Admin dashboard SQL query updated to join `users` and `referrals`; however JSON API still returns empty list—need to verify DB path/data and table join logic.
-- Verified `users` table contains registration (e.g., testuser123), but `referrals` table lacks corresponding row; LEFT JOIN still yields NULL counts yet API returns empty—investigate query filtering and ensure referral row insertion.
-- Admin dashboard SQL query updated to aggregate counts by `referral_type`; JSON API now correctly lists registered users and statistics.
-- Android icon assets available in `dev/IconKitchen-Output/web/`; use for favicons.
-- Icon files copied to `src/` and `src/icons/`; favicon links added to `src/index.html`.
-- Icon files copied to `src/` and `src/icons/`; favicon links added to `src/index.html`.
-- Favicon links added to `homepage/index.html` and `favicon.ico` copied to project root; favicon setup complete.
-- 404 for `/favicon.ico` in webpack dev server resolved by copying `favicon.ico` to `public/` directory; curl now returns 200.
-- User requested enhanced frontend feedback for username registration: spinner on button while awaiting response, visual success (show password) or error messages, and a hint indicating the username will be locked.
-- User requested enhanced frontend feedback for username registration: spinner on button while awaiting response, visual success (show password) or error messages, and a hint indicating the username will be locked.
-- Registration UI feedback (spinner, success/error messages, password display) integrated into index.html; `isRegistering` bound and explanatory text added.
-- Reset section in settings partial restructured; reset buttons correctly embedded and partial copied to `public/partials/`; awaiting UI verification.
-- `copyToClipboard` function in app.js generalized (including improved fallback) to copy arbitrary text, enabling password copy.
-- Missing registration feedback strings (`registration_success`, `registration_error`, `username_exists`) added to `strings-de.xml`.
-- Ensure `admin.php` queries correctly fetch user data from SQLite DB
-- [x] Ensure `admin.php` queries correctly fetch user data from SQLite DB
-- Investigate why updated query still returns zero rows (check DB contents & paths)
-- [x] Investigate why updated query still returns zero rows (check DB contents & paths)
-- Verify admin JSON API lists newly registered users after change
-- [x] Verify admin JSON API lists newly registered users after change
-- Adjust `admin.php` queries if schema mismatch
-- [x] Adjust `admin.php` queries if schema mismatch
-- Re-test admin dashboard after registration
-- [x] Re-test admin dashboard after registration
-- Add Android icon as favicon to app index page and homepage
-  - [x] Copy favicon and icon PNGs to `src/` and `src/icons/`
-  - [x] Insert <link rel="icon"> tags in `src/index.html`
-  - [x] Insert <link rel="icon"> tags in `homepage/index.html`
-  - [x] Copy `favicon.ico` to `public/` for dev server
-- Clean up `dev/Concept_Referral-System.md`: remove completed items and document current referral data flow, DB schema, code interactions
-- Concept doc now lists new TODOs: duplicate-username check, automatic password generation, richer UI feedback, admin user deletion, and deploy sync requirements
-- Duplicate username check and automatic password generation implemented in referral.php; POST returns password and 409 on duplicates.
-- [x] Update `referral.php` to reject duplicate usernames and generate password
-- [x] Clean up `dev/Concept_Referral-System.md`: remove completed items and document current referral data flow, DB schema, code interactions
-- Legacy `lockUsername()` implementation removed; consolidated version starting at line ~1757 remains and includes UI feedback logic. Need final cleanup & build fix.
-- Initial removal of the first (legacy) `lockUsername()` implementation done; still need to clean up leftover comment and verify single definitive version compiles.
-- Legacy `lockUsername()` implementation removed; consolidated version starting at line ~1757 remains and includes UI feedback logic.
-- API URL updated to http://localhost:8080/referral.php and header comment clarified.
-- API URL updated to http://localhost:8080/referral.php and header comment clarified.
-- Build now passes after lockUsername refactor.
-- Frontend registration fetch fails due to CORS (duplicate/missing Access-Control-Allow-Origin header); need to fix server headers.
-- Duplicate CORS headers removed from `referral.php`; Nginx now exclusively sets CORS headers.
-- [x] Fix CORS headers for referral.php (single Access-Control-Allow-Origin)
-- [x] Fix `referral.php` GET endpoint for `username` stats to return correct JSON and avoid HTTP 500
-- Backend: Improved `referral.php` GET handler for `username` to avoid 500 errors, auto-create referral rows when missing.
-- Encountering `403 Forbidden` when accessing `http://localhost:8080`; likely Nginx root/permissions issue—must resolve to test UI. Temporarily started PHP dev server on http://127.0.0.1:8000 for testing; need permanent fix.
-- [ ] Verify UI feedback works, registration succeeds, password displayed and stats fetched after fixes
-- [ ] Test frontend via http://127.0.0.1:8000 with PHP dev server and run registration flow
-- [ ] Fix 403 Forbidden on `http://localhost:8080` so the frontend is accessible for testing (Nginx root / permissions)
-- [ ] Update `fetchReferralCount()` to parse updated payload and robustly handle errors
-- [ ] Perform end-to-end testing of referral workflow and fix issues
-- [x] Style hero logo (images/logo_bird_sings.jpg) as round background icon without border in homepage.
-- [x] Add logo image path to .gitignore (confirm with user).
-- [ ] Investigate missing admin data: verify SQLite DB entry on registration and fix.
-- [x] Ensure `referral.php` username registration inserts into `users` & `referrals` tables
-- [x] Confirm `referrals.db` file is created after first registration
-- [x] Ensure `admin.php` queries correctly fetch user data from SQLite DB
-  - [x] Fix data directory permissions so PHP can create SQLite DB
-  - [x] Rewrite `getUserStats` SQL to join `users` and `referrals` on `referrer_id` and fetch `click_count`, `registration_count`
-  - [x] Investigate why updated query still returns zero rows (check DB contents & paths)
-  - [x] Verify `users` table has data but join returns none (referrals row missing)
-  - [x] Fix `referrals` table schema (add `referrer_id`, `click_count`, `registration_count`) or align code to current schema
-  - [x] Ensure `referral.php` always inserts a row into `referrals` for new users (after schema fix)
-  - [x] Backfill `referrals` table for existing users (migration script or SQL)
-  - [x] Modify admin query to use `COALESCE(r.click_count,0)` etc. to include users even if no referral row
-  - [x] Verify admin JSON API lists newly registered users after change
-  - [ ] Update admin dashboard table rendering to use new fields
-  - [x] Verify admin JSON API lists newly registered users after change
-  - [ ] Adjust `admin.php` queries if schema mismatch
-- [x] Re-test admin dashboard after registration
-- [x] Re-test admin dashboard after registration
-- [x] Add Android icon as favicon to app index page and homepage
-  - [x] Copy favicon and icon PNGs to `src/` and `src/icons/`
-  - [x] Insert <link rel="icon"> tags in `src/index.html`
-  - [x] Insert <link rel="icon"> tags in `homepage/index.html`
-  - [x] Copy `favicon.ico` to `public/` for dev server
-- [x] Update `referral.php` to reject duplicate usernames and generate password
-- [ ] Extend `lockUsername()` flow to show spinner, disable button, and display success (password) or detailed error messages
-- [x] Add explanatory text before Register button about username locking
-- [ ] Clean up `dev/Concept_Referral-System.md`: remove completed items and document current referral data flow, DB schema, code interactions
-- [ ] Implement delete-user functionality in admin dashboard
-- [ ] Ensure `deploy.sh` syncs PHP files and initializes SQLite DB on production server
-- User requested limiting consecutive identical pitch patterns to a maximum of three; requires update in `pitches.js` pattern selection logic.
-- Initial implementation committed but introduced extensive syntax/lint errors in `pitches.js`; needs cleanup and verification.
-- [x] Update `referral.php` to reject duplicate usernames and generate password
-- [ ] Limit consecutive pattern repetitions to max 3 in `pitches.js` matching mode
-  - [ ] Fix syntax/lint errors introduced in `pitches.js` and finalize pattern limit logic
-  - [x] Remove duplicated second `data()` block (lines ~2849-2893)
-  - [ ] Remove any remaining duplicate `methods` block / stray code and ensure build passes
 - Referral section being extracted to partial `src/partials/referrals.html`; `html-loader` dev dependency installed to enable inclusion via webpack.
 - Need to update `webpack.config.js` with `html-loader` rule and adjust `index.html` to load partial.
 - [x] Modularize referral code page using html-loader
@@ -323,6 +200,8 @@
 - [x] Ensure build passes after refactor
 - [x] Integrate shared `update_progress_display` into 2_5 character activity (update index/chords logic)
 ## Current Goal
+Implement referral link click tracking
+## Current Goal
 - [x] Fix `$store` undefined error in 2_5 progress display
 - [x] Deduplicate progress display in 2_5 activity and inject unlock-hint text (10/20 thresholds)
 - [x] Add configurable CSS class to hide debug buttons (opacity 0) with toggle for local development
@@ -362,3 +241,43 @@ Finalize Concept doc & complete self-redeem integration
 -   - [x] Keep enhanced version (~1953) with dashed code validation pattern
 -   - [ ] Run build & referral e2e tests to confirm no regressions
 - Remove duplicate redeemFriendCode and verify build/tests pass
+- [x] Remove duplicate redeemFriendCode (stubbed old version)
+-   - [ ] Run build & referral e2e tests to confirm no regressions
+- [ ] Investigate missing user data in admin dashboard (DB insertion/query)
+-   - [ ] Verify referral.php inserts user & referral rows on registration
+-   - [ ] Fix issues and rerun admin dashboard tests
+- [x] Investigate missing admin data: verify SQLite DB entry on registration and fix.
+- [ ] Fix referral code validation for multi-dash codes and add unit/e2e tests
+## Current Goal
+Implement referral link click tracking
+- [x] Fix multi-dash referral code validation
+- [ ] Implement referral link click tracking
+  - [x] Update referral.php to track link clicks
+  - [x] Update generateReferralLink() to match backend click handler (use ?code= param)
+  - [x] Ensure referral link targets correct host/port (8080 or proxy) so clicks resolve
+  - [ ] Add click tracking to referral link UI
+  - [ ] Verify click tracking works as expected
+- [ ] Run unit and e2e tests for referral link click tracking
+- [ ] Update Concept doc to reflect referral link click tracking
+## Current Goal
+Add click count UI & tests
+- [x] Fix referral code display formatting
+  - [x] Update formatCode() in referral.php to insert single dashes (4-4-4)
+  - [x] Migrate/clean existing stored codes if necessary
+  - [x] Add unit tests for formatCode
+- [ ] Implement referral link click tracking
+  - [x] Update referral.php to track link clicks
+  - [x] Update generateReferralLink() to match backend click handler (use ?code= param)
+  - [x] Ensure referral link targets correct host/port (8080 or proxy) so clicks resolve
+  - [ ] Add click tracking to referral link UI
+  - [ ] Verify click tracking works as expected
+- [ ] Run unit and e2e tests for referral link click tracking
+- [ ] Update Concept doc to reflect referral link click tracking
+## Current Goal
+Fix referral code formatting & add click count UI
+- [ ] Add styling to referral link UI to improve readability and visual appeal
+- Issue: Codes displayed to user contain too many dashes (e.g., `EAGE--159-7-67`); root cause is `formatCode()` in referral.php which pads/segments incorrectly—needs fix so codes render like `EAGE-1597-67D0`.
+- Referral code formatting bug fixed: `formatCode()` now strips existing dashes, pads, and formats as `XXXX-XXXX-XXXX`.
+- [ ] Add styling to referral link UI to improve readability and visual appeal
+- [ ] Style 2_5 chord characters container to match 1_1 design (update index.html & CSS)
+{{ ... }}

@@ -347,6 +347,10 @@ body.dev-mode .debug-element {
   color: var(--color-text-dark);
 }
 
+.referral-link-input{
+  min-width: min(360px, 80%);
+}
+
 .warning-text {
   color: var(--color-warning);
   font-style: italic;
@@ -627,6 +631,10 @@ body.dev-mode .debug-element {
 
 input, textarea {
   border: 2px solid var(--color-accent-light);
+}
+
+input {
+  max-width: 340px;
 }
 
 
