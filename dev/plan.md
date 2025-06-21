@@ -40,6 +40,8 @@
 - Runtime bug `$store is not defined` in 2_5 progress display has been fixed by constructing strings via `this.$store` before passing to helper.
 - New UI issue: progress display shows duplicate "Correct answers" lines and no unlock hint. Must ensure single element and dynamic hint ("Get 10 correct ...", "Get 20 correct ...") renders correctly.
 - Removed redundant JS progress display in 2_5; Alpine bindings now show correct count and unlock hints.
+- Admin panel auto-refresh loop fixed; meta refresh now only active after successful authentication.
+- Admin directory initialized as standalone Git repo; first commits (admin.php, index.php) done; remote & submodule link still pending.
 - `debug-element` CSS class added to `main.css` to hide debug buttons by default; visibility toggled via `body.dev-mode`.
 - Inline `style="opacity: 0;"` attributes auto-replaced with `class="debug-element"` in index.html via sed.
 - Frontend protection added: users cannot redeem their own referral code (redeemFriendCode now checks against `referralCode`).
@@ -214,7 +216,7 @@ Implement referral link click tracking
 - [x] Add configurable CSS class to hide debug buttons (opacity 0) with toggle for local development
 - [ ] Display shareable referral link with click count in UI
 ## Current Goal
-- Implement backend self-redeem protection & share link display
+Implement backend self-redeem protection & share link display
 - Note: Frontend self-redeem protection implemented; users cannot redeem their own referral code.
 - [x] Prevent users from redeeming their own referral code (backend & frontend)
 - [x] Display shareable referral link with click count in UI
@@ -223,7 +225,7 @@ Implement referral link click tracking
 - [ ] Complete referral link UI and display click count
 - [ ] Verify referral link feature works as expected
 ## Current Goal
-- Implement backend self-redeem protection & share link display
+Implement backend self-redeem protection & share link display
 Referral link generation & copy functionality added to app.js; link now shown in referral UI.
 - [x] Fix syntax errors in referral link feature
 - [ ] Complete referral link UI and display click count
@@ -274,7 +276,7 @@ Add click count UI & tests
 - [ ] Run unit and e2e tests for referral link click tracking
 - [ ] Update Concept doc to reflect referral link click tracking
 ## Current Goal
-Fix referral code formatting & add click count UI
+Fix referral code formatting & add click-count UI
 - [ ] Add styling to referral link UI to improve readability and visual appeal
 - Issue: Codes displayed to user contain too many dashes (e.g., `EAGE--159-7-67`); root cause is `formatCode()` in referral.php which pads/segments incorrectly—needs fix so codes render like `EAGE-1597-67D0`.
 - Referral code formatting bug fixed: `formatCode()` now strips existing dashes, pads, and formats as `XXXX-XXXX-XXXX`.
@@ -383,7 +385,15 @@ Persist referredBy code & verify deep links
   - [x] Adjust parseUrlHash comment / logic accordingly
 
 ## New Tasks
-- [ ] Fix admin.php auto-refresh causing login redirect (implement conditional refresh post-auth, or AJAX data refresh)
+- [x] Fix admin.php auto-refresh causing login redirect (implement conditional refresh post-auth, or AJAX data refresh)
+- Removed auto-refresh loop in admin panel; meta refresh now conditional on authenticated session.
+- Admin directory initialized as standalone Git repo; first commits (admin.php, index.php) done; remote & submodule link still pending.
+- [ ] Convert `admin/` directory into separate git submodule and add it to `.gitignore` in main repo
+  - [x] Add admin/ to .gitignore
+  - [x] Initialize git repository inside admin/
+  - [x] Commit initial admin code (admin.php, index.php)
+  - [ ] Add remote repository and push admin dashboard code
+  - [ ] Add admin submodule reference to main repo and remove tracked files
 
 ## Current Goal
-Verify referredBy display & fix admin auto-refresh
+Set up admin folder as submodule & update git ignore

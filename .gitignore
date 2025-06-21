@@ -85,3 +85,6 @@ yarn-error.log*
 /tests/*png
 /public/strings*.xml
 /data/referrals.db
+
+# Admin dashboard
+/admin/
