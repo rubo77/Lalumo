@@ -30,21 +30,21 @@ export function updateCharacterBackground(component) {
     
     // Progress thresholds change at exactly 10 and 20 successes
     if (progress <= 9) { // Change at exactly 10
-      backgroundImage = './images/backgrounds/2_5_chords_dog_cat_owl_no_squirrel_no_octopus.png';
+      backgroundImage = './images/backgrounds/2_5_chords_dog_cat_owl_no_squirrel_no_octopus.jpg';
       
       // Preload next background when approaching transition point
       if (progress === 9) {
-        preloadBackgroundImage('./images/backgrounds/2_5_chords_dog_cat_owl_squirrel_no_octopus.png');
+        preloadBackgroundImage('./images/backgrounds/2_5_chords_dog_cat_owl_squirrel_no_octopus.jpg');
       }
     } else if (progress <= 19) { // Change at exactly 20
-      backgroundImage = './images/backgrounds/2_5_chords_dog_cat_owl_squirrel_no_octopus.png';
+      backgroundImage = './images/backgrounds/2_5_chords_dog_cat_owl_squirrel_no_octopus.jpg';
       
       // Preload next background when approaching transition point
       if (progress === 19) {
-        preloadBackgroundImage('./images/backgrounds/2_5_chords_dog_cat_owl_squirrel_octopus.png');
+        preloadBackgroundImage('./images/backgrounds/2_5_chords_dog_cat_owl_squirrel_octopus.jpg');
       }
     } else {
-      backgroundImage = './images/backgrounds/2_5_chords_dog_cat_owl_squirrel_octopus.png';
+      backgroundImage = './images/backgrounds/2_5_chords_dog_cat_owl_squirrel_octopus.jpg';
     }
     
     // Update the background
