@@ -353,6 +353,121 @@ export function app() {
         }, 300);
       }, duration);
     },  
+    /**
+     * Analysiert den URL-Hash für Deep-Links und Referrals
+     * Unterstützte Formate:
+     * - #ref=CODE - Für Referral-Links mit vorausgefülltem Code
+     * - #activity=ID - Für direkten Start einer bestimmten Aktivität (z.B. 2_5)
+     */
+    parseUrlHash() {
+      const hash = window.location.hash;
+      console.log('[DEEPLINK] Analysiere URL-Hash:', hash);
+      
+      if (!hash || hash.length <= 1) {
+        return; // Kein Hash vorhanden
+      }
+      
+      // Extrahiere den Hash ohne das #-Zeichen
+      const hashContent = hash.substring(1); 
+      
+      // Aufteilen nach Parametern (falls mehrere durch & getrennt sind)
+      const params = {};
+      hashContent.split('&').forEach(param => {
+        const [key, value] = param.split('=');
+        if (key && value) {
+          params[key] = decodeURIComponent(value);
+        }
+      });
+      
+      console.log('[DEEPLINK] Extrahierte Parameter:', params);
+      
+      // Verarbeite Referral-Code (#ref=CODE)
+      if (params.ref) {
+        console.log('[DEEPLINK] Referral-Code gefunden:', params.ref);
+        // Füge den Code in das Eingabefeld ein
+        this.friendCode = params.ref;
+        // Öffne automatisch die Referral-Ansicht, wenn vorhanden
+        this.$nextTick(() => {
+          const referralSection = document.querySelector('.referral-section');
+          if (referralSection) {
+            // Scrolle zum Referral-Bereich
+            referralSection.scrollIntoView({ behavior: 'smooth' });
+            // Fokussiere auf den Einlöse-Button, wenn vorhanden
+            const redeemButton = referralSection.querySelector('.redeem-button');
+            if (redeemButton) {
+              setTimeout(() => redeemButton.focus(), 800);
+            }
+          }
+        });
+        
+        // Remove only the 'ref' parameter from URL hash to prevent duplicate processing
+        // Keep other parameters like 'activity' intact for navigation purposes
+        if (history.replaceState) {
+          // Build a new hash string with any parameters except 'ref'
+          let newHash = '';
+          Object.keys(params).forEach(key => {
+            if (key !== 'ref') {
+              newHash += (newHash ? '&' : '') + key + '=' + encodeURIComponent(params[key]);
+            }
+          });
+          
+          // Apply the new hash (or clear if empty)
+          if (newHash) {
+            history.replaceState(null, document.title, window.location.pathname + window.location.search + '#' + newHash);
+          } else {
+            history.replaceState(null, document.title, window.location.pathname + window.location.search);
+          }
+        } else {
+          // Fallback for older browsers
+          // Note: This will remove all hash parameters as a fallback
+          window.location.hash = params.activity ? 'activity=' + params.activity : '';
+        }
+      }
+      
+      // Verarbeite Activity-Parameter (#activity=ID)
+      if (params.activity) {
+        console.log('[DEEPLINK] Aktivität gefunden:', params.activity);
+        // Hier den direkten Start der Aktivität implementieren
+        this.$nextTick(() => {
+          // Start different activities based on ID format (1_1, 2_5, etc.)
+          const activityId = params.activity;
+          
+          if (activityId.startsWith('1_')) {
+            // Pitch activities - dispatch the set-pitch-mode event
+            console.log('[DEEPLINK] Starting pitch activity:', activityId);
+            window.dispatchEvent(new CustomEvent('set-pitch-mode', {
+              detail: activityId
+            }));
+            
+            // Focus the navigation button for this activity (if it exists)
+            this.$nextTick(() => {
+              const navButton = document.getElementById('nav_' + activityId.split('_').slice(0, 2).join('_'));
+              if (navButton) navButton.focus();
+            });
+          } else if (activityId.startsWith('2_')) {
+            // Chord activities - dispatch the set-chord-mode event
+            console.log('[DEEPLINK] Starting chord activity:', activityId);
+            window.dispatchEvent(new CustomEvent('set-chord-mode', {
+              detail: activityId
+            }));
+            
+            // Focus the navigation button for this activity (if it exists)
+            this.$nextTick(() => {
+              const navButton = document.getElementById('nav_' + activityId.split('_').slice(0, 2).join('_'));
+              if (navButton) navButton.focus();
+            });
+          }
+          
+          // Lösche den Hash aus der URL nach dem Start der Aktivität
+          if (history.replaceState) {
+            history.replaceState(null, document.title, window.location.pathname + window.location.search);
+          } else {
+            window.location.hash = '';
+          }
+        });
+      }
+    },
+    
     async init() {
       // We'll initialize audio only on first user interaction
       this.isAudioEnabled = false;
@@ -363,6 +478,9 @@ export function app() {
       
       // Load user data (including language) from localStorage
       this.loadUserData();
+      
+      // Parse URL hash for deep links and referrals
+      this.parseUrlHash();
       
       // Now load strings with the correct language
       await this.initStrings();

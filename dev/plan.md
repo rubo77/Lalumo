@@ -334,3 +334,24 @@ Localize referral messages & verify registration/click counts
   - [ ] Test translations for DE/EN languages
 ## Current Goal
 Finish localization integration & click-count UI verification
+- Server responses from `referral.php` now return codified message keys for localization; app.js translates them via `translateReferralMessage`.
+- Need to parse URL hash (`#ref=<CODE>`, `#activity=<ID>`) on app startup for referral deep linking and activity navigation.
+- [x] Implement URL hash parsing for deep links
+  - [x] Detect `#ref=<CODE>` on load and pre-fill referral flow
+  - [x] Detect `#activity=<ID>` and auto-start corresponding activity
+  - [ ] Add unit/e2e tests for hash parsing
+- [x] Refine hash cleanup: keep #activity param, remove only #ref and add English inline comment
+## Current Goal
+Verify deep link parsing & click-count UI
+- URL hash parsing implemented in app.js (parseUrlHash in init) to handle #ref and #activity deep links.
+- [x] Detect `#ref=<CODE>` on load and pre-fill referral flow
+- [x] Detect `#activity=<ID>` and auto-start corresponding activity
+- [ ] Add unit/e2e tests for hash parsing
+- Comments must always be written in English (user reminder).
+## Current Goal
+Refine hash cleanup & verify deep links
+- Deep link implementation caused runtime error: `showChordActivity is not a function`; need to add or import this method.
+- Coding standard reminder: comments must always be written in English.
+- [ ] Fix `showChordActivity is not a function` runtime error
+## Current Goal
+Fix showChordActivity runtime error & verify deep links

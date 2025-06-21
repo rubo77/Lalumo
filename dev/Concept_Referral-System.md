@@ -158,13 +158,18 @@ dabei gibt es 2 schritte: wenn ein user sixh nur auf den link geklickt hat, dann
 
 - [x] wenn man referral drückt, dann soll das hamburger menu sich schliessen
 
-- [x] ich brauche einen admin mode, in dem ich sehen kann, welche user registriert sin d in der db und wieviele referrer punkte sie schon haben
+- [ ] admin mode:
+ - [ ] refresh button
+ - [ ] delete user button
+ - [ ] delete referral button
+ - [ ] admin in unterordner admin im git verschieben und den admin ordner als subgit einbinden, der nicht auf github veröffentlicht wird
 
 - [x] teste selbst mit wegt http://localhost:9091/admin.php und mache node test und erstelle einen unittest um das alles zu testen und zu korrigieren. schau dir die bestehen den playwright tests an und baue einen  timeout von 10 s ein damit die seitenn nicht hängen bleiben
 
 - [ ] wie soll das online laufen? die php files müssen dort ja auch gesynct werden in `deploy.sh`
 - [ ] die db muss online sicher auch noch angelegt werden
 - [ ] wenn man geworben wurde, durch einen link, dann soll das in den player settings sichtbar sein, durch wen, oder falls der username nicht bekannt ist, wenigstens, dass man durch einen referral link ddie seite besucht hat. (beachte dabei, db aenderungen nur mit migration)
+ - wo können wir am besten einbauen den hash der seite auszulesen? es soll ja der referer link ausgewertet werden (z.b. #ref=CODE) und für deep links soll später einmal direkt die activity gestartet werden (#activity=2_5)
 - die datenbank soll gegen sql-attacks sicher sein
 - das passwort muss in einer konfiguration gespeichert werden, die nicht im git repo liegt. am besten in einer globalen config, die nicht im git liegt, environment oder so
 

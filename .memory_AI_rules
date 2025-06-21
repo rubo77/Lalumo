@@ -15,7 +15,7 @@ merke dir:
 - kleinere dateien editiere direkt mit deinem internen tool
 - if logs are not already there, add logging statements with unique tags per subject to help identify the source of the problem (only when we are analyzing problems)
 - never use `chmod +x file.sh`. use `bash file.sh` instead
-- new comments always in english
+- comments always in english
 - Add new strings to default strings.xml only
 - Accessibility strings should end with _a11y
 - wen du eine logmessage mit einem bestimmten tag schreibst wo schon eine andere existiert, dann ergänze den tag in der bestehenden logmessage
