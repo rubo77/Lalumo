@@ -6,15 +6,22 @@
  */
 
 // Simple security check - this should be improved in production
+session_start();
 $validPassword = 'lalumo2024';
 
-$authenticated = false;
 $errorMessage = '';
-
+if(!isset($_SESSION['authenticated'])) {
+    $_SESSION['authenticated'] = false;
+}
+if($_GET['logout'] === 'true') {
+    $_SESSION['authenticated'] = false;
+    header("Location: admin.php");
+    exit;
+}
 // Check for authentication
-if (isset($_POST['password'])) {
+if (isset($_POST['password']) and !$_SESSION['authenticated']) {
     if ($_POST['password'] === $validPassword) {
-        $authenticated = true;
+        $_SESSION['authenticated'] = true;
     } else {
         $errorMessage = 'Invalid password';
     }
@@ -136,7 +143,7 @@ function getSummaryStats($users) {
 }
 
 // Handle API requests
-if ($authenticated && isset($_GET['format']) && $_GET['format'] === 'json') {
+if ($_SESSION['authenticated'] && isset($_GET['format']) && $_GET['format'] === 'json') {
     header('Content-Type: application/json');
     
     try {
@@ -165,6 +172,12 @@ if ($authenticated && isset($_GET['format']) && $_GET['format'] === 'json') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Only refresh when already logged in -->
+    <?php 
+    if (isset($_SESSION['authenticated']) && $_SESSION['authenticated'] === true): ?>
+    <meta http-equiv="refresh" content="5" name="refresh" />
+    <?php 
+    endif; ?>
     <title>Lalumo Referral Admin</title>
     <style>
         body {
@@ -278,7 +291,7 @@ if ($authenticated && isset($_GET['format']) && $_GET['format'] === 'json') {
     </style>
 </head>
 <body>
-    <?php if (!$authenticated): ?>
+    <?php if (!$_SESSION['authenticated']): ?>
         <div class="login-container">
             <h2>Lalumo Admin Login</h2>
             <?php if ($errorMessage): ?>
@@ -296,8 +309,16 @@ if ($authenticated && isset($_GET['format']) && $_GET['format'] === 'json') {
         <div class="dashboard-container">
             <div class="dashboard-header">
                 <h1>Lalumo Referral System Dashboard</h1>
+                <button type="button" onclick="window.location.href='admin.php'">:refresh:</button>
+                <button type="button" onclick="logout()">Logout</button>
+                <script>
+                    
+                    function logout() {
+                        window.location.href = 'admin.php?logout=true';
+                    }
+                </script>
+
             </div>
-            
             <?php
                 $users = getUserStats();
                 $totalUsers = count($users);

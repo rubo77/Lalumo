@@ -28,14 +28,15 @@ export function app() {
     preferredLanguage: 'english',
     
     // Referral system state
-    isUsernameLocked: false,     // Ob der Benutzername fixiert ist
-    lockedUsername: '',          // Der fixierte Benutzername
-    referralCode: '',            // Der Referral-Code
-    referralCount: 0,            // Anzahl der erhaltenen Referrals
-    referralClickCount: 0,       // Anzahl der Klicks auf den Referral-Link
-    referralLink: '',           // Teilbarer Referral-Link
-    friendCode: '',              // Eingegebener Freundes-Referral-Code
-    isChordChapterUnlocked: false, // Ob das Akkorde-Kapitel freigeschaltet ist
+    isUsernameLocked: false,     // Whether username is locked
+    lockedUsername: '',          // Locked username
+    referralCode: '',            // User's referral code
+    referralCount: 0,            // Number of received referrals
+    referralClickCount: 0,       // Number of clicks on referral link
+    referralLink: '',            // Shareable referral link
+    friendCode: '',              // Friend code input by user
+    referredBy: '',              // Code/username of who referred this user (from deep link)
+    isChordChapterUnlocked: false, // Whether chord chapter is unlocked
     
     /**
      * Mapping of chapters and activities to new ID format
@@ -171,7 +172,8 @@ export function app() {
         referralCode: this.referralCode,
         referralCount: this.referralCount,
         referralClickCount: this.referralClickCount || 0,
-        isChordChapterUnlocked: this.isChordChapterUnlocked
+        isChordChapterUnlocked: this.isChordChapterUnlocked,
+        referredBy: this.referredBy || ''
       };
       
       localStorage.setItem('lalumo_referral_data', JSON.stringify(referralData));
@@ -381,23 +383,21 @@ export function app() {
       
       console.log('[DEEPLINK] Extrahierte Parameter:', params);
       
-      // Verarbeite Referral-Code (#ref=CODE)
+      // Process referral code from URL hash (#ref=CODE)
       if (params.ref) {
-        console.log('[DEEPLINK] Referral-Code gefunden:', params.ref);
-        // Füge den Code in das Eingabefeld ein
-        this.friendCode = params.ref;
-        // Öffne automatisch die Referral-Ansicht, wenn vorhanden
+        console.log('[DEEPLINK] Referral code found:', params.ref);
+        // Store who referred this user
+        this.referredBy = params.ref;
+        this.saveReferralData();
+        
+        // Show notification to user that they were referred
         this.$nextTick(() => {
-          const referralSection = document.querySelector('.referral-section');
-          if (referralSection) {
-            // Scrolle zum Referral-Bereich
-            referralSection.scrollIntoView({ behavior: 'smooth' });
-            // Fokussiere auf den Einlöse-Button, wenn vorhanden
-            const redeemButton = referralSection.querySelector('.redeem-button');
-            if (redeemButton) {
-              setTimeout(() => redeemButton.focus(), 800);
-            }
-          }
+          // Display a toast or notification
+          this.$dispatch('show-toast', {
+            message: this.$store.strings?.referred_by_friend || 'You were referred by a friend!',
+            type: 'info',
+            duration: 5000
+          });
         });
         
         // Remove only the 'ref' parameter from URL hash to prevent duplicate processing
@@ -637,6 +637,7 @@ export function app() {
             this.referralCount = referralData.referralCount || 0;
             this.referralClickCount = referralData.referralClickCount || 0;
             this.isChordChapterUnlocked = referralData.isChordChapterUnlocked || false;
+            this.referredBy = referralData.referredBy || '';
             console.log('Referral data loaded:', { 
               isUsernameLocked: this.isUsernameLocked,
               lockedUsername: this.lockedUsername,

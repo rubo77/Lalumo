@@ -355,3 +355,35 @@ Refine hash cleanup & verify deep links
 - [ ] Fix `showChordActivity is not a function` runtime error
 ## Current Goal
 Fix showChordActivity runtime error & verify deep links
+- Deep link implementation updated: switched to event dispatching; runtime error fixed.
+- Referral deep link should store the referring code (`referredBy`) instead of pre-filling the input; show this info in Player Settings (e.g., "Friend: <username/code>").
+- [x] Fix `showChordActivity is not a function` runtime error
+- [ ] Persist `referredBy` code from `#ref=` hash into local user data
+  - [ ] Save to localStorage and include in `saveReferralData`
+  - [ ] Display referring friend (code or username) in Player Settings UI
+  - [ ] Adjust parseUrlHash comment / logic accordingly
+## Current Goal
+Persist referredBy code & verify deep links
+- Deep link logic now dispatches `set-pitch-mode` / `set-chord-mode` events instead of calling nonexistent functions; runtime error resolved.
+- Referral hash processing to store `referredBy` code (not auto-fill); will surface in Player Settings.
+- [ ] Persist `referredBy` code from `#ref=` hash into local user data
+  - [ ] Save to localStorage and include in `saveReferralData`
+  - [ ] Display referring friend (code or username) in Player Settings UI
+  - [ ] Adjust parseUrlHash comment / logic accordingly
+- referredBy property added; saveReferralData now persists it and parseUrlHash stores the code & displays info toast.
+- [ ] Persist `referredBy` code from `#ref=` hash into local user data
+  - [x] Save to localStorage and include in `saveReferralData`
+  - [ ] Display referring friend (code or username) in Player Settings UI
+  - [x] Adjust parseUrlHash comment / logic accordingly
+## Current Goal
+- Display referredBy in Settings UI & verify deep links
+[x] Persist `referredBy` code from `#ref=` hash into local user data
+  - [x] Save to localStorage and include in `saveReferralData`
+  - [x] Display referring friend (code or username) in Player Settings UI
+  - [x] Adjust parseUrlHash comment / logic accordingly
+
+## New Tasks
+- [ ] Fix admin.php auto-refresh causing login redirect (implement conditional refresh post-auth, or AJAX data refresh)
+
+## Current Goal
+Verify referredBy display & fix admin auto-refresh
