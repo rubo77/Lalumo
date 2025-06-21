@@ -96,7 +96,7 @@ if ($method === 'POST') {
             http_response_code(403); // Forbidden
             echo json_encode([
                 'success' => false,
-                'error' => 'Du kannst deinen eigenen Referral-Code nicht einlösen.'
+                'error' => 'you_cannot_redeem_your_own_referral_code'
             ]);
             exit;
         }
@@ -115,12 +115,12 @@ if ($method === 'POST') {
             
             echo json_encode([
                 'success' => true,
-                'message' => 'Code successfully redeemed'
+                'message' => 'Code_successfully_redeemed'
             ]);
         } else {
             http_response_code(400);
             echo json_encode([
-                'error' => 'Invalid referral code'
+                'error' => 'invalid_referral_code'
             ]);
         }
         exit;
@@ -129,7 +129,7 @@ if ($method === 'POST') {
     // Username-Registrierung
     if (!isset($data['username']) || empty($data['username'])) {
         http_response_code(400);
-        echo json_encode(['error' => 'Username is required']);
+        echo json_encode(['error' => 'username_required']);
         exit;
     }
     
@@ -146,7 +146,7 @@ if ($method === 'POST') {
         http_response_code(409); // Conflict
         echo json_encode([
             'success' => false,
-            'error' => 'Benutzername existiert bereits.'
+            'error' => 'username_exists'
         ]);
         exit;
     }
@@ -194,14 +194,14 @@ if ($method === 'POST') {
             http_response_code(500);
             echo json_encode([
                 'success' => false,
-                'error' => 'Failed to create user'
+                'error' => 'user_creation_failed'
             ]);
         }
     } catch (Exception $e) {
         http_response_code(500);
         echo json_encode([
             'success' => false,
-            'error' => 'Database error: ' . $e->getMessage()
+            'error' => 'database_error: ' . $e->getMessage()
         ]);
     }
 }
@@ -231,7 +231,7 @@ elseif ($method === 'GET') {
             exit;
         } else {
             http_response_code(404);
-            echo json_encode(['error' => 'Invalid referral code']);
+            echo json_encode(['error' => 'invalid_referral_code']);
             exit;
         }
     }
@@ -287,7 +287,7 @@ elseif ($method === 'GET') {
             http_response_code(500);
             echo json_encode([
                 'success' => false,
-                'error' => 'Database error: ' . $e->getMessage(),
+                'error' => 'database_error: ' . $e->getMessage(),
                 'clickCount' => 0,
                 'registrationCount' => 0
             ]);
@@ -297,14 +297,14 @@ elseif ($method === 'GET') {
     // Ungültiger GET-Parameter
     else {
         http_response_code(400);
-        echo json_encode(['error' => 'Invalid GET parameters']);
+        echo json_encode(['error' => 'invalid_get_parameters']);
         exit;
     }
 }
 // Methode nicht erlaubt
 else {
     http_response_code(405);
-    echo json_encode(['error' => 'Method not allowed']);
+    echo json_encode(['error' => 'method_not_allowed']);
     exit;
 }
 

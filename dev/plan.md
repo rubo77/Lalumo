@@ -281,3 +281,35 @@ Fix referral code formatting & add click count UI
 - [ ] Add styling to referral link UI to improve readability and visual appeal
 - [ ] Style 2_5 chord characters container to match 1_1 design (update index.html & CSS)
 {{ ... }}
+- Referral code formatting bug fixed: `formatCode()` now strips existing dashes, pads, and formats as `XXXX-XXXX-XXXX`.
+- New issue: UI still shows 0/3 registrations while admin lists users; need to debug frontend count fetch.
+- [x] Fix referral code display formatting
+  - [x] Update formatCode() in referral.php to insert single dashes (4-4-4)
+  - [x] Migrate/clean existing stored codes if necessary
+  - [x] Add unit tests for formatCode
+- [ ] Debug registration count mismatch between UI and admin
+  - [ ] Verify referral.php GET /?username= returns correct registration_count
+  - [ ] Ensure fetchReferralCount updates referralCount state and UI
+- New issue: UI still shows 0/3 registrations while admin lists users; frontend `fetchReferralCount` or backend response mapping likely incorrect.
+- [x] Style 2_5 chord characters container to match 1_1 design (update index.html & CSS)
+- [x] Update container markup in index.html (id & background-image)
+- [x] Introduce `.chords-container` and chapter-wide `.chapters-view` styles
+- [ ] Debug registration count mismatch between UI and admin
+  - [ ] Verify referral.php GET /?username= returns correct registrationCount JSON field
+  - [ ] Check fetchReferralCount mapping (data.registrationCount vs camelCase)
+  - [ ] Ensure referralCount state saves to localStorage via saveReferralData()
+  - [ ] Update UI bindings so Registrations display matches backend
+- Added verbose logging and error handling to `fetchReferralCount` for easier debugging of registration/count issues.
+- [x] Add detailed diagnostics/logging to fetchReferralCount
+- **Observation:** logs indicate `fetchReferralCount` may never be invoked on startup; need to ensure it runs after loading referral data and on interval.
+- [ ] Ensure `fetchReferralCount()` is called after username lock and on app init
+- [ ] Verify backend JSON uses `registrationCount` / `clickCount` fields (camelCase)
+- [ ] Update `fetchReferralCount` mapping if necessary
+- [ ] Persist updated counts via `saveReferralData` and refresh UI bindings
+## Current Goal
+-Debug registration count mismatch & add click/click-count UI
+- Referral code formatting bug fixed: `formatCode()` now strips existing dashes, pads, and formats as `XXXX-XXXX-XXXX`.
+- New issue: `fetchReferralCount` is not triggered on app init; counts remain stale until another action fires it.
+## Current Goal
+-Fix registration count mismatch (trigger fetchReferralCount on init) & finish click-count UI
+{{ ... }}

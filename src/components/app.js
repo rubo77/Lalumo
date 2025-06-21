@@ -188,23 +188,49 @@ export function app() {
      * Fetch referral count for the current user
      */
     async fetchReferralCount() {
-      if (!this.lockedUsername) return;
+      if (!this.lockedUsername) {
+        console.log('[REFERRAL] Kein Username gesperrt, überspringe Abfrage');
+        return;
+      }
+      
+      console.log('[REFERRAL] Rufe Statistik für User ab:', this.lockedUsername);
       
       try {
         const apiUrl = `http://localhost:8080/referral.php?username=${encodeURIComponent(this.lockedUsername)}`;
+        console.log('[REFERRAL] API URL:', apiUrl);
+        
         const response = await fetch(apiUrl);
+        console.log('[REFERRAL] Antwort-Status:', response.status);
         
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         
-        const data = await response.json();
-        console.log('Referral count data:', data);
+        const responseText = await response.text();
+        console.log('[REFERRAL] Raw response:', responseText);
+        
+        let data;
+        try {
+          data = JSON.parse(responseText);
+        } catch (e) {
+          console.error('[REFERRAL] JSON parse error:', e);
+          throw new Error('Invalid JSON in response');
+        }
+        
+        console.log('[REFERRAL] Verarbeitete Daten:', data);
         
         if (data.success) {
-          // Update referral counts
+          // Update referral counts with detailed logging
+          console.log('[REFERRAL] registrationCount:', data.registrationCount, 'clickCount:', data.clickCount);
+          
+          const oldReferralCount = this.referralCount;
           this.referralCount = data.registrationCount || 0;
           this.referralClickCount = data.clickCount || 0;
+          
+          console.log('[REFERRAL] Werte aktualisiert - Alt:', oldReferralCount, 'Neu:', this.referralCount);
+          
+          // Speichere aktualisierte Daten im localStorage
+          this.saveReferralData();
           
           // Check if the chapter should be unlocked
           if (this.referralCount >= 3 && !this.isChordChapterUnlocked) {
@@ -547,9 +573,17 @@ export function app() {
             this.lockedUsername = data.lockedUsername || '';
             this.referralCode = data.referralCode || '';
             this.referralCount = data.referralCount || 0;
+            this.referralClickCount = data.referralClickCount || 0;
             this.isChordChapterUnlocked = data.isChordChapterUnlocked || false;
             
             console.log('Loaded referral data:', data);
+            
+            // Aktualisiere die Daten vom Server, wenn ein Benutzername gesperrt ist
+            if (this.isUsernameLocked && this.lockedUsername) {
+              console.log('[REFERRAL] Aktualisiere Referral-Daten vom Server...');
+              // Verzögern für die Stabilität der Netzwerkanfrage
+              setTimeout(() => this.fetchReferralCount(), 1000);
+            }
           } catch (parseError) {
             console.error('Error parsing referral data:', parseError);
           }
