@@ -110,6 +110,7 @@
     <string name="reset_progress">Fortschritt zurücksetzen</string>
     <string name="reset_progress_desc">Setze deinen gesamten Spielfortschritt zurück und starte neu:</string>
     <string name="reset_confirm">Bist du sicher? Dies kann nicht rückgängig gemacht werden.</string>
+    <string name="username_reset">Benutzername wurde erfolgreich zurückgesetzt!</string>
     <string name="help_messages">Hilf-Nachrichten</string>
     <string name="help_messages_desc">Steuere, wann Hilf-Nachrichten erscheinen:</string>
     <string name="help_messages_off">Hilf-Nachrichten aus</string>
