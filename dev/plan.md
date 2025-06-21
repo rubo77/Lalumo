@@ -177,7 +177,7 @@
 - [x] Remove/adjust guards that check typeof component.playChord
 - [ ] Run build & verify chord audio playback in 2_1 and 2_2 after refactor
 - # New tasks for 2_5 chord character activity
-- [x] Update index.html 2_5 activity container to use initial background image `/public/images/backgrounds/2_5_chords_dog_cat_owl_no_squirrel_no_octopus.png`.
+- [x] Update index.html 2_5 activity container to use initial background image `/public/images/backgrounds/2_5_chords_dog_cat_owl_no_squirrel_no_octopus.jpg`.
 - [ ] Implement progress-based background updates for 2_5 chord characters:
   - [x] Add `updateCharacterBackground()` (similar to pitches.updateMatchingBackground).
   - [x] Change background to *_squirrel_no_octopus at 10 correct answers.
@@ -401,10 +401,20 @@ Persist referredBy code & verify deep links
   - [x] Commit initial admin code (admin.php, index.php)
   - [x] Add remote repository and push admin dashboard code
   - [ ] Add admin submodule reference to main repo and remove tracked files
-  - [ ] Ensure CI/build scripts ignore admin submodule during frontend builds
 - Admin directory initialized as standalone Git repo; initial commits done and remote placeholder added; submodule link in main repo still pending.
 - Button in 2_5 chord characters activity uses `x-title`; need to change to Alpine `x-bind:title` or plain `title` to localize tooltip.
 - [ ] Fix tooltip attribute on Play Chord button (replace `x-title`)
-
++# Deployment
++- User asked to adjust deploy.sh lines 17-24 so the built app is reachable under `lalumo.eu/app` instead of site root; need to update rsync destination paths accordingly.
++
++## Task List (continued)
++{{ ... }}
+- Button in 2_5 chord characters activity uses `x-title`; need to change to Alpine `x-bind:title` or plain `title` to localize tooltip.
+- [x] Fix tooltip attribute on Play Chord button (replace `x-title`)
++- [x] Fix tooltip attribute on Play Chord button (replace `x-title`)
++- [ ] Update deploy.sh rsync paths to deploy web app under /app on lalumo.eu
++
+{{ ... }}
 ## Current Goal
-Finalize admin submodule setup & fix Play Chord tooltip
+-Finalize admin submodule setup & fix Play Chord tooltip
++Finalize admin submodule setup & update deploy script

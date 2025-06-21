@@ -145,34 +145,15 @@ Die PHP-Dateien (`referral.php`, `admin.php`) und die Datenbankdatei müssen auf
 
 # TODO:
 
-- [x] es muss in der localstorage gespeichert werden, dass man schon registriert ist.
-
-- [x] wenn man registriert ist, muss beim aufruf der seite gecheckt werden, wieviele referrals man schon hat in der db
-
-
-dabei gibt es 2 schritte: wenn ein user sixh nur auf den link geklickt hat, dann ist er ja noch nciht registriert, das tut er nur, wenn er auch einen referal link generieren will. 
-- [x] der empfehlende bekommt einen referral punkt , wenn  mman auf den link klickt
-- [x] einen weiteren, wenn man im game auch einen user anlegt
-
-
-
-- [x] wenn man referral drückt, dann soll das hamburger menu sich schliessen
-
 - [ ] admin mode:
- - [ ] refresh button
  - [ ] delete user button
  - [ ] delete referral button
- - [ ] admin in unterordner admin im git verschieben und den admin ordner als subgit einbinden, der nicht auf github veröffentlicht wird
 
 - [x] teste selbst mit wegt http://localhost:9091/admin.php und mache node test und erstelle einen unittest um das alles zu testen und zu korrigieren. schau dir die bestehen den playwright tests an und baue einen  timeout von 10 s ein damit die seitenn nicht hängen bleiben
 
 - [ ] wie soll das online laufen? die php files müssen dort ja auch gesynct werden in `deploy.sh`
 - [ ] die db muss online sicher auch noch angelegt werden
-- [ ] wenn man geworben wurde, durch einen link, dann soll das in den player settings sichtbar sein, durch wen, oder falls der username nicht bekannt ist, wenigstens, dass man durch einen referral link ddie seite besucht hat. (beachte dabei, db aenderungen nur mit migration)
- - wo können wir am besten einbauen den hash der seite auszulesen? es soll ja der referer link ausgewertet werden (z.b. #ref=CODE) und für deep links soll später einmal direkt die activity gestartet werden (#activity=2_5)
 - die datenbank soll gegen sql-attacks sicher sein
-- das passwort muss in einer konfiguration gespeichert werden, die nicht im git repo liegt. am besten in einer globalen config, die nicht im git liegt, environment oder so
-
 - Es muss im json der antwort in die eingestellte sprache umgewandelt werden kann.
 
 - wenn der username gelockt ist, dan darf der nicht mehr editierbar sein im player settings (grep "' => " referral.php )
