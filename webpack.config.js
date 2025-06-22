@@ -12,10 +12,12 @@ module.exports = (env, argv) => {
     },
     output: {
       path: path.resolve(__dirname, 'app'),
-      filename: '[name].[contenthash].js',
+      // Für Subdirectory-Deployment: Entferne Content-Hash für konsistente Dateinamen
+      filename: isProduction && env.deploy === 'subdirectory' ? '[name].js' : '[name].[contenthash].js',
       clean: true,
       // publicPath anpassen für Produktion vs. Entwicklung
-      publicPath: isProduction && env.deploy === 'subdirectory' ? '/app/' : '/',
+      // Für Subdirectory-Deployment: './' für relative Pfade ohne führenden Slash
+      publicPath: isProduction && env.deploy === 'subdirectory' ? './' : './',
     },
     // Copy static assets from public directory
     devServer: {
@@ -85,9 +87,20 @@ module.exports = (env, argv) => {
       new HtmlWebpackPlugin({
         template: './src/index.html',
         filename: 'index.html',
+        // Ensure correct asset paths for subdirectory deployment
+        publicPath: isProduction && env.deploy === 'subdirectory' ? './' : './',
+        minify: {
+          collapseWhitespace: true,
+          removeComments: true,
+          removeRedundantAttributes: true,
+          removeScriptTypeAttributes: true,
+          removeStyleLinkTypeAttributes: true,
+          useShortDoctype: true
+        }
       }),
       new MiniCssExtractPlugin({
-        filename: '[name].[contenthash].css',
+        // Für Subdirectory-Deployment: Entferne Content-Hash für konsistente Dateinamen
+        filename: isProduction && env.deploy === 'subdirectory' ? '[name].css' : '[name].[contenthash].css',
       }),
       // Copy XML files to root for app access
       new CopyWebpackPlugin({

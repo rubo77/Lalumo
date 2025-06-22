@@ -54,7 +54,7 @@
       <div class="modal-content" @click.outside="setUsername()">
         <h3 x-text="$store.strings?.welcome_message || 'Welcome to Lalumo!'"></h3>
         <div class="mascot-welcome">
-          <img src="/images/mascot.png" alt="Lalumo Mascot" class="mascot" width="0" />
+          <img src="images/logo_bird_sings.jpg" alt="Lalumo Mascot" class="mascot" width="0" />
           <p x-text="$store.strings?.create_name_message || 'Let\'s create a special name just for you!'"></p>
         </div>
         <button class="primary-button" @click="setUsername()" x-text="$store.strings?.button_generate_name || 'Generate Random Name'"></button>
@@ -290,7 +290,7 @@
         <!-- Mascot Message Overlay -->
         <div class="mascot-message-overlay" x-show="showMascot" x-transition>
           <div class="mascot-message-container">
-            <img src="/images/mascot.png" alt="Lalumo Mascot" class="mascot-image" width="0" />
+            <img src="images/logo_bird_sings.jpg" alt="Lalumo Mascot" class="mascot-image" width="0" />
             <div class="mascot-speech-bubble">
               <p x-text="mascotMessage || ''"></p>
             </div>
@@ -341,7 +341,7 @@
                  :aria-label="currentHighOrLowStage >= 3 ? ($store.strings?.second_tone_lower_a11y || 'The second tone is lower') : ($store.strings?.low_choice_a11y || 'Low tone')"
                  :title="currentHighOrLowStage >= 3 ? ($store.strings?.second_tone_lower_a11y || 'The second tone is lower') : ($store.strings?.low_choice_a11y || 'Low tone')">
               <div class="pitch-icon low-icon">
-                <img src="/images/x.gif" alt="Low pitch" />
+                <img src="images/x.gif" alt="Low pitch" />
                 <span class="choice-label" 
                       x-text="currentHighOrLowStage >= 3 ? 
                         ($store.strings?.low_choice || 'Tiefer') : 
@@ -353,7 +353,7 @@
                  :aria-label="currentHighOrLowStage >= 3 ? ($store.strings?.second_tone_higher_a11y || 'The second tone is higher') : ($store.strings?.high_choice_a11y || 'High tone')"
                  :title="currentHighOrLowStage >= 3 ? ($store.strings?.second_tone_higher_a11y || 'The second tone is higher') : ($store.strings?.high_choice_a11y || 'High tone')">
               <div class="pitch-icon high-icon">
-                <img src="/images/x.gif" alt="High pitch" />
+                <img src="images/x.gif" alt="High pitch" />
                 <span class="choice-label" 
                       x-text="currentHighOrLowStage >= 3 ? 
                         ($store.strings?.high_choice || 'Höher') : 
@@ -399,28 +399,28 @@
             <!-- Up pattern (immer sichtbar) - oben links -->
             <div class="pitch-card up-card" @click="checkMatch('up')" @mousedown="startLongPress('up')" @mouseup="cancelLongPress()" @mouseleave="cancelLongPress()">
               <div class="pitch-icon up">
-                <img src="/images/1x1.gif" alt="Rocket going up" />
+                <img src="images/1x1.gif" alt="Rocket going up" />
               </div>
             </div>
             
             <!-- Down pattern (immer sichtbar) - rechts mit möglichem rowspan -->
             <div class="pitch-card down-card" @click="checkMatch('down')" @mousedown="startLongPress('down')" @mouseup="cancelLongPress()" @mouseleave="cancelLongPress()">
               <div class="pitch-icon down">
-                <img src="/images/1x1.gif" alt="Slide going down" />
+                <img src="images/1x1.gif" alt="Slide going down" />
               </div>
             </div>
             
             <!-- Wave pattern (wenn freigeschaltet) - unten links -->
             <div x-show="unlockedPatterns.includes('wave')" class="pitch-card wave-card" @click="checkMatch('wave')" @mousedown="startLongPress('wave')" @mouseup="cancelLongPress()" @mouseleave="cancelLongPress()">
               <div class="pitch-icon wave">
-                <img src="/images/1x1.gif" alt="Wave pattern" />
+                <img src="images/1x1.gif" alt="Wave pattern" />
               </div>
             </div>
             
             <!-- Jump pattern (wenn freigeschaltet) - unten rechts -->
             <div x-show="unlockedPatterns.includes('jump')" class="pitch-card jump-card" @click="checkMatch('jump')" @mousedown="startLongPress('jump')" @mouseup="cancelLongPress()" @mouseleave="cancelLongPress()">
               <div class="pitch-icon jump">
-                <img src="/images/1x1.gif" alt="Jumping frog" />
+                <img src="images/1x1.gif" alt="Jumping frog" />
               </div>
             </div>
           </div>
@@ -482,12 +482,12 @@
           <div class="sound-judgment-options">
             <div class="pitch-card animal-card happy" @click="checkSoundHighOrLow(true)" aria-label="Sounds good" title="Sounds good">
               <div class="pitch-icon animal-icon" title="Sounds good!">
-                <img src="/images/1_5_pitches_good_cat.png" alt="Happy cat">
+                <img src="images/1_5_pitches_good_cat.png" alt="Happy cat">
               </div>
             </div>
             <div class="pitch-card animal-card unhappy" @click="checkSoundHighOrLow(false)" aria-label="Sounds wrong" title="Sounds wrong">
               <div class="pitch-icon animal-icon" title="Sounds wrong!">
-                <img src="/images/1_5_pitches_bad_snake.png" alt="Unhappy snake">
+                <img src="images/1_5_pitches_bad_snake.png" alt="Unhappy snake">
               </div>
             </div>
           </div>
@@ -880,16 +880,16 @@
     </section>
     
     <!-- Legal: Impressum & Datenschutz - included from partials/impress.html -->
-    <div data-include="/partials/impress.html"></div>
+    <div data-include="partials/impress.html"></div>
     
     <!-- Legal: Credits - included from partials/credits.html -->
-    <div data-include="/partials/credits.html"></div>
+    <div data-include="partials/credits.html"></div>
     
     <!-- Referral Code Page - included from partials/referrals.html -->
-    <div data-include="/partials/referrals.html"></div>
+    <div data-include="partials/referrals.html"></div>
     
     <!-- Settings Page - included from partials/settings.html -->
-    <div data-include="/partials/settings.html"></div>
+    <div data-include="partials/settings.html"></div>
                
 
     <!-- Global footer for all activities with an invers edge

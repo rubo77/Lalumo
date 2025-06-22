@@ -6,11 +6,13 @@ npm run build -- --env deploy=subdirectory
 # 2. Create images directory in dist if it doesn't exist
 mkdir -p dist/images
 
-# 3. Copy images, favicon, robots.txt and sitemap.xml from public directory to dist
+# 3. Copy static assets to dist
 cp -r public/images/* dist/images/
 cp -r public/favicon.svg dist/
 cp -r public/robots.txt dist/
 cp -r public/sitemap.xml dist/
+mkdir -p dist/partials
+cp -r public/partials/* dist/partials/
 
 # 4. Upload to the server (both built files and images)
 rsync -avz --no-perms --no-owner --no-group --delete dist/ root@vm06.eclabs:/var/kunden/webs/ruben/www/lalumo.z11.de/
@@ -18,7 +20,7 @@ rsync -avz --no-perms --no-owner --no-group --delete dist/ root@vm06.eclabs:/var
 # 4b. Upload to app subdirectory on lalumo.eu
 rsync -avz --no-perms --no-owner --no-group --delete dist/ root@vm06.eclabs:/var/kunden/webs/ruben/www/lalumo.eu/app/
 
-rsync -avz --no-perms --no-owner --no-group src/api root@vm06.eclabs:/var/kunden/webs/ruben/www/lalumo.eu/api/
+rsync -avz --no-perms --no-owner --no-group src/api/ root@vm06.eclabs:/var/kunden/webs/ruben/www/lalumo.eu/api/
 
 # 5. Upload homepage files to lalumo.eu root
 rsync -avz --no-perms --no-owner --no-group homepage/ root@vm06.eclabs:/var/kunden/webs/ruben/www/lalumo.eu/

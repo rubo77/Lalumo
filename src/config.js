@@ -11,7 +11,7 @@ const configData = {
     APP_BASE_PATH: '/'
   },
   production: {
-    API_BASE_URL: 'https://lalumo.eu/app',
+    API_BASE_URL: 'https://lalumo.eu/api',
     APP_BASE_URL: 'https://lalumo.eu/app',
     APP_BASE_PATH: '/app/'
   }
