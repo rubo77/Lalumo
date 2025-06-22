@@ -11,15 +11,25 @@ export function loadHtmlPartials() {
   includes.forEach(element => {
     let file = element.getAttribute('data-include');
     
-    // Make sure the path starts with '/' for absolute path from site root
+    // Handle paths based on file structure reorganization
     if (!file.startsWith('/')) {
-      file = '/' + file.replace(/^\.\//g, '');
+      // Check if this is a partial reference
+      if (file.includes('partial') || file.includes('partials')) {
+        // If it doesn't already include 'partials/' prefix, add it
+        if (!file.startsWith('partials/')) {
+          file = 'partials/' + file.replace(/^(\.\/)?(partials\/)?/g, '');
+        }
+      }
     }
     
-    console.log('Attempting to load HTML partial:', file);
+    // Support for base path in production environments
+    const basePath = document.querySelector('base')?.getAttribute('href') || '';
+    const fullPath = basePath + file;
+    
+    console.log('Attempting to load HTML partial:', fullPath);
     
     // Make an AJAX request to fetch the partial
-    fetch(file)
+    fetch(fullPath)
       .then(response => {
         if (!response.ok) {
           throw new Error(`Error loading HTML partial: ${file}`);
