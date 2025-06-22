@@ -14,7 +14,7 @@ ini_set('display_errors', 1);
  */
 
 // Import JS Config laden
-require_once __DIR__ . '/utils/js_config.php';
+require_once 'utils/js_config.php';
 $config = getJsConfig(__DIR__ . '/src/config.js');
 
 // Debug-Log erstellen mit PHP error_log
@@ -40,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 }
 
 // SQLite-Datenbank einrichten
-$dbDir = __DIR__ . '/data';
+$dbDir = '../../data';
 $dbFile = $dbDir . '/referrals.db';
 
 // Erstelle data-Verzeichnis falls es nicht existiert
