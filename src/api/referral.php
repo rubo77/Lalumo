@@ -15,7 +15,7 @@ ini_set('display_errors', 1);
 
 // Import JS Config laden
 require_once 'utils/js_config.php';
-$config = getJsConfig(__DIR__ . '/src/config.js');
+$config = getJsConfig(__DIR__ . '/../config.js');
 
 // Debug-Log erstellen mit PHP error_log
 function debugLog($message) {
@@ -40,11 +40,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 }
 
 // SQLite-Datenbank einrichten
-$dbDir = '../../data';
+$dbDir = __DIR__ . '/../../data';
 $dbFile = $dbDir . '/referrals.db';
+debugLog('Database path: ' . $dbFile);
 
 // Erstelle data-Verzeichnis falls es nicht existiert
 if (!is_dir($dbDir)) {
+    debugLog('Database folder created: ' . $dbFile);
     mkdir($dbDir, 0755, true);
 }
 
@@ -245,7 +247,7 @@ elseif ($method === 'GET') {
             
             // Leite zur App mit dem Code in einem URL-Parameter weiter
             $app_url = $config['APP_BASE_URL'];
-            header('Location: '.$app_url.'/#ref=' . urlencode($code));
+            header ('Location: '.$app_url.'/#ref=' . urlencode($code));
             exit;
         } else {
             http_response_code(404);

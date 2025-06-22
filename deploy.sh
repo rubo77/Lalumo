@@ -18,10 +18,7 @@ rsync -avz --no-perms --no-owner --no-group --delete dist/ root@vm06.eclabs:/var
 # 4b. Upload to app subdirectory on lalumo.eu
 rsync -avz --no-perms --no-owner --no-group --delete dist/ root@vm06.eclabs:/var/kunden/webs/ruben/www/lalumo.eu/app/
 
-# 4c. Upload PHP files (utils, referral.php, admin) to app directory
-rsync -avz --no-perms --no-owner --no-group utils/ root@vm06.eclabs:/var/kunden/webs/ruben/www/lalumo.eu/app/utils/
-rsync -avz --no-perms --no-owner --no-group admin/ root@vm06.eclabs:/var/kunden/webs/ruben/www/lalumo.eu/app/admin/
-rsync -avz --no-perms --no-owner --no-group referral.php root@vm06.eclabs:/var/kunden/webs/ruben/www/lalumo.eu/app/
+rsync -avz --no-perms --no-owner --no-group src/api root@vm06.eclabs:/var/kunden/webs/ruben/www/lalumo.eu/api/
 
 # 5. Upload homepage files to lalumo.eu root
 rsync -avz --no-perms --no-owner --no-group homepage/ root@vm06.eclabs:/var/kunden/webs/ruben/www/lalumo.eu/
