@@ -1920,12 +1920,8 @@ export function app() {
         return '';
       }
       
-      // Feste Backend-URL verwenden, da der Dev-Server (Port 9091) keine PHP-Dateien verarbeitet
-      // TODO: im Produktionsmodus sollte dies entsprechend angepasst werden
-      const backendUrl = config.API_BASE_URL;
-      
       // Link zum Backend-Endpoint generieren (wichtig: ?code= Format für Klickzählung)
-      this.referralLink = `${backendUrl}/referral.php?code=${this.referralCode}`;
+      this.referralLink = `${config.API_BASE_URL}/referral.php?code=${this.referralCode}`;
       console.log('[REFERRAL] Generierter Link:', this.referralLink);
       
       return this.referralLink;

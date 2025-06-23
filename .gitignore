@@ -14,6 +14,9 @@ app/strings-*.xml
 app/index.html
 app/homepage/images/screenshots/
 app/homepage/images/logo_bird_sings.jpg
+/app/partials/*
+/app/robots.txt
+/app/sitemap.xml
 
 # Generated XML files for web development (copied from android/app/src/main/res/)
 public/android/

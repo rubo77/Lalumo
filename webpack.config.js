@@ -12,8 +12,8 @@ module.exports = (env, argv) => {
     },
     output: {
       path: path.resolve(__dirname, 'app'),
-      // Für Subdirectory-Deployment: Entferne Content-Hash für konsistente Dateinamen
-      filename: isProduction && env.deploy === 'subdirectory' ? '[name].js' : '[name].[contenthash].js',
+      // Immer Content-Hash für Cache-Busting verwenden
+      filename: '[name].[contenthash].js',
       clean: true,
       // publicPath anpassen für Produktion vs. Entwicklung
       // Für Subdirectory-Deployment: './' für relative Pfade ohne führenden Slash

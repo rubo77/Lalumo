@@ -33,7 +33,8 @@ function showDiagnostics() {
         // Config aus JS-Datei extrahieren und anzeigen
         echo "<h2>Extracted Configuration:</h2>";
         try {
-            $config = getJsConfig(__DIR__ . '/../src/config.js');
+            if(file_exists(__DIR__ . '/../config.js')) $config = getJsConfig(__DIR__ . '/../config.js');
+            else $config = getJsConfig(__DIR__ . '/../app/config.js');
             echo "<pre class='config'>";
             print_r($config);
             echo "</pre>";

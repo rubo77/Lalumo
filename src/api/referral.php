@@ -13,14 +13,28 @@ ini_set('display_errors', 1);
  * - POST mit redeemCode: Löst einen Freundescode ein
  */
 
-// Import JS Config laden
-require_once 'utils/js_config.php';
-$config = getJsConfig(__DIR__ . '/../config.js');
-
 // Debug-Log erstellen mit PHP error_log
 function debugLog($message) {
     $timestamp = date('Y-m-d H:i:s');
     error_log("[REFERRAL_DEBUG][$timestamp] $message");
+}
+
+// Import JS Config laden
+require_once 'utils/js_config.php';
+$config = getJsConfig(__DIR__ . '/../config.js');
+debugLog('Config loaded from primary path: ' . __DIR__ . '/config.js');
+
+// Wenn die Konfiguration nicht geladen werden kann, versuche einen alternativen Pfad
+if (empty($config) || !isset($config['API_BASE_URL'])) {
+    debugLog('Config not found at primary path, trying fallback path');
+    $config = getJsConfig(__DIR__ . '/config.js');
+    debugLog('Config loaded from fallback path: ' . __DIR__ . '/config.js');
+}
+// Wenn die Konfiguration nicht geladen werden kann, versuche einen alternativen Pfad
+if (empty($config) || !isset($config['API_BASE_URL'])) {
+    debugLog('Config not found at primary path, trying fallback path');
+    $config = getJsConfig(__DIR__ . '/../app/config.js');
+    debugLog('Config loaded from fallback path: ' . __DIR__ . '/../config.js');
 }
 
 // Debugging: Konfiguration protokollieren
@@ -40,7 +54,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 }
 
 // SQLite-Datenbank einrichten
-$dbDir = __DIR__ . '/../../data';
+$dbDir = '../data';
+// if __DIR__ starts with /var/www/ it is local
+if(preg_match('/^\/var\/www/', __DIR__)){
+    $dbDir = __DIR__ . '/../../data';
+}
 $dbFile = $dbDir . '/referrals.db';
 debugLog('Database path: ' . $dbFile);
 

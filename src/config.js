@@ -21,8 +21,18 @@ const configData = {
 const isProduction = window.location.hostname === 'lalumo.eu' || 
                      window.location.hostname === 'lalumo.z11.de';
 
+// Check for configuration override from HTML
+let configOverride = {};
+if (isProduction && typeof window !== 'undefined' && window.LALUMO_CONFIG_OVERRIDE) {
+  configOverride = window.LALUMO_CONFIG_OVERRIDE;
+  console.log('[CONFIG] Using configuration override from HTML');
+}
+
 // Select config based on environment
-const currentConfig = isProduction ? configData.production : configData.development;
+let currentConfig = isProduction ? configData.production : configData.development;
+
+// Apply any overrides
+currentConfig = { ...currentConfig, ...configOverride };
 
 // Debug log the detected environment
 console.log(`[CONFIG] Running in ${isProduction ? 'PRODUCTION' : 'DEVELOPMENT'} environment`);
