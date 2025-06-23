@@ -17,9 +17,16 @@ const configData = {
   }
 };
 
-// Detect environment (local development vs production)
+// Detect environment (local development vs production or mobile)
 const isProduction = window.location.hostname === 'lalumo.eu' || 
                      window.location.hostname === 'lalumo.z11.de';
+
+// Also consider as production when running in Capacitor/mobile environment
+const isMobile = window.location.protocol === 'capacitor:' || 
+               window.location.protocol === 'https:' && 
+               (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+
+const useProductionConfig = isProduction || isMobile;
 
 // Check for configuration override from HTML
 let configOverride = {};
@@ -29,7 +36,12 @@ if (isProduction && typeof window !== 'undefined' && window.LALUMO_CONFIG_OVERRI
 }
 
 // Select config based on environment
-let currentConfig = isProduction ? configData.production : configData.development;
+let currentConfig = useProductionConfig ? configData.production : configData.development;
+
+// Log if we're in mobile environment
+if (isMobile) {
+  console.log('[CONFIG] Running in MOBILE environment, using production API endpoints');
+}
 
 // Apply any overrides
 currentConfig = { ...currentConfig, ...configOverride };
