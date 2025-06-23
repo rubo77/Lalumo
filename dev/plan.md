@@ -42,6 +42,18 @@
 - Chord button visibility logic implemented in chords.js; updateChordButtonsVisibility method and triggers added (completed).
 - Issue: chords component init() not called; visibility updates not executed – requires debugging.
 - Chord button MutationObserver now ensures visibility logic runs when buttons appear (init issue worked around).
+- Progress-based chord selection implemented in checkCharacterMatch and fixed to select from available types based on progress.
+- Next chord generation after correct answer now respects progress thresholds (completed).
+- Chord randomness bug resolved; random selection now works correctly.
+- Build version mismatch detected: mobile-build outputs version 2.0 while package.json is 2.1 – investigate script/path issues.
+- Root cause identified: outdated package.json (v2.0) remains in android assets; build script must overwrite or prune before copy.
+- mobile-build.sh updated to remove stale app directory and copy fresh package.json; assets now show 2.1, but credits screen still displays 2.0 – investigate version source.
+- Credits version JavaScript (index.html lines 990-998) fetches package.json at runtime; ensure up-to-date file is present in final assets directory.
+- After user removed android app folder, build fails: Capacitor reports missing ./dist/index.html; Android app now shows "website not available" – asset copy path needs correction.
+- Overly broad replacements in mobile-build.sh changed critical Android paths (e.g., build.gradle, assets directories) causing additional build breaks; need selective path fixes and alignment between webpack output (app) and Capacitor webDir (dist).
+- Webpack output path updated to `dist`; devServer paths adjusted and mobile-build.sh paths corrected, aligning build pipeline with Capacitor configuration.
+- mobile-build.sh now correctly copies updated package.json into final assets/public directory.
+- Build completed successfully; Android assets contain package.json version 2.1, dist/index.html present and synced via Capacitor.
 
 ## Task List
 - [x] Increase `registration_count` after successful referred registration (backend done).
@@ -77,7 +89,22 @@
   - [x] At progress ≥20 show all chord type buttons.
 - [x] Adjust random chord generation in chords.js to select only from available types based on progress.
 - [x] Debug chords component initialization (init not called); ensure updateChordButtonsVisibility is invoked.
-- [ ] End-to-end manual test: referral click -> username display -> registration -> counters correct.
+- [x] Fix randomness bug in next chord selection after correct answer (always minor).
+- [x] Restrict next chord selection after correct answer in checkCharacterMatch to respect progress thresholds.
+- [ ] Fix mobile build version mismatch (package.json vs build output).
+  - [x] Identify root cause: stale package.json in android assets.
+  - [x] Update mobile-build.sh to delete old package.json or use rsync --delete to ensure fresh copy.
+  - [ ] Investigate credits screen version display still showing 2.0; ensure version info comes from updated package.json.
+  - [x] Ensure updated package.json is copied into final assets/public directory during build.
+  - [ ] Rebuild and verify credits screen now shows version 2.1.
+- [x] Investigate missing dist/index.html after clean build; ensure web assets directory generated correctly.
+- [x] Update mobile-build.sh (or Capacitor config) to copy/dist sync full web assets so Android app loads.
+- [x] Rebuild and verify Android app opens website successfully.
+- [x] Revert unintended mobile-build.sh path replacements (restore valid android/app paths).
+- [x] Decide canonical web assets directory (dist or app) and update webpack output path or Capacitor webDir accordingly.
+- [x] Make npm run build output index.html into chosen webDir.
+- [x] Copy updated package.json into that directory and Android assets.
+- [ ] Rebuild and verify credits version and Android app load.
 
 ## Current Goal
-- End-to-end manual test: referral flow
+Verify credits screen shows correct version 2.1

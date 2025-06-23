@@ -11,7 +11,7 @@ module.exports = (env, argv) => {
       main: './src/index.js',
     },
     output: {
-      path: path.resolve(__dirname, 'app'),
+      path: path.resolve(__dirname, 'dist'),
       // Immer Content-Hash für Cache-Busting verwenden
       filename: '[name].[contenthash].js',
       clean: true,
@@ -23,7 +23,7 @@ module.exports = (env, argv) => {
     devServer: {
       static: [
         {
-          directory: path.join(__dirname, 'app'),
+          directory: path.join(__dirname, 'dist'),
           publicPath: '/',
         },
         {
