@@ -181,17 +181,17 @@ reset-button:
  - # bereit zur veröffentlichung
  - feedback sound soll mit verzögerung abgespielt werden
  
-2_1_chords_color_matching:
+2_5_chords_color_matching:
     - jede activity muss einen progress im localstorage haben, der auch im globalen reset, activity reset, im-und export berücksichtigt wird
+    - Bei progress <= 9: Nur "happy" (major) und "sad" (minor) verfügbar,  Bei progress 10-19: "happy", "sad" und "mysterious" (diminished) verfügbar, aber kein "tense" (augmented),  Bei progress >= 20: Alle vier Typen verfügbar
+ - # bereit zur veröffentlichung
     - die meisten activities haben einen free- und einen game-mode, in dem man die sounds ausprobieren kann (free) oder das game spielt, bei dem man die richtigen buttons drücken muss, der die richtigen effekte zeigt aus `feedback.js`
-    - der ton geht noch nicht
-    - # bereit zur veröffentlichung
 
--------------------------------------------
 # mobile-build.sh:
 - die find funktion, die nur das kopieren soll was benutzt wird passiert zu spät, es wird vorher schon mit rsync alles von public/ nach dist/ kopiert. ich habe den original folder da hinzugefügt, aber es wäre schöner, wenn das automatisch nicht gersnynct würde, wenn es nicht bnutzt wird
 - option um die icons neu zu machen, defualt ausgeschaltet
 
+-------------------------------------------
 - Background-Bilder Lazy load testen
 
  - back button in android gesondert handeln: der back-button soll da zurück ins menu gehen, aber nur, wenn die navigation nicht gelockt ist.
@@ -200,10 +200,9 @@ reset-button:
 
 - Webpack-Bundle-Analyzer verwenden um große Abhängigkeiten zu identifizieren
 
-
 - build for ios
+- class .debug-elements always hidden in production
 
 # most important
 
-- wenn man referral drückt, dann soll das hamburger menu sich schliessen
-- class .debug-elements always hidden in production
+- bei android soll die api settings von production aktiv werden

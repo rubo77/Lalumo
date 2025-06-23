@@ -73,6 +73,46 @@ export function chords() {
     activeChord: null,
     isPlaying: false,
     
+    /**
+     * Update chord buttons visibility based on user progress
+     * Controls which chord type buttons are shown in 2_5_chords_characters activity
+     */
+    updateChordButtonsVisibility() {
+      // Get the current progress for chord characters activity
+      const progressData = localStorage.getItem('lalumo_chords_progress');
+      const progress = progressData ? 
+        JSON.parse(progressData)['2_5_chords_characters'] || 0 : 
+        this?.progress?.['2_5_chords_characters'] || 0;
+      
+      // Get chord buttons
+      const mysteriousButton = document.getElementById('button_2_5_1_mysterious');
+      const surprisedButton = document.getElementById('button_2_5_1_surprised');
+      
+      if (!mysteriousButton || !surprisedButton) {
+        // Buttons not found in DOM yet, will try again when activity is shown
+        debugLog('CHORDS', 'Chord buttons not found in DOM yet');
+        return;
+      }
+      
+      // Apply visibility rules based on progress
+      if (progress < 10) {
+        // Progress < 10: Hide mysterious (diminished) and surprised (augmented)
+        mysteriousButton.style.display = 'none';
+        surprisedButton.style.display = 'none';
+        debugLog('CHORDS', 'Progress < 10: Hiding mysterious and surprised buttons');
+      } else if (progress < 20) {
+        // Progress 10-19: Show mysterious (diminished), hide surprised (augmented)
+        mysteriousButton.style.display = '';
+        surprisedButton.style.display = 'none';
+        debugLog('CHORDS', 'Progress 10-19: Showing mysterious, hiding surprised button');
+      } else {
+        // Progress >= 20: Show all buttons
+        mysteriousButton.style.display = '';
+        surprisedButton.style.display = '';
+        debugLog('CHORDS', 'Progress >= 20: Showing all chord buttons');
+      }
+    },
+    
     // Chord sequence for harmony gardens
     chordSequence: [],
     selectedSlotIndex: null,
@@ -116,6 +156,34 @@ export function chords() {
       // Register this component globally
       window.chordsComponent = this;
       debugLog('CHORDS', 'Registering chords component globally: window.chordsComponent is now:', !!window.chordsComponent);
+      
+      // Set up a MutationObserver to detect when chord buttons are added to the DOM
+      if (window.MutationObserver) {
+        debugLog('CHORDS', 'Setting up MutationObserver for chord buttons visibility');
+        const observer = new MutationObserver((mutations) => {
+          // Check if any of the mutations added our target elements
+          for (const mutation of mutations) {
+            if (mutation.type === 'childList' && mutation.addedNodes.length) {
+              const mysteriousBtn = document.getElementById('button_2_5_1_mysterious');
+              const surprisedBtn = document.getElementById('button_2_5_1_surprised');
+              
+              if (mysteriousBtn && surprisedBtn) {
+                debugLog('CHORDS', 'Chord buttons found in DOM, updating visibility');
+                this.updateChordButtonsVisibility();
+                // No need to observe further once we've found our elements
+                observer.disconnect();
+                break;
+              }
+            }
+          }
+        });
+        
+        // Start observing the document with the configured parameters
+        observer.observe(document.body, { childList: true, subtree: true });
+      }
+      
+      // Also attempt direct initialization after a delay as fallback
+      setTimeout(() => this.updateChordButtonsVisibility(), 1500);
       
       // Set up audio context when user interacts
       document.addEventListener('click', this.initAudio.bind(this), { once: true });
@@ -430,6 +498,7 @@ export function chords() {
         this.progress[this.mode] = this.totalQuestions;
         localStorage.setItem('lalumo_chords_progress', JSON.stringify(this.progress));
         debugLog('CHORDS', `Saved progress for ${this.mode}: ${this.totalQuestions}`);
+        this.updateChordButtonsVisibility();
       }
       
       this.mode = mode;
@@ -439,6 +508,7 @@ export function chords() {
       if (mode !== 'main' && this.progress && this.progress[mode] !== undefined) {
         this.totalQuestions = this.progress[mode];
         debugLog('CHORDS', `Loaded progress for ${mode}: ${this.totalQuestions}`);
+        this.updateChordButtonsVisibility();
       }
       
       // Update Alpine store
@@ -825,7 +895,25 @@ export function chords() {
       
       // Select a random chord type if none is set
       if (!this.currentChordType) {
-        const chordTypes = ['major', 'minor', 'diminished', 'augmented'];
+        // Get the current progress for this activity
+        const progressData = localStorage.getItem('lalumo_chords_progress');
+        const progress = progressData ? 
+          JSON.parse(progressData)['2_5_chords_characters'] || 0 : 
+          this?.progress?.['2_5_chords_characters'] || 0;
+        
+        // Available chord types based on progress
+        let chordTypes;
+        if (progress <= 9) {
+          // Progress <= 9: Only happy (major) and sad (minor)
+          chordTypes = ['major', 'minor'];
+        } else if (progress <= 19) {
+          // Progress 10-19: happy, sad, and mysterious (diminished)
+          chordTypes = ['major', 'minor', 'diminished'];
+        } else {
+          // Progress >= 20: All types available
+          chordTypes = ['major', 'minor', 'diminished', 'augmented']; // happy, sad, mysterious, tense
+        }
+        
         this.currentChordType = chordTypes[Math.floor(Math.random() * chordTypes.length)];
       }
       
@@ -906,14 +994,37 @@ export function chords() {
      */
     playCurrentChord() {
       if (!this.currentChordType) {
-        // Random chord if none selected yet
-        const chordTypes = ['major', 'minor', 'diminished', 'augmented'];
+        // Random chord if none selected yet - using same logic as in playCurrentChord()
+        // Get the current progress for this activity
+        const progressData = localStorage.getItem('lalumo_chords_progress');
+        const progress = progressData ? 
+          JSON.parse(progressData)['2_5_chords_characters'] || 0 : 
+          this?.progress?.['2_5_chords_characters'] || 0;
+        
+        // Available chord types based on progress
+        let chordTypes;
+        if (progress <= 9) {
+          // Progress <= 9: Only happy (major) and sad (minor)
+          chordTypes = ['major', 'minor'];
+        } else if (progress <= 19) {
+          // Progress 10-19: happy, sad, and mysterious (diminished)
+          chordTypes = ['major', 'minor', 'diminished'];
+        } else {
+          // Progress >= 20: All types available
+          chordTypes = ['major', 'minor', 'diminished', 'augmented']; // happy, sad, mysterious, tense
+        }
+        
         this.currentChordType = chordTypes[Math.floor(Math.random() * chordTypes.length)];
       }
       
       this.playChordByType(this.currentChordType);
     },
     
+    /**
+     * check
+     * 
+     * @activity 2_5_chord_characters
+     */
     checkCharacterMatch(selectedChordType) {
       // Initialize if needed
       if (!this.currentChordType) {
@@ -938,6 +1049,9 @@ export function chords() {
         // Aktualisiere den Hintergrund basierend auf dem neuen Fortschritt
         updateCharacterBackground(this);
         
+        // Update chord buttons visibility based on new progress
+        this.updateChordButtonsVisibility();
+        
         // Alpine.js übernimmt die Anzeige der Fortschrittsnachrichten über die x-text-Bindungen
         
         // Show rainbow success effect for 2_5_chord_characters
@@ -945,8 +1059,41 @@ export function chords() {
         
         // Set up a new chord after a delay
         setTimeout(() => {
-          const chordTypes = ['major', 'minor', 'diminished', 'augmented'];
-          this.currentChordType = chordTypes[Math.floor(Math.random() * chordTypes.length)];
+          // Use a more direct approach to get progress number
+          let progress = 0;
+          try {
+            const progressData = localStorage.getItem('lalumo_chords_progress');
+            if (progressData) {
+              const parsedProgress = JSON.parse(progressData);
+              progress = parsedProgress['2_5_chords_characters'] || 0;
+            }
+          } catch (e) {
+            console.error('Error reading progress:', e);
+          }
+          
+          debugLog('CHORDS', `Current progress for chord selection: ${progress}`);
+          
+          // Available chord types based on progress
+          let chordTypes;
+          if (progress <= 9) {
+            // Progress <= 9: Only happy (major) and sad (minor)
+            chordTypes = ['major', 'minor'];
+          } else if (progress <= 19) {
+            // Progress 10-19: happy, sad, and mysterious (diminished)
+            chordTypes = ['major', 'minor', 'diminished'];
+          } else {
+            // Progress >= 20: All types available
+            chordTypes = ['major', 'minor', 'diminished', 'augmented']; // happy, sad, mysterious, tense
+          }
+          
+          // More robust random selection with verbose logging
+          const randomIndex = Math.floor(Math.random() * chordTypes.length);
+          const selectedType = chordTypes[randomIndex];
+          
+          debugLog('CHORDS', `Random chord selection: index=${randomIndex}, available types=${chordTypes.length}, selected=${selectedType}`);
+          debugLog('CHORDS', `Full available chord types:`, JSON.stringify(chordTypes));
+          
+          this.currentChordType = selectedType;
           this.showFeedback = false;
         }, 1500);
       } else {

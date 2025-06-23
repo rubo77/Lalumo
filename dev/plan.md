@@ -34,6 +34,14 @@
 - Variable mismatch fixed: GET param now uses `this.referredBy`.
 - Fallback param issue fixed: parameter now omitted when no code.
 - Discovered saveReferralData does not persist `referredBy`/`referrerUsername`; needs addition.
+- saveReferralData now persists `referredBy` and `referrerUsername` (bug fixed).
+- GET lockUsername handler currently does not increment `registration_count`; reward logic still missing.
+- GET lockUsername handler now increments `registration_count` and returns flags (fixed).
+- New requirement: Chord buttons visibility depends on progress (<=9 hide mysterious & tense; 10-19 only mysterious shown, tense hidden).
+- Random chord type selection now respects progress thresholds (completed).
+- Chord button visibility logic implemented in chords.js; updateChordButtonsVisibility method and triggers added (completed).
+- Issue: chords component init() not called; visibility updates not executed – requires debugging.
+- Chord button MutationObserver now ensures visibility logic runs when buttons appear (init issue worked around).
 
 ## Task List
 - [x] Increase `registration_count` after successful referred registration (backend done).
@@ -59,11 +67,17 @@
 - [x] Replace undefined helpers (`generateUniqueReferralCode`, `generatePassword`) with existing `generateReferralCode`, `generateRandomPassword` or add wrappers.
 - [x] Fix sending `referredBy=null` when no referrer (only include param if value present).
 - [x] Remove fallback `referredBy=none`; omit parameter when absent.
-- [ ] Finalize GET `action=lockUsername` handling in referral.php (align with POST logic).
-- [ ] Ensure same referral increment logic and JSON response as POST path.
+- [x] Finalize GET `action=lockUsername` handling in referral.php (align with POST logic).
+- [x] Ensure same referral increment logic and JSON response as POST path.
 - [x] Verify and unify variable name for referral code in lockUsername (`referralCode` vs `referrerCode`).
-- [ ] Persist `referredBy` and `referrerUsername` in saveReferralData and ensure load flow consistency.
+- [x] Persist `referredBy` and `referrerUsername` in saveReferralData and ensure load flow consistency.
+- [x] Implement chord type visibility logic in 2_5_chord_characters.js according to progress thresholds.
+  - [x] Hide mysterious and tense buttons when progress ≤ 9.
+  - [x] From progress 10–19 show mysterious button but hide tense.
+  - [x] At progress ≥20 show all chord type buttons.
+- [x] Adjust random chord generation in chords.js to select only from available types based on progress.
+- [x] Debug chords component initialization (init not called); ensure updateChordButtonsVisibility is invoked.
 - [ ] End-to-end manual test: referral click -> username display -> registration -> counters correct.
 
 ## Current Goal
-- Persist referredBy storage & finalize GET handler parity
+- End-to-end manual test: referral flow
