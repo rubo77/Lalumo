@@ -13,11 +13,8 @@ ini_set('display_errors', 1);
  * - POST mit redeemCode: Löst einen Freundescode ein
  */
 
-// Debug-Log erstellen mit PHP error_log
-function debugLog($message) {
-    $timestamp = date('Y-m-d H:i:s');
-    error_log("[REFERRAL_DEBUG][$timestamp] $message");
-}
+require_once 'utils/common.php'; // für debugging-Funktionen
+
 
 // Import JS Config laden
 require_once 'utils/js_config.php';
@@ -41,11 +38,41 @@ if (empty($config) || !isset($config['API_BASE_URL'])) {
 debugLog('Config loaded: ' . json_encode($config));
 debugLog('Request from: ' . ($_SERVER['HTTP_ORIGIN'] ?? 'unknown'));
 
-// CORS-Header werden durch Nginx gesetzt - nicht hier duplizieren, um Fehler zu vermeiden
-// Siehe: /etc/nginx/sites-available/lalumo
-debugLog('CORS headers will be set by Nginx');
+// CORS-Header Logik für verschiedene Umgebungen
+debugLog('Evaluating CORS headers for request');
 
-// Nur Content-Type setzen
+// Ermittle Origin aus den Headers
+$origin = isset($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : '';
+debugLog('Request Origin: ' . $origin);
+
+// Erkenne Server-Umgebung
+$is_production = preg_match('/lalumo\.eu|lalumo\.z11\.de/', $_SERVER['HTTP_HOST'] ?? '');
+$is_local_dev = preg_match('/localhost|127\.0\.0\.1/', $_SERVER['HTTP_HOST'] ?? '');
+$is_mobile_app = preg_match('/capacitor:\/\/localhost|https:\/\/localhost/', $origin);
+
+debugLog("Environment detection: Production=$is_production, LocalDev=$is_local_dev, MobileApp=$is_mobile_app");
+
+// CORS-Header-Strategie basierend auf der Umgebung
+if ($is_mobile_app) {
+    // Mobile App braucht spezifische CORS-Header
+    debugLog('Setting CORS headers for mobile app origin: ' . $origin);
+    header('Access-Control-Allow-Origin: ' . $origin);
+    header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
+    header('Access-Control-Allow-Headers: Content-Type');
+    header('Access-Control-Allow-Credentials: true');
+} else if ($is_local_dev) {
+    // Lokale Entwicklung - einfache CORS-Header setzen
+    // Nginx sollte hier keine CORS-Header setzen
+    debugLog('Setting CORS headers for local development');
+    header('Access-Control-Allow-Origin: *');
+    header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
+    header('Access-Control-Allow-Headers: Content-Type');
+} else {
+    // Für Produktion überlassen wir die CORS-Header Nginx
+    debugLog('In production environment - using Nginx CORS headers');
+}
+
+// Content-Type setzen
 header('Content-Type: application/json');
 
 // Bei OPTIONS direkt antworten (CORS preflight)
@@ -370,6 +397,31 @@ elseif ($method === 'GET') {
         // Passwort generieren
         $password = generateRandomPassword();
         
+        // WICHTIG: Benutzer in der Datenbank erstellen
+        debugLog("REGISTER_USER: Füge neuen Benutzer in die Datenbank ein: {$username}");
+        
+        // Standard-SQL mit referred_by Spalte (diese muss in der DB existieren)
+        $insertUserStmt = $db->prepare('INSERT INTO users (username, password, referral_code, referred_by) VALUES (:username, :password, :referral_code, :referred_by)');
+        $insertUserStmt->bindValue(':username', $username, SQLITE3_TEXT);
+        $insertUserStmt->bindValue(':password', $password, SQLITE3_TEXT);
+        $insertUserStmt->bindValue(':referral_code', $referralCode, SQLITE3_TEXT);
+        $insertUserStmt->bindValue(':referred_by', $referredBy, $referredBy ? SQLITE3_TEXT : SQLITE3_NULL);
+        
+        $insertResult = $insertUserStmt->execute();
+        if (!$insertResult) {
+            debugLog("REGISTER_USER_ERROR: Fehler beim Erstellen des Nutzers: " . $db->lastErrorMsg());
+            http_response_code(500);
+            echo json_encode([
+                'success' => false,
+                'error' => 'database_error',
+                'message' => 'Could not create user'
+            ]);
+            exit;
+        }
+        
+        $userId = $db->lastInsertRowID();
+        debugLog("REGISTER_USER: Benutzer erfolgreich erstellt mit ID: {$userId}");
+        
         // Referrer ID ermitteln, wenn referredBy gesetzt ist
         $referrerId = null;
         if ($referredBy) {
@@ -423,6 +475,10 @@ elseif ($method === 'GET') {
             }
         }
         
+        // Erstelle Referral-Eintrag für den neuen Benutzer
+        $db->exec("INSERT INTO referrals (referrer_id, click_count, registration_count) VALUES ($userId, 0, 0)");
+        debugLog("REGISTER_USER: Referral-Eintrag für neuen Benutzer erstellt: {$userId}");
+        
         // Erfolgreiche Rückmeldung
         header('Content-Type: application/json');
         echo json_encode([
@@ -431,7 +487,8 @@ elseif ($method === 'GET') {
             'password' => $password,
             'referrerFound' => !empty($referrerId),
             'registrationIncremented' => $registrationIncremented,
-            'currentRegistrationCount' => $currentRegistrationCount
+            'currentRegistrationCount' => $currentRegistrationCount,
+            'userId' => $userId
         ]);
         
         debugLog("Username {$username} erfolgreich fixiert und Referral-Code generiert via GET");

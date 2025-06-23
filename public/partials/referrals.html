@@ -1,5 +1,8 @@
 <!-- Referral Code Page -->
-<section x-show="active === 'referral-code' && (window.innerWidth >= 1024 || !menuOpen)" x-transition class="settings-page referral-code-page">
+<section x-show="active === 'referral-code' && (window.innerWidth >= 1024 || !menuOpen)" x-transition class="settings-page referral-code-page"
+       x-data="{
+         referrerUsername: localStorage.getItem('lalumo_referral') ? JSON.parse(localStorage.getItem('lalumo_referral'))?.referrerUsername || '' : ''
+       }">
   <h2 x-text="$store.strings?.unlock_chords || 'Unlock Chords Chapter'"></h2>
   <div class="settings-section">
     <div class="referral-section">
@@ -16,10 +19,10 @@
           <p class="warning-text" x-text="$store.strings?.username_lock_warning || 'After registering, you will no longer be able to change your username.'"></p>
           
           <!-- Referral info when someone referred the user -->
-          <div class="referrer-info" x-show="referrerUsername">
+          <div class="referrer-info" x-show="referrerUsername && referrerUsername !== ''">
             <p class="referrer-message">
               <span x-text="$store.strings?.referred_by_username || 'You were referred by:'"></span>
-              <strong x-text="referrerUsername"></strong>
+              <strong x-text="referrerUsername || ''"></strong>
             </p>
             <p class="referrer-reward" x-text="$store.strings?.referrer_reward_message || 'When you register, they will receive a reward!'"></p>
           </div>

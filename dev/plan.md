@@ -54,6 +54,19 @@
 - Webpack output path updated to `dist`; devServer paths adjusted and mobile-build.sh paths corrected, aligning build pipeline with Capacitor configuration.
 - mobile-build.sh now correctly copies updated package.json into final assets/public directory.
 - Build completed successfully; Android assets contain package.json version 2.1, dist/index.html present and synced via Capacitor.
+- Android app runs, but lockUsername AJAX call fails with TypeError (https://localhost unreachable); need to configure correct backend URL for mobile builds.
+- On Android, API calls (referral.php) must target `https://lalumo.eu/app` instead of localhost; update config.js accordingly.
+- config.js updated to detect Capacitor environment and use production API URL; rebuild synced to Android assets.
+- Android requests now hit production API but fail due to missing CORS headers; server must return `Access-Control-Allow-Origin` for mobile origins.
+- CORS headers added in referral.php for mobile origins (`capacitor://localhost`, `https://localhost`, etc.).
+- Local development now fails due to "CORS Multiple Origin Not Allowed" (duplicate `Access-Control-Allow-Origin` headers on localhost); refine CORS logic.
+- Android registration returns success JSON but new user not visible in admin dashboard; verify DB insertion and stats retrieval.
+- AlpineJS error: `referrerUsername` undefined in partials; fix front-end variable scope.
+- Added x-data initialization in referrals.html to set referrerUsername from localStorage; AlpineJS error should be resolved.
+- CORS header logic refactored in referral.php with environment detection; mobile allowed, local dev wildcard, duplicate header issue persists.
+- GET lockUsername endpoint now inserts new user and creates referral entry; admin dashboard should display new users.
+- New issue: SQLite error "table users has no column named referred_by" indicates schema mismatch; user prefers fixing schema (add referred_by) instead of fallback logic.
+- Migration script `db_migration_add_referred_by.php` created to add `referred_by` column; fallback insert logic removed from referral.php.
 
 ## Task List
 - [x] Increase `registration_count` after successful referred registration (backend done).
@@ -105,6 +118,22 @@
 - [x] Make npm run build output index.html into chosen webDir.
 - [x] Copy updated package.json into that directory and Android assets.
 - [ ] Rebuild and verify credits version and Android app load.
+- [x] Fix mobile lockUsername fetch error by pointing API to correct backend URL.
+  - [x] Update config.js to use `https://lalumo.eu/app` when running in Capacitor/Android.
+  - [x] Rebuild Android app and verify lockUsername succeeds.
+  - [x] Resolve CORS error for API requests from Android
+    - [x] Add appropriate `Access-Control-Allow-Origin` header in referral.php or server configuration to allow `capacitor://localhost` and `https://localhost`
+    - [x] Rebuild and test lockUsername on device without CORS failure.
+- [x] Add appropriate `Access-Control-Allow-Origin` header in referral.php or server configuration to allow `capacitor://localhost` and `https://localhost`
+- [x] Rebuild and test lockUsername on device without CORS failure.
+- [x] Fix duplicate CORS header issue on localhost (ensure only one `Access-Control-Allow-Origin`).
+- [x] Resolve AlpineJS `referrerUsername` undefined error in referrals.html/app.js.
+- [ ] Investigate missing user in admin after Android registration; address SQLite referred_by column issue.
+- [x] Investigate missing user in admin after Android registration; address SQLite referred_by column issue.
+- [x] Remove fallback logic in referral.php; always insert `referred_by`.
+- [ ] Execute migration script on production database to add `referred_by` column.
+- [ ] Deploy schema update and verify registration & admin dashboard.
 
 ## Current Goal
-Verify credits screen shows correct version 2.1
+- Update DB schema (add referred_by) and remove fallback logic
+- Run migration script and test registration
