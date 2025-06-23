@@ -61,15 +61,10 @@ if ($is_mobile_app) {
     header('Access-Control-Allow-Headers: Content-Type');
     header('Access-Control-Allow-Credentials: true');
 } else if ($is_local_dev) {
-    // Lokale Entwicklung - einfache CORS-Header setzen
-    // Nginx sollte hier keine CORS-Header setzen
-    debugLog('Setting CORS headers for local development');
-    header('Access-Control-Allow-Origin: *');
-    header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
-    header('Access-Control-Allow-Headers: Content-Type');
+    // Lokale Entwicklung - keine CORS-Header setzen
 } else {
-    // Für Produktion überlassen wir die CORS-Header Nginx
-    debugLog('In production environment - using Nginx CORS headers');
+    // Für Produktion keine CORS-Header hier setzen (überlassen wir Nginx)
+    debugLog('In production environment - letting Nginx handle CORS headers');
 }
 
 // Content-Type setzen
