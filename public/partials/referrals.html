@@ -14,6 +14,16 @@
         <div class="username-lock-section">
           <h3 x-text="$store.strings?.register_username || 'Register Your Username'"></h3>
           <p class="warning-text" x-text="$store.strings?.username_lock_warning || 'After registering, you will no longer be able to change your username.'"></p>
+          
+          <!-- Referral info when someone referred the user -->
+          <div class="referrer-info" x-show="referrerUsername">
+            <p class="referrer-message">
+              <span x-text="$store.strings?.referred_by_username || 'You were referred by:'"></span>
+              <strong x-text="referrerUsername"></strong>
+            </p>
+            <p class="referrer-reward" x-text="$store.strings?.referrer_reward_message || 'When you register, they will receive a reward!'"></p>
+          </div>
+          
           <div class="current-username-display">
             <strong x-text="$store.strings?.current_username || 'Current username:'"></strong>
             <span x-text="username || $store.strings?.no_username_set || 'No username set'"></span>
@@ -47,7 +57,7 @@
             <div class="referral-stats">
               <p class="referral-status">
                 <strong><span x-text="$store.strings?.registrations || 'Registrations'"></span>:</strong>
-                <span x-text="(referralCount || '0') + '/3'"></span>
+                <span x-text="referralCount || '0'">/3</span>
                 <template x-if="referralCount >= 3">
                   <span class="referral-unlocked">✓ <span x-text="$store.strings?.chords_unlocked || 'Chords unlocked!'"></span></span>
                 </template>

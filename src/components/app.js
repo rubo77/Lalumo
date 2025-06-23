@@ -173,14 +173,42 @@ export function app() {
         isUsernameLocked: this.isUsernameLocked,
         lockedUsername: this.lockedUsername,
         referralCode: this.referralCode,
+        referredBy: this.referredBy,
+        referrerUsername: this.referrerUsername,
         referralCount: this.referralCount,
-        referralClickCount: this.referralClickCount || 0,
-        isChordChapterUnlocked: this.isChordChapterUnlocked,
-        referredBy: this.referredBy || ''
+        clickCount: this.clickCount
       };
       
-      localStorage.setItem('lalumo_referral_data', JSON.stringify(referralData));
+      localStorage.setItem('lalumo_referral', JSON.stringify(referralData));
       console.log('Referral data saved:', referralData);
+    },
+    
+    /**
+     * Ruft den Benutzernamen anhand eines Referral-Codes ab
+     * @param {string} code - Der Referral-Code
+     * @return {Promise<string|null>} Der Benutzername oder null, wenn nicht gefunden
+     */
+    async getUsernameByReferralCode(code) {
+      if (!code) return null;
+      
+      try {
+        debugLog(`[REFERRAL] Fetching username for code: ${code}`);
+        const apiUrl = `${config.API_BASE_URL}/referral.php?code=${encodeURIComponent(code)}&action=username`;
+        
+        const response = await fetch(apiUrl);
+        const data = await response.json();
+        
+        if (data.success && data.username) {
+          debugLog(`[REFERRAL] Found username: ${data.username} for code: ${code}`);
+          return data.username;
+        } else {
+          debugLog(`[REFERRAL] No username found for code: ${code}`);
+          return null;
+        }
+      } catch (error) {
+        console.error(`[REFERRAL] Error fetching username for code: ${code}`, error);
+        return null;
+      }
     },
     
     /**
@@ -194,11 +222,11 @@ export function app() {
      */
     async fetchReferralCount() {
       if (!this.lockedUsername) {
-        console.log('[REFERRAL] Kein Username gesperrt, überspringe Abfrage');
+        console.log('[REFERRAL_DEBUG] Kein Username gesperrt, überspringe Abfrage');
         return;
       }
       
-      console.log('[REFERRAL] Rufe Statistik für User ab:', this.lockedUsername);
+      console.log('[REFERRAL_DEBUG] Rufe Statistik für User ab:', this.lockedUsername);
       
       try {
         const apiUrl = `${config.API_BASE_URL}/referral.php?username=${encodeURIComponent(this.lockedUsername)}`;
@@ -226,13 +254,14 @@ export function app() {
         
         if (data.success) {
           // Update referral counts with detailed logging
-          console.log('[REFERRAL] registrationCount:', data.registrationCount, 'clickCount:', data.clickCount);
+          console.log('[REFERRAL_DEBUG] Server returned - registrationCount:', data.registrationCount, 'clickCount:', data.clickCount);
           
           const oldReferralCount = this.referralCount;
           this.referralCount = data.registrationCount || 0;
           this.referralClickCount = data.clickCount || 0;
           
-          console.log('[REFERRAL] Werte aktualisiert - Alt:', oldReferralCount, 'Neu:', this.referralCount);
+          console.log('[REFERRAL_DEBUG] Werte aktualisiert - Alt:', oldReferralCount, 'Neu:', this.referralCount);
+          console.log('[REFERRAL_DEBUG] Datentypen - registrationCount:', typeof data.registrationCount, 'clickCount:', typeof data.clickCount);
           
           // Speichere aktualisierte Daten im localStorage
           this.saveReferralData();
@@ -391,6 +420,21 @@ export function app() {
         console.log('[DEEPLINK] Referral code found:', params.ref);
         // Store who referred this user
         this.referredBy = params.ref;
+        
+        // Fetch username of referring user if not already stored
+        if (!this.referrerUsername && this.referredBy) {
+          debugLog('[REFERRAL] Fetching username for referring user code: ' + this.referredBy);
+          
+          // Start async process to get referrer's username
+          this.getUsernameByReferralCode(this.referredBy).then(username => {
+            if (username) {
+              debugLog('[REFERRAL] Found referring username: ' + username);
+              this.referrerUsername = username;
+              this.saveReferralData();
+            }
+          });
+        }
+        
         this.saveReferralData();
         
         // Show notification to user that they were referred
@@ -734,8 +778,8 @@ export function app() {
           this.menuLocked = true;
         }
         
-        // Load referral data from localStorage
-        const referralData = localStorage.getItem('lalumo-referral');
+        // Load referral data from localStorage - both for backwards compatibility and current format
+        const referralData = localStorage.getItem('lalumo_referral') || localStorage.getItem('lalumo-referral');
         if (referralData) {
           try {
             const data = JSON.parse(referralData);
@@ -746,11 +790,27 @@ export function app() {
             this.referralClickCount = data.referralClickCount || 0;
             this.isChordChapterUnlocked = data.isChordChapterUnlocked || false;
             
-            console.log('Loaded referral data:', data);
+            // Load referral source data
+            this.referredBy = data.referredBy || '';
+            this.referrerUsername = data.referrerUsername || '';
+            
+            // If we have a referral code but no referrer username, try to fetch it
+            if (this.referredBy && !this.referrerUsername) {
+              debugLog('[REFERRAL] Has referral code but no username, fetching from server...');
+              this.getUsernameByReferralCode(this.referredBy).then(username => {
+                if (username) {
+                  debugLog('[REFERRAL] Found referring username: ' + username);
+                  this.referrerUsername = username;
+                  this.saveReferralData();
+                }
+              });
+            }
+            
+            debugLog('[REFERRAL] Loaded referral data:', data);
             
             // Aktualisiere die Daten vom Server, wenn ein Benutzername gesperrt ist
             if (this.isUsernameLocked && this.lockedUsername) {
-              console.log('[REFERRAL] Aktualisiere Referral-Daten vom Server...');
+              debugLog('[REFERRAL] Aktualisiere Referral-Daten vom Server...');
               // Verzögern für die Stabilität der Netzwerkanfrage
               setTimeout(() => this.fetchReferralCount(), 1000);
             }
@@ -1902,7 +1962,10 @@ export function app() {
           referralCount: this.referralCount,
           referralClickCount: this.referralClickCount || 0,
           referralLink: this.referralLink || '',
-          isChordChapterUnlocked: this.isChordChapterUnlocked
+          isChordChapterUnlocked: this.isChordChapterUnlocked,
+          // Wichtig: referredBy und referrerUsername speichern
+          referredBy: this.referredBy || '',
+          referrerUsername: this.referrerUsername || ''
         };
         localStorage.setItem('lalumo-referral', JSON.stringify(referralData));
         console.log('Saved referral data:', referralData);
@@ -1967,24 +2030,48 @@ export function app() {
       this.isRegistering = true;
       
       try {
-        console.log('Username wird fixiert und Referral-Code wird generiert...');
+        console.log('Username wird gelockt und Referral-Code wird generiert...');
         
         // API endpoint URL (relative to the app root)
         const apiUrl = `${config.API_BASE_URL}/referral.php`;
         
-        // POST-Anfrage an den Server senden
-        const response = await fetch(apiUrl, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            username: this.username
-          })
+        // GET-Anfrage an den Server senden mit Parametern in der URL
+        const params = new URLSearchParams({
+            username: this.username,
+            action: 'lockUsername'
+        });
+        
+        // referredBy nur hinzufügen, wenn tatsächlich ein Code vorhanden ist
+        if (this.referredBy) {
+          params.append('referredBy', this.referredBy);
+          console.log('[REFERRAL] Sending referredBy code:', this.referredBy);
+        } else {
+          console.log('[REFERRAL] No referral code to send');
+        }
+        
+        const fullUrl = `${apiUrl}?${params.toString()}`;
+        console.log('Vollständige GET-Request URL:', fullUrl);
+        
+        const response = await fetch(fullUrl, {
+          method: 'GET'
         });
         
         // Antwort verarbeiten
-        const data = await response.json();
+        let data;
+        let rawResponse;
+        
+        try {
+            // Zuerst den Rohtext der Antwort holen
+            rawResponse = await response.text();
+            console.log('Rohtext der Server-Antwort:', rawResponse);
+            
+            // Dann als JSON parsen
+            data = JSON.parse(rawResponse);
+        } catch (error) {
+            console.error('Fehler beim Parsen der JSON-Antwort:', error);
+            console.error('Ungültiger Rohtext der Server-Antwort:', rawResponse);
+            throw new Error('Fehler beim Registrieren: ' + error.message);
+        }
         
         if (data.success) {
           // Referral-Code und fixierten Username speichern

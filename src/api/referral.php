@@ -112,7 +112,7 @@ function generateRandomPassword($length = 8) {
 }
 
 // POST: Username registrieren und Referral-Code zurückgeben
-if ($method === 'POST') {
+if ($method === 'POST') { // aus _REQUEST
     $data = json_decode(file_get_contents('php://input'), true);
     
     // Prüfen ob Code-Einlösung
@@ -148,12 +148,30 @@ if ($method === 'POST') {
         if ($row) {
             // Registrierungszähler erhöhen
             $referrerId = $row['id'];
+            debugLog("REFERRAL_INCREMENT: Incrementing registration_count for referrer ID: {$referrerId} (Code redemption)");
             $db->exec("UPDATE referrals SET registration_count = registration_count + 1 WHERE referrer_id = $referrerId");
+            
+            // Überprüfen, ob die Aktualisierung erfolgreich war
+            $checkStmt = $db->prepare('SELECT registration_count FROM referrals WHERE referrer_id = :referrer_id');
+            $checkStmt->bindValue(':referrer_id', $referrerId, SQLITE3_INTEGER);
+            $checkResult = $checkStmt->execute();
+            $checkRow = $checkResult->fetchArray(SQLITE3_ASSOC);
+            debugLog("REFERRAL_INCREMENT: After update, registration_count is now: " . ($checkRow ? $checkRow['registration_count'] : 'no row found'));
+            
+            
+            // Senden Sie einen Statuscode, ob die Erhöhung der registration_count erfolgreich war
+            $registrationIncremented = false;
+            if ($checkRow && $checkRow['registration_count'] > 0) {
+                $registrationIncremented = true;
+            }
             
             echo json_encode([
                 'success' => true,
-                'message' => 'Code_successfully_redeemed'
+                'message' => 'Code_successfully_redeemed',
+                'registrationIncremented' => $registrationIncremented,
+                'currentRegistrationCount' => $checkRow ? $checkRow['registration_count'] : 0
             ]);
+            debugLog("REFERRAL_API: Code redemption response includes registrationIncremented: {$registrationIncremented}");
         } else {
             http_response_code(400);
             echo json_encode([
@@ -194,6 +212,27 @@ if ($method === 'POST') {
     // Generiere ein zufälliges Passwort für den Benutzer
     $password = generateRandomPassword(8);
     
+    // Prüfen, ob ein Referral-Code mitgeliefert wurde
+    $referredBy = isset($data['referredBy']) ? $data['referredBy'] : null;
+    $referrerId = null;
+    
+    if ($referredBy) {
+        // Code-Format normalisieren (mit und ohne Bindestriche berücksichtigen)
+        $plainReferredBy = str_replace('-', '', $referredBy);
+        
+        // Finde den Referrer anhand des Codes
+        $refStmt = $db->prepare('SELECT id FROM users WHERE referral_code = :code OR referral_code = :formatted_code');
+        $refStmt->bindValue(':code', $plainReferredBy, SQLITE3_TEXT);
+        $refStmt->bindValue(':formatted_code', formatCode($plainReferredBy), SQLITE3_TEXT);
+        $refResult = $refStmt->execute();
+        $refRow = $refResult->fetchArray(SQLITE3_ASSOC);
+        
+        if ($refRow) {
+            $referrerId = $refRow['id'];
+            debugLog("Found referrer with ID $referrerId for code $referredBy");
+        }
+    }
+    
     // In die Datenbank einfügen
     $stmt = $db->prepare('INSERT INTO users (username, referral_code, password, created_at) VALUES (:username, :code, :password, datetime("now"))');
     $stmt->bindValue(':username', $username, SQLITE3_TEXT);
@@ -210,7 +249,7 @@ if ($method === 'POST') {
         if ($result) {
             // Referral-Eintrag erstellen
             $userId = $db->lastInsertRowID();
-            error_log("User created with ID: {$userId}");
+            debugLog("User created with ID: {$userId}");
             
             // Erstelle einen passenden Eintrag in der referrals Tabelle
             $referralStmt = $db->prepare('INSERT INTO referrals (referrer_id, click_count, registration_count) VALUES (:referrer_id, 0, 0)');
@@ -218,15 +257,56 @@ if ($method === 'POST') {
             $referralStmt->execute();
             
             // Debug-Ausgabe
-            error_log("Created matching referrals entry for user ID: {$userId}");
+            debugLog("Created matching referrals entry for user ID: {$userId}");
+            
+            // Wenn es einen Referrer gibt, stelle sicher dass ein Eintrag existiert und erhöhe dessen Registrierungszähler
+            if ($referrerId) {
+                debugLog("REFERRAL_INCREMENT: Processing referrer ID: {$referrerId} (Username registration)");
+                
+                // Prüfe ob der Referrer bereits einen Eintrag in der referrals Tabelle hat
+                $checkExistsStmt = $db->prepare('SELECT id FROM referrals WHERE referrer_id = :referrer_id');
+                $checkExistsStmt->bindValue(':referrer_id', $referrerId, SQLITE3_INTEGER);
+                $checkExistsResult = $checkExistsStmt->execute();
+                $referralEntryExists = $checkExistsResult->fetchArray(SQLITE3_ASSOC);
+                
+                if (!$referralEntryExists) {
+                    // Erstelle einen Eintrag für den Referrer, wenn keiner existiert
+                    debugLog("REFERRAL_INCREMENT: Creating new referrals entry for referrer ID: {$referrerId}");
+                    $db->exec("INSERT INTO referrals (referrer_id, click_count, registration_count) VALUES ($referrerId, 0, 0)");
+                }
+                
+                // Jetzt können wir den Zähler sicher erhöhen
+                debugLog("REFERRAL_INCREMENT: Incrementing registration count for referrer ID: {$referrerId}");
+                $db->exec("UPDATE referrals SET registration_count = registration_count + 1 WHERE referrer_id = $referrerId");
+                
+                // Überprüfen, ob die Aktualisierung erfolgreich war
+                $checkStmt = $db->prepare('SELECT registration_count FROM referrals WHERE referrer_id = :referrer_id');
+                $checkStmt->bindValue(':referrer_id', $referrerId, SQLITE3_INTEGER);
+                $checkResult = $checkStmt->execute();
+                $checkRow = $checkResult->fetchArray(SQLITE3_ASSOC);
+                debugLog("REFERRAL_INCREMENT: After update during registration, count is now: " . ($checkRow ? $checkRow['registration_count'] : 'no row found'));
+            }else{
+                $checkRow = null;
+            }
+            
+            // Status der registration_count Erhöhung bestimmen
+            $registrationIncremented = false;
+            if ($referrerId && $checkRow && $checkRow['registration_count'] > 0) {
+                $registrationIncremented = true;
+            }
             
             // Erfolgreiche Rückmeldung
             header('Content-Type: application/json');
             echo json_encode([
                 'success' => true,
                 'referralCode' => formatCode($referralCode),
-                'password' => $password
+                'password' => $password,
+                'referrerFound' => !empty($referrerId),
+                'registrationIncremented' => $registrationIncremented,
+                'currentReferrerCount' => ($checkRow ? $checkRow['registration_count'] : 0)
             ]);
+            
+            debugLog("REFERRAL_API: Username registration response includes registrationIncremented: {$registrationIncremented}");
         } else {
             http_response_code(500);
             echo json_encode([
@@ -244,9 +324,122 @@ if ($method === 'POST') {
 }
 // GET: Referral-Link-Klick oder Statistiken abrufen
 elseif ($method === 'GET') {
+    // Username für einen Referral-Code abrufen
+    if (isset($_REQUEST['code']) && isset($_REQUEST['action']) && $_REQUEST['action'] === 'username') {
+        $code = $_REQUEST['code'];
+        $username = getUsernameByReferralcode($db, $code);
+        
+        if ($username) {
+            echo json_encode([
+                'success' => true,
+                'username' => $username
+            ]);
+        } else {
+            http_response_code(404);
+            echo json_encode([
+                'success' => false,
+                'error' => 'referral_code_not_found'
+            ]);
+        }
+        exit;
+    }
+    // Username fixieren und Referral-Code generieren (ursprünglich POST-Request)
+    elseif (isset($_REQUEST['action']) && $_REQUEST['action'] === 'lockUsername' && isset($_REQUEST['username'])) {
+        debugLog("GET lockUsername Anfrage für Username: {$_REQUEST['username']}");
+        
+        $username = $_REQUEST['username'];
+        $referredBy = isset($_REQUEST['referredBy']) && $_REQUEST['referredBy'] ? $_REQUEST['referredBy'] : null;
+        
+        // Prüfen, ob der Benutzername bereits existiert
+        $stmt = $db->prepare('SELECT id FROM users WHERE username = :username');
+        $stmt->bindValue(':username', $username, SQLITE3_TEXT);
+        $result = $stmt->execute();
+        
+        if ($result->fetchArray(SQLITE3_ASSOC)) {
+            http_response_code(409); // Conflict
+            echo json_encode([
+                'success' => false,
+                'error' => 'username_exists'
+            ]);
+            exit;
+        }
+        
+        // Referral-Code generieren (oder wiederbenutzen)
+        $referralCode = generateReferralCode($username);
+        
+        // Passwort generieren
+        $password = generateRandomPassword();
+        
+        // Referrer ID ermitteln, wenn referredBy gesetzt ist
+        $referrerId = null;
+        if ($referredBy) {
+            debugLog("Suche Referrer für Code: {$referredBy}");
+            $plainCode = str_replace('-', '', $referredBy);
+            
+            $refStmt = $db->prepare('SELECT id FROM users WHERE referral_code = :code OR referral_code = :formatted_code');
+            $refStmt->bindValue(':code', $plainCode, SQLITE3_TEXT);
+            $refStmt->bindValue(':formatted_code', formatCode($plainCode), SQLITE3_TEXT);
+            $refResult = $refStmt->execute();
+            $refRow = $refResult->fetchArray(SQLITE3_ASSOC);
+            
+            if ($refRow) {
+                $referrerId = $refRow['id'];
+                debugLog("Found referrer with ID $referrerId for code $referredBy");
+                
+                // Prüfen ob eine Referral-Zeile existiert, falls nicht, anlegen
+                $checkReferralStmt = $db->prepare('SELECT id FROM referrals WHERE referrer_id = :referrer_id');
+                $checkReferralStmt->bindValue(':referrer_id', $referrerId, SQLITE3_INTEGER);
+                $checkResult = $checkReferralStmt->execute();
+                if (!$checkResult->fetchArray(SQLITE3_ASSOC)) {
+                    debugLog("REFERRAL_INCREMENT: Erstelle fehlenden Referral-Eintrag für Referrer ID: {$referrerId}");
+                    $db->exec("INSERT INTO referrals (referrer_id, click_count, registration_count) VALUES ({$referrerId}, 0, 0)");
+                }
+                
+                // Erhöhe registration_count für den Referrer
+                debugLog("REFERRAL_INCREMENT: Incrementing registration_count for referrer ID: {$referrerId} (Code registration via GET)");
+                $db->exec("UPDATE referrals SET registration_count = registration_count + 1 WHERE referrer_id = $referrerId");
+                
+                // Überprüfen, ob die Aktualisierung erfolgreich war
+                $checkStmt = $db->prepare('SELECT registration_count FROM referrals WHERE referrer_id = :referrer_id');
+                $checkStmt->bindValue(':referrer_id', $referrerId, SQLITE3_INTEGER);
+                $checkResult = $checkStmt->execute();
+                $checkRow = $checkResult->fetchArray(SQLITE3_ASSOC);
+                debugLog("REFERRAL_INCREMENT: After update, registration_count is now: " . ($checkRow ? $checkRow['registration_count'] : 'no row found'));
+            }
+        }
+        
+        // Status der Aktualisierung ermitteln
+        $registrationIncremented = false;
+        $currentRegistrationCount = 0;
+        if ($referrerId) {
+            $countStmt = $db->prepare('SELECT registration_count FROM referrals WHERE referrer_id = :referrer_id');
+            $countStmt->bindValue(':referrer_id', $referrerId, SQLITE3_INTEGER);
+            $countResult = $countStmt->execute();
+            $countRow = $countResult->fetchArray(SQLITE3_ASSOC);
+            
+            if ($countRow && $countRow['registration_count'] > 0) {
+                $registrationIncremented = true;
+                $currentRegistrationCount = $countRow['registration_count'];
+            }
+        }
+        
+        // Erfolgreiche Rückmeldung
+        header('Content-Type: application/json');
+        echo json_encode([
+            'success' => true,
+            'referralCode' => formatCode($referralCode),
+            'password' => $password,
+            'referrerFound' => !empty($referrerId),
+            'registrationIncremented' => $registrationIncremented,
+            'currentRegistrationCount' => $currentRegistrationCount
+        ]);
+        
+        debugLog("Username {$username} erfolgreich fixiert und Referral-Code generiert via GET");
+        exit;
+    }
     // Referral-Link-Klick verarbeiten
-    if (isset($_GET['code'])) {
-        $code = $_GET['code'];
+    elseif (isset($_REQUEST['code'])) {
+        $code = $_REQUEST['code'];
         
         // Code-Format normalisieren (mit und ohne Bindestriche berücksichtigen)
         $plainCode = str_replace('-', '', $code);
@@ -274,8 +467,8 @@ elseif ($method === 'GET') {
         }
     }
     // Statistiken für einen Benutzer abrufen
-    elseif (isset($_GET['username'])) {
-        $username = $_GET['username'];
+    elseif (isset($_REQUEST['username'])) {
+        $username = $_REQUEST['username'];
         
         try {
             // Zuerst prüfen, ob der Benutzer existiert
@@ -289,10 +482,17 @@ elseif ($method === 'GET') {
                 $userId = $userRow['id'];
                 
                 // Referral-Daten abrufen, wenn vorhanden
+                debugLog("REFERRAL_STATS: Fetching stats for user ID: {$userId} (username: {$username})");
                 $refStmt = $db->prepare('SELECT click_count, registration_count FROM referrals WHERE referrer_id = :id');
                 $refStmt->bindValue(':id', $userId, SQLITE3_INTEGER);
                 $refResult = $refStmt->execute();
                 $refRow = $refResult->fetchArray(SQLITE3_ASSOC);
+                
+                if ($refRow) {
+                    debugLog("REFERRAL_STATS: Found data - click_count: {$refRow['click_count']}, registration_count: {$refRow['registration_count']}");
+                } else {
+                    debugLog("REFERRAL_STATS: No referral data found for user ID: {$userId}");
+                }
                 
                 if ($refRow) {
                     // Referral-Eintrag gefunden
@@ -335,7 +535,7 @@ elseif ($method === 'GET') {
     // Ungültiger GET-Parameter
     else {
         http_response_code(400);
-        echo json_encode(['error' => 'invalid_get_parameters']);
+        echo json_encode(['error' => 'invalid_request_parameters']);
         exit;
     }
 }
@@ -380,5 +580,35 @@ function formatCode($code) {
     
     // Formatiere mit Bindestrichen (XXXX-XXXX-XXXX)
     return substr($plainCode, 0, 4) . '-' . substr($plainCode, 4, 4) . '-' . substr($plainCode, 8, 4);
+}
+
+/**
+ * Findet den Benutzernamen anhand eines Referral-Codes
+ * 
+ * @param SQLite3 $db Die Datenbankverbindung
+ * @param string $code Der Referral-Code (mit oder ohne Bindestriche)
+ * @return string|null Der Benutzername oder null, wenn nicht gefunden
+ */
+function getUsernameByReferralcode($db, $code) {
+    debugLog("Looking up username for referral code: {$code}");
+    
+    // Code-Format normalisieren (mit und ohne Bindestriche berücksichtigen)
+    $plainCode = str_replace('-', '', $code);
+    
+    // Suche nach passenden Einträgen
+    $stmt = $db->prepare('SELECT username FROM users WHERE referral_code = :code OR referral_code = :formatted_code');
+    $stmt->bindValue(':code', $plainCode, SQLITE3_TEXT);
+    $stmt->bindValue(':formatted_code', formatCode($plainCode), SQLITE3_TEXT);
+    
+    $result = $stmt->execute();
+    $row = $result->fetchArray(SQLITE3_ASSOC);
+    
+    if ($row) {
+        debugLog("Found username '{$row['username']}' for referral code: {$code}");
+        return $row['username'];
+    }
+    
+    debugLog("No username found for referral code: {$code}");
+    return null;
 }
 ?>
