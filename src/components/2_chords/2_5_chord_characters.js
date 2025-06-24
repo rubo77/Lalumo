@@ -69,3 +69,24 @@ function preloadBackgroundImage(imageUrl) {
   img.src = imageUrl;
   debugLog(['CHORDS', '2_5_BACKGROUND'], `Preloading background image: ${imageUrl}`);
 }
+
+/**
+ * Reset progress for Chord Types activity (2_5)
+ * @param {Object} component - The pitches component instance
+ */
+export function reset_2_5_ChordTypes_Progress(component) {
+  console.log('Resetting Chord Types progress...');
+  
+  // Clear localStorage data
+  localStorage.removeItem('lalumo_chords_progress');
+  
+  // Reset any in-memory state if applicable
+  if (component && component.chords) {
+    if (component.chords.chordsProgress) {
+      component.chords.chordsProgress = 0;
+    }
+  }
+  
+  console.log('Chord Types progress reset complete');
+}
+

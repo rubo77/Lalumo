@@ -85,8 +85,8 @@ export function chords() {
         this?.progress?.['2_5_chords_characters'] || 0;
       
       // Get chord buttons
-      const mysteriousButton = document.getElementById('button_2_5_1_mysterious');
-      const surprisedButton = document.getElementById('button_2_5_1_surprised');
+      const mysteriousButton = document.getElementById('button_2_5_1_diminished');
+      const surprisedButton = document.getElementById('button_2_5_1_augmented');
       
       if (!mysteriousButton || !surprisedButton) {
         // Buttons not found in DOM yet, will try again when activity is shown
@@ -164,8 +164,8 @@ export function chords() {
           // Check if any of the mutations added our target elements
           for (const mutation of mutations) {
             if (mutation.type === 'childList' && mutation.addedNodes.length) {
-              const mysteriousBtn = document.getElementById('button_2_5_1_mysterious');
-              const surprisedBtn = document.getElementById('button_2_5_1_surprised');
+              const mysteriousBtn = document.getElementById('button_2_5_1_diminished');
+              const surprisedBtn = document.getElementById('button_2_5_1_augmented');
               
               if (mysteriousBtn && surprisedBtn) {
                 debugLog('CHORDS', 'Chord buttons found in DOM, updating visibility');

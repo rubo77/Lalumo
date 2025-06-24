@@ -11,6 +11,8 @@ import { reset_1_2_MatchSounds_Progress } from './1_2_match_sounds.js';
 import { reset_1_3_DrawMelody_Progress } from './1_3_draw_melody.js';
 import { reset_1_4_SoundJudgment_Progress } from './1_4_sound_judgment.js';
 import { reset_1_5_MemoryGame_Progress } from './1_5_memory_game.js';
+import { reset_2_5_ChordTypes_Progress } from '../2_chords/2_5_chord_characters.js';
+
 
 // Exportiere eine Testfunktion für Import-Tests
 export function testCommonModuleImport() {
@@ -168,13 +170,13 @@ export function showResetFeedback(activityMode) {
  * @param {Object} component - The Alpine.js component instance
  */
 export function resetAllProgress(component) {
-  console.log('RESET_ALL: Starting global reset of all pitch activities');
+  console.log('RESET_ALL: Starting global reset of all activities');
   
   // Show confirmation dialog
   const isGerman = document.documentElement.lang === 'de';
   const confirmMessage = isGerman ? 
-    'ALLE Fortschritte in den Tonhöhen-Aktivitäten zurücksetzen? Dies kann nicht rückgängig gemacht werden!' : 
-    'Reset ALL progress in pitch activities? This cannot be undone!';
+    'ALLE Fortschritte in allen Aktivitäten zurücksetzen? Dies kann nicht rückgängig gemacht werden!' : 
+    'Reset ALL progress in all activities? This cannot be undone!';
     
   if (!confirm(confirmMessage)) {
     console.log('RESET_ALL: User cancelled global reset');
@@ -197,10 +199,14 @@ export function resetAllProgress(component) {
   console.log('RESET_ALL: Resetting Memory Game activity');
   reset_1_5_MemoryGame_Progress(window.pitchesComponent);
   
+  console.log('RESET_ALL: Resetting Chord Types activity');
+  reset_2_5_ChordTypes_Progress(window.pitchesComponent);
+  
+
   // Show global reset feedback
   const message = isGerman ? 
-    'Alle Tonhöhen-Aktivitäten erfolgreich zurückgesetzt!' : 
-    'All pitch activities successfully reset!';
+    'Alle Aktivitäten erfolgreich zurückgesetzt!' : 
+    'All activities successfully reset!';
     
   showGlobalResetFeedback(message);
   
@@ -239,7 +245,9 @@ export function showGlobalResetFeedback(message) {
         feedbackElement.parentNode.removeChild(feedbackElement);
       }
     }, 300);
-  }, 4000);
+    window.scrollTo(0,0);
+    window.location.reload();
+  }, 3000);
 }
 
 // Make globally available for diagnosis and manual testing

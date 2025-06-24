@@ -4640,6 +4640,8 @@ export function pitches() {
       localStorage.removeItem('lalumo_soundJudgmentStreak');
       localStorage.removeItem('lalumo_draw_melody_level');
       localStorage.removeItem('lalumo_draw_melody_success_counter')
+      localStorage.removeItem('lalumo_chords_progress')
+      
     }
   };
 }

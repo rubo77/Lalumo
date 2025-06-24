@@ -964,6 +964,7 @@ export function app() {
         localStorage.removeItem('lalumo_progress');
         localStorage.removeItem('lalumo_memory_level');
         localStorage.removeItem('lalumo_difficulty');
+        localStorage.removeItem('lalumo_chords_progress');
         
         // Reset in-memory progress too
         this.progress = { match: 0, guess: 0, memory: 0 };
