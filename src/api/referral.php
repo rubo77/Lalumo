@@ -189,7 +189,7 @@ if ($method === 'POST') { // aus _REQUEST
             
             echo json_encode([
                 'success' => true,
-                'message' => 'Code_successfully_redeemed',
+                'message' => 'code_successfully_redeemed',
                 'registrationIncremented' => $registrationIncremented,
                 'currentRegistrationCount' => $checkRow ? $checkRow['registration_count'] : 0
             ]);
