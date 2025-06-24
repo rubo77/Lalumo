@@ -1426,7 +1426,8 @@ section h2 {
   height: min(40vw, 320px);
   background-color: #fff;
   border-radius: 20%;
-  margin-top: -26vw;
+  position:absolute;
+  top: 0px;
   margin-left: 40%;
 }
 

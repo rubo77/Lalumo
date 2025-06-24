@@ -130,7 +130,7 @@ export function app() {
         const name = element.getAttribute('name');
         const value = element.textContent;
         if (name && value) {
-          strings[name] = value;
+          strings[name] = value.replace("\\", "");
         }
       });
       
