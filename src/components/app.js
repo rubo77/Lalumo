@@ -166,24 +166,6 @@ export function app() {
      */
     
     /**
-     * Save referral data to localStorage
-     */
-    saveReferralData() {
-      const referralData = {
-        isUsernameLocked: this.isUsernameLocked,
-        lockedUsername: this.lockedUsername,
-        referralCode: this.referralCode,
-        referredBy: this.referredBy,
-        referrerUsername: this.referrerUsername,
-        referralCount: this.referralCount,
-        clickCount: this.clickCount
-      };
-      
-      localStorage.setItem('lalumo_referral', JSON.stringify(referralData));
-      console.log('Referral data saved:', referralData);
-    },
-    
-    /**
      * Ruft den Benutzernamen anhand eines Referral-Codes ab
      * @param {string} code - Der Referral-Code
      * @return {Promise<string|null>} Der Benutzername oder null, wenn nicht gefunden
