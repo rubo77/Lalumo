@@ -140,6 +140,8 @@ export function chords() {
     
     // Current state for activities
     currentChordType: null,
+    previousChordType: null, // Track previous chord type for repetition logic
+    consecutiveRepeats: 0, // Counter for consecutive chord type repeats
     selectedColors: [],
     correctAnswers: 0,
     totalQuestions: 0,
@@ -152,6 +154,20 @@ export function chords() {
      */
     init() {
       debugLog('CHORDS', 'Chords component initialized');
+      
+      // Initialize chord progress
+      try {
+        const progressData = localStorage.getItem('lalumo_chords_progress');
+        this.progress = progressData ? JSON.parse(progressData) : {};
+      } catch (e) {
+        console.error('Error reading progress:', e);
+        this.progress = {};
+      }
+      
+      // Initialize repetition tracking variables
+      this.consecutiveRepeats = 0;
+      this.previousChordType = null;
+      debugLog('CHORDS', '[REPETITION] Initialized repetition tracking: consecutiveRepeats=0, previousChordType=null');
       
       // Register this component globally
       window.chordsComponent = this;
@@ -993,13 +1009,19 @@ export function chords() {
      * @activity 2_5_chord_characters
      */
     playCurrent2_5Chord() {
+      debugLog('CHORDS', `[REPETITION] playCurrent2_5Chord called with currentChordType=${this.currentChordType}, previousChordType=${this.previousChordType}, consecutiveRepeats=${this.consecutiveRepeats}`);
+      
       if (!this.currentChordType) {
-        // Random chord if none selected yet - using same logic as in play?Chord()
+        // Need to generate a new chord type
+        debugLog('CHORDS', '[REPETITION] No current chord type, generating a new one');
+        
         // Get the current progress for this activity
         const progressData = localStorage.getItem('lalumo_chords_progress');
         const progress = progressData ? 
           JSON.parse(progressData)['2_5_chords_characters'] || 0 : 
           this?.progress?.['2_5_chords_characters'] || 0;
+        
+        debugLog('CHORDS', `[REPETITION] Current progress: ${progress}`);
         
         // Available chord types based on progress
         let chordTypes;
@@ -1014,9 +1036,41 @@ export function chords() {
           chordTypes = ['major', 'minor', 'diminished', 'augmented']; // happy, sad, mysterious, tense
         }
         
-        this.currentChordType = chordTypes[Math.floor(Math.random() * chordTypes.length)];
+        debugLog('CHORDS', `[REPETITION] Available chord types: ${JSON.stringify(chordTypes)}`);
+        
+        // Apply repetition constraints based on progress
+        if ((progress >= 10 || this.consecutiveRepeats >= 2) && this.previousChordType && chordTypes.length > 1) {
+          // For progress ≥10 OR when we already had 2 consecutive repeats:
+          // Filter out the previous chord type to avoid repetition
+          const availableTypes = chordTypes.filter(type => type !== this.previousChordType);
+          this.currentChordType = availableTypes[Math.floor(Math.random() * availableTypes.length)];
+          this.consecutiveRepeats = 0; // Reset consecutive repeats as we're changing chord type
+          debugLog('CHORDS', `[REPETITION] Selected non-repeating chord type: ${this.currentChordType}`);
+        } else {
+          // Normal random selection with tracking repeats
+          this.currentChordType = chordTypes[Math.floor(Math.random() * chordTypes.length)];
+          
+          // Check if we're repeating the previous chord type
+          if (this.currentChordType === this.previousChordType) {
+            this.consecutiveRepeats++;
+            debugLog('CHORDS', `[REPETITION] Selected same chord type, incrementing repeat counter to: ${this.consecutiveRepeats}`);
+          } else {
+            // Different chord type selected, reset counter
+            this.consecutiveRepeats = 0;
+            debugLog('CHORDS', `[REPETITION] Selected different chord type, reset repeat counter`);
+          }
+        }
+        
+        // Store for future comparison
+        this.previousChordType = this.currentChordType;
+        debugLog('CHORDS', `[REPETITION] New chord generated: ${this.currentChordType}, previousChordType set to: ${this.previousChordType}`);
+      } else {
+        // Using existing chord (persistence)
+        debugLog('CHORDS', `[REPETITION] Using existing chord type: ${this.currentChordType}, no counter changes`);
       }
       
+      // Play the chord (either new or existing)
+      debugLog('CHORDS', `[REPETITION] Playing chord type: ${this.currentChordType}, current repeats: ${this.consecutiveRepeats}`);
       this.playChordByType(this.currentChordType);
     },
     
@@ -1036,6 +1090,7 @@ export function chords() {
       
       this.showFeedback = true;
       if (isCorrect) {
+        debugLog('CHORDS', `[REPETITION] Correct answer for chord type: ${this.currentChordType}`);
         this.feedbackMessage = this.$store.strings.success_message || 'Great job! That\'s correct!';
         this.correctAnswers++;
         
@@ -1057,43 +1112,12 @@ export function chords() {
         // Show rainbow success effect for 2_5_chord_characters
         showCompleteSuccess();
         
-        // Set up a new chord after a delay
+        // Set up a new chord after a delay by setting currentChordType to null
+        // This will trigger generation of a new chord next time playCurrent2_5Chord is called
         setTimeout(() => {
-          // Use a more direct approach to get progress number
-          let progress = 0;
-          try {
-            const progressData = localStorage.getItem('lalumo_chords_progress');
-            if (progressData) {
-              const parsedProgress = JSON.parse(progressData);
-              progress = parsedProgress['2_5_chords_characters'] || 0;
-            }
-          } catch (e) {
-            console.error('Error reading progress:', e);
-          }
-          
-          debugLog('CHORDS', `Current progress for chord selection: ${progress}`);
-          
-          // Available chord types based on progress
-          let chordTypes;
-          if (progress <= 9) {
-            // Progress <= 9: Only happy (major) and sad (minor)
-            chordTypes = ['major', 'minor'];
-          } else if (progress <= 19) {
-            // Progress 10-19: happy, sad, and augmented
-            chordTypes = ['major', 'minor', 'augmented'];
-          } else {
-            // Progress >= 20: All types available
-            chordTypes = ['major', 'minor', 'diminished', 'augmented']; // happy, sad, mysterious, tense
-          }
-          
-          // More robust random selection with verbose logging
-          const randomIndex = Math.floor(Math.random() * chordTypes.length);
-          const selectedType = chordTypes[randomIndex];
-          
-          debugLog('CHORDS', `Random chord selection: index=${randomIndex}, available types=${chordTypes.length}, selected=${selectedType}`);
-          debugLog('CHORDS', `Full available chord types:`, JSON.stringify(chordTypes));
-          
-          this.currentChordType = selectedType;
+          // Set currentChordType to null to ensure new chord generation next time
+          debugLog('CHORDS', `[REPETITION] Setting currentChordType to null after correct answer. previousChordType: ${this.previousChordType}`);
+          this.currentChordType = null;
           this.showFeedback = false;
         }, 1500);
       } else {

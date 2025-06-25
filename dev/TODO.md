@@ -147,13 +147,14 @@ reset-button:
 - die Welle muss Sägezahn sein ohne Brandung 
 - im master level dürfen die töne maximal 3 halbtöne auseinander sein und der erste ton muss nicht mehr C5 sein, sondern kann jeder beliebige sein, es wird nur getestet, ob der 2. ton dann höher oder tiefer ist
 - die erfolgsmeldung muss sich ab level 3 aendern in "der ton war höher" anstatt "hoch" und "der ton war tiefer" anstatt "tief"
+
 - Entferne alle Überbleibsel der alten "Listen to melodies"-Funktionalität:
    - Lösche unnötige Melodie-Abspielfunktionen für die alte Aktivität
 
 
 
 1_2 "Match the Sounds":
-- max 3x hintereinander der selbe high or low beereich
+- max 3x hintereinander der selbe high or low bereich
 - # bereit zur veröffentlichung
 - der reset button in der navi muss auch den hintergrund und die anzeige unten triggern, dass die refresht wird, im moment wird der dann noch einfach weiss
 
@@ -184,11 +185,13 @@ reset-button:
  - feedback sound soll mit verzögerung abgespielt werden
  
 2_5_chords_color_matching:
-    - jede activity muss einen progress im localstorage haben, der auch im globalen reset, activity reset, im-und export berücksichtigt wird
-    - Es darf bei progress <= 9: max. 2x hintereinander das selge random ergebnis kommen; ab progress 10: nie hintereinander das selbe random ergebnis kommen
-        
  - # bereit zur veröffentlichung
+    - reset auch im activity reset, im-und export berücksichtigen
+    - bei progress >=30 sollen die akkorde in der höhe durch einen transpose faktor von +-6 halbtönen variieren
     - die meisten activities haben einen free- und einen game-mode, in dem man die sounds ausprobieren kann (free) oder das game spielt, bei dem man die richtigen buttons drücken muss, der die richtigen effekte zeigt aus `feedback.js`
+    - wenn man während der regenbogen läuft drückt, soll schon der neue akkord abgespielt werden und nicht der letzte
+    - es fehlt ein error feedback shake und der sound
+    - es sol lder erfolgssound kommen
 
 # mobile-build.sh:
 - die find funktion, die nur das kopieren soll was benutzt wird passiert zu spät, es wird vorher schon mit rsync alles von public/ nach dist/ kopiert. ich habe den original folder da hinzugefügt, aber es wäre schöner, wenn das automatisch nicht gersnynct würde, wenn es nicht bnutzt wird
@@ -207,34 +210,3 @@ reset-button:
 - class .debug-elements always hidden in production
 
 # most important
-
-- bei android soll die api settings von production aktiv werden
-
-Implementiere eine korrekte Akkordpersistenz in der Akkord-Erkennung-Komponente 2_5 der Lalumo-App mit folgenden Anforderungen:
-
-1. PERSISTENZ:
-   - Ein Akkord muss bestehen bleiben, bis der Benutzer die korrekte Antwort gibt
-   - Beim wiederholten Drücken des Play-Buttons soll der gleiche Akkord erneut abgespielt werden, NICHT ein neuer generiert werden
-   - Der aktuelle Akkordtyp wird in der Variablen `currentChordType` gespeichert
-   - Der vorherige Akkordtyp wird in der Variablen `previousChordType` gespeichert
-   - Nach einer korrekten Antwort: `currentChordType = null` setzen, damit beim nächsten Abspielen ein neuer Akkord generiert wird
-
-2. WIEDERHOLUNGSLOGIK:
-   - Bei Fortschritt ≤ 9: Maximal zwei identische Akkordtypen nacheinander erlaubt
-   - Bei Fortschritt ≥ 10: Keine Wiederholung des vorherigen Akkordtyps erlaubt
-
-3. WIEDERHOLUNGSZÄHLER (consecutiveRepeats):
-   - Zähler wird auf 0 zurückgesetzt, wenn ein NEUER Akkord generiert wird (in playCurrent2_5Chord())
-   - Zähler wird inkrementiert, wenn ein neuer Akkord per Zufall generiert wird, der dem vorherigen entspricht (`currentChordType === previousChordType`)
-   - Zähler wird NICHT inkrementiert beim wiederholten Abspielen desselben Akkords
-   - Bei der ersten Initialisierung der Komponente: `consecutiveRepeats = 0` und `previousChordType = null` setzen
-
-4. DEBUGGING:
-   - Füge detaillierte Logging-Anweisungen mit dem Tag [REPETITION] hinzu, um die Logik leicht nachvollziehen zu können
-   - Logge den aktuellen Stand der Variablen bei jedem relevanten Schritt (Typ-Auswahl, Wiederholung, Reset)
-
-Die Änderungen betreffen hauptsächlich die Funktionen in src/components/chords.js:
-- playCurrent2_5Chord(): Implementiert die Chord-Persistenz und Wiederholungslogik
-- checkCharacterMatch(): Setzt `currentChordType = null` nach korrekter Antwort und bereitet den nächsten Akkord vor
-
-Implementiere diese Logik ohne Fallbacks und stelle sicher, dass sie unter allen Bedingungen korrekt funktioniert.
