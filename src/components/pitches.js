@@ -782,12 +782,30 @@ export function pitches() {
      * @returns {string} A random tone of the specified type
      * @activity 1_1_high_or_low
      */
-    getRandomToneForType(type, stage) {
+    getRandomTone1_1(type, stage) {
+      // Initialize tracking variables if they don't exist
+      if (this.previousExactTone === undefined) {
+        this.previousExactTone = null;
+      }
+      
       const tones = this.getTonesForStage(stage);
       const toneArray = type === 'high' ? tones.highTones : tones.lowTones;
-      // TODO: hier darf max. 3x hintereinander das selge random ergebnis kommen
-      debugLog('SOUND_RANDOM', 'generate a random tone')  
-      return toneArray[Math.floor(Math.random() * toneArray.length)];
+      
+      debugLog('[1_1_RANDOM]', `Selecting tone from ${type} range. Previous tone: ${this.previousExactTone || 'none'}`); 
+      
+      // If we have very few tones and previous tone exists, make sure we avoid repeating it
+      if (toneArray.length > 1 && this.previousExactTone) {
+        // Filter out the previous tone to avoid repetition
+        const availableTones = toneArray.filter(tone => tone !== this.previousExactTone);
+        const randomTone = availableTones[Math.floor(Math.random() * availableTones.length)];
+        debugLog('[1_1_RANDOM]', `Selected non-repeating tone: ${randomTone}`); 
+        return randomTone;
+      }
+      
+      // If only one tone available or no previous tone, use standard random selection
+      const randomTone = toneArray[Math.floor(Math.random() * toneArray.length)];
+      debugLog('[1_1_RANDOM]', `Selected tone: ${randomTone} from ${toneArray.length} options`);
+      return randomTone;
     },
     
     /**
@@ -795,21 +813,41 @@ export function pitches() {
      * @param {number} stage - The current activity stage
      * @activity 1_1_high_or_low
      */
-    generateHighOrLowSequence(stage) {
+    generate1_1HighOrLowSequence(stage) {
       console.log('Generating new high or low tone sequence for stage:', stage);
       
-      // Initialize lastHighLowSequence if it doesn't exist
+      // Initialize tracking variables if they don't exist
       if (!this.lastHighLowSequence) {
         this.lastHighLowSequence = null;
       }
+      if (this.previousToneRange === undefined) {
+        this.previousToneRange = null;
+      }
+      if (this.consecutiveSameRangeCount === undefined) {
+        this.consecutiveSameRangeCount = 0;
+      }
+      
+      // Log current state before selection
+      debugLog('[1_1_RANDOM]', `Before selection: count=${this.consecutiveSameRangeCount}, prevRange=${this.previousToneRange || 'none'}, prevTone=${this.previousExactTone || 'none'}`);
+      
+      // Check if we need to force a switch due to consecutive same range limits
+      let forcedRangeSwitch = false;
+      let preferredRange = null;
+      
+      if (this.consecutiveSameRangeCount >= 3 && this.previousToneRange) {
+        forcedRangeSwitch = true;
+        preferredRange = this.previousToneRange === 'high' ? 'low' : 'high';
+        debugLog('[1_1_RANDOM]', `ERZWUNGEN: Wechsel zu entgegengesetztem Bereich (${preferredRange}). Limit erreicht.`);
+      }
       
       // Get random tones using the helper function
-      const randomLowTone = this.getRandomToneForType('low', stage);
-      const randomHighTone = this.getRandomToneForType('high', stage);
+      const randomLowTone = this.getRandomTone1_1('low', stage);
+      const randomHighTone = this.getRandomTone1_1('high', stage);
       
       if (stage >= 3) {
         // For two-tone stages, create a sequence with two tones
         // First tone is always C5 as specified in CONCEPT.md
+        // TODO: unless progress > 3, then it can be +-6 halftones
         const firstTone = 'C5';
         
         let secondTone, useHighTone, isHigher;
@@ -818,12 +856,16 @@ export function pitches() {
         
         // Keep generating until we get a valid puzzle that's not a repeat
         do {
-          // Get a random tone from either the high or low range
-          useHighTone = Math.random() < 0.5;
+          // Get a random tone with range enforcement if needed
+          if (forcedRangeSwitch) {
+            useHighTone = preferredRange === 'high';
+          } else {
+            useHighTone = Math.random() < 0.5;
+          }
           secondTone = useHighTone ? randomHighTone : randomLowTone;
           
-          // Ensure second tone is never C5 (same as first tone)
-          if (secondTone === 'C5') {
+          // Ensure second tone is never the same as first tone
+          if (secondTone === firstTone) {
             continue;
           }
           
@@ -882,16 +924,52 @@ export function pitches() {
           expectedAnswer
         };
         
+        // Update tracking variables for range repetition constraint
+        const currentToneRange = isHigher ? 'high' : 'low';
+        
+        // Update consecutive same range counter
+        if (this.previousToneRange === currentToneRange) {
+          this.consecutiveSameRangeCount++;
+        } else {
+          this.consecutiveSameRangeCount = 1;
+        }
+        
+        // Store current values for next comparison
+        this.previousToneRange = currentToneRange;
+        this.previousExactTone = secondTone;
+        
+        debugLog('[1_1_RANDOM]', `After selection: count=${this.consecutiveSameRangeCount}, range=${currentToneRange}, tone=${secondTone}`);
         console.log('HIGH_LOW: Saved current puzzle for repetition check in next round');
       } else {
-        // For single tone stages, randomly choose high or low
-        this.currentHighOrLowTone = Math.random() < 0.5 ? 'high' : 'low';
+        // For single tone stages, randomly choose high or low with consecutive limit constraint
+        let currentToneRange;
+        
+        if (forcedRangeSwitch) {
+          currentToneRange = preferredRange;
+        } else {
+          currentToneRange = Math.random() < 0.5 ? 'high' : 'low';
+        }
+        
+        this.currentHighOrLowTone = currentToneRange;
         
         // Choose the appropriate tone based on high/low choice
         const toneToPlay = this.currentHighOrLowTone === 'high' ? randomHighTone : randomLowTone;
         
         // Store the single tone and the expected answer
         this.currentHighOrLowSequence = { toneToPlay, expectedAnswer: this.currentHighOrLowTone };
+        
+        // Update tracking variables for range repetition constraint
+        if (this.previousToneRange === currentToneRange) {
+          this.consecutiveSameRangeCount++;
+        } else {
+          this.consecutiveSameRangeCount = 1;
+        }
+        
+        // Store current values for next comparison
+        this.previousToneRange = currentToneRange;
+        this.previousExactTone = toneToPlay;
+        
+        debugLog('[1_1_RANDOM]', `After selection (single tone): count=${this.consecutiveSameRangeCount}, range=${currentToneRange}, tone=${toneToPlay}`);
         console.log('Generated tone sequence with expected answer:', this.currentHighOrLowTone);
       }
     },
@@ -915,7 +993,7 @@ export function pitches() {
         
         // Only generate new tones if not already stored or if explicitly requested
         if (!this.currentHighOrLowSequence) {
-          this.generateHighOrLowSequence(stage);
+          this.generate1_1HighOrLowSequence(stage);
         }
         
         // For two-tone stages (3 and above)
@@ -977,7 +1055,7 @@ export function pitches() {
         const stage = currentHighOrLowStage(this);
         
         // Get a random tone matching the pressed button (low or high)
-        const randomTone = this.getRandomToneForType(answer, stage);
+        const randomTone = this.getRandomTone1_1(answer, stage);
         
         console.log(`Playing random ${answer} tone (button ${answer === 'low' ? 'left' : 'right'}):`, randomTone);
         

@@ -140,8 +140,9 @@ reset-button:
 ## nach kapitel
 
 1_1 "High or Low?" (1_1_pitches_high_or_low) 
-- die tiefen töne sind eine oktave zu tief
+- max 3x hintereinander der selbe high or low bereich
 - # bereit zur veröffentlichung
+- die tiefen töne sind eine oktave zu tief
 - der reset button in der navi muss auch die fortschrittsanzeige aktualisieren
 - ändere, dass man immer 1s warten muss, bis man wählen kann, welche Taste man drückt. man soll sofort, wenn man den ton hört schon wählen dürfen
 - die Welle muss Sägezahn sein ohne Brandung 
@@ -154,7 +155,6 @@ reset-button:
 
 
 1_2 "Match the Sounds":
-- max 3x hintereinander der selbe high or low bereich
 - # bereit zur veröffentlichung
 - der reset button in der navi muss auch den hintergrund und die anzeige unten triggern, dass die refresht wird, im moment wird der dann noch einfach weiss
 
@@ -210,3 +210,38 @@ reset-button:
 - class .debug-elements always hidden in production
 
 # most important
+
+
+Implementiere eine robuste Tonzufalls-Steuerung für die 1_1-Aktivität der Lalumo-App mit doppelter Beschränkung:
+
+1. DOPPELTE BESCHRÄNKUNG:
+   - Maximal 3 identische Tonbereiche (hoch/tief) dürfen nacheinander erscheinen
+   - NIE den EXAKT gleichen Ton zweimal hintereinander verwenden
+   - Beide Regeln müssen gleichzeitig erfüllt sein
+   - Diese Beschränkungen gelten für ALLE Progress-Levels gleichmäßig
+
+2. TRACKING-VARIABLEN:
+   - `consecutiveSameRangeCount`: Zählt aufeinanderfolgende gleiche Bereiche
+   - `previousToneRange`: Speichert den vorherigen Tonbereich ('high' oder 'low')
+   - `previousExactTone`: Speichert den zuvor generierten exakten Ton (z.B. 'C5')
+   - Bei der Initialisierung: Diese Variablen auf 0, null bzw. null setzen
+
+3. IMPLEMENTIERUNGSLOGIK:
+   - In [getRandomTone1_1()](cci:1://file:///var/www/Musici/src/components/pitches.js:777:4-790:5): 
+     - Einen Ton wählen, der NICHT `previousExactTone` entspricht
+     - Wenn Filter nötig: Array filtern und zufälligen Ton aus den verbleibenden wählen
+   
+   - In `generate1_1HighOrLowSequence()`:
+     - Wenn `consecutiveSameRangeCount >= 3`: ERZWINGE den entgegengesetzten Bereich
+     - Bestehende `isSameAsPrevious`-Logik beibehalten, um exakte Rätselduplikate zu vermeiden
+     - Nach erfolgreicher Generierung: Update von `previousToneRange` und `consecutiveSameRangeCount`
+       - Wenn gleicher Bereich: Inkrementiere `consecutiveSameRangeCount`
+       - Wenn anderer Bereich: Setze `consecutiveSameRangeCount` auf 1
+     - Speichere den generierten Ton in `previousExactTone`
+
+4. DEBUGGING:
+   - Logging mit dem Tag [1_1_RANDOM] für alle relevanten Schritte
+   - Logge Zustand vor/nach der Auswahl: "Vor Auswahl: count=X, prevRange=Y, prevTone=Z"
+   - Bei erzwungenen Wechseln klar markieren: "ERZWUNGEN: Wechsel zu entgegengesetztem Bereich"
+
+Implementiere diese Logik in `generate1_1HighOrLowSequence()` und [getRandomTone1_1()](cci:1://file:///var/www/Musici/src/components/pitches.js:777:4-790:5), wobei beide Beschränkungen korrekt umgesetzt werden müssen.
