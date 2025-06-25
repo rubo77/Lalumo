@@ -215,22 +215,26 @@ Implementiere eine korrekte Akkordpersistenz in der Akkord-Erkennung-Komponente 
 1. PERSISTENZ:
    - Ein Akkord muss bestehen bleiben, bis der Benutzer die korrekte Antwort gibt
    - Beim wiederholten Drücken des Play-Buttons soll der gleiche Akkord erneut abgespielt werden, NICHT ein neuer generiert werden
-   - Es wird der aktuelle akkord in der variablen `previousChord` gespeichert
+   - Der aktuelle Akkordtyp wird in der Variablen `currentChordType` gespeichert
+   - Der vorherige Akkordtyp wird in der Variablen `previousChordType` gespeichert
+   - Nach einer korrekten Antwort: `currentChordType = null` setzen, damit beim nächsten Abspielen ein neuer Akkord generiert wird
 
 2. WIEDERHOLUNGSLOGIK:
    - Bei Fortschritt ≤ 9: Maximal zwei identische Akkordtypen nacheinander erlaubt
    - Bei Fortschritt ≥ 10: Keine Wiederholung des vorherigen Akkordtyps erlaubt
 
 3. WIEDERHOLUNGSZÄHLER (consecutiveRepeats):
-   - Zähler wird auf 0 zurückgesetzt, wenn ein neuer Akkord abgespielt wird (in playCurrent2_5Chord())
-   - Zähler wird inkrementiert, wenn ein neuer akkord per zufall generiert wird, der demselben entspricht, wie in `previousChord`
+   - Zähler wird auf 0 zurückgesetzt, wenn ein NEUER Akkord generiert wird (in playCurrent2_5Chord())
+   - Zähler wird inkrementiert, wenn ein neuer Akkord per Zufall generiert wird, der dem vorherigen entspricht (`currentChordType === previousChordType`)
    - Zähler wird NICHT inkrementiert beim wiederholten Abspielen desselben Akkords
+   - Bei der ersten Initialisierung der Komponente: `consecutiveRepeats = 0` und `previousChordType = null` setzen
 
 4. DEBUGGING:
    - Füge detaillierte Logging-Anweisungen mit dem Tag [REPETITION] hinzu, um die Logik leicht nachvollziehen zu können
+   - Logge den aktuellen Stand der Variablen bei jedem relevanten Schritt (Typ-Auswahl, Wiederholung, Reset)
 
 Die Änderungen betreffen hauptsächlich die Funktionen in src/components/chords.js:
-- playCurrent2_5Chord()
-- checkCharacterMatch()
+- playCurrent2_5Chord(): Implementiert die Chord-Persistenz und Wiederholungslogik
+- checkCharacterMatch(): Setzt `currentChordType = null` nach korrekter Antwort und bereitet den nächsten Akkord vor
 
 Implementiere diese Logik ohne Fallbacks und stelle sicher, dass sie unter allen Bedingungen korrekt funktioniert.
