@@ -85,10 +85,10 @@ export function chords() {
         this?.progress?.['2_5_chords_characters'] || 0;
       
       // Get chord buttons
-      const mysteriousButton = document.getElementById('button_2_5_1_diminished');
-      const surprisedButton = document.getElementById('button_2_5_1_augmented');
+      const diminishedBtn = document.getElementById('button_2_5_1_diminished');
+      const augmentedBtn = document.getElementById('button_2_5_1_augmented');
       
-      if (!mysteriousButton || !surprisedButton) {
+      if (!diminishedBtn || !augmentedBtn) {
         // Buttons not found in DOM yet, will try again when activity is shown
         debugLog('CHORDS', 'Chord buttons not found in DOM yet');
         return;
@@ -97,18 +97,18 @@ export function chords() {
       // Apply visibility rules based on progress
       if (progress < 10) {
         // Progress < 10: Hide mysterious (diminished) and surprised (augmented)
-        mysteriousButton.style.display = 'none';
-        surprisedButton.style.display = 'none';
+        diminishedBtn.style.display = 'none';
+        augmentedBtn.style.display = 'none';
         debugLog('CHORDS', 'Progress < 10: Hiding mysterious and surprised buttons');
       } else if (progress < 20) {
-        // Progress 10-19: Show mysterious (diminished), hide surprised (augmented)
-        mysteriousButton.style.display = '';
-        surprisedButton.style.display = 'none';
+        // Progress 10-19: hide mysterious octopus (diminished), show surprised squirrel (augmented)
+        diminishedBtn.style.display = 'none';
+        augmentedBtn.style.display = '';
         debugLog('CHORDS', 'Progress 10-19: Showing mysterious, hiding surprised button');
       } else {
         // Progress >= 20: Show all buttons
-        mysteriousButton.style.display = '';
-        surprisedButton.style.display = '';
+        diminishedBtn.style.display = '';
+        augmentedBtn.style.display = '';
         debugLog('CHORDS', 'Progress >= 20: Showing all chord buttons');
       }
     },
@@ -164,10 +164,10 @@ export function chords() {
           // Check if any of the mutations added our target elements
           for (const mutation of mutations) {
             if (mutation.type === 'childList' && mutation.addedNodes.length) {
-              const mysteriousBtn = document.getElementById('button_2_5_1_diminished');
-              const surprisedBtn = document.getElementById('button_2_5_1_augmented');
+              const dimnishedBtn = document.getElementById('button_2_5_1_diminished');
+              const augmentedBtn = document.getElementById('button_2_5_1_augmented');
               
-              if (mysteriousBtn && surprisedBtn) {
+              if (dimnishedBtn && augmentedBtn) {
                 debugLog('CHORDS', 'Chord buttons found in DOM, updating visibility');
                 this.updateChordButtonsVisibility();
                 // No need to observe further once we've found our elements
@@ -907,8 +907,8 @@ export function chords() {
           // Progress <= 9: Only happy (major) and sad (minor)
           chordTypes = ['major', 'minor'];
         } else if (progress <= 19) {
-          // Progress 10-19: happy, sad, and mysterious (diminished)
-          chordTypes = ['major', 'minor', 'diminished'];
+          // Progress 10-19: happy, sad, and augmented
+          chordTypes = ['major', 'minor', 'augmented'];
         } else {
           // Progress >= 20: All types available
           chordTypes = ['major', 'minor', 'diminished', 'augmented']; // happy, sad, mysterious, tense
@@ -1007,8 +1007,8 @@ export function chords() {
           // Progress <= 9: Only happy (major) and sad (minor)
           chordTypes = ['major', 'minor'];
         } else if (progress <= 19) {
-          // Progress 10-19: happy, sad, and mysterious (diminished)
-          chordTypes = ['major', 'minor', 'diminished'];
+          // Progress 10-19: happy, sad, and augmented
+          chordTypes = ['major', 'minor', 'augmented'];
         } else {
           // Progress >= 20: All types available
           chordTypes = ['major', 'minor', 'diminished', 'augmented']; // happy, sad, mysterious, tense
@@ -1079,8 +1079,8 @@ export function chords() {
             // Progress <= 9: Only happy (major) and sad (minor)
             chordTypes = ['major', 'minor'];
           } else if (progress <= 19) {
-            // Progress 10-19: happy, sad, and mysterious (diminished)
-            chordTypes = ['major', 'minor', 'diminished'];
+            // Progress 10-19: happy, sad, and augmented
+            chordTypes = ['major', 'minor', 'augmented'];
           } else {
             // Progress >= 20: All types available
             chordTypes = ['major', 'minor', 'diminished', 'augmented']; // happy, sad, mysterious, tense
