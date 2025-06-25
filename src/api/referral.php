@@ -14,7 +14,7 @@ ini_set('display_errors', 1);
  */
 
 require_once 'utils/common.php'; // für debugging-Funktionen
-
+require_once 'db_functions.php'; // für Datenbankstruktur-Funktionen
 
 // Import JS Config laden
 require_once 'utils/js_config.php';
@@ -331,21 +331,19 @@ if ($method === 'POST') { // aus _REQUEST
                 'currentReferrerCount' => ($checkRow ? $checkRow['registration_count'] : 0)
             ]);
             
-            debugLog("REFERRAL_API: Username registration response includes registrationIncremented: {$registrationIncremented}");
-        } else {
-            http_response_code(500);
-            echo json_encode([
-                'success' => false,
-                'error' => 'user_creation_failed'
-            ]);
-        }
-    } catch (Exception $e) {
         http_response_code(500);
         echo json_encode([
             'success' => false,
-            'error' => 'database_error: ' . $e->getMessage()
+            'error' => 'user_creation_failed'
         ]);
     }
+} catch (Exception $e) {
+    http_response_code(500);
+    echo json_encode([
+        'success' => false,
+        'error' => 'database_error: ' . $e->getMessage()
+    ]);
+}
 }
 // GET: Referral-Link-Klick oder Statistiken abrufen
 elseif ($method === 'GET') {
@@ -585,29 +583,30 @@ elseif ($method === 'GET') {
                 'registrationCount' => 0
             ]);
         }
-        exit;
-    }
-    // Ungültiger GET-Parameter
-    else {
-        http_response_code(400);
-        echo json_encode(['error' => 'invalid_request_parameters']);
-        exit;
-    }
-}
-// Methode nicht erlaubt
-else {
-    http_response_code(405);
-    echo json_encode(['error' => 'method_not_allowed']);
     exit;
 }
 
 /**
- * Erzeuge einen eindeutigen Referral-Code basierend auf dem Benutzernamen
+ * Stellt sicher, dass die Datenbankstruktur korrekt ist
+ * Prüft und erstellt bei Bedarf fehlende Tabellen und Spalten
  */
-function generateReferralCode($username) {
-    // Erstelle eine Basis für den Referral-Code
-    $base = strtoupper(substr(preg_replace('/[^a-zA-Z0-9]/', '', $username), 0, 4));
+function ensureDatabaseStructure($db) {
+    debugLog("DB_MIGRATION: Prüfe Datenbankstruktur");
     
+    // 1. Prüfe die users-Tabelle
+    $usersResult = $db->query("SELECT name FROM sqlite_master WHERE type='table' AND name='users'");
+    if (!$usersResult->fetchArray()) {
+        debugLog("DB_MIGRATION: Erstelle users-Tabelle");
+        $db->exec(
+            "CREATE TABLE users (" .
+            "id INTEGER PRIMARY KEY AUTOINCREMENT," .
+            "username TEXT UNIQUE," .
+            "referral_code TEXT UNIQUE," .
+            "password TEXT," .
+            "referred_by TEXT," .
+            "created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP" .
+            ")"            
+        );
     // Ergänze eine Zeitstempel-Komponente
     $timestamp = substr(time(), -4);
     
