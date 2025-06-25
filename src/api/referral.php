@@ -274,9 +274,11 @@ if ($method === 'POST') { // aus _REQUEST
             debugLog("User created with ID: {$userId}");
             
             // Erstelle einen passenden Eintrag in der referrals Tabelle
-            $referralStmt = $db->prepare('INSERT INTO referrals (referrer_id, click_count, registration_count) VALUES (:referrer_id, 0, 0)');
+            $referralStmt = $db->prepare('INSERT INTO referrals (referrer_id, click_count, registration_count, created_at) VALUES (:referrer_id, 0, 0, datetime("now"))');
             $referralStmt->bindValue(':referrer_id', $userId, SQLITE3_INTEGER);
             $referralStmt->execute();
+            
+            debugLog("REFERRAL_TIMESTAMP: Created referrals entry with timestamp for user ID: {$userId}");
             
             // Debug-Ausgabe
             debugLog("Created matching referrals entry for user ID: {$userId}");
@@ -294,7 +296,8 @@ if ($method === 'POST') { // aus _REQUEST
                 if (!$referralEntryExists) {
                     // Erstelle einen Eintrag für den Referrer, wenn keiner existiert
                     debugLog("REFERRAL_INCREMENT: Creating new referrals entry for referrer ID: {$referrerId}");
-                    $db->exec("INSERT INTO referrals (referrer_id, click_count, registration_count) VALUES ($referrerId, 0, 0)");
+                    $db->exec("INSERT INTO referrals (referrer_id, click_count, registration_count, created_at) VALUES ($referrerId, 0, 0, datetime('now'))");
+                    debugLog("REFERRAL_TIMESTAMP: Added created_at timestamp for referrer ID: {$referrerId}");
                 }
                 
                 // Jetzt können wir den Zähler sicher erhöhen
