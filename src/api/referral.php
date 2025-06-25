@@ -94,8 +94,12 @@ if (!is_dir($dbDir)) {
 $initDb = !file_exists($dbFile);
 $db = new SQLite3($dbFile);
 
-// Tabellen erstellen, falls sie noch nicht existieren
-if ($initDb) {
+// Automatische Datenbankstruktur-Prüfung
+debugLog('DB_INIT: Führe Datenbankstruktur-Check aus');
+ensureDatabaseStructure($db);
+
+// Alte Initialisierung (wird durch ensureDatabaseStructure ersetzt)
+if (false && $initDb) {
     $db->exec('
         CREATE TABLE users (
             id INTEGER PRIMARY KEY,
@@ -585,56 +589,7 @@ elseif ($method === 'GET') {
         }
     exit;
 }
-
-/**
- * Stellt sicher, dass die Datenbankstruktur korrekt ist
- * Prüft und erstellt bei Bedarf fehlende Tabellen und Spalten
- */
-function ensureDatabaseStructure($db) {
-    debugLog("DB_MIGRATION: Prüfe Datenbankstruktur");
-    
-    // 1. Prüfe die users-Tabelle
-    $usersResult = $db->query("SELECT name FROM sqlite_master WHERE type='table' AND name='users'");
-    if (!$usersResult->fetchArray()) {
-        debugLog("DB_MIGRATION: Erstelle users-Tabelle");
-        $db->exec(
-            "CREATE TABLE users (" .
-            "id INTEGER PRIMARY KEY AUTOINCREMENT," .
-            "username TEXT UNIQUE," .
-            "referral_code TEXT UNIQUE," .
-            "password TEXT," .
-            "referred_by TEXT," .
-            "created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP" .
-            ")"            
-        );
-    // Ergänze eine Zeitstempel-Komponente
-    $timestamp = substr(time(), -4);
-    
-    // Ergänze eine zufällige Komponente
-    $random = strtoupper(substr(md5(uniqid()), 0, 4));
-    
-    // Kombiniere sie zu einem 12-stelligen Code und formatiere
-    $code = $base . $timestamp . $random;
-    $code = str_pad($code, 12, '0');
-    
-    // Mit Bindestrichen formatieren für bessere Lesbarkeit
-    return formatCode($code);
-}
-
-/**
- * Formatiere einen 12-stelligen Code mit Bindestrichen
- */
-function formatCode($code) {
-    // Entferne alle vorhandenen Bindestriche und Leerzeichen
-    $plainCode = preg_replace('/[-\s]+/', '', $code);
-    
-    // Beschränke auf 12 Zeichen und fülle auf falls nötig
-    $plainCode = strtoupper(substr($plainCode, 0, 12));
-    $plainCode = str_pad($plainCode, 12, '0');
-    
-    // Formatiere mit Bindestrichen (XXXX-XXXX-XXXX)
-    return substr($plainCode, 0, 4) . '-' . substr($plainCode, 4, 4) . '-' . substr($plainCode, 8, 4);
-}
+} // Ende des GET-Blocks
 
 /**
  * Findet den Benutzernamen anhand eines Referral-Codes
