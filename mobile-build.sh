@@ -189,7 +189,9 @@ else
 fi
 
 # Build the web app
-echo "###### 4. Building web application..."
+echo "###### 4. Building web application fast..."
+npm run build:fast
+echo "###### 4a. Building web application..."
 npm run build
 
 # Copy public directory contents to dist, excluding android directory (only needed for web dev server)
