@@ -41,29 +41,15 @@ check_length() {
 
 # German Changelog
 DE_CHANGES=$(cat << EOF
-- Deutsche Übersetzung
-- Back-Gesture auf Android
-- Reset-Buttons für Fortschritt
-- Zeichne eine Melodie:
-  - Frei zeichnen: bis zu 32 Noten
-  - Hilfslinien für Notenpositionen im Herausforderungsmodus
-- Klingt es richtig?:
-  - Neue Melodien
-  - Tierbilder aktualisiert und verbessert
+- Neues Kapitel: Akkorde Erkennen (freischaltbar durch Referrals)
+- verbesserte Zufallsgenerierung der Tonfolgen
 EOF
 )
 
 # English Changelog
 EN_CHANGES=$(cat << EOF
-- German translation added
-- Catch back-gesture on Android
-- Reset buttons for progress
-- Draw a Melody:
-  - Free Draw mode: up to 32-notes
-  - Helplines for pitch positions in challenge mode
-- Does it sound right?:
-  - New Melodies
-  - Animal images updated and improved
+- New Chapter: Chords minor or major (accessible through referral program)
+- improve randomness in tone generation
 EOF
 )
 

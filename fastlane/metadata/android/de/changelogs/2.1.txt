@@ -1,0 +1,2 @@
+- Neues Kapitel: Akkorde Erkennen (freischaltbar durch Referrals)
+- verbesserte Zufallsgenerierung der Tonfolgen

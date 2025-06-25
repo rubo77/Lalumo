@@ -2,6 +2,10 @@
 =========
 
 
+## Version 2.1 (2025-06-25)
+- New Chapter: Chords minor or major (accessible through referral program)
+- improve randomness in tone generation
+
 ## Version 2.0 (2025-06-17)
 - German translation added
 - Catch back-gesture on Android

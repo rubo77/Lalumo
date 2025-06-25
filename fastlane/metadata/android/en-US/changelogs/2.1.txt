@@ -1,0 +1,2 @@
+- New Chapter: Chords minor or major (accessible through referral program)
+- improve randomness in tone generation

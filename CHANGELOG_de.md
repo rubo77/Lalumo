@@ -2,6 +2,10 @@
 =========
 
 
+## Version 2.1 (2025-06-25)
+- Neues Kapitel: Akkorde Erkennen (freischaltbar durch Referrals)
+- verbesserte Zufallsgenerierung der Tonfolgen
+
 ## Version 2.0 (2025-06-17)
 - Deutsche Übersetzung
 - Back-Gesture auf Android

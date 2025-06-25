@@ -1,0 +1,10 @@
+# Play Store Changelogs für Version 2.1
+
+<en-GB>
+- New Chapter: Chords minor or major (accessible through referral program)
+- improve randomness in tone generation
+</en-GB>
+<de-DE>
+- Neues Kapitel: Akkorde Erkennen (freischaltbar durch Referrals)
+- verbesserte Zufallsgenerierung der Tonfolgen
+</de-DE>
