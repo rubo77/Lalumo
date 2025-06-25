@@ -133,7 +133,8 @@ reset-button:
 - "Images created with ChatGpt mindfull. Loving prompts" verbessern
 - Finanzierung durch unlock button mit link zu Crowd funding
 
-- wenn man resettet, dann muss das hamburger menu zu gehen
+- referral count page aus den settings aufrufbar machen
+- das template in dem partial refferer.html funktioniert nichdt, ev. templates werden in partials nicht gaufgelöst? in commit 4d82fbca wurde ein äjhnliches problem gelöst
 
 
 ## nach kapitel
@@ -152,6 +153,7 @@ reset-button:
 
 
 1_2 "Match the Sounds":
+- max 3x hintereinander der selbe high or low beereich
 - # bereit zur veröffentlichung
 - der reset button in der navi muss auch den hintergrund und die anzeige unten triggern, dass die refresht wird, im moment wird der dann noch einfach weiss
 
@@ -183,7 +185,8 @@ reset-button:
  
 2_5_chords_color_matching:
     - jede activity muss einen progress im localstorage haben, der auch im globalen reset, activity reset, im-und export berücksichtigt wird
-    - Bei progress <= 9: Nur "happy" (major) und "sad" (minor) verfügbar,  Bei progress 10-19: "happy", "sad" und "mysterious" (diminished) verfügbar, aber kein "tense" (augmented),  Bei progress >= 20: Alle vier Typen verfügbar
+    - Es darf bei progress <= 9: max. 2x hintereinander das selge random ergebnis kommen; ab progress 10: nie hintereinander das selbe random ergebnis kommen
+        
  - # bereit zur veröffentlichung
     - die meisten activities haben einen free- und einen game-mode, in dem man die sounds ausprobieren kann (free) oder das game spielt, bei dem man die richtigen buttons drücken muss, der die richtigen effekte zeigt aus `feedback.js`
 
@@ -206,3 +209,28 @@ reset-button:
 # most important
 
 - bei android soll die api settings von production aktiv werden
+
+Implementiere eine korrekte Akkordpersistenz in der Akkord-Erkennung-Komponente 2_5 der Lalumo-App mit folgenden Anforderungen:
+
+1. PERSISTENZ:
+   - Ein Akkord muss bestehen bleiben, bis der Benutzer die korrekte Antwort gibt
+   - Beim wiederholten Drücken des Play-Buttons soll der gleiche Akkord erneut abgespielt werden, NICHT ein neuer generiert werden
+   - Es wird der aktuelle akkord in der variablen `previousChord` gespeichert
+
+2. WIEDERHOLUNGSLOGIK:
+   - Bei Fortschritt ≤ 9: Maximal zwei identische Akkordtypen nacheinander erlaubt
+   - Bei Fortschritt ≥ 10: Keine Wiederholung des vorherigen Akkordtyps erlaubt
+
+3. WIEDERHOLUNGSZÄHLER (consecutiveRepeats):
+   - Zähler wird auf 0 zurückgesetzt, wenn ein neuer Akkord abgespielt wird (in playCurrent2_5Chord())
+   - Zähler wird inkrementiert, wenn ein neuer akkord per zufall generiert wird, der demselben entspricht, wie in `previousChord`
+   - Zähler wird NICHT inkrementiert beim wiederholten Abspielen desselben Akkords
+
+4. DEBUGGING:
+   - Füge detaillierte Logging-Anweisungen mit dem Tag [REPETITION] hinzu, um die Logik leicht nachvollziehen zu können
+
+Die Änderungen betreffen hauptsächlich die Funktionen in src/components/chords.js:
+- playCurrent2_5Chord()
+- checkCharacterMatch()
+
+Implementiere diese Logik ohne Fallbacks und stelle sicher, dass sie unter allen Bedingungen korrekt funktioniert.
