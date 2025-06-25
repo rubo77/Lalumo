@@ -681,6 +681,7 @@ export function app() {
         // Load referral system data from localStorage
         const savedReferralData = localStorage.getItem('lalumo_referral_data');
         if (savedReferralData) {
+          debugLog("REFERRAL", "Loaded referral data from localStorage:", savedReferralData);
           try {
             const referralData = JSON.parse(savedReferralData);
             this.isUsernameLocked = referralData.isUsernameLocked || false;
@@ -690,13 +691,16 @@ export function app() {
             this.referralClickCount = referralData.referralClickCount || 0;
             this.isChordChapterUnlocked = referralData.isChordChapterUnlocked || false;
             this.referredBy = referralData.referredBy || '';
+            this.referrerUsername = referralData.referrerUsername || '';
             console.log('Referral data loaded:', { 
               isUsernameLocked: this.isUsernameLocked,
               lockedUsername: this.lockedUsername,
               referralCode: this.referralCode,
               referralCount: this.referralCount,
               referralClickCount: this.referralClickCount,
-              isChordChapterUnlocked: this.isChordChapterUnlocked
+              isChordChapterUnlocked: this.isChordChapterUnlocked,
+              referredBy: this.referredBy,
+              referrerUsername: this.referrerUsername
             });
             
             debugLog("REFERRAL", "Loaded referral data");
@@ -761,7 +765,7 @@ export function app() {
         }
         
         // Load referral data from localStorage - both for backwards compatibility and current format
-        const referralData = localStorage.getItem('lalumo_referral') || localStorage.getItem('lalumo-referral');
+        const referralData = localStorage.getItem('lalumo_referral');
         if (referralData) {
           try {
             const data = JSON.parse(referralData);
@@ -1949,7 +1953,7 @@ export function app() {
           referredBy: this.referredBy || '',
           referrerUsername: this.referrerUsername || ''
         };
-        localStorage.setItem('lalumo-referral', JSON.stringify(referralData));
+        localStorage.setItem('lalumo_referral', JSON.stringify(referralData));
         console.log('Saved referral data:', referralData);
       } catch (error) {
         console.error('Error saving referral data:', error);
@@ -2068,7 +2072,7 @@ export function app() {
           
           // Erfolg anzeigen
           this.registrationSuccess = true;
-          this.registrationMessage = this.$store.strings?.registration_success || 'Username erfolgreich registriert!';
+          this.registrationMessage = this.$store.strings?.registration_success || 'Username successfully registered!';
           
           // Daten im localStorage speichern
           this.saveReferralData();
@@ -2084,17 +2088,18 @@ export function app() {
           
           // Spezifische Fehlermeldungen
           if (data.error === 'username_exists') {
-            this.registrationMessage = this.$store.strings?.username_exists || 'Dieser Benutzername ist bereits registriert. Bitte wähle einen anderen Namen.';
+            this.registrationMessage = this.$store.strings?.username_exists || 'This username is already registered. Please choose a different name.';
           } else {
-            this.registrationMessage = data.message || (this.$store.strings?.registration_error || 'Ein Fehler ist aufgetreten. Bitte versuche es später erneut.');
+            this.registrationMessage = data.message || (this.$store.strings?.registration_error || 'An error occurred. Please try again later.');
           }
         }
       } catch (error) {
         console.error('Fehler beim Registrieren:', error);
         this.registrationError = true;
-        this.registrationMessage = this.$store.strings?.registration_error || 'Ein Fehler ist aufgetreten. Bitte versuche es später erneut.';
+        this.registrationMessage = this.$store.strings?.registration_error || 'An error occurred. Please try again later.';
       } finally {
         // Lade-Status beenden
+        this.showToast(this.registrationMessage);
         this.isRegistering = false;
       }
     },

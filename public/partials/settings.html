@@ -27,18 +27,19 @@
     
     <!-- Help Messages Settings -->
     <!-- Referral Information -->
-    <template x-if="referredBy">
-    <h3 x-text="$store.strings?.referral_info || 'Friend Connection'"></h3>
+    <div x-show="referredBy" class="referral-section">
+      <h3 x-text="$store.strings?.referral_info || 'Friend Connection'"></h3>
       <div class="referral-info-section">
       <!-- Display referring friend info if available -->
         <div class="referred-by-info">
           <p>
             <span x-text="$store.strings?.referred_by || 'Referred by:'" class="referral-label"></span>
             <span x-text="referredBy" class="referral-code"></span>
+            <span x-show="referrerUsername && referrerUsername !== ''" class="referrer-username">(<span x-text="referrerUsername"></span>)</span>
           </p>
         </div>
       </div>
-    </template>
+    </div>
     
     <!-- Display user's own referral code if available -->
     <template x-if="referralCode">
