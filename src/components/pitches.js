@@ -785,6 +785,8 @@ export function pitches() {
     getRandomToneForType(type, stage) {
       const tones = this.getTonesForStage(stage);
       const toneArray = type === 'high' ? tones.highTones : tones.lowTones;
+      // TODO: hier darf max. 3x hintereinander das selge random ergebnis kommen
+      debugLog('SOUND_RANDOM', 'generate a random tone')  
       return toneArray[Math.floor(Math.random() * toneArray.length)];
     },
     
