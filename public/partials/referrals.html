@@ -60,7 +60,7 @@
             <div class="referral-stats">
               <p class="referral-status">
                 <strong><span x-text="$store.strings?.registrations || 'Registrations'"></span>:</strong>
-                <span x-text="referralCount || '0'">/3</span>
+                <span x-text="referralCount || '0'"></span>/3
                 <template x-if="referralCount >= 3">
                   <span class="referral-unlocked">✓ <span x-text="$store.strings?.chords_unlocked || 'Chords unlocked!'"></span></span>
                 </template>
