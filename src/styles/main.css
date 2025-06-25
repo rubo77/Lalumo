@@ -7,7 +7,9 @@
 /* Debug-Element Sichtbarkeitskontrolle */
 .debug-element {
   opacity: 0.2 !important;
-  display: block !important; /* Standardmäßig ausgeblendet */
+  display: none !important; /* Standardmäßig ausgeblendet */
+  visibility: hidden !important;
+  pointer-events: none !important; /* Verhindert jegliche Klick-Interaktion */
 }
 
 /* Wenn die Entwicklungsumgebung aktiv ist (über body-Klasse steuerbar) */
