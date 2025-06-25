@@ -992,9 +992,9 @@ export function chords() {
      * 
      * @activity 2_5_chord_characters
      */
-    playCurrentChord() {
+    playCurrent2_5Chord() {
       if (!this.currentChordType) {
-        // Random chord if none selected yet - using same logic as in playCurrentChord()
+        // Random chord if none selected yet - using same logic as in play?Chord()
         // Get the current progress for this activity
         const progressData = localStorage.getItem('lalumo_chords_progress');
         const progress = progressData ? 
@@ -1028,7 +1028,7 @@ export function chords() {
     checkCharacterMatch(selectedChordType) {
       // Initialize if needed
       if (!this.currentChordType) {
-        this.playCurrentChord(); // This will set a random chord
+        this.playCurrent2_5Chord(); // This will set a random chord
         return; // Don't process the selection yet
       }
       
