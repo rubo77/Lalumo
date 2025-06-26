@@ -266,7 +266,8 @@
 - [x] Fix admin dashboard: referral details shown as 'Array', not formatted
 - [x] Fix referral details popup formatting in admin dashboard
 - [x] Verify admin dashboard referral details formatting and test registration
-- [ ] Replace share button icon with typical three-dots share icon and add translation ("Teilen")
+- [x] Replace share button icon with typical three-dots share icon and add translation ("Teilen")
+- [ ] Replace share button icon with image public/images/share.png
 
 ## Current Goal
-- [ ] Replace share button with three-dots icon and translation
+- [ ] Replace share button icon with image public/images/share.png

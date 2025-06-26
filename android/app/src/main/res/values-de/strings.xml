@@ -16,6 +16,7 @@
     <string name="menu_impressum">Impressum</string>
     <string name="menu_datenschutz">Datenschutz</string>
     <string name="menu_credits">Credits</string>
+    <string name="menu_share">Teilen</string>
     
     <!-- Navigation -->
     <string name="nav_up">Hoch</string>
@@ -41,10 +42,9 @@
     
     <!-- Melodies & Pitches -->
     <string name="play_melody">Melodie abspielen</string>
-    <string name="guess_direction">Rate, ob die Melodie nach oben oder unten geht</string>
-    <string name="high_or_low">Hoch oder tief</string>
+    <string name="high_or_low">Hoch oder Tief</string>
+    <string name="match_sounds">Rauf oder Runter</string>
     <string name="draw_melody">Zeichne eine Melodie</string>
-    <string name="create_melody">Erstelle eine Melodie</string>
     <string name="does_it_sound_right">Klingt es richtig?</string>
     <string name="memory_game">Gedächtnis-Spiel</string>
     
@@ -97,7 +97,37 @@
     <string name="mascot_jump_unlocked">Fantastisch! Du hast Zufalls-Sprung-Melodien freigeschaltet! 🐸</string>
     <string name="mascot_all_unlocked">Großartig! Alle Melodie-Muster sind jetzt verfügbar! 🎉</string>
     
-    <!-- Player Settings -->
+    <!-- Referrals Page Strings -->
+    <string name="unlock_chords">Akkorde-Kapitel freischalten</string>
+    <string name="referral_instruction">Teile Lalumo mit deinen Freunden, um das Akkorde-Kapitel freizuschalten!</string>
+    <string name="referrals_premium">erfolgreiche Empfehlungen: Akkorde-Kapitel freischalten</string>
+    <string name="referrals_future">erfolgreiche Empfehlungen: Erhalte zukünftige Updates kostenlos</string>
+    <string name="register_username">Registriere deinen Benutzernamen</string>
+    <string name="username_lock_warning">Nach der Registrierung kannst du deinen Benutzernamen nicht mehr ändern.</string>
+    <string name="referred_by_username">Du wurdest empfohlen von:</string>
+    <string name="referrer_reward_message">Wenn du dich registrierst, erhält diese Person eine Belohnung!</string>
+    <string name="current_username">Aktueller Benutzername:</string>
+    <string name="no_username_set">Kein Benutzername festgelegt</string>
+    <string name="register_button">Benutzernamen registrieren</string>
+    <string name="set_username_first">Bitte lege zuerst einen Benutzernamen in den Einstellungen fest.</string>
+    <string name="your_referral_code">Dein Empfehlungscode</string>
+    <string name="referred_by">Empfohlen von:</string>
+    <string name="referral_info">Freunde-Verbindung</string>
+    <string name="registered_as">Registriert als:</string>
+    <string name="copy_referral_code">Code kopieren</string>
+    <string name="shareable_link">Teilbarer Link:</string>
+    <string name="copy_link">Link kopieren</string>
+    <string name="link_explanation">Teile diesen Link mit Freunden - sie erhalten Punkte fürs Klicken und du bekommst eine Gutschrift, wenn sie sich registrieren!</string>
+    <string name="registrations">Registrierungen</string>
+    <string name="chords_unlocked">Akkorde freigeschaltet!</string>
+    <string name="link_clicks">Link-Klicks</string>
+    <string name="referral_hint">Bitte deine Freunde, deinen Code bei der Registrierung zu verwenden!</string>
+    <string name="share_app">App teilen</string>
+    <string name="friend_code">Hast du einen Freundescode?</string>
+    <string name="enter_friend_code">Freundescode hier eingeben</string>
+    <string name="redeem_code">Code einlösen</string>
+    
+    <!-- Help Messages Settings -->
     <string name="player_settings">Spieler-Einstellungen</string>
     <string name="your_profile">Dein Profil</string>
     <string name="language_preference">Spracheinstellung</string>

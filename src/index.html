@@ -281,6 +281,9 @@
           <button @click="active = 'credits'; window.innerWidth < 1024 ? menuOpen = false : null" :class="{ 'active': active === 'credits' }">
             🏆 <span x-text="$store.strings?.menu_credits || 'Credits'"></span>
           </button>
+          <button @click="active = 'referral-code'; window.innerWidth < 1024 ? menuOpen = false : null" :class="{ 'active': active === 'referral-code' }">
+            <img src="images/share.png" alt="Share" style="height: 18px; vertical-align: middle; margin-right: 5px;"> <span x-text="$store.strings?.menu_share || 'Share'"></span>
+          </button>
         </div>
       </div>
     </div>
@@ -882,7 +885,7 @@
     </section>
     
     <!-- Legal: Impressum & Datenschutz - included from partials/impress.html -->
-    <div data-include="partials/impress.html"></div>
+    <div data-include="partials/impress_privacy.html"></div>
     
     <!-- Legal: Credits - included from partials/credits.html -->
     <div data-include="partials/credits.html"></div>

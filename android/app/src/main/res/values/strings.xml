@@ -16,6 +16,7 @@
     <string name="menu_impressum">Impressum</string>
     <string name="menu_datenschutz">Privacy Policy</string>
     <string name="menu_credits">Credits</string>
+    <string name="menu_share">Share</string>
     
     <!-- Navigation -->
     <string name="nav_up">Up</string>
@@ -41,11 +42,10 @@
     
     <!-- Melodies & Pitches -->
     <string name="play_melody">Play melody</string>
-    <string name="guess_direction">Guess if the melody goes up or down</string>
-    <string name="high_or_low">High or low</string>
-    <string name="draw_melody">Draw a melody</string>
-    <string name="create_melody">Create a melody</string>
-    <string name="does_it_sound_right">Does It Sound Right?</string>
+    <string name="high_or_low">High or Low</string>
+    <string name="match_sounds">Up or Down</string>
+    <string name="draw_melody">Draw a Melodoy</string>
+    <string name="does_it_sound_right">Does it Sound Right?</string>
     <string name="memory_game">Memory Game</string>
     
     <!-- Success & Error Messages -->
@@ -115,6 +115,36 @@
     <string name="help_messages_desc">Control when mascot help messages appear:</string>
     <string name="help_messages_off">Help Messages Hidden</string>
     <string name="help_messages_on">Show Help Messages</string>
+    
+    <!-- Referrals Page Strings -->
+    <string name="unlock_chords">Unlock Chords Chapter</string>
+    <string name="referral_instruction">Share Lalumo with your friends to unlock the Chords Chapter!</string>
+    <string name="referrals_premium">successful referrals: Unlock Chords Chapter</string>
+    <string name="referrals_future">successful referrals: Get future updates for free</string>
+    <string name="register_username">Register Your Username</string>
+    <string name="username_lock_warning">After registering, you will no longer be able to change your username.</string>
+    <string name="referred_by_username">You were referred by:</string>
+    <string name="referrer_reward_message">When you register, they will receive a reward!</string>
+    <string name="current_username">Current username:</string>
+    <string name="no_username_set">No username set</string>
+    <string name="register_button">Register Username</string>
+    <string name="set_username_first">Please set a username in Settings first.</string>
+    <string name="your_referral_code">Your Referral Code</string>
+    <string name="referred_by">Referred by:</string>
+    <string name="referral_info">Friend Connection</string>
+    <string name="registered_as">Registered as:</string>
+    <string name="copy_referral_code">Copy Code</string>
+    <string name="shareable_link">Shareable link:</string>
+    <string name="copy_link">Copy Link</string>
+    <string name="link_explanation">Share this link with friends - they get points for clicking and you get credit when they register!</string>
+    <string name="registrations">Registrations</string>
+    <string name="chords_unlocked">Chords unlocked!</string>
+    <string name="link_clicks">Link clicks</string>
+    <string name="referral_hint">Ask your friends to use your code when registering!</string>
+    <string name="share_app">Share App</string>
+    <string name="friend_code">Have a Friend Code?</string>
+    <string name="enter_friend_code">Enter friend code here</string>
+    <string name="redeem_code">Redeem Code</string>
     
     <!-- Feedback Messages (from pitches.js) -->
     <string name="memory_correct">Amazing memory! You got it right!</string>

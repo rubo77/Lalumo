@@ -155,10 +155,12 @@ reset-button:
 
 
 1_2 "Match the Sounds":
+- direkt nach dem Wechsel für die Welle spielt er immer noch keine Welle. 
 - # bereit zur veröffentlichung
 - der reset button in der navi muss auch den hintergrund und die anzeige unten triggern, dass die refresht wird, im moment wird der dann noch einfach weiss
 
 1_3 Draw a Melody:
+- der Besen Button ist nicht erreichbar (zu weit unten)
 - # bereit zur veröffentlichung
 - reset all progress geht noch nicht
 - wenn der zeichenpfad spitze ecken hat, dann sollen noten, die nahe der spitze sind ganz in die spitze rutschen
@@ -166,6 +168,7 @@ reset-button:
 - Wenn man einen Ton trifft, die Note aufleuchten verbessern, vielieicht den strich an der stelle dick machen oder so
 
 1_4 Does It Sound Right:
+- Tiere beim Melodie raten sind noch zu weit unten positioniert
 - # bereit zur veröffentlichung
 - der reset button in der navi muss auch die fortschrittsanzeige aktualisieren
 - when the "next melody" button is pressed in the "Does It Sound Right?" activity, the animal images should NOT change
