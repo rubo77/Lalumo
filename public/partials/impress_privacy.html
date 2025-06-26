@@ -1,0 +1,40 @@
+<!-- Legal: Impressum -->
+<section x-show="active === 'impressum' && (window.innerWidth >= 1024 || !menuOpen)" x-transition>
+  <h2 x-text="$store.strings?.impressum_header || 'Impressum'"></h2>
+  <div class="legal-content">
+    <p x-text="$store.strings?.impressum_app_description || 'Lalumo App - Musik lernen für Kinder'"></p>
+    <p x-text="$store.strings?.impressum_responsible || 'Verantwortlich für den Inhalt:'"></p>
+    <p x-html="$store.strings?.impressum_contact || 'Ruben Barkow-Kuder<br>Knickweg 16<br>24114 Kiel<br>'"></p>
+    <a href="mailto:lalumo-support@it.z11.de">lalumo-support@it.z11.de</a>
+  </div>
+</section>
+
+<!-- Legal: Datenschutz -->
+<section x-show="active === 'datenschutz' && (window.innerWidth >= 1024 || !menuOpen)" x-transition>
+  <h2 x-text="$store.strings?.datenschutz_header || 'Datenschutz'"></h2>
+  <div class="legal-content">
+    <p x-text="$store.strings?.privacy_intro || 'Datenschutzerklärung für die Lalumo App'"></p>
+    <p x-text="$store.strings?.privacy_statement || 'Wir nehmen den Schutz Ihrer persönlichen Daten sehr ernst. Die Lalumo-App speichert Ihre Lernfortschritte und Einstellungen lokal auf Ihrem Gerät. Diese Daten werden nicht an unsere Server übertragen, es sei denn, Sie nutzen explizit Funktionen, die eine Datenübertragung erfordern.'"></p>
+    
+    <h3 x-text="$store.strings?.privacy_referral_header || 'Referral-System'"></h3>
+    <p x-text="$store.strings?.privacy_referral_intro || 'Wenn Sie das Referral-System von Lalumo nutzen, werden folgende anonymisierte Daten gespeichert:'"></p>
+    <ul>
+      <li x-text="$store.strings?.privacy_ip_hash_item || 'Ein nicht umkehrbarer Hash Ihrer IP-Adresse (keine Rückschlüsse auf Ihre tatsächliche IP möglich)'"></li>
+      <li x-text="$store.strings?.privacy_device_info_item || 'Grundlegende Geräteinformationen (Art des Geräts und Browser, z.B. Android Chrome oder iPhone Safari)'"></li>
+      <li x-text="$store.strings?.privacy_username_item || 'Ihr anonymer Benutzername'"></li>
+      <li x-text="$store.strings?.privacy_timestamp_item || 'Zeitpunkt der Registrierung'"></li>
+    </ul>
+    <p x-text="$store.strings?.privacy_data_usage || 'Diese Daten werden ausschließlich verwendet, um das Referral-System zu betreiben und Missbrauch zu verhindern. Die Speicherung erfolgt in pseudonymisierter Form, ohne dass eine Zuordnung zu Ihrer tatsächlichen Identität möglich ist.'"></p>
+    
+    <h3 x-text="$store.strings?.privacy_local_storage_header || 'Lokale Speicherung'"></h3>
+    <p x-text="$store.strings?.privacy_local_storage_desc || 'Die App speichert Folgendes lokal auf Ihrem Gerät:'"></p>
+    <ul>
+      <li x-text="$store.strings?.privacy_username_item || 'Benutzername'"></li>
+      <li x-text="$store.strings?.privacy_progress_item || 'Lernfortschritte'"></li>
+    </ul>
+    
+    <p>
+      <a href="https://lalumo.eu/datenschutz.html" target="_blank" x-text="$store.strings?.privacy_full_statement_link || 'Vollständige Datenschutzerklärung'"></a>
+    </p>
+  </div>
+</section>

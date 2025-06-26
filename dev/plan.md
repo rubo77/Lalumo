@@ -28,6 +28,8 @@
 - If the DB is not writable (read-only), the API should return a clear JSON error indicating the permissions problem (implemented).
 - db_functions.php was fully repaired and now contains all required logic for automatic migration and permission error reporting.
 - [BUG] Fatal error: Call to undefined method SQLite3::filename() in ensureDatabaseStructure; must fix path/writability check to be compatible with PHP's SQLite3. (FIXED)
+- All required columns in both users and referrals tables are now checked and migrated in ensureDatabaseStructure (tested, implemented).
+- Never deploy unless explicitly instructed by the user.
 - When a user is created, store visitor_ip as a hash (not reversible, not rainbow-table vulnerable) and store only device/browser type (not full user agent).
 - Privacy policy (datenschutz.html) must be updated to reflect that, when using the referral system, only an anonymous username and anonymized device info/IP hash are transmitted.
 - User requests minimal schema changes: keep visitor_ip and visitor_agent in referrals table, and create tables with all necessary fields from the start.
@@ -255,7 +257,16 @@
 - [x] Update datenschutz.html to clarify new data handling for referral system
 - [x] Error handling for DB structure check is now implemented: GET requests to referral.php return a JSON error if DB is not writable/valid, as required.
 - [x] Fix fatal error: replace $db->filename() usage in ensureDatabaseStructure with portable solution
-- [ ] Ensure all required columns (visitor_ip, visitor_agent, created_at, etc.) exist in all referrals tables on all environments; trigger migration if needed.
+- [x] Ensure all required columns (visitor_ip, visitor_agent, created_at, etc.) exist in all referrals tables on all environments; trigger migration if needed.
+- [x] Minimal schema revert and migration logic now implemented; verify DB structure and migration logic.
+- [x] Migration logic now ensures visitor_ip and visitor_agent columns are present and added if missing (fixed, tested in ensureDatabaseStructure).
+- [x] Check and migrate all required columns in referrals table (referrer_id, etc.) in ensureDatabaseStructure.
+- [x] Ensure all new/required fields in BOTH users and referrals tables (e.g., referrer_id, visitor_ip, visitor_agent, created_at, etc.) are checked and migrated in ensureDatabaseStructure, not just users table.
+- [x] Migration logic now ensures password column is present and added if missing (fixed, tested in ensureDatabaseStructure).
+- [x] Fix admin dashboard: referral details shown as 'Array', not formatted
+- [x] Fix referral details popup formatting in admin dashboard
+- [x] Verify admin dashboard referral details formatting and test registration
+- [ ] Replace share button icon with typical three-dots share icon and add translation ("Teilen")
 
 ## Current Goal
-- Ensure schema consistency and trigger migration if needed
+- [ ] Replace share button with three-dots icon and translation
