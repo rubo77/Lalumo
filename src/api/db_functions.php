@@ -151,22 +151,35 @@ function ensureDatabaseStructure($db) {
                         'message' => "Fehler beim Erstellen der users-Tabelle: {$db->lastErrorMsg()}"];
             }
         } else {
-            // Prüfe, ob die users-Tabelle die Spalte "referred_by" hat
+            // Prüfe, ob die users-Tabelle die benötigten Spalten hat
             $hasReferredByColumn = false;
+            $hasPasswordColumn = false;
             $columnsResult = $db->query("PRAGMA table_info(users)");
             while ($column = $columnsResult->fetchArray(SQLITE3_ASSOC)) {
                 if ($column['name'] === 'referred_by') {
                     $hasReferredByColumn = true;
-                    break;
+                }
+                if ($column['name'] === 'password') {
+                    $hasPasswordColumn = true;
                 }
             }
             
+            // Füge fehlende Spalten hinzu
             if (!$hasReferredByColumn) {
                 debugLog("DB_MIGRATION: Füge referred_by-Spalte zur users-Tabelle hinzu");
                 $result = $db->exec("ALTER TABLE users ADD COLUMN referred_by TEXT");
                 if ($result === false) {
                     return ['success' => false, 'error' => 'alter_table_failed', 
                             'message' => "Fehler beim Hinzufügen der referred_by-Spalte: {$db->lastErrorMsg()}"];
+                }
+            }
+            
+            if (!$hasPasswordColumn) {
+                debugLog("DB_MIGRATION: Füge password-Spalte zur users-Tabelle hinzu");
+                $result = $db->exec("ALTER TABLE users ADD COLUMN password TEXT");
+                if ($result === false) {
+                    return ['success' => false, 'error' => 'alter_table_failed', 
+                            'message' => "Fehler beim Hinzufügen der password-Spalte: {$db->lastErrorMsg()}"];
                 }
             }
         }
@@ -193,20 +206,41 @@ function ensureDatabaseStructure($db) {
                         'message' => "Fehler beim Erstellen der referrals-Tabelle: {$db->lastErrorMsg()}"];
             }
         } else {
-            // Prüfe, ob die referrals-Tabelle die Spalte "created_at" hat
+            // Prüfe, ob die referrals-Tabelle alle benötigten Spalten hat
             $hasCreatedAtColumn = false;
             $hasVisitorIpColumn = false;
             $hasVisitorAgentColumn = false;
+            $hasReferrerIdColumn = false;
+            $hasReferrerCodeColumn = false;
+            $hasClickCountColumn = false;
+            $hasRegistrationCountColumn = false;
+            $hasReferralTypeColumn = false;
+            
             $columnsResult = $db->query("PRAGMA table_info(referrals)");
             while ($column = $columnsResult->fetchArray(SQLITE3_ASSOC)) {
                 if ($column['name'] === 'created_at') {
                     $hasCreatedAtColumn = true;
                 }
                 if ($column['name'] === 'visitor_ip') {
-                    $hasVisitorIpColumn = true;
+                    $hasVisitorIpColumn = true; 
                 }
                 if ($column['name'] === 'visitor_agent') {
                     $hasVisitorAgentColumn = true;
+                }
+                if ($column['name'] === 'referrer_id') {
+                    $hasReferrerIdColumn = true;
+                }
+                if ($column['name'] === 'referrer_code') {
+                    $hasReferrerCodeColumn = true;
+                }
+                if ($column['name'] === 'click_count') {
+                    $hasClickCountColumn = true;
+                }
+                if ($column['name'] === 'registration_count') {
+                    $hasRegistrationCountColumn = true;
+                }
+                if ($column['name'] === 'referral_type') {
+                    $hasReferralTypeColumn = true;
                 }
             }
             
@@ -215,6 +249,7 @@ function ensureDatabaseStructure($db) {
                 debugLog("DB_MIGRATION: Füge created_at-Spalte zur referrals-Tabelle hinzu");
                 $result = $db->exec("ALTER TABLE referrals ADD COLUMN created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP");
                 if ($result === false) {
+                    debugLog("DB_MIGRATION_ERROR: Fehler beim Hinzufügen der created_at-Spalte: {$db->lastErrorMsg()}");
                     return ['success' => false, 'error' => 'alter_table_failed', 
                             'message' => "Fehler beim Hinzufügen der created_at-Spalte: {$db->lastErrorMsg()}"];
                 }
@@ -224,6 +259,7 @@ function ensureDatabaseStructure($db) {
                 debugLog("DB_MIGRATION: Füge visitor_ip-Spalte zur referrals-Tabelle hinzu");
                 $result = $db->exec("ALTER TABLE referrals ADD COLUMN visitor_ip TEXT");
                 if ($result === false) {
+                    debugLog("DB_MIGRATION_ERROR: Fehler beim Hinzufügen der visitor_ip-Spalte: {$db->lastErrorMsg()}");
                     return ['success' => false, 'error' => 'alter_table_failed', 
                             'message' => "Fehler beim Hinzufügen der visitor_ip-Spalte: {$db->lastErrorMsg()}"];
                 }
@@ -233,8 +269,59 @@ function ensureDatabaseStructure($db) {
                 debugLog("DB_MIGRATION: Füge visitor_agent-Spalte zur referrals-Tabelle hinzu");
                 $result = $db->exec("ALTER TABLE referrals ADD COLUMN visitor_agent TEXT");
                 if ($result === false) {
+                    debugLog("DB_MIGRATION_ERROR: Fehler beim Hinzufügen der visitor_agent-Spalte: {$db->lastErrorMsg()}");
                     return ['success' => false, 'error' => 'alter_table_failed', 
                             'message' => "Fehler beim Hinzufügen der visitor_agent-Spalte: {$db->lastErrorMsg()}"];
+                }
+            }
+            
+            if (!$hasReferrerIdColumn) {
+                debugLog("DB_MIGRATION: Füge referrer_id-Spalte zur referrals-Tabelle hinzu");
+                $result = $db->exec("ALTER TABLE referrals ADD COLUMN referrer_id INTEGER");
+                if ($result === false) {
+                    debugLog("DB_MIGRATION_ERROR: Fehler beim Hinzufügen der referrer_id-Spalte: {$db->lastErrorMsg()}");
+                    return ['success' => false, 'error' => 'alter_table_failed', 
+                            'message' => "Fehler beim Hinzufügen der referrer_id-Spalte: {$db->lastErrorMsg()}"];
+                }
+            }
+            
+            if (!$hasReferrerCodeColumn) {
+                debugLog("DB_MIGRATION: Füge referrer_code-Spalte zur referrals-Tabelle hinzu");
+                $result = $db->exec("ALTER TABLE referrals ADD COLUMN referrer_code TEXT");
+                if ($result === false) {
+                    debugLog("DB_MIGRATION_ERROR: Fehler beim Hinzufügen der referrer_code-Spalte: {$db->lastErrorMsg()}");
+                    return ['success' => false, 'error' => 'alter_table_failed', 
+                            'message' => "Fehler beim Hinzufügen der referrer_code-Spalte: {$db->lastErrorMsg()}"];
+                }
+            }
+            
+            if (!$hasClickCountColumn) {
+                debugLog("DB_MIGRATION: Füge click_count-Spalte zur referrals-Tabelle hinzu");
+                $result = $db->exec("ALTER TABLE referrals ADD COLUMN click_count INTEGER DEFAULT 0");
+                if ($result === false) {
+                    debugLog("DB_MIGRATION_ERROR: Fehler beim Hinzufügen der click_count-Spalte: {$db->lastErrorMsg()}");
+                    return ['success' => false, 'error' => 'alter_table_failed', 
+                            'message' => "Fehler beim Hinzufügen der click_count-Spalte: {$db->lastErrorMsg()}"];
+                }
+            }
+            
+            if (!$hasRegistrationCountColumn) {
+                debugLog("DB_MIGRATION: Füge registration_count-Spalte zur referrals-Tabelle hinzu");
+                $result = $db->exec("ALTER TABLE referrals ADD COLUMN registration_count INTEGER DEFAULT 0");
+                if ($result === false) {
+                    debugLog("DB_MIGRATION_ERROR: Fehler beim Hinzufügen der registration_count-Spalte: {$db->lastErrorMsg()}");
+                    return ['success' => false, 'error' => 'alter_table_failed', 
+                            'message' => "Fehler beim Hinzufügen der registration_count-Spalte: {$db->lastErrorMsg()}"];
+                }
+            }
+            
+            if (!$hasReferralTypeColumn) {
+                debugLog("DB_MIGRATION: Füge referral_type-Spalte zur referrals-Tabelle hinzu");
+                $result = $db->exec("ALTER TABLE referrals ADD COLUMN referral_type TEXT");
+                if ($result === false) {
+                    debugLog("DB_MIGRATION_ERROR: Fehler beim Hinzufügen der referral_type-Spalte: {$db->lastErrorMsg()}");
+                    return ['success' => false, 'error' => 'alter_table_failed', 
+                            'message' => "Fehler beim Hinzufügen der referral_type-Spalte: {$db->lastErrorMsg()}"];
                 }
             }
         }

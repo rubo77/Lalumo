@@ -24,10 +24,8 @@ Das Lalumo Referral-System ermöglicht es Benutzern, ihre Freunde zur App einzul
      - [ ] error: 
        - [ ] user existiert schon: nach passwort fragen oder hinweis, dass man sich einen anderen usernamen wählen muss
        - [ ] sonstige errormeldung anzeigen
-   - [ ] man darf sienen eigenen redeem code nicht redeemen
-   - [ ] für die link clicks muss angezeigt werden, wie der link ist zum teilen
-   - [ ] 
-       
+   - [ ] man darf seinen eigenen redeem code nicht redeemen
+   - [x] für die link clicks muss angezeigt werden, wie der link ist zum teilen
 
 2. **Backend (referral.php)**:
    - [x] Empfängt Benutzername via POST-Request
@@ -36,7 +34,7 @@ Das Lalumo Referral-System ermöglicht es Benutzern, ihre Freunde zur App einzul
    - Sendet JSON-Antwort mit generiertem Referral-Code zurück
    # TODO:
    - [x] passwort zum user beim anlegen eines neuen users generieren (falls keins im post request), und in der db speichern und mit in der json antwort schicken
-   - [ ] wenn änderungen an der datenbank nötig sind, dann nur mit migration
+   - [x] wenn änderungen an der datenbank nötig sind, dann nur mit migration in ensureDatabaseStructure()
 
 ### 2. Referral-Link-Tracking
 
@@ -89,7 +87,9 @@ Das Lalumo Referral-System ermöglicht es Benutzern, ihre Freunde zur App einzul
 CREATE TABLE users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     username TEXT UNIQUE,
+    `password` TEXT, -- Passwort für die Benutzeranmeldung
     referral_code TEXT UNIQUE,
+    referred_by TEXT, -- Code des Referrers, der diesen User eingeladen hat
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 ```
@@ -98,10 +98,16 @@ CREATE TABLE users (
 ```sql
 CREATE TABLE referrals (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
+    referrer_id INTEGER, -- ID des Einladenden
     referrer_code TEXT,
+    click_count INTEGER DEFAULT 0,
+    registration_count INTEGER DEFAULT 0,
     referral_type TEXT, -- "click" oder "registration"
+    visitor_ip TEXT, -- Anonymisierter Hash der Besucher-IP
+    visitor_agent TEXT, -- Grundlegende Geräteinformationen (nicht vollständig)
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (referrer_code) REFERENCES users(referral_code)
+    FOREIGN KEY (referrer_code) REFERENCES users(referral_code),
+    FOREIGN KEY (referrer_id) REFERENCES users(id)
 );
 ```
 
@@ -129,8 +135,6 @@ Ein passwortgeschütztes Admin-Dashboard ist unter `/admin.php` verfügbar:
 - Zeigt alle registrierten Benutzer und deren Statistiken
 - Bietet zusammengefasste Statistiken (Gesamtbenutzer, Klicks, Registrierungen)
 - Unterstützt HTML- und JSON-Format (für API-Zugriff)
-# TODO
-- [ ] löschen einzelner user
 
 ## Sonstige Funktionen
 
@@ -145,13 +149,11 @@ Die PHP-Dateien (`referral.php`, `admin.php`) und die Datenbankdatei müssen auf
 # TODO:
 
 - [ ] admin mode:
- - [ ] delete user button
  - [ ] delete referral button
 
 - [x] teste selbst mit wegt http://localhost:9091/admin.php und mache node test und erstelle einen unittest um das alles zu testen und zu korrigieren. schau dir die bestehen den playwright tests an und baue einen  timeout von 10 s ein damit die seitenn nicht hängen bleiben
 
-- die datenbank soll gegen sql-attacks sicher sein
-- Es muss im json der antwort in die eingestellte sprache umgewandelt werden kann.
+- die datenbank soll gegen sql-attacks sicher sein, SQL inject verhindern.
 
 - wenn der username gelockt ist, dan darf der nicht mehr editierbar sein im player settings (grep "' => " referral.php )
 - testen, das ist schon implementiert , aber ungetestet: 
