@@ -96,26 +96,14 @@ $db = new SQLite3($dbFile);
 
 // Automatische Datenbankstruktur-Prüfung
 debugLog('DB_INIT: Führe Datenbankstruktur-Check aus');
-ensureDatabaseStructure($db);
+$dbStructureResult = ensureDatabaseStructure($db);
 
-// Alte Initialisierung (wird durch ensureDatabaseStructure ersetzt)
-if (false && $initDb) {
-    $db->exec('
-        CREATE TABLE users (
-            id INTEGER PRIMARY KEY,
-            username TEXT UNIQUE,
-            referral_code TEXT UNIQUE,
-            password TEXT,
-            created_at TEXT
-        );
-        CREATE TABLE referrals (
-            id INTEGER PRIMARY KEY,
-            referrer_id INTEGER,
-            click_count INTEGER DEFAULT 0,
-            registration_count INTEGER DEFAULT 0,
-            FOREIGN KEY (referrer_id) REFERENCES users(id)
-        );
-    ');
+// Prüfe auf Fehler bei der Datenbankstruktur
+if (isset($dbStructureResult['success']) && $dbStructureResult['success'] === false) {
+    header('Content-Type: application/json');
+    http_response_code(500);
+    echo json_encode($dbStructureResult);
+    exit;
 }
 
 // Request-Methode ermitteln
@@ -277,9 +265,16 @@ if ($method === 'POST') { // aus _REQUEST
             $userId = $db->lastInsertRowID();
             debugLog("User created with ID: {$userId}");
             
-            // Erstelle einen passenden Eintrag in der referrals Tabelle
-            $referralStmt = $db->prepare('INSERT INTO referrals (referrer_id, click_count, registration_count, created_at) VALUES (:referrer_id, 0, 0, datetime("now"))');
-            $referralStmt->bindValue(':referrer_id', $userId, SQLITE3_INTEGER);
+            // Anonymisiere IP und User-Agent
+            $ip = $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
+            $ipHash = secureIpHash($ip);
+            $userAgent = $_SERVER['HTTP_USER_AGENT'] ?? '';
+            $deviceInfo = extractDeviceInfo($userAgent);
+            
+            $referralStmt = $db->prepare('INSERT INTO referrals (referrer_id, click_count, registration_count, visitor_ip, visitor_agent, created_at) VALUES (:referrer_id, 0, 0, :visitor_ip, :visitor_agent, datetime("now"))');
+            $referralStmt->bindParam(':referrer_id', $userId, SQLITE3_INTEGER);
+            $referralStmt->bindParam(':visitor_ip', $ipHash, SQLITE3_TEXT);
+            $referralStmt->bindParam(':visitor_agent', $deviceInfo, SQLITE3_TEXT);
             $referralStmt->execute();
             
             debugLog("REFERRAL_TIMESTAMP: Created referrals entry with timestamp for user ID: {$userId}");
@@ -300,7 +295,13 @@ if ($method === 'POST') { // aus _REQUEST
                 if (!$referralEntryExists) {
                     // Erstelle einen Eintrag für den Referrer, wenn keiner existiert
                     debugLog("REFERRAL_INCREMENT: Creating new referrals entry for referrer ID: {$referrerId}");
-                    $db->exec("INSERT INTO referrals (referrer_id, click_count, registration_count, created_at) VALUES ($referrerId, 0, 0, datetime('now'))");
+                    // Anonymisiere IP und User-Agent
+                    $ip = $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
+                    $ipHash = secureIpHash($ip);
+                    $userAgent = $_SERVER['HTTP_USER_AGENT'] ?? '';
+                    $deviceInfo = extractDeviceInfo($userAgent);
+                    
+                    $db->exec("INSERT INTO referrals (referrer_id, click_count, registration_count, visitor_ip, visitor_agent, created_at) VALUES ($referrerId, 0, 0, '$ipHash', '$deviceInfo', datetime('now'))");
                     debugLog("REFERRAL_TIMESTAMP: Added created_at timestamp for referrer ID: {$referrerId}");
                 }
                 
@@ -444,7 +445,13 @@ elseif ($method === 'GET') {
                 $checkResult = $checkReferralStmt->execute();
                 if (!$checkResult->fetchArray(SQLITE3_ASSOC)) {
                     debugLog("REFERRAL_INCREMENT: Erstelle fehlenden Referral-Eintrag für Referrer ID: {$referrerId}");
-                    $db->exec("INSERT INTO referrals (referrer_id, click_count, registration_count) VALUES ({$referrerId}, 0, 0)");
+                    // Anonymisiere IP und User-Agent
+                    $ip = $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
+                    $ipHash = secureIpHash($ip);
+                    $userAgent = $_SERVER['HTTP_USER_AGENT'] ?? '';
+                    $deviceInfo = extractDeviceInfo($userAgent);
+                    
+                    $db->exec("INSERT INTO referrals (referrer_id, click_count, registration_count, visitor_ip, visitor_agent, created_at) VALUES ({$referrerId}, 0, 0, '$ipHash', '$deviceInfo', datetime('now'))");
                 }
                 
                 // Erhöhe registration_count für den Referrer
@@ -476,7 +483,13 @@ elseif ($method === 'GET') {
         }
         
         // Erstelle Referral-Eintrag für den neuen Benutzer
-        $db->exec("INSERT INTO referrals (referrer_id, click_count, registration_count) VALUES ($userId, 0, 0)");
+        // Anonymisiere IP und User-Agent
+        $ip = $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
+        $ipHash = secureIpHash($ip);
+        $userAgent = $_SERVER['HTTP_USER_AGENT'] ?? '';
+        $deviceInfo = extractDeviceInfo($userAgent);
+        
+        $db->exec("INSERT INTO referrals (referrer_id, click_count, registration_count, visitor_ip, visitor_agent, created_at) VALUES ($userId, 0, 0, '$ipHash', '$deviceInfo', datetime('now'))");
         debugLog("REGISTER_USER: Referral-Eintrag für neuen Benutzer erstellt: {$userId}");
         
         // Erfolgreiche Rückmeldung
@@ -561,7 +574,13 @@ elseif ($method === 'GET') {
                 } else {
                     // Benutzer existiert, aber keine Referral-Daten gefunden
                     // Erstelle einen Referral-Eintrag für den Benutzer
-                    $db->exec("INSERT INTO referrals (referrer_id, click_count, registration_count) VALUES ($userId, 0, 0)");
+                    // Anonymisiere IP und User-Agent
+                    $ip = $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
+                    $ipHash = secureIpHash($ip);
+                    $userAgent = $_SERVER['HTTP_USER_AGENT'] ?? '';
+                    $deviceInfo = extractDeviceInfo($userAgent);
+                    
+                    $db->exec("INSERT INTO referrals (referrer_id, click_count, registration_count, visitor_ip, visitor_agent, created_at) VALUES ($userId, 0, 0, '$ipHash', '$deviceInfo', datetime('now'))");
                     
                     echo json_encode([
                         'success' => true,

@@ -35,7 +35,6 @@ Das Lalumo Referral-System ermöglicht es Benutzern, ihre Freunde zur App einzul
    - [x] Speichert Benutzer in der `users`-Tabelle der SQLite-Datenbank
    - Sendet JSON-Antwort mit generiertem Referral-Code zurück
    # TODO:
-   - [x] checken ob der username schon existiert, wenn ja, errormeldung
    - [x] passwort zum user beim anlegen eines neuen users generieren (falls keins im post request), und in der db speichern und mit in der json antwort schicken
    - [ ] wenn änderungen an der datenbank nötig sind, dann nur mit migration
 
@@ -151,13 +150,12 @@ Die PHP-Dateien (`referral.php`, `admin.php`) und die Datenbankdatei müssen auf
 
 - [x] teste selbst mit wegt http://localhost:9091/admin.php und mache node test und erstelle einen unittest um das alles zu testen und zu korrigieren. schau dir die bestehen den playwright tests an und baue einen  timeout von 10 s ein damit die seitenn nicht hängen bleiben
 
-- [ ] wie soll das online laufen? die php files müssen dort ja auch gesynct werden in `deploy.sh`
-- [ ] die db muss online sicher auch noch angelegt werden
 - die datenbank soll gegen sql-attacks sicher sein
 - Es muss im json der antwort in die eingestellte sprache umgewandelt werden kann.
 
 - wenn der username gelockt ist, dan darf der nicht mehr editierbar sein im player settings (grep "' => " referral.php )
-- wenn in der localStorage der username gelockt ist, aber auf dem server gelöscht, dann muss der wieder entlockt werden und die localStorage aktualisiert werden
+- testen, das ist schon implementiert , aber ungetestet: 
+   - wenn in der localStorage der username gelockt ist, aber auf dem server gelöscht, dann muss der wieder entlockt werden und die localStorage aktualisiert werden
 
 ergänze im konzept die häkchen bei den punkten die schon erledigt sind uund ergänue [ ] häkchen, was noch nciht erledigt ist. passe das konzept ggf an, so dass es einer dokumentation wird, wie das referral system funktioniert.
 

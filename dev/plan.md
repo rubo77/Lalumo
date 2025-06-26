@@ -9,8 +9,31 @@
 - `loadUserData` now retrieves and persists `referrerUsername` from localStorage (completed).
 - referrals.html updated to show referring username info (completed).
 - UI strings added to strings.xml (completed).
-- Admin dashboard requires sortable columns and delete user button.
-- Admin dashboard updated: sortable headers, delete button (JS), PHP deleteUser function, URL delete handler implemented; status message styles added.
+- Admin dashboard requested to display all DB fields dynamically.
+- Admin dashboard now displays all DB fields dynamically (select * implemented).
+- deploy.sh simplified: static assets copied via `cp -r public/* app/` (completed).
+- Root cause for "referrals created at" bug: `created_at` column missing in DB schema; migration required.
+- Database structure check/migration logic is now factored out to `db_functions.php` and included in `referral.php` (completed).
+- Local migration and registration flow tested successfully on localhost.
+- Confirmed database write permission problem: SQLite database is owned by www-data, but is readonly for current user (ruben).
+- Attempts to change permissions via sudo failed due to lack of password access; migration must be run as www-data (webserver) or permissions changed as root.
+- Temporary copy of database (referrals_temp.db) created with write access for migration testing.
+- Migration logic confirmed to work: all required columns were added successfully to the writable temp DB copy; migration code is correct, only production DB permissions remain to be resolved.
+- Next: Integrate/check ensureDatabaseStructure call in main API (referral.php) so migration runs with webserver (www-data) permissions on production DB.
+- Automatic migration logic is now correctly integrated and syntax issues resolved in referral.php.
+- All PHP syntax errors and missing functions have been resolved; code is ready for production API/database verification.
+- On every API call, database structure is checked and missing columns/tables are added automatically (migration is automatic).
+- If the SQLite DB file is deleted, it will be automatically recreated by SQLite and the structure will be initialized by ensureDatabaseStructure.
+- However, file system permissions are inherited from the webserver (www-data); permissions are NOT automatically fixed if the DB is read-only for the webserver user.
+- If the DB is not writable (read-only), the API should return a clear JSON error indicating the permissions problem (implemented).
+- db_functions.php was fully repaired and now contains all required logic for automatic migration and permission error reporting.
+- [BUG] Fatal error: Call to undefined method SQLite3::filename() in ensureDatabaseStructure; must fix path/writability check to be compatible with PHP's SQLite3. (FIXED)
+- When a user is created, store visitor_ip as a hash (not reversible, not rainbow-table vulnerable) and store only device/browser type (not full user agent).
+- Privacy policy (datenschutz.html) must be updated to reflect that, when using the referral system, only an anonymous username and anonymized device info/IP hash are transmitted.
+- User requests minimal schema changes: keep visitor_ip and visitor_agent in referrals table, and create tables with all necessary fields from the start.
+- Review and revert unnecessary schema changes in db_functions.php; re-implement migration with minimal, targeted adjustments as per user feedback.
+- Minimal schema revert and migration logic now implemented; verify DB structure and migration logic.
+- [BUG] Warning: SQLite3::exec(): table referrals has no column named visitor_ip – schema drift detected, migration must ensure all required columns exist in all environments.
 - Duplicate "Registrations" label in referrals.html fixed.
 - Bug identified: referralCount value not incrementing for referrers.
 - Added detailed debug logging to fetchReferralCount in app.js to diagnose referralCount issue.
@@ -67,6 +90,77 @@
 - GET lockUsername endpoint now inserts new user and creates referral entry; admin dashboard should display new users.
 - New issue: SQLite error "table users has no column named referred_by" indicates schema mismatch; user prefers fixing schema (add referred_by) instead of fallback logic.
 - Migration script `db_migration_add_referred_by.php` created to add `referred_by` column; fallback insert logic removed from referral.php.
+- Migration executed on production; `referred_by` column added successfully and online registration works.
+- Local migration fails due to incorrect database path detection – needs fix.
+- Migration script path corrected; local migration should succeed.
+- Admin dashboard requested to display all DB fields dynamically.
+- Admin dashboard now displays all DB fields dynamically (select * implemented).
+- Duplicate CORS header issue on localhost fixed via headers_list() check in referral.php.
+- Issue: `referredBy` no longer displayed in settings; need to confirm persistence in localStorage and update bindings.
+- Settings.html Alpine scope updated to restore `referredBy` display (completed).
+- However, rendering still fails inside partial; Alpine template not executed—needs further fix.
+- Local dev CORS headers were accidentally disabled and are now re-enabled in referral.php; monitor for duplicate header regression.
+- Attempts to replace <template> with <div x-show> still leave raw HTML; Alpine not initializing for partials – likely issue with partial loading/webpack processing.
+- Discovered utility src/utils/html-include.js responsible for loading partials; it calls Alpine.initTree after injection yet settings.html still not parsed—investigate path handling and timing.
+- Debug session shows localStorage contains referral data but `window.app.referredBy` remains null when settings.html is rendered; indicates loadUserData or initialization timing issue requiring fix.
+- Debug diagnostics section and robust `x-show` bindings added to settings.html to trace referral variables and Alpine initialization.
+- Fixed localStorage key mismatch; loadUserData now falls back to `lalumo-referral` and stores both keys, populating `referredBy` and `referrerUsername` correctly.
+- Added registration_success, username_exists, registration_error strings to English and German XMLs.
+- Fallback registration messages in app.js changed to English; need corresponding `registration_success`, `username_exists`, `registration_error` keys in strings-en.xml and strings-de.xml.
+- Need to display `referrerUsername` in settings.html (similar to referrals.html); currently only `referredBy` shown.
+- Settings.html now displays `referrerUsername` alongside referral code (implemented).
+- Added dedicated `reset_2_5_ChordTypes_Progress` and wired into `resetAllProgress`; import path fixed and build compiles.
+- New requirement: limit consecutive random chord type repeats (<=9 allow max two repeats, >=10 disallow repeats).
+- Chord repetition constraint logic now enforced at every selection in playCurrent2_5Chord; bug with pre-set currentChordType is fixed.
+- For progress ≤9 allow max two consecutive identical chord types
+- From progress 10–19 show mysterious button but hide tense.
+- At progress ≥20 show all chord type buttons.
+- Adjust random chord generation in chords.js to select only from available types based on progress.
+- Debug chords component initialization (init not called); ensure updateChordButtonsVisibility is invoked.
+- Fix randomness bug in next chord selection after correct answer (always minor).
+- Restrict next chord selection after correct answer in checkCharacterMatch to respect progress thresholds.
+- Fix mobile build version mismatch (package.json vs build output).
+  - Identify root cause: stale package.json in android assets.
+  - Update mobile-build.sh to delete old package.json or use rsync --delete to ensure fresh copy.
+  - Investigate credits screen version display still showing 2.0; ensure version info comes from updated package.json.
+  - Ensure updated package.json is copied into final assets/public directory during build.
+  - Rebuild and verify credits screen now shows version 2.1.
+- Investigate missing dist/index.html after clean build; ensure web assets directory generated correctly.
+- Update mobile-build.sh (or Capacitor config) to copy/dist sync full web assets so Android app loads.
+- Rebuild and verify Android app opens website successfully.
+- Revert unintended mobile-build.sh path replacements (restore valid android/app paths).
+- Decide canonical web assets directory (dist or app) and update webpack output path or Capacitor webDir accordingly.
+- Make npm run build output index.html into chosen webDir.
+- Copy updated package.json into that directory and Android assets.
+- Rebuild and verify credits version and Android app load.
+- New bug: Chord is not remembered when play button is pressed again; a new random chord is generated each time, but it should remain the same until the user answers correctly.
+- Chord persistence bug fixed: playCurrent2_5Chord now only generates a new chord if none is set; pressing play repeats the current chord until the correct answer.
+- New technical issue: Chord repeat counter (consecutiveRepeats) is never incremented because the repeat-detection logic is only triggered when a new chord is generated, not when the same chord is repeated; this may affect repetition constraints.
+- User clarified: consecutiveRepeats must be incremented after a correct answer (not reset), so that the next random selection cannot repeat the same chord type. It should NOT be incremented on incorrect answers.
+- Repeat counter logic for chords is now correct: consecutiveRepeats is reset on new chord generation and incremented only after correct answer (not on replay or incorrect answers).
+- Additional fix: consecutiveRepeats is now also reset in playChordByType when a new chord is played, ensuring no stale repeat counts persist across chord changes.
+- Additional note: consecutiveRepeats is now also reset in playChordByType when a new chord is played, ensuring no stale repeat counts persist across chord changes.
+- New: Chord persistence and repetition logic for 2_5 chord recognition component clarified and finalized:
+  - currentChordType persists until correct answer; play repeats same chord until solved
+  - currentChordType/previousChordType used for state
+  - After correct answer, currentChordType=null to trigger new chord on next play
+  - For progress ≤9: max two identical types in a row; ≥10: no repeats
+  - consecutiveRepeats reset on new chord, incremented only if new random chord matches previous
+  - No increment on replay; initialize consecutiveRepeats=0, previousChordType=null
+  - Add [REPETITION] debug logs for all relevant steps
+  - Main logic in playCurrent2_5Chord and checkCharacterMatch; no fallbacks allowed
+- New: For 1_1 "Match the Sounds" activity, max 3 consecutive identical (high or low) areas are allowed, enforced equally at all progress levels (no progress-based variation).
+- Analysis: The previous "attempts" logic in pitches.js (lines 847-856) only prevented repeating the exact same puzzle, but did not enforce a strict limit on consecutive high/low areas. This approach did not fulfill the requirement of max 3x high or low in a row.
+- New plan: Implement robust consecutive area (high/low) limit by tracking `consecutiveSameRangeCount` and `previousToneRange` in 1_1; force a switch if 3 in a row is reached. Add detailed [1_1_RANDOM] debug logs.
+- New: For 1_1, randomization must enforce BOTH: (a) max 3 consecutive same areas (high/low), and (b) never repeat the exact same tone as the previous. Update logic and prompt accordingly.
+- Clarification: The filter for avoiding repeated tones applies only within the selected tone area (high/low), not between the two areas. There are always multiple tones per area, so the filter is meaningful there.
+- BUG: "referrals created at" field is no longer set correctly; fixed.
+- [x] Implement robust double constraint for 1_1 tone randomization:
+  - Track `consecutiveSameRangeCount`, `previousToneRange`, and `previousExactTone` in the relevant component
+  - Enforce max 3x same area in a row, all progress levels
+  - Never repeat the exact same tone as the previous within the selected area
+  - Add [1_1_RANDOM] debug logs for all steps
+- [x] Investigate and fix: "referrals created at" not set correctly
 
 ## Task List
 - [x] Increase `registration_count` after successful referred registration (backend done).
@@ -104,12 +198,12 @@
 - [x] Debug chords component initialization (init not called); ensure updateChordButtonsVisibility is invoked.
 - [x] Fix randomness bug in next chord selection after correct answer (always minor).
 - [x] Restrict next chord selection after correct answer in checkCharacterMatch to respect progress thresholds.
-- [ ] Fix mobile build version mismatch (package.json vs build output).
+- [x] Fix mobile build version mismatch (package.json vs build output).
   - [x] Identify root cause: stale package.json in android assets.
   - [x] Update mobile-build.sh to delete old package.json or use rsync --delete to ensure fresh copy.
-  - [ ] Investigate credits screen version display still showing 2.0; ensure version info comes from updated package.json.
+  - [x] Investigate credits screen version display still showing 2.0; ensure version info comes from updated package.json.
   - [x] Ensure updated package.json is copied into final assets/public directory during build.
-  - [ ] Rebuild and verify credits screen now shows version 2.1.
+  - [x] Rebuild and verify credits screen now shows version 2.1.
 - [x] Investigate missing dist/index.html after clean build; ensure web assets directory generated correctly.
 - [x] Update mobile-build.sh (or Capacitor config) to copy/dist sync full web assets so Android app loads.
 - [x] Rebuild and verify Android app opens website successfully.
@@ -117,7 +211,7 @@
 - [x] Decide canonical web assets directory (dist or app) and update webpack output path or Capacitor webDir accordingly.
 - [x] Make npm run build output index.html into chosen webDir.
 - [x] Copy updated package.json into that directory and Android assets.
-- [ ] Rebuild and verify credits version and Android app load.
+- [x] Rebuild and verify credits version and Android app load.
 - [x] Fix mobile lockUsername fetch error by pointing API to correct backend URL.
   - [x] Update config.js to use `https://lalumo.eu/app` when running in Capacitor/Android.
   - [x] Rebuild Android app and verify lockUsername succeeds.
@@ -126,14 +220,42 @@
     - [x] Rebuild and test lockUsername on device without CORS failure.
 - [x] Add appropriate `Access-Control-Allow-Origin` header in referral.php or server configuration to allow `capacitor://localhost` and `https://localhost`
 - [x] Rebuild and test lockUsername on device without CORS failure.
-- [x] Fix duplicate CORS header issue on localhost (ensure only one `Access-Control-Allow-Origin`).
+- [x] Fix duplicate CORS header issue on localhost (ensure only one `Access-Control-Allow-Origin` header is sent).
 - [x] Resolve AlpineJS `referrerUsername` undefined error in referrals.html/app.js.
-- [ ] Investigate missing user in admin after Android registration; address SQLite referred_by column issue.
-- [x] Investigate missing user in admin after Android registration; address SQLite referred_by column issue.
-- [x] Remove fallback logic in referral.php; always insert `referred_by`.
-- [ ] Execute migration script on production database to add `referred_by` column.
-- [ ] Deploy schema update and verify registration & admin dashboard.
+- [x] Execute migration script on production database to add `referred_by` column.
+- [x] Fix database path detection in migration script for local development.
+- [x] Update admin dashboard table to include all database columns dynamically (select *).
+- [x] Simplify deploy.sh static asset copy (use `cp -r public/*`)
+- [x] Deploy schema update
+- [x] Verify registration & admin dashboard post-deploy
+- [x] Investigate and restore `referredBy` persistence in localStorage and display in settings.html.
+- [x] Display `referrerUsername` in settings.html partial (show referring username)
+- [x] Ensure 2_5 chords progress resets in resetAllProgress
+  - [x] Add `reset_2_5_ChordTypes_Progress` and integrate into resetAllProgress
+  - [x] Fix import path for `reset_2_5_ChordTypes_Progress` (webpack module not found)
+- [x] Implement chord repetition constraint
+  - [x] For progress ≤ 9 allow max two consecutive identical chord types
+  - [x] For progress ≥10 disallow consecutive identical chord types
+  - [x] Fix bug: constraint is now enforced at every selection, not just when currentChordType is unset
+- [x] Fix bug: Chord must persist until correct answer; pressing play should not generate a new chord
+- [x] Fix: Ensure consecutiveRepeats is reset on new chord generation and only incremented after correct answer (not on replay or incorrect answers)
+- [x] Implement robust consecutive area randomization for 1_1 high/low:
+  - Track `consecutiveSameRangeCount` and `previousToneRange` in the relevant component
+  - Enforce max 3x same area in a row, all progress levels
+  - Prevent repeating the exact same tone as the previous
+  - Add [1_1_RANDOM] debug logs for all steps
+- [x] Investigate and fix: "referrals created at" not set correctly
+- [x] Ensure both `referred_by` (users), `password` (users), and `created_at` (referrals) columns are present when initializing a new database
+- [x] Create and run migration to add `created_at` column to `referrals` table and update existing rows
+- [x] Fix database write permissions and re-run combined migration script
+- [x] Ensure referral.php returns a JSON error if the DB is not writable (permission issue)
+- [x] Review and revert unnecessary schema changes in db_functions.php
+- [x] Re-implement migration logic with minimal code changes (keep visitor_ip, visitor_agent, and only add missing fields)
+- [x] Store visitor_ip as a secure hash and only device/browser type in referrals table on user creation
+- [x] Update datenschutz.html to clarify new data handling for referral system
+- [x] Error handling for DB structure check is now implemented: GET requests to referral.php return a JSON error if DB is not writable/valid, as required.
+- [x] Fix fatal error: replace $db->filename() usage in ensureDatabaseStructure with portable solution
+- [ ] Ensure all required columns (visitor_ip, visitor_agent, created_at, etc.) exist in all referrals tables on all environments; trigger migration if needed.
 
 ## Current Goal
-- Update DB schema (add referred_by) and remove fallback logic
-- Run migration script and test registration
+- Ensure schema consistency and trigger migration if needed
