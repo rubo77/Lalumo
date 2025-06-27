@@ -290,7 +290,7 @@ export function app() {
           if (successful) {
             this.showToast(this.$store.strings?.copied || 'Copied!');
           } else {
-            this.showToast('Failed to copy');
+            this.showToast(this.$store.strings?.copy_failed || 'Failed to copy');
           }
         } catch (err) {
           console.error('Fallback: Oops, unable to copy', err);
@@ -987,7 +987,7 @@ export function app() {
         this.showResetConfirm = false;
         
         // Show feedback or refresh the page
-        alert('Progress has been reset successfully');
+        alert(this.$store.strings?.progress_reset_success || 'Progress has been reset successfully');
         window.location.reload();
       } catch (e) {
         console.log('Error resetting progress', e);
@@ -1047,7 +1047,7 @@ export function app() {
         
         if(!encoded || encoded.length === 0) {
           console.error('Kodierter String ist leer');
-          alert('Error exporting progress: encoded string is empty');
+          alert(this.$store.strings?.export_error_empty || 'Error exporting progress: encoded string is empty');
           return null;
         }
         
@@ -1064,7 +1064,8 @@ export function app() {
         return encoded;
       } catch (e) {
         console.error('Fehler beim Exportieren:', e);
-        alert('Error exporting progress: ' + e.message);
+        alert(this.$store.strings?.export_error_dynamic.replace('%1$s', e.message) || 
+              'Error exporting progress: ' + e.message);
         return null;
       }
     },
@@ -1117,7 +1118,7 @@ export function app() {
       if (!contentToCopy) {
         console.error('Nichts zu kopieren - kein Text angegeben');
         if (showAlert) {
-          alert('No data to copy.');
+          alert(this.$store.strings?.no_copy_data || 'No data to copy.');
         }
         return;
       }
@@ -1131,7 +1132,7 @@ export function app() {
             .then(() => {
               console.log('Text copied to clipboard using Clipboard API!');
               if (showAlert) {
-                alert('Copied to clipboard!');
+                alert(this.$store.strings?.copied_to_clipboard || 'Copied to clipboard!');
               }
             })
             .catch(err => {
@@ -1146,7 +1147,7 @@ export function app() {
       } catch (e) {
         console.error('Failed to copy to clipboard:', e);
         if (showAlert) {
-          alert('Failed to copy. Please select and copy the text manually.');
+          alert(this.$store.strings?.copy_failed_manual || 'Failed to copy. Please select and copy the text manually.');
         }
       }
     },
@@ -1181,14 +1182,14 @@ export function app() {
         if (success) {
           console.log('Text copied to clipboard using fallback!');
           if (showAlert) {
-            alert('Copied to clipboard!');
+            alert(this.$store.strings?.copied_to_clipboard || 'Copied to clipboard!');
           }
         } else {
           throw new Error('execCommand returned false');
         }
       } catch (e) {
         console.error('Fallback copy failed:', e);
-        alert('Could not copy automatically. Please select and copy the text manually.');
+        alert(this.$store.strings?.copy_manual || 'Could not copy automatically. Please select and copy the text manually.');
       }
     },
     
@@ -1197,7 +1198,7 @@ export function app() {
      */
     importProgress() {
       if (!this.importData || this.importData.trim() === '') {
-        alert('Please enter a progress code first!');
+        alert(this.$store.strings?.enter_progress_code || 'Please enter a progress code first!');
         return;
       }
       
@@ -1209,7 +1210,7 @@ export function app() {
         // Validate the data
         if (!progressData || !progressData.username) {
           console.log('Invalid save code');
-          alert('Invalid save code. Please check your progress string.');
+          alert(this.$store.strings?.invalid_save_code || 'Invalid save code. Please check your progress string.');
           return false;
         }
         
@@ -1297,7 +1298,7 @@ export function app() {
         console.log('Imported progress for', this.username, 'with unlocked features:', unlockedFeatures);
         return true;
       } catch (e) {
-        alert('Error importing progress. The provided string may be invalid.');
+        alert(this.$store.strings?.import_error_invalid || 'Error importing progress. The provided string may be invalid.');
         console.log('Error importing progress', e);
         return false;
       }

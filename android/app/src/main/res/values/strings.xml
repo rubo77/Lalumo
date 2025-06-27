@@ -218,6 +218,19 @@
     <string name="melodies_activity">melodies</string>
     <string name="datenschutz_header">Privacy</string>
     
+    <!-- Alert and Toast Messages -->
+    <string name="copied_to_clipboard">Copied to clipboard!</string>
+    <string name="copy_manual">Could not copy automatically. Please select and copy the text manually.</string>
+    <string name="export_error_dynamic">Error exporting progress: %1$s</string>
+    <string name="export_error_empty">Error exporting progress: encoded string is empty</string>
+    <string name="import_error_invalid">Error importing progress. The provided string may be invalid.</string>
+    <string name="copy_failed">Failed to copy</string>
+    <string name="copy_failed_manual">Failed to copy. Please select and copy the text manually.</string>
+    <string name="invalid_save_code">Invalid save code. Please check your progress string.</string>
+    <string name="no_copy_data">No data to copy.</string>
+    <string name="enter_progress_code">Please enter a progress code first!</string>
+    <string name="progress_reset_success">Progress has been reset successfully</string>
+    
     <!-- Credits Content -->
     <string name="version_label">Version</string>
     <string name="app_development_label">App-Development</string>

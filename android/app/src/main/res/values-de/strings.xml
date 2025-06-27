@@ -217,6 +217,19 @@
     <string name="clear">Löschen</string>
     <string name="melodies_activity">Melodien</string>
     
+    <!-- Alert and Toast Messages -->
+    <string name="copied_to_clipboard">In die Zwischenablage kopiert!</string>
+    <string name="copy_manual">Konnte nicht automatisch kopieren. Bitte wähle den Text manuell aus und kopiere ihn.</string>
+    <string name="export_error_dynamic">Fehler beim Exportieren des Fortschritts: %1$s</string>
+    <string name="export_error_empty">Fehler beim Exportieren des Fortschritts: Kodierte Zeichenkette ist leer</string>
+    <string name="import_error_invalid">Fehler beim Importieren des Fortschritts. Die angegebene Zeichenkette könnte ungültig sein.</string>
+    <string name="copy_failed">Kopieren fehlgeschlagen</string>
+    <string name="copy_failed_manual">Kopieren fehlgeschlagen. Bitte wähle den Text manuell aus und kopiere ihn.</string>
+    <string name="invalid_save_code">Ungültiger Speichercode. Bitte überprüfe deine Fortschrittszeichenkette.</string>
+    <string name="no_copy_data">Keine Daten zum Kopieren.</string>
+    <string name="enter_progress_code">Bitte gib zuerst einen Fortschrittscode ein!</string>
+    <string name="progress_reset_success">Fortschritt wurde erfolgreich zurückgesetzt</string>
+    
     <!-- Legal Pages Headers -->
     <string name="credits_header">Mitwirkende</string>
     <string name="impressum_header">Impressum</string>
