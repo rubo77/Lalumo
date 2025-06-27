@@ -127,6 +127,45 @@
     <string name="enter_friend_code">Freundescode hier eingeben</string>
     <string name="redeem_code">Code einlösen</string>
     
+    <!-- Referral System Operation Messages -->
+    <string name="invalid_code">Ungültiges Format des Empfehlungscodes. Bitte überprüfe und versuche es erneut.</string>
+    <string name="own_code_error">Du kannst deinen eigenen Empfehlungscode nicht einlösen!</string>
+    <string name="code_redeemed">Freundescode erfolgreich eingelöst!</string>
+    <string name="username_required">Benutzername ist erforderlich, um einen Code einzulösen.</string>
+    <string name="username_exists">Dieser Benutzername ist bereits vergeben. Bitte wähle einen anderen.</string>
+    <string name="user_creation_failed">Erstellung des Benutzerkontos fehlgeschlagen. Bitte versuche es erneut.</string>
+    <string name="database_error">Ein Datenbankfehler ist aufgetreten. Bitte versuche es später erneut.</string>
+    <string name="invalid_parameters">Ungültige Anfrageparameter.</string>
+    <string name="method_not_allowed">Diese Anfragemethode ist nicht erlaubt.</string>
+    <string name="unknown_error">Ein unbekannter Fehler ist aufgetreten.</string>
+    <string name="redeem_error">Fehler beim Einlösen des Codes. Bitte versuche es erneut.</string>
+    <string name="code_not_found">Dieser Empfehlungscode wurde nicht gefunden.</string>
+    <string name="already_redeemed">Du hast diesen Code bereits eingelöst.</string>
+    <string name="registration_success">Benutzername erfolgreich registriert!</string>
+    <string name="registration_error">Ein Fehler ist aufgetreten. Bitte versuche es später erneut.</string>
+    
+    <!-- Copy Operations -->
+    <string name="copied">Kopiert!</string>
+    <string name="copy_failed">Kopieren fehlgeschlagen</string>
+    <string name="copy_manually">Konnte nicht automatisch kopieren. Bitte wähle den Text manuell aus und kopiere ihn.</string>
+    <string name="no_data">Keine Daten zum Kopieren.</string>
+    
+    <!-- Progress Import/Export -->
+    <string name="progress_reset">Fortschritt wurde erfolgreich zurückgesetzt</string>
+    <string name="export_error">Fehler beim Exportieren des Fortschritts</string>
+    <string name="export_empty">Fehler beim Exportieren des Fortschritts: Kodierte Zeichenkette ist leer</string>
+    <string name="import_error">Fehler beim Importieren des Fortschritts. Die angegebene Zeichenkette könnte ungültig sein.</string>
+    <string name="invalid_save_code">Ungültiger Speichercode. Bitte überprüfe deine Fortschrittszeichenkette.</string>
+    <string name="enter_progress_code">Bitte gib zuerst einen Fortschrittscode ein!</string>
+    <string name="unlocked_features">Freigeschaltete Funktionen:</string>
+    <string name="no_features_unlocked">Noch keine speziellen Funktionen freigeschaltet.</string>
+    <string name="progress_imported">Fortschritt erfolgreich importiert für %1$s!</string>
+    
+    <!-- Share Functionality -->
+    <string name="share_text">Probiere Lalumo und benutze meinen Empfehlungscode</string>
+    <string name="share_title">Lalumo Empfehlungscode</string>
+    <string name="share_fallback">Der Empfehlungscode wurde in die Zwischenablage kopiert. Teile ihn mit deinen Freunden!</string>
+    
     <!-- Help Messages Settings -->
     <string name="player_settings">Spieler-Einstellungen</string>
     <string name="your_profile">Dein Profil</string>
@@ -146,10 +185,37 @@
     <string name="help_messages_off">Hilf-Nachrichten aus</string>
     <string name="help_messages_on">zeige Hilf-Nachrichten</string>
     
-    
     <!-- Feedback Messages (from pitches.js) -->
-    <string name="memory_correct">Fantastisches Gedächtnis! Du hast es richtig gemacht!</string>
-    <string name="memory_incorrect">Probiere noch einmal. Hör genau zu!</string>
+    <string name="memory_correct">Gutes Gedächtnis! Du hast es richtig!</string>
+    <string name="memory_incorrect">Probieren wir es noch einmal. Höre gut zu!</string>
+    <string name="puzzle_completed">Gut gemacht! Puzzle abgeschlossen.</string>
+    <string name="level_finished">Level geschafft!</string>
+    <string name="keep_practicing">Weiter üben!</string>
+    
+    <!-- Activity Names -->
+    <string name="activity_high_or_low">Hoch oder Tief</string>
+    <string name="activity_match_sounds">Klänge zuordnen</string>
+    <string name="activity_draw_melody">Melodie zeichnen</string>
+    <string name="activity_does_it_sound_right">Klingt das richtig?</string>
+    <string name="activity_memory_game">Memory-Spiel</string>
+    <string name="activity_chord_color">Akkord-Farb Zuordnung</string>
+    
+    <!-- Reset Confirmations -->
+    <string name="reset_activity_confirm">Fortschritt für "%1$s" zurücksetzen?</string>
+    <string name="reset_generic_confirm">Keine passende Aktivität gefunden. Trotzdem zurücksetzen?</string>
+    <string name="component_not_available">Fehler: Komponente nicht verfügbar. Bitte laden Sie die Seite neu.</string>
+    <string name="reset_success">Fortschritt wurde zurückgesetzt!</string>
+    
+    <!-- Draw Melody UI Elements -->
+    <string name="challenge_mode_activate">Melodie-Challenge-Modus aktivieren</string>
+    <string name="challenge_mode">Challenge-Modus</string>
+    <string name="challenge_mode_deactivate">Wechsel zwischen Melodie-Challenge-Modus und freien Zeichnen-Modus</string>
+    <string name="generate_melody">Neue zufällige Melodie generieren</string>
+    <string name="new_melody">Neue Melodie</string>
+    <string name="replay_melody">Klicken, um die Melodie abzuspielen</string>
+    <string name="clear_drawing">Zeichnung löschen</string>
+    <string name="clear">Löschen</string>
+    <string name="melodies_activity">Melodien</string>
     
     <!-- Legal Pages Headers -->
     <string name="credits_header">Mitwirkende</string>

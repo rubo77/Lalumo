@@ -146,13 +146,76 @@
     <string name="enter_friend_code">Enter friend code here</string>
     <string name="redeem_code">Redeem Code</string>
     
+    <!-- Referral System Operation Messages -->
+    <string name="invalid_code">Invalid referral code format. Please check and try again.</string>
+    <string name="own_code_error">You cannot redeem your own referral code!</string>
+    <string name="code_redeemed">Friend code redeemed successfully!</string>
+    <string name="username_required">Username is required to redeem a code.</string>
+    <string name="username_exists">This username is already taken. Please choose another one.</string>
+    <string name="user_creation_failed">Failed to create user account. Please try again.</string>
+    <string name="database_error">A database error occurred. Please try again later.</string>
+    <string name="invalid_parameters">Invalid request parameters.</string>
+    <string name="method_not_allowed">This request method is not allowed.</string>
+    <string name="unknown_error">An unknown error occurred.</string>
+    <string name="redeem_error">Error redeeming code. Please try again.</string>
+    <string name="code_not_found">This referral code was not found.</string>
+    <string name="already_redeemed">You have already redeemed this code.</string>
+    <string name="registration_success">Username successfully registered!</string>
+    <string name="registration_error">An error occurred. Please try again later.</string>
+    
+    <!-- Copy Operations -->
+    <string name="copied">Copied!</string>
+    <string name="copy_failed">Failed to copy</string>
+    <string name="copy_manually">Could not copy automatically. Please select and copy the text manually.</string>
+    <string name="no_data">No data to copy.</string>
+    
+    <!-- Progress Import/Export -->
+    <string name="progress_reset">Progress has been reset successfully</string>
+    <string name="export_error">Error exporting progress</string>
+    <string name="export_empty">Error exporting progress: encoded string is empty</string>
+    <string name="import_error">Error importing progress. The provided string may be invalid.</string>
+    <string name="invalid_save_code">Invalid save code. Please check your progress string.</string>
+    <string name="enter_progress_code">Please enter a progress code first!</string>
+    <string name="unlocked_features">Unlocked features:</string>
+    <string name="no_features_unlocked">No special features unlocked yet.</string>
+    <string name="progress_imported">Progress imported successfully for %1$s!</string>
+    
+    <!-- Share Functionality -->
+    <string name="share_text">Try Lalumo and use my referral code</string>
+    <string name="share_title">Lalumo Referral Code</string>
+    <string name="share_fallback">The referral code has been copied to your clipboard. Share it with your friends!</string>
+    
     <!-- Feedback Messages (from pitches.js) -->
     <string name="memory_correct">Amazing memory! You got it right!</string>
     <string name="memory_incorrect">Let\'s try again. Listen carefully!</string>
+    <string name="puzzle_completed">Great work! Puzzle completed.</string>
+    <string name="level_finished">Level finished!</string>
+    <string name="keep_practicing">Keep practicing!</string>
     
-    <!-- Legal Pages Headers -->
-    <string name="credits_header">Credits</string>
-    <string name="impressum_header">Impress</string>
+    <!-- Activity Names -->
+    <string name="activity_high_or_low">High or Low</string>
+    <string name="activity_match_sounds">Match Sounds</string>
+    <string name="activity_draw_melody">Draw Melody</string>
+    <string name="activity_does_it_sound_right">Does It Sound Right?</string>
+    <string name="activity_memory_game">Memory Game</string>
+    <string name="activity_chord_color">Chord Color Matching</string>
+    
+    <!-- Reset Confirmations -->
+    <string name="reset_activity_confirm">Reset progress for "%1$s"?</string>
+    <string name="reset_generic_confirm">No matching activity found. Reset anyway?</string>
+    <string name="component_not_available">Error: Component not available. Please reload the page.</string>
+    <string name="reset_success">Progress has been reset!</string>
+    
+    <!-- Draw Melody UI Elements -->
+    <string name="challenge_mode_activate">Activate melody challenge mode</string>
+    <string name="challenge_mode">Challenge mode</string>
+    <string name="challenge_mode_deactivate">Toggle free drawing mode</string>
+    <string name="generate_melody">Generate a new random melody</string>
+    <string name="new_melody">New melody</string>
+    <string name="replay_melody">Click to replay melody</string>
+    <string name="clear_drawing">Clear drawing</string>
+    <string name="clear">Clear</string>
+    <string name="melodies_activity">melodies</string>
     <string name="datenschutz_header">Privacy</string>
     
     <!-- Credits Content -->

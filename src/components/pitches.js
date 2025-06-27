@@ -2569,13 +2569,13 @@ export function pitches() {
         challengeToggle.innerHTML = `
           <button id="challenge-button" 
             class="pitch-card-style"
-            title="${isGerman ? 'Melodie-Challenge-Modus aktivieren' : 'Activate melody challenge mode'}" 
-            alt="${isGerman ? 'Challenge-Modus' : 'Challenge mode'}_a11y">
+            title="${this.$store.strings.challenge_mode_activate}" 
+            alt="${this.$store.strings.challenge_mode}_a11y">
           </button>
           <button id="new-melody-button" 
             class="pitch-card-style"
-            title="${isGerman ? 'Neue zufällige Melodie generieren' : 'Generate a new random melody'}" 
-            alt="${isGerman ? 'Neue Melodie' : 'New melody'}_a11y">
+            title="${this.$store.strings.generate_melody}" 
+            alt="${this.$store.strings.new_melody}_a11y">
           </button>
         `;
         
@@ -2666,7 +2666,7 @@ export function pitches() {
         // Style the challenge mode button based on current mode
         if (this.melodyChallengeMode) {
           challengeButton.classList.add('active');
-          challengeButton.title = isGerman ? 'Zurück zum freien Zeichnen-Modus' : 'Return to free drawing mode';
+          challengeButton.title = isGerman ? 'Wechsel zwischen Melodie-Challenge-Modus und freien Zeichnen-Modus' : 'Toggle free drawing mode';
           
           // Show the new melody button when in challenge mode
           newMelodyButton.style.display = 'block';

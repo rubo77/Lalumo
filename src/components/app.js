@@ -2170,25 +2170,6 @@ export function app() {
      * @returns {string} Lokalisierter Text 
      */
     translateReferralMessage(messageCode) {
-      // Fallback für den Fall, dass kein Store oder keine Strings verfügbar sind
-      if (!this.$store || !this.$store.strings) {
-        console.warn('[TRANSLATE] $store.strings nicht verfügbar, verwende Fallback-Übersetzungen');
-        // Fallback-Übersetzungen
-        const fallbackTranslations = {
-          'invalid_referral_code': 'Invalid referral code format. Please check and try again.',
-          'you_cannot_redeem_your_own_referral_code': 'You cannot redeem your own referral code!',
-          'code_successfully_redeemed': 'Friend code redeemed successfully!',
-          'username_required': 'Username is required to redeem a code.',
-          'username_exists': 'This username is already taken. Please choose another one.',
-          'user_creation_failed': 'Failed to create user account. Please try again.',
-          'database_error': 'A database error occurred. Please try again later.',
-          'invalid_get_parameters': 'Invalid request parameters.',
-          'method_not_allowed': 'This request method is not allowed.'
-        };
-        
-        return fallbackTranslations[messageCode] || messageCode || 'An unknown error occurred.';
-      }
-      
       // Mapping von API-Nachrichtencodes zu $store.strings-Schlüsseln
       const messageKeyMap = {
         'invalid_referral_code': 'invalid_code',
@@ -2199,12 +2180,15 @@ export function app() {
         'user_creation_failed': 'user_creation_failed',
         'database_error': 'database_error',
         'invalid_get_parameters': 'invalid_parameters',
-        'method_not_allowed': 'method_not_allowed'
+        'method_not_allowed': 'method_not_allowed',
+        'redeem_failed': 'redeem_error',
+        'code_not_found': 'code_not_found',
+        'already_redeemed': 'already_redeemed'
       };
       
-      // Übersetzten String zurückgeben oder Fallback, wenn nicht gefunden
+      // Übersetzten String zurückgeben oder den Fehlercode als Fallback
       const storeKey = messageKeyMap[messageCode];
-      return this.$store.strings[storeKey] || messageCode || 'An unknown error occurred.';
+      return this.$store.strings[storeKey] || this.$store.strings.unknown_error;
     },
     
     /**
