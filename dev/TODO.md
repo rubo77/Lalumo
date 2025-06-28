@@ -152,6 +152,7 @@ reset-button:
 - Entferne alle Überbleibsel der alten "Listen to melodies"-Funktionalität:
    - Lösche unnötige Melodie-Abspielfunktionen für die alte Aktivität
 
+- die meisten activities sollen einen free- und einen game-mode haben, in dem man die sounds ausprobieren kann (free) oder das game spielt, bei dem man die richtigen buttons drücken muss, der die richtigen effekte zeigt aus `feedback.js`
 
 
 1_2 "Match the Sounds":
@@ -184,17 +185,20 @@ reset-button:
 
 
 1_5 memory game:
- - # bereit zur veröffentlichung
- - feedback sound soll mit verzögerung abgespielt werden
- 
+  - # bereit zur veröffentlichung
+  - feedback sound soll mit verzögerung abgespielt werden
+
 2_5_chords_color_matching:
- - # bereit zur veröffentlichung
-    - reset auch im activity reset, im-und export berücksichtigen
-    - bei progress >=30 sollen die akkorde in der höhe durch einen transpose faktor von +-6 halbtönen variieren
-    - die meisten activities haben einen free- und einen game-mode, in dem man die sounds ausprobieren kann (free) oder das game spielt, bei dem man die richtigen buttons drücken muss, der die richtigen effekte zeigt aus `feedback.js`
-    - wenn man während der regenbogen läuft drückt, soll schon der neue akkord abgespielt werden und nicht der letzte
-    - es fehlt ein error feedback shake und der sound
-    - es sol lder erfolgssound kommen
+  - Major und  minor soll tendentiell öfter kommen
+  - Erster akkord nach progress Wechsel soll immer der neue sein
+  - automatisch den neuen akkord spielen
+  - reset auch im activity reset, im-und export berücksichtigen
+  - es fehlt ein error feedback shake und der sound
+  - free p lay mode bevor man den play button drückt
+  - # bereit zur veröffentlichung
+  - bei progress >=30 sollen die akkorde in der höhe durch einen transpose faktor von +-6 halbtönen variieren
+  - wenn man während der regenbogen läuft drückt, soll schon der neue akkord abgespielt werden und nicht der letzte
+  - es soll der erfolgssound kommen
 
 # mobile-build.sh:
 - die find funktion, die nur das kopieren soll was benutzt wird passiert zu spät, es wird vorher schon mit rsync alles von public/ nach dist/ kopiert. ich habe den original folder da hinzugefügt, aber es wäre schöner, wenn das automatisch nicht gersnynct würde, wenn es nicht bnutzt wird

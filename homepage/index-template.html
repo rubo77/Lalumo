@@ -1,17 +1,23 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lalumo - Musik lernen durch Hören und Spielen</title>
-    <meta name="description" content="Lalumo ist eine interaktive App zum Musiklernen. Trainiere dein Gehör mit Tonhöhen, Akkorden und Klangfarben durch spielerische Übungen.">
-    <meta name="keywords" content="Musik lernen, Gehörbildung, Musiktheorie, App, Tonhöhen, Akkorde, Klangfarben">
+    <title lang="en">Lalumo - Learn music by listening and playing</title>
+    <title lang="de">Lalumo - Musik lernen durch Hören und Spielen</title>
+    <meta lang="en" name="description" content="Lalumo is an interactive app for learning music. Train your ear with pitches, chords, and timbres through playful exercises.">
+    <meta lang="de" name="description" content="Lalumo ist eine interaktive App zum Musiklernen. Trainiere dein Gehör mit Tonhöhen, Akkorden und Klangfarben durch spielerische Übungen.">
+    <meta lang="en" name="keywords" content="Learn music, ear training, music theory, app, pitches, chords, timbres">
+    <meta lang="de" name="keywords" content="Musik lernen, Gehörbildung, Musiktheorie, App, Tonhöhen, Akkorde, Klangfarben">
     
     <!-- Open Graph Meta Tags -->
-    <meta property="og:title" content="Lalumo - Musik lernen durch Hören und Spielen">
-    <meta property="og:description" content="Interaktive Musiklernen-App mit Gehörbildung, Tonhöhen und Akkord-Training">
+    <meta lang="en" property="og:title" content="Lalumo - Learn music by listening and playing">
+    <meta lang="de" property="og:title" content="Lalumo - Musik lernen durch Hören und Spielen">
+    <meta lang="en" property="og:description" content="Interactive music learning app with ear training, pitch and chord exercises">
+    <meta lang="de" property="og:description" content="Interaktive Musiklernen-App mit Gehörbildung, Tonhöhen und Akkord-Training">
     <meta property="og:image" content="https://lalumo.eu/images/logo_bird_sings.jpg">
-    <meta property="og:url" content="https://lalumo.eu">
+    <meta lang="en" property="og:url" content="https://lalumo.eu">
+    <meta lang="de" property="og:url" content="https://lalumo.eu/de">
     <meta property="og:type" content="website">
     
     <!-- Favicon Links -->
@@ -24,7 +30,14 @@
     <meta name="apple-itunes-app" content="app-id=YOUR_APP_ID">
     <meta name="google-play-app" content="app-id=YOUR_PACKAGE_NAME">
     
-    <link rel="icon" type="image/svg+xml" href="../src/favicon.svg">
+    <!-- Alternate language versions for SEO -->
+    <link lang="en" rel="alternate" hreflang="de" href="https://lalumo.eu/de/index.html">
+    <link lang="en" rel="alternate" hreflang="en" href="https://lalumo.eu/index.html">
+    <link lang="de" rel="alternate" hreflang="de" href="https://lalumo.eu/de/index.html">
+    <link lang="de" rel="alternate" hreflang="en" href="https://lalumo.eu/index.html">
+    <link lang="en" rel="canonical" href="https://lalumo.eu/index.html">
+    <link lang="de" rel="canonical" href="https://lalumo.eu/de/index.html">
+    
     
     <style>
         :root {
@@ -395,18 +408,24 @@
     <!-- Header / Hero Section -->
     <header class="header">
         <div class="hero-content">
-            <div class="logo" title="Lalumo Maskottchen"></div>
+            <div class="logo" lang="en" title="Lalumo Mascot"></div>
+            <div class="logo" lang="de" title="Lalumo Maskottchen"></div>
             
             <h1 class="hero-title">🎵 Lalumo</h1>
-            <p class="hero-subtitle">Musik lernen durch Hören und Spielen</p>
-            <p style="opacity: 0.9; margin-bottom: 2rem;">
+            <p class="hero-subtitle" lang="en">Learn music by listening and playing</p>
+            <p class="hero-subtitle" lang="de">Musik lernen durch Hören und Spielen</p>
+            <p style="opacity: 0.9; margin-bottom: 2rem;" lang="en">
+                Discover pitches, chords, and timbres through interactive exercises
+            </p>
+            <p style="opacity: 0.9; margin-bottom: 2rem;" lang="de">
                 Entdecke Tonhöhen, Akkorde und Klangfarben durch interaktive Übungen
             </p>
             
             <div class="download-buttons">
                 <a href="#" class="download-btn coming-soon">
                     🍎 App Store
-                    <small style="display: block; font-size: 0.8rem; margin-top: 0.2rem;">Bald verfügbar</small>
+                    <small lang="en" style="display: block; font-size: 0.8rem; margin-top: 0.2rem;">Coming soon</small>
+                    <small lang="de" style="display: block; font-size: 0.8rem; margin-top: 0.2rem;">Bald verfügbar</small>
                 </a>
                 <a href="https://play.google.com/store/apps/details?id=com.lalumo.app" class="download-btn">
                     🤖 Google Play Store
@@ -418,7 +437,8 @@
             <div style="margin-top: 1rem; text-align: center;">
                 <a href="https://github.com/rubo77/Lalumo" class="github-link" style="color: #fdcb6e; text-decoration: underline; display: inline-flex; align-items: center;">
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" style="margin-right: 5px;" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
-                    Open Source auf GitHub
+                    <span lang="en">Open Source on GitHub</span>
+                    <span lang="de">Open Source auf GitHub</span>
                 </a>
             </div>
         </div>
@@ -427,13 +447,19 @@
     <!-- Features Section -->
     <section class="features">
         <div class="container">
-            <h2 class="section-title">Warum Lalumo?</h2>
+            <h2 class="section-title" lang="en">Why Lalumo?</h2>
+            <h2 class="section-title" lang="de">Warum Lalumo?</h2>
             
             <div class="features-grid">
                 <div class="feature-card">
                     <div class="feature-icon">🎵</div>
-                    <h3 class="feature-title">Gehörbildung</h3>
-                    <p class="feature-description">
+                    <h3 class="feature-title" lang="en">Ear Training</h3>
+                    <h3 class="feature-title" lang="de">Gehörbildung</h3>
+                    <p class="feature-description" lang="en">
+                        Train your musical ear with interactive exercises 
+                        on pitches and intervals
+                    </p>
+                    <p class="feature-description" lang="de">
                         Trainiere dein musikalisches Gehör mit interaktiven Übungen 
                         zu Tonhöhen und Intervallen
                     </p>
@@ -441,8 +467,13 @@
                 
                 <div class="feature-card">
                     <div class="feature-icon">🎹</div>
-                    <h3 class="feature-title">Akkord-Verständnis</h3>
-                    <p class="feature-description">
+                    <h3 class="feature-title" lang="en">Chord Recognition</h3>
+                    <h3 class="feature-title" lang="de">Akkord-Verständnis</h3>
+                    <p class="feature-description" lang="en">
+                        Learn to understand and recognize chords through visual 
+                        and auditory methods
+                    </p>
+                    <p class="feature-description" lang="de">
                         Lerne Akkorde durch visuelle und auditive Methoden zu verstehen 
                         und zu erkennen
                     </p>
@@ -450,8 +481,13 @@
                 
                 <div class="feature-card">
                     <div class="feature-icon">🎺</div>
-                    <h3 class="feature-title">Klangfarben</h3>
-                    <p class="feature-description">
+                    <h3 class="feature-title" lang="en">Timbres</h3>
+                    <h3 class="feature-title" lang="de">Klangfarben</h3>
+                    <p class="feature-description" lang="en">
+                        Discover different instrument sounds and develop 
+                        a feeling for timbres
+                    </p>
+                    <p class="feature-description" lang="de">
                         Entdecke verschiedene Instrumentenklänge und entwickle 
                         ein Gefühl für Timbres
                     </p>
@@ -459,8 +495,13 @@
                 
                 <div class="feature-card">
                     <div class="feature-icon">📈</div>
-                    <h3 class="feature-title">Adaptives Lernen</h3>
-                    <p class="feature-description">
+                    <h3 class="feature-title" lang="en">Adaptive Learning</h3>
+                    <h3 class="feature-title" lang="de">Adaptives Lernen</h3>
+                    <p class="feature-description" lang="en">
+                        Personalized progress tracking adapts to your 
+                        learning rhythm
+                    </p>
+                    <p class="feature-description" lang="de">
                         Personalisierte Fortschrittsverfolgung passt sich deinem 
                         Lernrhythmus an
                     </p>
@@ -472,8 +513,12 @@
     <!-- Screenshots Section -->
     <section class="screenshots">
         <div class="container">
-            <h2 class="section-title">Einblicke in die App</h2>
-            <p style="text-align: center; color: var(--text-light); margin-bottom: 2rem;">
+            <h2 class="section-title" lang="en">App Insights</h2>
+            <h2 class="section-title" lang="de">Einblicke in die App</h2>
+            <p style="text-align: center; color: var(--text-light); margin-bottom: 2rem;" lang="en">
+                Discover the beautiful and intuitive interface of Lalumo
+            </p>
+            <p style="text-align: center; color: var(--text-light); margin-bottom: 2rem;" lang="de">
                 Entdecke die schöne und intuitive Benutzeroberfläche von Lalumo
             </p>
             
@@ -482,8 +527,10 @@
                     <div class="screenshot-container">
                         <img src="images/screenshots/pitches_action1_3.jpg" alt="Tonhöhen-Training" class="screenshot-img">
                         <div class="screenshot-caption">
-                            <h3>Tonhöhen-Training</h3>
-                            <p>Verbessere dein Gehör mit interaktiven Übungen</p>
+                            <h3 lang="en">Pitch Training</h3>
+                            <h3 lang="de">Tonhöhen-Training</h3>
+                            <p lang="en">Improve your ear with interactive exercises</p>
+                            <p lang="de">Verbessere dein Gehör mit interaktiven Übungen</p>
                         </div>
                     </div>
                 </div>
@@ -492,8 +539,10 @@
                     <div class="screenshot-container">
                         <img src="images/screenshots/pitches_action1_1_sloth_mouse.jpg" alt="Akkord-Erkennung" class="screenshot-img">
                         <div class="screenshot-caption">
-                            <h3>Melodie-Übungen</h3>
-                            <p>Erkenne und spiele Melodien nach Gehör</p>
+                            <h3 lang="en">Melody Exercises</h3>
+                            <h3 lang="de">Melodie-Übungen</h3>
+                            <p lang="en">Recognize and play melodies by ear</p>
+                            <p lang="de">Erkenne und spiele Melodien nach Gehör</p>
                         </div>
                     </div>
                 </div>
@@ -502,8 +551,10 @@
                     <div class="screenshot-container">
                         <img src="images/screenshots/pitches_bird_sings.jpg" alt="Klangfarben-Spiel" class="screenshot-img">
                         <div class="screenshot-caption">
-                            <h3>Klangfarben-Spiel</h3>
-                            <p>Unterscheide verschiedene Instrumente und Klänge</p>
+                            <h3 lang="en">Timbre Game</h3>
+                            <h3 lang="de">Klangfarben-Spiel</h3>
+                            <p lang="en">Distinguish between different instruments and sounds</p>
+                            <p lang="de">Unterscheide verschiedene Instrumente und Klänge</p>
                         </div>
                     </div>
                 </div>
@@ -515,20 +566,28 @@
     <footer class="footer">
         <div class="container">
             <div class="footer-legal">
-                <a href="impressum.html">Impressum</a>
-                <a href="datenschutz.html">Datenschutz</a>
-                <a href="agb.html">AGB</a>
+                <a href="/impressum.html" lang="en">Imprint</a>
+                <a href="/de/impressum.html" lang="de">Impressum</a>
+                <a href="/privacy.html" lang="en">Privacy Policy</a>
+                <a href="/de/datenschutz.html" lang="de">Datenschutz</a>
+                <a href="/terms.html" lang="en">Terms</a>
+                <a href="/de/agb.html" lang="de">AGB</a>
                 <a href="https://github.com/rubo77/Lalumo">GitHub</a>
                 <a href="https://f-droid.org/packages/com.lalumo.app">F-Droid</a>
             </div>
             <div class="footer-links">
-                <a href="mailto:lalumo-support@it.z11.de" class="footer-link">Kontakt</a>
+                <a href="mailto:lalumo-support@it.z11.de" class="footer-link" lang="en">Contact</a>
+                <a href="mailto:lalumo-support@it.z11.de" class="footer-link" lang="de">Kontakt</a>
             </div>
             
             <div class="footer-copyright">
-                <p>&copy; 2024 Lalumo. Alle Rechte vorbehalten.</p>
+                <p lang="en">&copy; 2024 Lalumo. All rights reserved.</p>
+                <p lang="de">&copy; 2024 Lalumo. Alle Rechte vorbehalten.</p>
                 <p style="margin-top: 0.5rem;">
-                    <a href="../app/" style="color: var(--accent-color); text-decoration: none;">
+                    <a href="/app/" style="color: var(--accent-color); text-decoration: none;" lang="en">
+                        🎵 To Web App
+                    </a>
+                    <a href="/app/" style="color: var(--accent-color); text-decoration: none;" lang="de">
                         🎵 Zur Web-App
                     </a>
                 </p>
