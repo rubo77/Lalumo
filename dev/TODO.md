@@ -154,6 +154,9 @@ reset-button:
 
 - die meisten activities sollen einen free- und einen game-mode haben, in dem man die sounds ausprobieren kann (free) oder das game spielt, bei dem man die richtigen buttons drücken muss, der die richtigen effekte zeigt aus `feedback.js`
 
+- Die volle  bildschirmbreite Aus nutzen auf dem Handy
+
+
 
 1_2 "Match the Sounds":
 - direkt nach dem Wechsel für die Welle spielt er immer noch keine Welle. 
@@ -170,6 +173,7 @@ reset-button:
 
 1_4 Does It Sound Right:
 - Tiere beim Melodie raten sind noch zu weit unten positioniert
+- Funkel, Funkel kleiner setern klingt seltsam
 - # bereit zur veröffentlichung
 - der reset button in der navi muss auch die fortschrittsanzeige aktualisieren
 - when the "next melody" button is pressed in the "Does It Sound Right?" activity, the animal images should NOT change
@@ -194,11 +198,12 @@ reset-button:
   - automatisch den neuen akkord spielen
   - reset auch im activity reset, im-und export berücksichtigen
   - es fehlt ein error feedback shake und der sound
-  - free p lay mode bevor man den play button drückt
+  - free play mode bevor man den play button drückt
   - # bereit zur veröffentlichung
-  - bei progress >=30 sollen die akkorde in der höhe durch einen transpose faktor von +-6 halbtönen variieren
-  - wenn man während der regenbogen läuft drückt, soll schon der neue akkord abgespielt werden und nicht der letzte
+  - bei progress >=30 sollen die akkorde in der höhe durch einen transpose faktor von +-6 halbtönen variieren:
+    - bis 40 schlagen eichhörnchen und octopus in hintergrund, bei 50 wacht das eichhörnchen wieder auf, ... 
   - es soll der erfolgssound kommen
+  - wenn man während der regenbogen läuft drückt, soll schon der neue akkord abgespielt werden und nicht der letzte
 
 # mobile-build.sh:
 - die find funktion, die nur das kopieren soll was benutzt wird passiert zu spät, es wird vorher schon mit rsync alles von public/ nach dist/ kopiert. ich habe den original folder da hinzugefügt, aber es wäre schöner, wenn das automatisch nicht gersnynct würde, wenn es nicht bnutzt wird

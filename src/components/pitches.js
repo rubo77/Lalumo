@@ -203,7 +203,7 @@ export function pitches() {
         de: 'Hänschen klein',
         quarterNoteDuration: 550,
         notes: [
-          'G', 'E4', 'E4:h', 'A4', 'D4', 'D4:h',
+          'G', 'E4', 'E4:h', 'F4', 'D4', 'D4:h',
           // cdefggg
           'C4', 'D4', 'E4', 'F4', 'G4', 'G4', 'G4:h'          
         ]
