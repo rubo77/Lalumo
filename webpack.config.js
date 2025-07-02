@@ -150,7 +150,7 @@ module.exports = (env, argv) => {
       
       // Englische Homepage-Templates (root)
       ...homepageTemplates.map(template => new HtmlWebpackPlugin({
-        template: template.template,
+        template: `${template.template}?language=en`, // Query-Parameter hinzufügen, um Template-Caching zu verhindern
         filename: template.filename,
         publicPath: '/',
         minify: false,
@@ -162,7 +162,7 @@ module.exports = (env, argv) => {
       
       // Deutsche Homepage-Templates (de/)
       ...homepageTemplates.map(template => new HtmlWebpackPlugin({
-        template: template.template,
+        template: `${template.template}?language=de`, // Query-Parameter hinzufügen, um Template-Caching zu verhindern
         filename: `de/${template.filename}`,
         publicPath: '/',
         minify: false,
@@ -175,10 +175,18 @@ module.exports = (env, argv) => {
         // Für Subdirectory-Deployment: Entferne Content-Hash für konsistente Dateinamen
         filename: isProduction && env.deploy === 'subdirectory' ? '[name].css' : '[name].[contenthash].css',
       }),
-      // Copy XML files to root for app access
+      // Copy homepage assets to dist, de/ directory, and app/ directory (root paths, /de/ paths, and /app/ paths)
       new CopyWebpackPlugin({
         patterns: [
-          // Verzeichnisstruktur für deutsche Sprachversion anlegen
+          { from: 'homepage/icons', to: 'icons' },
+          { from: 'homepage/icons', to: 'de/icons' },
+          { from: 'homepage/icons', to: 'app/icons' },  // Auch für App-Verzeichnis kopieren
+          { from: 'public/images/backgrounds', to: 'images/backgrounds' },
+          { from: 'public/images/backgrounds', to: 'de/images/backgrounds' },
+          { from: 'public/images/backgrounds', to: 'app/images/backgrounds' },  // Auch für App-Verzeichnis kopieren
+          { from: 'public/images', to: 'images' },
+          { from: 'public/images', to: 'de/images' },
+          { from: 'public/images', to: 'app/images' },  // Auch für App-Verzeichnis kopieren
           { 
             from: 'src/favicon.ico',
             to: 'de/favicon.ico'

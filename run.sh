@@ -14,7 +14,7 @@ rsync -a --progress --delete public/images/ app/images/
 
 echo "Starting webpack development server..."
 # Starte webpack-Server im Hintergrund
-cd /var/www/Musici && npm run watch &
+cd /var/www/Musici; npm run build:fast; npm run watch &
 
 # Warte kurz, damit der Server starten kann
 sleep 2
