@@ -220,6 +220,13 @@ rm -rf dist/app/
 cp -r dist-temp/* dist/
 rm -rf dist-temp
 
+# Erstelle unsere native-app-detector.js direkt in dist/
+echo "Erstelle native-app-detector.js für die App..."
+cp src/native-app-detector.js dist/
+
+# Kopiere die native-app-detector.js auch nach dist/app/
+cp src/native-app-detector.js dist/app/
+
 # Jetzt mit der Standardkonfiguration synchronisieren (webDir ist bereits auf 'dist' eingestellt)
 echo "Synchronisiere mit Capacitor..."
 npx cap sync

@@ -57,6 +57,12 @@
 - New: Switching to German in the player settings has no effect; likely cause is a failed load of strings-de.xml. This regression has been diagnosed and fixed.
 - New: Diagnose and fix regression: switching to German in player settings does not work (likely due to strings-de.xml load failure) - FIXED
 - New: Fix asset/image path in mobile-build.sh so only correct webapp assets (not homepage/public) are included in native app build - FIXED
+- New: Play Store button in app navigation must be hidden when running inside the Android app; it should only be visible in the web version.
+- Investigation: The Play Store button is already wrapped in an Alpine.js x-show using $store.isAndroidApp() and $store.isIOSApp(). The isAndroidApp() implementation checks for window.isNativeApp, but it is unclear if this flag is reliably set in the native Android app. Further verification and, if necessary, adjustment of the native flag detection is required.
+- New: A native-app detector script (src/native-app-detector.js) was created to set window.isNativeApp reliably at runtime, ensuring correct detection in the native app environment.
+- New: The native-app detector script (src/native-app-detector.js) will be used to improve the reliability of the Play Store button hiding logic.
+- New: native-app-detector.js is now included in index.html to set window.isNativeApp before Alpine.js initializes, ensuring Play Store button hiding logic works reliably.
+- New: The native-app detector script (src/native-app-detector.js) will be used to improve the reliability of the Play Store button hiding logic.
 
 ## Current Goal
 Continue and verify further SEO improvements: social cards, accessibility, content structure, etc.
@@ -117,4 +123,5 @@ Continue and verify further SEO improvements: social cards, accessibility, conte
 - [x] Diagnose and fix regression: switching to German in player settings does not work (likely due to strings-de.xml load failure)
 - [x] Adapt mobile-build.sh to new folder structure: only webapp in app/ for Android/iOS, homepage not included in native builds
 - [x] Fix image/assets path in mobile-build.sh for native app build
+- [x] Hide Play Store button in app navigation when running inside Android app (verify window.isNativeApp flag is set reliably; native-app-detector.js created and included in HTML)
 - [ ] Continue and verify further SEO improvements: social cards, accessibility, content structure, etc.
