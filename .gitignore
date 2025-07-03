@@ -78,7 +78,7 @@ yarn-error.log*
 /android/app/src/main/assets/public/
 /android/.gradle/
 /android/app/release/
-/android/app/src/main/assets/capacitor.config.json
+/android/app/src/
 /android/app/build/
 /android/build/
 /android/captures/
@@ -99,3 +99,4 @@ yarn-error.log*
 /android/.idea/deploymentTargetSelector.xml
 /android/.idea/deviceManager.xml
 /.idea/misc.xml
+/.idea/vcs.xml

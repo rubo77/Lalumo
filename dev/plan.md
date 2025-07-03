@@ -50,6 +50,13 @@
 - New: User reports the German flag language switcher is missing on the homepage; must restore this switcher.
 - New: User requests a 6th point be added to the "Why Lalumo is the Best Music App for Kids" section on the homepage.
 - New: The homepage download button must no longer mention the child lock feature.
+- New: User requests that the fullscreen feature be reworded to focus on keeping the child engaged in an activity rather than making elements accessible for small hands.
+- New: User requests that the "Early Music Foundation" feature be moved to the first box, "Parent-Child Activity" to second, and "Colorful Sound Visualization" to third in the features section.
+- New: User requests the visualization feature description highlight animal expressions and the use of symbols instead of abstractions for musical interpretation.
+- All requested homepage feature box changes (rewording, reordering, visualization description) are now implemented.
+- New: Switching to German in the player settings has no effect; likely cause is a failed load of strings-de.xml. This regression has been diagnosed and fixed.
+- New: Diagnose and fix regression: switching to German in player settings does not work (likely due to strings-de.xml load failure) - FIXED
+- New: Fix asset/image path in mobile-build.sh so only correct webapp assets (not homepage/public) are included in native app build - FIXED
 
 ## Current Goal
 Continue and verify further SEO improvements: social cards, accessibility, content structure, etc.
@@ -106,4 +113,8 @@ Continue and verify further SEO improvements: social cards, accessibility, conte
 - [x] Restore German flag language switcher on homepage
 - [x] Add a 6th point to "Why Lalumo is the Best Music App for Kids" section
 - [x] Remove child lock mention from homepage download button
+- [x] Refactor homepage features section per user instructions (reword fullscreen feature, reorder boxes, update visualization description)
+- [x] Diagnose and fix regression: switching to German in player settings does not work (likely due to strings-de.xml load failure)
+- [x] Adapt mobile-build.sh to new folder structure: only webapp in app/ for Android/iOS, homepage not included in native builds
+- [x] Fix image/assets path in mobile-build.sh for native app build
 - [ ] Continue and verify further SEO improvements: social cards, accessibility, content structure, etc.

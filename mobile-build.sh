@@ -200,12 +200,28 @@ npm run build
 echo "Copying public assets to dist (excluding android XML files)..."
 rsync -av --exclude='android/' public/ dist/
 
+# Für die mobile App verwenden wir nur den app-Unterordner als Root
+# Das bedeutet, dass für die native App der "app"-Ordner der Hauptordner ist
+echo "Konfiguriere native Apps, damit sie direkt die Web-App im app/-Unterordner laden..."
+
 # Copy package.json to dist for version info
 echo "Copying package.json to dist for version information..."
 cp package.json dist/
 
 # Sync with Capacitor
 echo "###### 6. Syncing with Capacitor..."
+
+# Kopieren der app/-Inhalte nach dist/, damit Capacitor sie findet
+# Die ursprüngliche Struktur muss beachtet werden, aber Capacitor erwartet die Dateien in dist/
+echo "Kopiere app/-Inhalte in das richtige Verzeichnis für Capacitor..."
+mkdir -p dist-temp
+cp -r dist/app/* dist-temp/
+rm -rf dist/app/
+cp -r dist-temp/* dist/
+rm -rf dist-temp
+
+# Jetzt mit der Standardkonfiguration synchronisieren (webDir ist bereits auf 'dist' eingestellt)
+echo "Synchronisiere mit Capacitor..."
 npx cap sync
 
 # Ensure only used images are copied to Android assets
@@ -232,11 +248,12 @@ while read -r img_path; do
   clean_path=${img_path#./}
   clean_path=${clean_path#/}
   
-  # source path
+  # source path - für die App müssen wir die Bilder aus public/ verwenden
   src_path="public/$clean_path"
   
-  # target directory
-  target_dir="android/app/src/main/assets/public/$(dirname "$clean_path")"
+  # target directory - die assets müssen ins korrekte Verzeichnis auf Android
+  # Wir kopieren sie direkt ins Wurzelverzeichnis von assets/
+  target_dir="android/app/src/main/assets/$(dirname "$clean_path")"
   
   # only copy if file exists
   if [ -f "$src_path" ]; then
