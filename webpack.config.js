@@ -52,11 +52,24 @@ module.exports = (env, argv) => {
         {
           directory: path.join(__dirname, 'homepage'),
           publicPath: '/homepage',
+          watch: true
+        },
+        {
+          directory: path.join(__dirname, 'src'),
+          publicPath: '/src',
+          watch: true
         }
       ],
       port: 9091,
       hot: true,
       open: true,
+      watchFiles: {
+        paths: ['src/**/*.html', 'homepage/*-template.html'],
+        options: {
+          usePolling: true,
+          interval: 300 // Schnelleres Polling alle 300ms
+        }
+      },
     },
     module: {
       rules: [
@@ -136,7 +149,9 @@ module.exports = (env, argv) => {
       new HtmlWebpackPlugin({
         template: './src/index.html',
         filename: 'app/index.html',
-        // Ensure correct asset paths for subdirectory deployment
+        chunks: ['main'],
+        inject: true,
+        hash: true,
         publicPath: isProduction && env.deploy === 'subdirectory' ? './' : '../',
         minify: {
           collapseWhitespace: true,

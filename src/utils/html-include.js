@@ -22,8 +22,15 @@ export function loadHtmlPartials() {
       }
     }
     
-    // Support for base path in production environments
-    const basePath = document.querySelector('base')?.getAttribute('href') || '';
+    // Support for base path and app subfolder in both production and development
+    let basePath = document.querySelector('base')?.getAttribute('href') || '';
+    
+    // Detect if we're in the app subfolder and adjust path accordingly
+    const inAppSubfolder = window.location.pathname.includes('/app/');
+    if (inAppSubfolder && !basePath && file.startsWith('partials/')) {
+      console.log('Detected app subfolder, adjusting partial path');
+      basePath = '../';
+    }
     const fullPath = basePath + file;
     
     console.log('Attempting to load HTML partial:', fullPath);
