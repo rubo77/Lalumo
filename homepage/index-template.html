@@ -348,25 +348,170 @@
             border-top: 1px solid #444;
             color: var(--text-light);
         }
+        
+        /* Language Switcher */
+        .language-switcher {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            display: flex;
+            gap: 10px;
+            z-index: 100;
+        }
+        
+        .lang-link {
+            text-decoration: none;
+            font-size: 24px;
+            transition: transform 0.3s ease;
+        }
+        
+        .lang-link:hover {
+            transform: scale(1.2);
+        }
+        
+        .flag-icon {
+            display: inline-block;
+        }
 
-        /* Responsive */
-        @media (max-width: 768px) {
-            .hero-title {
-                font-size: 2.5rem;
+        .download-btn:hover {
+                background: white;
+                color: var(--primary-color);
+                transform: translateY(-2px);
+                box-shadow: var(--shadow-medium);
             }
-            
-            .hero-subtitle {
+
+            .download-btn.coming-soon {
+                opacity: 0.6;
+                cursor: not-allowed;
+            }
+
+            .download-btn.coming-soon:hover {
+                background: rgba(255,255,255,0.2);
+                color: white;
+                transform: none;
+            }
+
+            /* Screenshots Section */
+            .screenshots {
+                padding: 5rem 2rem;
+                background-color: var(--bg-dark);
+            }
+
+            .screenshots-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 2rem;
+                margin-top: 3rem;
+            }
+
+            .screenshot-container {
+                position: relative;
+                overflow: hidden;
+                border-radius: 16px;
+                box-shadow: var(--shadow-medium);
+                transition: transform 0.3s ease;
+                height: 300px;
+            }
+
+            .screenshot-container:hover {
+                transform: translateY(-5px);
+            }
+
+            .screenshot-img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+
+            .screenshot-caption {
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                background: linear-gradient(to top, rgba(0,0,0,0.8), rgba(0,0,0,0));
+                padding: 1.5rem;
+                color: white;
+            }
+
+            .screenshot-caption h3 {
+                margin: 0 0 0.5rem 0;
                 font-size: 1.2rem;
             }
-            
-            .download-buttons {
-                flex-direction: column;
+
+            .screenshot-caption p {
+                margin: 0;
+                font-size: 0.9rem;
+                opacity: 0.9;
+            }
+
+            /* Features Section */
+            .features {
+                padding: 5rem 2rem;
+                background: var(--gradient-bg);
+            }
+
+            .container {
+                max-width: 1200px;
+                margin: 0 auto;
+            }
+
+            .section-title {
+                text-align: center;
+                font-size: 2.5rem;
+                margin-bottom: 3rem;
+                color: var(--text-dark);
+            }
+
+            .features-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 2rem;
+                margin-top: 3rem;
+            }
+
+            .feature-card {
+                background: white;
+                padding: 2rem;
+                border-radius: 20px;
+                box-shadow: var(--shadow-light);
+                text-align: center;
+                transition: transform 0.3s ease;
+            }
+
+            .feature-card:hover {
+                transform: translateY(-5px);
+                box-shadow: var(--shadow-medium);
+            }
+
+            .feature-icon {
+                width: 80px;
+                height: 80px;
+                margin: 0 auto 1.5rem;
+                background: var(--gradient-warm);
+                border-radius: 50%;
+                display: flex;
                 align-items: center;
+                justify-content: center;
+                font-size: 2rem;
+            }
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .features-grid, .screenshots-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .screenshot-img {
+                max-height: 300px;
             }
             
             .download-btn {
                 width: 100%;
                 max-width: 300px;
+            }
+            
+            .language-switcher {
+                top: 10px;
+                right: 10px;
             }
         }
 
@@ -407,6 +552,14 @@
 <body>
     <!-- Header / Hero Section -->
     <header class="header">
+        <div class="language-switcher">
+            <a href="/" class="lang-link" title="English" aria-label="Switch to English language">
+                <span class="flag-icon">🇬🇧</span>
+            </a>
+            <a href="/de/" class="lang-link" title="Deutsch" aria-label="Zu deutscher Sprache wechseln">
+                <span class="flag-icon">🇩🇪</span>
+            </a>
+        </div>
         <div class="hero-content">
             <div class="logo" lang="en" title="Lalumo Mascot"></div>
             <div class="logo" lang="de" title="Lalumo Maskottchen"></div>

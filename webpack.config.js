@@ -230,16 +230,6 @@ module.exports = (env, argv) => {
             from: 'package.json',
             to: 'package.json'
           },
-          // Kopiere Homepage-Images in Root
-          { 
-            from: 'homepage/images',
-            to: 'images',
-          },
-          // Kopiere Homepage-Images auch in den app/ Ordner
-          { 
-            from: 'homepage/images',
-            to: 'app/images',
-          },
           // Icons für Root-Version
           {
             from: 'homepage/icons',
