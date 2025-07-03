@@ -47,9 +47,12 @@
 - Structured data (Schema.org for MobileApplication and Organization) has been added for enhanced search engine interpretation and ranking.
 - Content, headings, and structure SEO improvements (hero, features, etc.) have been implemented and are complete.
 - Accessibility improvements (ARIA, roles, alt text, nav, download section) have been implemented in the homepage header/nav/hero and download sections.
+- New: User reports the German flag language switcher is missing on the homepage; must restore this switcher.
+- New: User requests a 6th point be added to the "Why Lalumo is the Best Music App for Kids" section on the homepage.
+- New: The homepage download button must no longer mention the child lock feature.
 
 ## Current Goal
-Verify social cards and finalize homepage SEO checks
+Continue and verify further SEO improvements: social cards, accessibility, content structure, etc.
 
 ## Task List
 - [x] Change checkmark color to green in referrals.html (CSS)
@@ -100,4 +103,7 @@ Verify social cards and finalize homepage SEO checks
 - [x] Fix version number display in credits partial ("Loading version...").
 - [x] Comprehensive SEO optimization: meta tags and structured data/schema.org for homepage (EN/DE)
 - [x] Improve homepage content, headings, and structure for SEO (hero, features, etc.)
+- [x] Restore German flag language switcher on homepage
+- [x] Add a 6th point to "Why Lalumo is the Best Music App for Kids" section
+- [x] Remove child lock mention from homepage download button
 - [ ] Continue and verify further SEO improvements: social cards, accessibility, content structure, etc.

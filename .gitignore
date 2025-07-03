@@ -97,3 +97,4 @@ yarn-error.log*
 /app/icons/icon-512.png
 /app/android/app/src/main/res/values*/strings*.xml
 /android/.idea/deploymentTargetSelector.xml
+/android/.idea/deviceManager.xml

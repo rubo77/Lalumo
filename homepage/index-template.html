@@ -435,21 +435,28 @@
         /* Language Switcher */
         .language-switcher {
             position: absolute;
-            top: 15px;
-            right: 15px;
+            top: 1rem;
+            right: 1rem;
             display: flex;
-            gap: 10px;
-            z-index: 100;
+            gap: 0.5rem;
+            z-index: 10;
         }
         
         .lang-link {
             text-decoration: none;
-            font-size: 24px;
-            transition: transform 0.3s ease;
+            font-size: 1.5rem;
+            background: rgba(255,255,255,0.2);
+            padding: 3px 8px;
+            border-radius: 5px;
+            display: inline-block;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
         }
         
         .lang-link:hover {
-            transform: scale(1.2);
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
         }
         
         .flag-icon {
@@ -636,10 +643,10 @@
     <!-- Header / Hero Section -->
     <header class="header" role="banner">
         <nav class="language-switcher" aria-label="Language selection">
-            <a href="/" class="lang-link" lang="en" title="Switch to English language" aria-label="Switch to English language" hreflang="en">
+            <a href="/" class="lang-link" title="Switch to English language" aria-label="Switch to English language" hreflang="en">
                 <span class="flag-icon" aria-hidden="true">🇬🇧</span><span class="sr-only">English</span>
             </a>
-            <a href="/de/" class="lang-link" lang="de" title="Zu deutscher Sprache wechseln" aria-label="Zu deutscher Sprache wechseln" hreflang="de">
+            <a href="/de/" class="lang-link" title="Zu deutscher Sprache wechseln" aria-label="Zu deutscher Sprache wechseln" hreflang="de">
                 <span class="flag-icon" aria-hidden="true">🇩🇪</span><span class="sr-only">Deutsch</span>
             </a>
         </nav>
@@ -685,9 +692,9 @@
                     <small lang="de" style="display: block; font-size: 0.8rem; margin-top: 0.2rem;">Bald für Android verfügbar</small>
                 </a>
                 
-                <a href="/app/" class="download-btn" aria-label="Launch the web app version with fullscreen mode and child lock features">
-                    <span aria-hidden="true">🎵</span> <span lang="en">Web App with Child Lock</span>
-                    <span lang="de">Web-App mit Kindersicherung</span>
+                <a href="/app/" class="download-btn" aria-label="Launch the web app version with fullscreen mode">
+                    <span aria-hidden="true">🎵</span> <span lang="en">Web App Version</span>
+                    <span lang="de">Web-App Version</span>
                 </a>
             </div>
             
@@ -775,6 +782,20 @@
                     <p class="feature-description" lang="de">
                         Perfekt für Eltern, die ihren kleinen Kindern Musik 
                         auf unterhaltsame, interaktive Weise näherbringen möchten
+                    </p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">🌈</div>
+                    <h3 class="feature-title" lang="en">Colorful Sound Visualization</h3>
+                    <h3 class="feature-title" lang="de">Farbenfrohe Klangvisualisierung</h3>
+                    <p class="feature-description" lang="en">
+                        Engaging visual representations help children understand 
+                        musical concepts through vibrant animations and color coding
+                    </p>
+                    <p class="feature-description" lang="de">
+                        Ansprechende visuelle Darstellungen helfen Kindern, 
+                        Musikkonzepte durch lebendige Animationen und Farbcodierung zu verstehen
                     </p>
                 </div>
             </div>
