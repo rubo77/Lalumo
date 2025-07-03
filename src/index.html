@@ -892,7 +892,16 @@
     <div data-include="partials/impress_privacy.html"></div>
     
     <!-- Legal: Credits - included from partials/credits.html -->
-    <div data-include="partials/credits.html"></div>
+    <div data-include="partials/credits.html">
+      <!-- Vorübergehende Fallback-Version bis das Partial geladen wird -->
+      <section x-show="active === 'credits' && (window.innerWidth >= 1024 || !menuOpen)" x-transition>
+        <h2 x-text="$store.strings?.credits_header || 'Credits'"></h2>
+        <div class="legal-content">
+          <h3 x-text="$store.strings?.version_label || 'Version'"></h3>
+          <p id="app-version">Version 2.1 (21)</p>
+        </div>
+      </section>
+    </div>
     
     <!-- Referral Code Page - included from partials/referrals.html -->
     <div data-include="partials/referrals.html"></div>
@@ -992,11 +1001,15 @@
 
     async function loadVersion() {
       try {
-        // Load package.json
-        const response = await fetch('package.json');
+        // Load package.json - angepasster Pfad für app/-Unterordner
+        const response = await fetch('../package.json');
+        if (!response.ok) {
+          throw new Error(`Failed to fetch package.json: ${response.status}`);
+        }
         const packageJson = await response.json();
         const version = packageJson.version;
         const versionCode = packageJson.versionCode;
+        console.log('Version loaded:', version, versionCode);
         
         // Display version in credits section
         const versionElement = document.getElementById('app-version');
