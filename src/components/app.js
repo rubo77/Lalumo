@@ -505,6 +505,15 @@ export function app() {
       window.Alpine.store('strings', {});
       window.Alpine.store('pitchMode', '1_1_pitches_high_or_low');
       
+      // Set up the global strings instance and helper functions
+      window.Alpine.store('strings', {
+        ...this.strings
+      });
+      
+      // Registriere Plattform-Erkennungsfunktionen für Template-Zugriff
+      window.Alpine.store('isAndroidApp', this.isAndroidApp.bind(this));
+      window.Alpine.store('isIOSApp', this.isIOSApp.bind(this));
+      
       // Load user data (including language) from localStorage
       this.loadUserData();
       
@@ -732,76 +741,6 @@ export function app() {
             }
           } catch (e) {
             console.error('Error parsing referral data:', e);
-          }
-        }
-        
-        // Load language preference from localStorage
-        const savedLanguage = localStorage.getItem('lalumo_language');
-        // If no language is set, try to detect from browser
-        if (!savedLanguage) {
-          const browserLang = (navigator.language || navigator.userLanguage || "en").toLowerCase();
-          if (browserLang.startsWith("de")) {
-            this.preferredLanguage = "german";
-            localStorage.setItem("lalumo_language", "german");
-          } else {
-            this.preferredLanguage = "english";
-            localStorage.setItem("lalumo_language", "english");
-          }
-          document.documentElement.lang = this.preferredLanguage === "german" ? "de" : "en";
-        } else {
-          document.documentElement.lang = savedLanguage === "german" ? "de" : "en";
-        }
-        if (savedLanguage) {
-          this.preferredLanguage = savedLanguage;
-        } else {
-          // Default to English if not set
-          localStorage.setItem('lalumo_language', 'english');
-        }
-        
-        // Load menu lock state from localStorage
-        const savedMenuLock = localStorage.getItem('lalumo_menu_locked');
-        if (savedMenuLock === 'true') {
-          this.menuLocked = true;
-        }
-        
-        // Load referral data from localStorage - both for backwards compatibility and current format
-        const referralData = localStorage.getItem('lalumo_referral');
-        if (referralData) {
-          try {
-            const data = JSON.parse(referralData);
-            this.isUsernameLocked = data.isUsernameLocked || false;
-            this.lockedUsername = data.lockedUsername || '';
-            this.referralCode = data.referralCode || '';
-            this.referralCount = data.referralCount || 0;
-            this.referralClickCount = data.referralClickCount || 0;
-            this.isChordChapterUnlocked = data.isChordChapterUnlocked || false;
-            
-            // Load referral source data
-            this.referredBy = data.referredBy || '';
-            this.referrerUsername = data.referrerUsername || '';
-            
-            // If we have a referral code but no referrer username, try to fetch it
-            if (this.referredBy && !this.referrerUsername) {
-              debugLog('[REFERRAL] Has referral code but no username, fetching from server...');
-              this.getUsernameByReferralCode(this.referredBy).then(username => {
-                if (username) {
-                  debugLog('[REFERRAL] Found referring username: ' + username);
-                  this.referrerUsername = username;
-                  this.saveReferralData();
-                }
-              });
-            }
-            
-            debugLog('[REFERRAL] Loaded referral data:', data);
-            
-            // Aktualisiere die Daten vom Server, wenn ein Benutzername gesperrt ist
-            if (this.isUsernameLocked && this.lockedUsername) {
-              debugLog('[REFERRAL] Aktualisiere Referral-Daten vom Server...');
-              // Verzögern für die Stabilität der Netzwerkanfrage
-              setTimeout(() => this.fetchReferralCount(), 1000);
-            }
-          } catch (parseError) {
-            console.error('Error parsing referral data:', parseError);
           }
         }
         
@@ -1067,129 +1006,6 @@ export function app() {
         alert(this.$store.strings?.export_error_dynamic.replace('%1$s', e.message) || 
               'Error exporting progress: ' + e.message);
         return null;
-      }
-    },
-    
-    /**
-     * Stoppt alle aktiven Oszillatoren, um Audio-Konflikte zu vermeiden
-     */
-    stopAllOscillators() {
-      // Stop all active oscillators
-      if (this.activeOscillators && this.activeOscillators.length > 0) {
-        console.log(`Stopping ${this.activeOscillators.length} active oscillators`);
-        
-        // Stop all active oscillators immediately
-        this.activeOscillators.forEach(osc => {
-          try {
-            osc.stop(0); // Stop immediately
-            osc.disconnect();
-          } catch (e) {
-            // Ignore errors from already stopped oscillators
-            console.log('Error stopping oscillator, may already be stopped');
-          }
-        });
-        
-        // Clear the list
-        this.activeOscillators = [];
-      }
-      
-      // Also clear current tone timeout
-      if (this.currentToneTimeout) {
-        clearTimeout(this.currentToneTimeout);
-        this.currentToneTimeout = null;
-      }
-      
-      // Sequence timeouts handling removed (reverted to pre-e5a7f41f version)
-    },
-    
-    /**
-     * Copy the exported progress code to the clipboard
-     */
-    /**
-     * Kopiert beliebigen Text in die Zwischenablage
-     * @param {string} text - Der zu kopierende Text (optional, verwendet this.exportedData wenn nicht angegeben)
-     * @param {boolean} showAlert - Ob eine Bestätigung angezeigt werden soll (default: true)
-     */
-    copyToClipboard(text, showAlert = true) {
-      // Den zu kopierenden Text bestimmen
-      const contentToCopy = text || this.exportedData;
-      
-      // Prüfen, ob überhaupt etwas zu kopieren ist
-      if (!contentToCopy) {
-        console.error('Nichts zu kopieren - kein Text angegeben');
-        if (showAlert) {
-          alert(this.$store.strings?.no_copy_data || 'No data to copy.');
-        }
-        return;
-      }
-      
-      console.log('Versuche zu kopieren:', contentToCopy);
-      
-      try {
-        // Moderne Clipboard API verwenden, wenn verfügbar
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-          navigator.clipboard.writeText(contentToCopy)
-            .then(() => {
-              console.log('Text copied to clipboard using Clipboard API!');
-              if (showAlert) {
-                alert(this.$store.strings?.copied_to_clipboard || 'Copied to clipboard!');
-              }
-            })
-            .catch(err => {
-              console.error('Clipboard API failed:', err);
-              // Fallback zur alten Methode
-              this.copyToClipboardFallback(contentToCopy, showAlert);
-            });
-        } else {
-          // Fallback für ältere Browser
-          this.copyToClipboardFallback(contentToCopy, showAlert);
-        }
-      } catch (e) {
-        console.error('Failed to copy to clipboard:', e);
-        if (showAlert) {
-          alert(this.$store.strings?.copy_failed_manual || 'Failed to copy. Please select and copy the text manually.');
-        }
-      }
-    },
-    
-    /**
-     * Fallback-Methode zum Kopieren in die Zwischenablage für ältere Browser
-     * @param {string} text - Der zu kopierende Text
-     * @param {boolean} showAlert - Ob eine Bestätigung angezeigt werden soll
-     */
-    copyToClipboardFallback(text, showAlert = true) {
-      // Fallback-Methode für ältere Browser
-      try {
-        // Temporäres Textfeld erstellen
-        const textarea = document.createElement('textarea');
-        textarea.value = text;
-        textarea.style.position = 'fixed'; // Verhindern, dass ein Scrolling verursacht wird
-        textarea.style.opacity = '0';
-        textarea.style.left = '-9999px'; // Außerhalb des sichtbaren Bereichs platzieren
-        
-        // Zum DOM hinzufügen und auswählen
-        document.body.appendChild(textarea);
-        textarea.focus();
-        textarea.select();
-        
-        // Kopieren ausführen und Erfolg prüfen
-        const success = document.execCommand('copy');
-        
-        // Aufräumen - Element wieder entfernen
-        document.body.removeChild(textarea);
-        
-        // Erfolgs- oder Fehlermeldung
-        if (success) {
-          console.log('Text copied to clipboard using fallback!');
-          if (showAlert) {
-            alert(this.$store.strings?.copied_to_clipboard || 'Copied to clipboard!');
-          }
-        } else {
-          throw new Error('execCommand returned false');
-        }
-      } catch (e) {
-        console.error('Fallback copy failed:', e);
-        alert(this.$store.strings?.copy_manual || 'Could not copy automatically. Please select and copy the text manually.');
       }
     },
     
@@ -1607,79 +1423,55 @@ export function app() {
     },
     
     /**
-     * Check for iOS audio special handling
+     * Check if device is an iPad
+     * @returns {boolean} True if iPad
      */
-    checkIOSAudio() {
-      // iOS-Erkennung ist standardmäßig aktiviert
-      // Zukünftige Erweiterung: Einstellung über Präferenzen zur Deaktivierung
-      
-      // Multi-factor iOS detection instead of just User-Agent
-      const userAgentHasIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-      const noAndroid = !/Android/.test(navigator.userAgent);
-      const platformCheck = /iPhone|iPad|iPod/.test(navigator.platform);
-      
-      // Additional platform checks
-      // These checks are more reliable on real iOS devices
-      let hasIOSPlatformSpecificFeatures = false;
-      
-      // Check for touch events in iOS specific way
-      if (typeof window.TouchEvent !== 'undefined' && 
-          typeof window.ontouchstart !== 'undefined' && 
-          typeof navigator.maxTouchPoints !== 'undefined' && 
-          navigator.maxTouchPoints > 0) {
-        hasIOSPlatformSpecificFeatures = true;
-      }
-      
-      // Final iOS determination - multiple factors must be true
-      const isIOS = userAgentHasIOS && noAndroid && (platformCheck || hasIOSPlatformSpecificFeatures);
-      
-      console.log('AUDIO_DEVICE_CHECK: Details', {
-        userAgentHasIOS, 
-        noAndroid, 
-        platformCheck, 
-        hasIOSPlatformSpecificFeatures,
-        finalDecision: isIOS,
-        userAgent: navigator.userAgent,
-        platform: navigator.platform
-      });
-      
-      if (isIOS) {
-        console.log('AUDIOTROUBLE: iOS device detected, adding special audio handling');
-        
-        // Show a message after a short delay to get user to tap the screen
-        setTimeout(() => {
-          if (!this.isAudioEnabled) {
-            this.showMascotMessage('Tap anywhere to enable sound! 🔊');
-          }
-        }, 2000);
-        
-        // Add a visible audio unlock button for iOS
-        const audioUnlockDiv = document.createElement('div');
-        audioUnlockDiv.style.position = 'fixed';
-        audioUnlockDiv.style.bottom = '20px';
-        audioUnlockDiv.style.right = '20px';
-        audioUnlockDiv.style.backgroundColor = '#6c5ce7';
-        audioUnlockDiv.style.color = 'white';
-        audioUnlockDiv.style.padding = '10px 15px';
-        audioUnlockDiv.style.borderRadius = '50px';
-        audioUnlockDiv.style.boxShadow = '0 2px 10px rgba(0,0,0,0.2)';
-        audioUnlockDiv.style.zIndex = '9999';
-        audioUnlockDiv.style.display = this.isAudioEnabled ? 'none' : 'block';
-        audioUnlockDiv.textContent = '🔊 Enable Sound';
-        audioUnlockDiv.addEventListener('click', () => {
-          this.unlockAudio();
-          audioUnlockDiv.style.display = 'none';
-        });
-        document.body.appendChild(audioUnlockDiv);
-      }
+    isIpad() {
+      return navigator.userAgent.match(/iPad/i) !== null;
     },
     
     /**
-     * Check if the device is an iPad
-     * @returns {boolean} - True if the device is an iPad
+     * Check if running in Android native app context
+     * @returns {boolean} True if Android app
      */
-    isIPad() {
-      return navigator.userAgent.match(/iPad/i) !== null;
+    isAndroidApp() {
+      const isAndroid = /Android/.test(navigator.userAgent);
+      // Zusätzliche Prüfung für Android App vs. Android Browser
+      // In der App ist typischerweise window.isNativeApp gesetzt
+      return isAndroid && (window.isNativeApp === true);
+    },
+    
+    /**
+     * Check if running in iOS native app context
+     * @returns {boolean} True if iOS app
+     */
+    isIOSApp() {
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+      // Zusätzliche Prüfung für iOS App vs. Safari Browser
+      // In der App ist typischerweise window.isNativeApp gesetzt
+      return isIOS && (window.isNativeApp === true);
+    },
+  
+    /**
+     * Check if running in Android native app context
+     * @returns {boolean} True if Android app
+     */
+    isAndroidApp() {
+      const isAndroid = /Android/.test(navigator.userAgent);
+      // Zusätzliche Prüfung für Android App vs. Android Browser
+      // In der App ist typischerweise window.isNativeApp gesetzt
+      return isAndroid && (window.isNativeApp === true);
+    },
+  
+    /**
+     * Check if running in iOS native app context
+     * @returns {boolean} True if iOS app
+     */
+    isIOSApp() {
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+      // Zusätzliche Prüfung für iOS App vs. Safari Browser
+      // In der App ist typischerweise window.isNativeApp gesetzt
+      return isIOS && (window.isNativeApp === true);
     },
     
     /**
