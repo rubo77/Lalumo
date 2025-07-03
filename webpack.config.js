@@ -208,7 +208,7 @@ module.exports = (env, argv) => {
           },
           { 
             from: 'public/strings-*.xml',
-            to: '[name][ext]'
+            to: 'app/[name][ext]'
           },
           {
             from: 'public/images',
