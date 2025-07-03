@@ -26,6 +26,10 @@
 - Invalid save code error messages have been migrated to $store.strings in app.js.
 - No data to copy error messages have been migrated to $store.strings in app.js.
 - Progress reset success messages have been migrated to $store.strings in app.js.
+- Play Store link in navigation now uses Alpine.js store functions ($store.isAndroidApp/$store.isIOSApp) instead of direct function calls.
+- The Play Store icon should now use public/playstore.png in both the homepage download buttons and the app navigation. Ensure it is copied by the Webpack build so it is visible in all outputs.
+- Note: playstore.png was located in src/public/ but not copied by Webpack; it has now been moved to public/images/ so it is included in the build outputs for homepage and app as intended.
+- Footer: English legal links must use agb.html, impressum.html, privacy.html (not terms, etc.); move Web App link into the download-buttons section per user request.
 - New: Website must be generated from a single HTML template source for both English (/) and German (/de/), using adjacent <span lang="en"> and <span lang="de"> blocks. At build, filter for the target language. All assets/links must use absolute paths. Navigation and SEO (hreflang, canonical) must be correct. Webpack/html-loader/language-loader setup required. Integrate this into the existing main webpack config for both app and homepage, as per latest user feedback and inspection, to ensure seamless integration and avoid separate config duplication. The multilingual static website build system must be integrated into the existing main webpack config (not a separate config), per latest user feedback and inspection.
 - New: All language-specific HTML outputs (e.g. index.html, agb.html, etc.) must be generated from a single source-template file (e.g. index-template.html, agb-template.html, etc.) containing both languages, following the same adjacent lang="en"/"de" markup convention. This means that each HTML output will have a corresponding source-template file that includes both English and German content, marked with lang="en" and lang="de" respectively, allowing for easy maintenance and updates.
 - Update: index-template.html is being refactored to use adjacent lang="en"/"de" blocks for all relevant meta tags, Open Graph tags, favicon, and SEO alternate/canonical links, as the standard for all language-specific HTML outputs.
@@ -107,6 +111,11 @@
 - [x] Fix webpack config and deploy pipeline for homepage images/assets
 - [x] Re-deploy and verify /de/ is now served, then confirm all homepage image assets are available on the live site (lalumo.eu and lalumo.eu/de/), with no missing directories or globs. Test with curl for visibility.
 - Next: Final check that all homepage image assets are available and visible on the live site (lalumo.eu and lalumo.eu/de/), with no missing directories or globs. Test with curl for visibility.
+- New: Privacy, Impressum, and AGB pages do not work yet on either EN or DE; must be fixed for both languages.
+- [x] Add Play Store link to app navigation (web app only, not Android/iOS)
+
+## Current Goal
+All tasks complete. Awaiting further instructions.
 
 ## Task List
 - [x] Change checkmark color to green in referrals.html (CSS)
@@ -147,7 +156,10 @@
 - [x] Test build: verify /app/index.html, /index.html, /de/index.html output, links, and SEO
 - [x] Fix webpack config and deploy pipeline for homepage images/assets
 - [x] Re-deploy and verify /de/ is now served, then confirm all homepage image assets are available on the live site (lalumo.eu and lalumo.eu/de/), with no missing directories or globs. Test with curl for visibility.
-- Next: Final check that all homepage image assets are available and visible on the live site (lalumo.eu and lalumo.eu/de/), with no missing directories or globs. Test with curl for visibility.
-
-## Current Goal
-Final check that all homepage image assets are available and visible on lalumo.eu and /de/.
+- [x] Fix privacy, impressum, and agb pages for both EN and DE (ensure accessible and correct output)
+  - [x] Create impressum-template.html with adjacent lang="en"/"de" blocks - COMPLETE
+  - [x] Create agb-template.html with adjacent lang="en"/"de" blocks (EXACT content from old agb.html)
+  - [x] Create privacy-template.html with adjacent lang="en"/"de" blocks - COMPLETE
+  - [x] Integrate new templates into webpack config for multilingual output
+  - [x] Verify EN/DE output and links for these pages
+- [x] Add Play Store link to app navigation (web app only, not Android/iOS)
