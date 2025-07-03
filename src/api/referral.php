@@ -528,7 +528,7 @@ elseif ($method === 'GET') {
             
             // Leite zur App mit dem Code in einem URL-Parameter weiter
             $app_url = $config['APP_BASE_URL'];
-            header ('Location: '.$app_url.'/#ref=' . urlencode($code));
+            header ('Location: '.$app_url.'/app/#ref=' . urlencode($code));
             exit;
         } else {
             http_response_code(404);

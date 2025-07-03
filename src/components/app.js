@@ -39,6 +39,7 @@ export function app() {
     referralLink: '',            // Shareable referral link
     friendCode: '',              // Friend code input by user
     referredBy: '',              // Code/username of who referred this user (from deep link)
+    referrerUsername: '',         // Username of the person who referred this user
     isChordChapterUnlocked: false, // Whether chord chapter is unlocked
     
     /**
@@ -688,7 +689,7 @@ export function app() {
         }
         
         // Load referral system data from localStorage
-        const savedReferralData = localStorage.getItem('lalumo_referral_data');
+        const savedReferralData = localStorage.getItem('lalumo_referral');
         if (savedReferralData) {
           debugLog("REFERRAL", "Loaded referral data from localStorage:", savedReferralData);
           try {
