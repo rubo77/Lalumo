@@ -37,94 +37,19 @@
 - Even after adding `watchFiles: ['src/**/*.html', 'homepage/*-template.html']` to the webpack devServer config, changes to homepage templates (e.g., index-template.html) are still not picked up and do not trigger a rebuild/live update; this issue must be fixed so template edits are reflected immediately in dev.
 - Webpack config now uses polling and explicit watch for homepage template files, but live-reload of template changes is still not working and must be fixed.
 - Note: Polling watch is currently used as a workaround for template watch issues; however, this is not the final solution and may cause performance issues. Next steps: fix template watch to trigger rebuilds and live updates correctly, and then address partials loading in the app/ subfolder for local dev (partials not working since switch to app/ subfolder).
-- Next: Fix template watch so that changes trigger a rebuild and live update. After that, fix partials loading in the app/ subfolder for local dev (partials not working since switch to app/ subfolder).
 - Note: Continued issues with template live-reload and partials in app/ subfolder; polling is a workaround, not a solution. Next steps: debug template watch to trigger rebuilds and live updates correctly, and then address partials loading in the app/ subfolder for local dev.
-- New: Website must be generated from a single HTML template source for both English (/) and German (/de/), using adjacent <span lang="en"> and <span lang="de"> blocks. At build, filter for the target language. All assets/links must use absolute paths. Navigation and SEO (hreflang, canonical) must be correct. Webpack/html-loader/language-loader setup required. Integrate this into the existing main webpack config for both app and homepage, as per latest user feedback and inspection, to ensure seamless integration and avoid separate config duplication. The multilingual static website build system must be integrated into the existing main webpack config (not a separate config), per latest user feedback and inspection.
-- New: All language-specific HTML outputs (e.g. index.html, agb.html, etc.) must be generated from a single source-template file (e.g. index-template.html, agb-template.html, etc.) containing both languages, following the same adjacent lang="en"/"de" markup convention. This means that each HTML output will have a corresponding source-template file that includes both English and German content, marked with lang="en" and lang="de" respectively, allowing for easy maintenance and updates.
-- Update: index-template.html is being refactored to use adjacent lang="en"/"de" blocks for all relevant meta tags, Open Graph tags, favicon, and SEO alternate/canonical links, as the standard for all language-specific HTML outputs.
-- Progress: Hero section and download buttons in index-template.html are now being refactored to use adjacent lang="en"/"de" blocks for multilingual content, continuing the systematic template update.
-- Update: Features section and GitHub link in index-template.html are now being refactored to use adjacent lang="en"/"de" blocks for multilingual content, continuing the systematic template update.
-- Progress: Feature cards in the features section of index-template.html are now being refactored to use adjacent lang="en"/"de" blocks for multilingual content, continuing the systematic template update.
-- Update: All four feature cards in the features section of index-template.html are now being refactored to use adjacent lang="en"/"de" blocks for multilingual content, continuing the systematic template update.
-- Update: Screenshots section in index-template.html is now refactored to use adjacent lang="en"/"de" blocks for multilingual content (headings and all screenshot captions completed), continuing the systematic template update.
-- Update: Footer section in index-template.html is now fully refactored to use adjacent lang="en"/"de" blocks for multilingual content, including copyright and Web App links. The template refactor for index-template.html is now complete.
-- Progress: index-template.html refactor is complete; next focus is integrating the language-loader into the main webpack config for multilingual builds.
-- Update: Language-loader is present and confirmed functional; webpack integration for multilingual builds is now in progress.
-- Update: Webpack config now generates both English (root) and German (/de/) homepage templates using the language-loader, and asset copying for both language versions is handled. Multilingual build system integration is complete; next, asset/navigation link adjustments and SEO tags, then build verification.
-- Progress: Multilingual build system integration is complete; next: test build output and verify / and /de/ output, links, and SEO.
-- Update: Asset copying for icons and homepage assets is now handled for both languages, but build errors persist due to unresolved absolute icon paths (e.g., /icons/apple-touch-icon.png). Next: resolve asset path issues in templates or config and re-test build.
-- Note: Build still fails due to unresolved absolute icon paths, despite copying assets for both languages. Next step: resolve asset path issues in templates or webpack config and re-test build.
-- Update: Icon paths in index-template.html have been changed from absolute to relative paths to resolve build errors. Next: re-run build and verify output.
-- Note: Build now fails on screenshot image paths (e.g., ./images/screenshots/pitches_bird_sings.jpg). Next: update screenshot image paths in index-template.html to resolve build errors, then re-run build.
-- Note: Build still fails due to missing screenshot images, despite correcting all template paths. Next: ensure all referenced assets exist and are copied to the correct output directory, then re-run the build.
-- Note: Referenced screenshot images are missing from the filesystem (not just wrong path). Next: add/copy these assets to the correct source directory, ensure they are included in the build output, and then re-run the build.
-- Note: Assets should NOT be manually copied; instead, update the deploy/build script (e.g., Webpack config) to ensure all referenced images are automatically included in the correct output folders during the build process. The favicon.svg reference has been removed from the HTML template as the file does not exist and is not required.
-- Update: favicon.svg reference removed from index-template.html; screenshot images are present in public/images/backgrounds/ and are now configured in the Webpack config to be copied to images/screenshots/ and de/images/screenshots/ in the output. Next: re-run build and verify output.
-- New: Webpack rule for image assets (asset/resource) is being introduced to process and copy referenced images in HTML templates automatically, to resolve image import issues.
-- New: Build now fails due to missing or misconfigured 'language-loader' module in the Webpack config. This must be resolved before build verification can proceed.
-- Next: Fix the language-loader path/configuration in Webpack config so that the build can proceed and output can be verified.
-- Current: The language-loader file exists at webpack/language-loader.js, but the config references it as a string instead of using path.resolve(). Update the loader reference in the HTML loader rule to use the correct path.
-- Note: The language-loader must be referenced via path.resolve in the HTML loader rule, as discovered in the latest investigation.
-- Update: The language-loader is now referenced via path.resolve in webpack.config.js. Next: Fix the missing dependency 'node-html-parser', which is required by language-loader.js, to proceed with the build.
-- Update: The missing dependency 'node-html-parser' has been installed; next: fix the html-loader configuration error regarding the invalid 'attrs' property in the options object.
-- Update: html-loader configuration has been updated to use the modern 'sources' property instead of the deprecated 'attrs' property; build now proceeds further.
-- New: Build now fails with: "Conflict: Multiple assets emit different content to the same filename index.html". This must be analyzed and resolved before build verification can proceed.
-- Analysis: The error is caused by multiple HtmlWebpackPlugin instances targeting the same output filename (index.html) with different content (e.g., app and homepage). The Webpack config must be adjusted so each HtmlWebpackPlugin instance produces a unique output file per language/version (e.g., app-index.html, homepage-index.html, de/homepage-index.html, etc.), or the homepage and app output paths must be separated to avoid filename collisions.
-- Resolution: The app output filename was changed from index.html to app.html in the Webpack config, resolving the filename collision and allowing the build to succeed.
-- User requirement: The main app must only be available under /app/index.html (not under /de/app/, /en/app/, or /app.html).
-- The Webpack config has been updated so the main app is now output only as /app/index.html (not /app.html or in language subfolders).
-- The Webpack config has been updated to output the main app only as /app/index.html, fulfilling the user requirement.
-- Issue: Placing <html lang="en"> in the template causes the language-loader to remove the entire document for the other language, resulting in empty HTML output. The template structure must be adjusted to avoid wrapping the whole document in a single lang element.
-- New: The language-loader.js must be adjusted to ignore the <html> element when filtering by lang attribute, so that the root <html> is never removed regardless of its lang attribute.
-- New: images/ must also be synced into the app/ directory in the Webpack build output, so that all required images are available for the app at /app/index.html.
-- BUG: The generated <html> element in both English and German output has lang="undefined". The language-loader logic must be fixed so the correct language code is set.
-- FIXED: The language-loader.js now always sets the <html> lang attribute to the correct language code, resolving the previous "undefined" bug in the generated HTML.
-- NOTE: The <html lang="undefined"> bug is now fixed and the correct language code is set in the output HTML by the language-loader.
-- CONFIRMED: The language-loader now correctly sets <html lang="en"> and <html lang="de"> in the generated HTML output for each language version.
-- ISSUE: The language-loader is not receiving the expected options from HtmlWebpackPlugin. Debug logging has been added to diagnose the loader options at runtime.
-- BUG: The generated HTML output now contains JavaScript code (e.g., var ___HTML_LOADER_IMPORT_0___...), indicating a loader or configuration problem that must be fixed before continuing output verification.
-- NOTE: The generated HTML output now contains JavaScript code due to html-loader producing JS modules instead of pure HTML, which must be fixed before continuing verification.
-- NOTE: html-loader is producing JS modules instead of pure HTML, which must be fixed before continuing output verification.
-- BUG: Current build fails with "Module parse failed: Unexpected token" because the language-loader outputs pure HTML but Webpack expects a JS module. Loader chain/config must be fixed so the output is pure HTML and not JS or causing parse errors.
-- NOTE: The current build error is caused by the loader chain/config producing JS modules instead of pure HTML, which must be fixed before continuing output verification.
-- NOTE: Loader chain/config still causes parse errors and must be fixed for pure HTML output.
-- NOTE: Loader chain/config used loader-utils.parseQuery, which is not available in recent versions; replaced with URLSearchParams for parameter parsing in language-loader.js.
-- [x] Fix loader chain/config so the output is pure HTML and not JS or causing parse errors, resolving the current "Module parse failed: Unexpected token" build error.
-  - [x] Fix language-loader.js to use URLSearchParams instead of loader-utils.parseQuery for query parameter parsing.
-- NOTE: Loader chain/config parse error resolved; build now completes successfully and output verification is now the focus.
-- BUG: The generated German HTML output (dist/de/index.html) still has <html lang="en"> instead of <html lang="de">. The language-loader must be fixed to set the correct lang attribute for each language output.
-- Note: The language-loader must be updated to correctly set the lang attribute for each language output.
-- Additional debug logging has been added to language-loader.js to diagnose why the correct lang attribute is not set for the German output.
-- [x] Fix language-loader.js so that the generated <html> tag in each output file receives the correct lang attribute (e.g., de/index.html gets lang="de").
-  - [x] Analyze debug output to determine why the lang attribute is not set correctly for the German output and fix the logic (Webpack template caching; fixed by appending query parameter per language).
-  - [x] Note: Webpack template caching caused the language-loader to only run once per template, so both outputs had lang="en". Appending a unique query parameter to the template path for each language in HtmlWebpackPlugin ensures the loader runs for each language output.
-  - [x] Verify that the lang attribute is now correct for each language output after the config update.
-  - [x] Fix image paths in app/index.html so that images display correctly in the app output (current user focus).
-- [x] Install missing dependency 'node-html-parser' required by language-loader.js
-  - [x] Fix html-loader configuration error (remove/replace invalid 'attrs' property in options)
-  - [x] Analyze and resolve build error: Multiple assets emit different content to the same filename index.html (adjust HtmlWebpackPlugin output filenames to avoid collision)
-  - [x] Update Webpack config so the main app is only output as /app/index.html (not /app.html or in language subfolders).
-- [x] Rewrite homepage/app marketing texts (features and screenshot captions) to target parents of preschoolers, highlight unique features, and align with app concept in dev/CONCEPT.md
-- [x] Add de/en language flags to homepage for language switching
-- [x] Adapt deploy.sh to new /de/ and /en/ homepage output structure
-- [x] Fix webpack config and deploy pipeline for homepage images/assets
-- Note: The rsync error was due to syncing empty directories, not a webpack config problem.
-- Note: homepage/images/ and homepage/images/screenshots/ directories were deleted, causing webpack to fail on missing glob (unable to locate '/var/www/Musici/homepage/images/**/*').
-- Fix: deploy.sh and webpack config now reference only dist/images/ and dist/images/screenshots/, not the deleted homepage/images/ directories. All homepage image asset copy rules point to public/images/ as source.
-- Fix: deploy.sh is now robust against empty or missing directories (mkdir -p and conditional rsync).
-- Note: /de/index.html returns HTTP 404 even though the file exists on the server; need to diagnose webserver config or deployment issue.
-- Root cause: deploy.sh used wrong rsync source for /de/ (dist/homepage/de/ instead of dist/de/); now fixed to copy dist/de/index.html to /de/.
-- Fix: deploy.sh now copies dist/de/index.html to /de/ (was dist/homepage/de/ before).
-- Verified: After redeploy, /de/ is now served (HTTP 200) and available.
-- Next: Final check that all homepage image assets are available and visible on the live site (lalumo.eu and lalumo.eu/de/), with no missing directories or globs. Test with curl for visibility.
-- [x] Fix webpack config and deploy pipeline for homepage images/assets
-- [x] Re-deploy and verify /de/ is now served, then confirm all homepage image assets are available on the live site (lalumo.eu and lalumo.eu/de/), with no missing directories or globs. Test with curl for visibility.
-- Next: Final check that all homepage image assets are available and visible on the live site (lalumo.eu and lalumo.eu/de/), with no missing directories or globs. Test with curl for visibility.
-- New: Privacy, Impressum, and AGB pages do not work yet on either EN or DE; must be fixed for both languages.
-- [x] Add Play Store link to app navigation (web app only, not Android/iOS)
+- New: The app credits partial displays "Loading version..." instead of the actual version number; this must be fixed so the correct version is shown in the app UI.
+- The fetch for package.json from /app/index.html returns HTTP 200, but the version is still not displayed; further debugging is needed to determine why the version is not shown in the credits partial.
+- The version number in the credits partial is now hardcoded as a workaround, since dynamic loading did not display it despite a successful fetch.
+- Hardcoding the version in the credits partial did not resolve the issue; the partial may not be updating or loading correctly. Debugging partial loading and hot-reload is now required.
+- Fallback version display now works, but user requests comprehensive SEO optimization for both German and English homepage. Focus keywords: Kinder Musik App, Android, iOS, iPhone, fullscreen, locked, kindersicherung, back-prevention, and related terms. All reasonable SEO improvements should be made to maximize Google ranking for these topics.
+- SEO meta tags have been extensively improved for both EN/DE with all relevant keywords and best practices.
+- Structured data (Schema.org for MobileApplication and Organization) has been added for enhanced search engine interpretation and ranking.
+- Content, headings, and structure SEO improvements (hero, features, etc.) have been implemented and are complete.
+- Accessibility improvements (ARIA, roles, alt text, nav, download section) have been implemented in the homepage header/nav/hero and download sections.
 
 ## Current Goal
-All tasks complete. Awaiting further instructions.
+Verify social cards and finalize homepage SEO checks
 
 ## Task List
 - [x] Change checkmark color to green in referrals.html (CSS)
@@ -172,3 +97,7 @@ All tasks complete. Awaiting further instructions.
   - [x] Integrate new templates into webpack config for multilingual output
   - [x] Verify EN/DE output and links for these pages
 - [x] Add Play Store link to app navigation (web app only, not Android/iOS)
+- [x] Fix version number display in credits partial ("Loading version...").
+- [x] Comprehensive SEO optimization: meta tags and structured data/schema.org for homepage (EN/DE)
+- [x] Improve homepage content, headings, and structure for SEO (hero, features, etc.)
+- [ ] Continue and verify further SEO improvements: social cards, accessibility, content structure, etc.
