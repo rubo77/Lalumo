@@ -128,3 +128,8 @@ The current approach allows maintaining open source status while protecting busi
 - **Commercial Viability**: Revenue streams remain protected
 
 This creates a win-win: educational community gets value, business remains viable.
+
+# TODO
+
+- de/en flags to change language
+

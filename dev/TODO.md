@@ -258,8 +258,3 @@ Implementiere eine robuste Tonzufalls-Steuerung für die 1_1-Aktivität der Lalu
 
 Implementiere diese Logik in `generate1_1HighOrLowSequence()` und [getRandomTone1_1()](cci:1://file:///var/www/Musici/src/components/pitches.js:777:4-790:5), wobei beide Beschränkungen korrekt umgesetzt werden müssen.
 
----
-homepage:
-@index-template.html#L451-511 diese texte und diese @index-template.html#L527-563  passen überhaupt nicht zur app, denn die app ist ja nur für kleine kinder im vorschulalter . und die eltern sollen angesprochen werden, die ihren kindern musikverständnis beibringen wollen. die app ist komplett bedienbar ohne lese-kenntnisse und herausragens ist die bildschirm lock funktion, damit sich das kind auf die übung konzentriert und nicht ins menü gelangen kann. 
-
-die kapitel sind hier zu sehen: @CONCEPT.md#L33-161 wobei  2_1 bis 2_4 noch nciht fertig sind

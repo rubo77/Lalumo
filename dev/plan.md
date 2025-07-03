@@ -91,6 +91,7 @@
   - [x] Fix html-loader configuration error (remove/replace invalid 'attrs' property in options)
   - [x] Analyze and resolve build error: Multiple assets emit different content to the same filename index.html (adjust HtmlWebpackPlugin output filenames to avoid collision)
   - [x] Update Webpack config so the main app is only output as /app/index.html (not /app.html or in language subfolders).
+- New: Homepage/app marketing texts (features and screenshot captions) must be rewritten to target parents of preschool children, emphasizing that the app is designed for young kids who cannot read, and highlighting unique features such as the screen lock function and the parent/child teaching approach. Content should be based on the actual app chapters and pedagogical concept outlined in dev/CONCEPT.md.
 
 ## Task List
 - [x] Change checkmark color to green in referrals.html (CSS)
@@ -128,6 +129,7 @@
 - [x] Adjust all asset and navigation links to use absolute paths and language-specific routing
 - [x] Add SEO tags (hreflang, canonical, meta) for both languages
 - [x] Fix image paths in app/index.html so that images display correctly in the app output (current user focus).
+- [ ] Rewrite homepage/app marketing texts (features and screenshot captions) to target parents of preschoolers, highlight unique features, and align with app concept in dev/CONCEPT.md
 - [ ] Test build: verify /app/index.html, /index.html, /de/index.html output, links, and SEO
 
 ## Current Goal
