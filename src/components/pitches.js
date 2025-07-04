@@ -1525,8 +1525,10 @@ export function pitches() {
         // Increment progress counter
         this.progress['1_2_pitches_match-sounds'] += 1;
         const currentProgress = this.progress['1_2_pitches_match-sounds'];
+        // Synchronize currentProgress property with the actual progress value
+        this.currentProgress = currentProgress;
         
-        console.log('Updated match progress:', currentProgress);
+        console.log('PROGRESS_SYNC: Updated match progress:', currentProgress, 'currentProgress synced:', this.currentProgress);
         
         // Important thresholds for background changes
         if (currentProgress === 10 || currentProgress === 20) {

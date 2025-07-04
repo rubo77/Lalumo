@@ -9,7 +9,7 @@
 
 ## Task List
 - [x] Analyze current logic for wave sound after 10 correct answers in activity 1_2
-- [ ] Compare with frog logic for jumpy melody after unlock
+- [x] Compare with frog logic for jumpy melody after unlock
 - [ ] Adjust code so wave sound always plays first after unlock, then randomizes
 - [ ] Test to confirm correct behavior
 
