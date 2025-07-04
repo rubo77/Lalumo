@@ -1,131 +1,17 @@
-# Musici Referrals & Translation Plan
+# Plan for Fixing Wave Sound Logic in Activity 1_2
 
 ## Notes
-- The checkmark (✓) in referrals.html is now green (CSS change completed).
-- All referral-related strings have been translated to German and added to strings.xml (values-de).
-- Specific string keys translated: "your_referral_code", "referred_by", and "referral_info".
-- Extract all user-facing strings from referrals.html (lines 1-92) and add them to strings.xml (both English and German).
-- Do not add fallbacks or failsafes; fix problems directly.
-- Only update default strings.xml for new strings, not other variants.
-- Next: Systematically scan all JavaScript files for user-facing strings not yet present in the translation system (strings.xml). List these untranslated strings for further localization.
-- Initial scan found alert/confirm messages in JS not using $store.strings. Continue and complete the systematic listing.
-- Systematic search for alert, confirm, and showToast messages in JS completed. Relevant untranslated strings have been listed for localization.
-- Dynamically composed and multi-line user-facing strings (e.g., constructed with += or template literals) were previously overlooked; these must also be extracted for translation.
-- Translation prompt markdown file created and refined. User clarified: do not translate /dev/ files, shell scripts, comments, unreachable code, or log entries.
-- Translation prompt updated: Only fallback pattern `this.$store.strings?.key_name || 'Fallback'` is allowed; code-fallback texts are explicitly excluded from translation. Examples and instructions in translation_prompt.md are now more precise.
-- Alert and toast messages from translation prompt have been added to both EN/DE XML files; ready for code refactor.
-- Systematic JS code refactor and verification per translation_prompt.md is ongoing.
-- Systematic JS string migration and verification is ongoing.
-- Alert/toast message migration in app.js is underway, with more to follow.
-- This pattern is now documented in the translation prompt; migration to strings.xml is planned for consistency.
-- All isGerman-based strings from pitches/common.js have been added to English and German XML files; ready for code refactor.
-- User clarified: the "no matching activity" fallback in resetCurrentActivity does not need to be translated or migrated, as it is unreachable by design.
-- All isGerman-based UI strings from pitches.js have been added to English and German XML files; ready for code refactor.
-- Dynamic error and import messages are now being migrated to $store.strings in app.js; process is ongoing.
-- Copy error messages have been migrated to $store.strings in app.js.
-- Invalid save code error messages have been migrated to $store.strings in app.js.
-- No data to copy error messages have been migrated to $store.strings in app.js.
-- Progress reset success messages have been migrated to $store.strings in app.js.
-- Play Store link in navigation now uses Alpine.js store functions ($store.isAndroidApp/$store.isIOSApp) instead of direct function calls.
-- The Play Store icon should now use public/playstore.png in both the homepage download buttons and the app navigation. Ensure it is copied by the Webpack build so it is visible in all outputs.
-- Note: playstore.png was located in src/public/ but not copied by Webpack; it has now been moved to public/images/ so it is included in the build outputs for homepage and app as intended.
-- Footer: English legal links must use agb.html, impressum.html, privacy.html (not terms, etc.); move Web App link into the download-buttons section per user request.
-- Webpack devServer config updated: added explicit `src` static directory with `watch: true` and `watchFiles: ['src/**/*.html']` for improved hot reload of HTML changes.
-- HtmlWebpackPlugin for app/index.html now uses `inject: true` and `hash: true` for better live reload and cache busting.
-- Dev server and webpack process fully restarted to ensure config changes are active; hot reload for HTML changes should now work as expected.
-- Homepage template files (e.g., index-template.html, agb-template.html, etc.) must also be explicitly watched in the webpack devServer config (`watchFiles`), so that changes trigger a rebuild via language-loader and are reflected live in the output.
-- Even after adding `watchFiles: ['src/**/*.html', 'homepage/*-template.html']` to the webpack devServer config, changes to homepage templates (e.g., index-template.html) are still not picked up and do not trigger a rebuild/live update; this issue must be fixed so template edits are reflected immediately in dev.
-- Webpack config now uses polling and explicit watch for homepage template files, but live-reload of template changes is still not working and must be fixed.
-- Note: Polling watch is currently used as a workaround for template watch issues; however, this is not the final solution and may cause performance issues. Next steps: fix template watch to trigger rebuilds and live updates correctly, and then address partials loading in the app/ subfolder for local dev (partials not working since switch to app/ subfolder).
-- Note: Continued issues with template live-reload and partials in app/ subfolder; polling is a workaround, not a solution. Next steps: debug template watch to trigger rebuilds and live updates correctly, and then address partials loading in the app/ subfolder for local dev.
-- New: The app credits partial displays "Loading version..." instead of the actual version number; this must be fixed so the correct version is shown in the app UI.
-- The fetch for package.json from /app/index.html returns HTTP 200, but the version is still not displayed; further debugging is needed to determine why the version is not shown in the credits partial.
-- The version number in the credits partial is now hardcoded as a workaround, since dynamic loading did not display it despite a successful fetch.
-- Hardcoding the version in the credits partial did not resolve the issue; the partial may not be updating or loading correctly. Debugging partial loading and hot-reload is now required.
-- Fallback version display now works, but user requests comprehensive SEO optimization for both German and English homepage. Focus keywords: Kinder Musik App, Android, iOS, iPhone, fullscreen, locked, kindersicherung, back-prevention, and related terms. All reasonable SEO improvements should be made to maximize Google ranking for these topics.
-- SEO meta tags have been extensively improved for both EN/DE with all relevant keywords and best practices.
-- Structured data (Schema.org for MobileApplication and Organization) has been added for enhanced search engine interpretation and ranking.
-- Content, headings, and structure SEO improvements (hero, features, etc.) have been implemented and are complete.
-- Accessibility improvements (ARIA, roles, alt text, nav, download section) have been implemented in the homepage header/nav/hero and download sections.
-- New: User reports the German flag language switcher is missing on the homepage; must restore this switcher.
-- New: User requests a 6th point be added to the "Why Lalumo is the Best Music App for Kids" section on the homepage.
-- New: The homepage download button must no longer mention the child lock feature.
-- New: User requests that the fullscreen feature be reworded to focus on keeping the child engaged in an activity rather than making elements accessible for small hands.
-- New: User requests that the "Early Music Foundation" feature be moved to the first box, "Parent-Child Activity" to second, and "Colorful Sound Visualization" to third in the features section.
-- New: User requests the visualization feature description highlight animal expressions and the use of symbols instead of abstractions for musical interpretation.
-- All requested homepage feature box changes (rewording, reordering, visualization description) are now implemented.
-- New: Switching to German in the player settings has no effect; likely cause is a failed load of strings-de.xml. This regression has been diagnosed and fixed.
-- New: Diagnose and fix regression: switching to German in player settings does not work (likely due to strings-de.xml load failure) - FIXED
-- New: Fix asset/image path in mobile-build.sh so only correct webapp assets (not homepage/public) are included in native app build - FIXED
-- New: Play Store button in app navigation must be hidden when running inside the Android app; it should only be visible in the web version.
-- Investigation: The Play Store button is already wrapped in an Alpine.js x-show using $store.isAndroidApp() and $store.isIOSApp(). The isAndroidApp() implementation checks for window.isNativeApp, but it is unclear if this flag is reliably set in the native Android app. Further verification and, if necessary, adjustment of the native flag detection is required.
-- New: A native-app detector script (src/native-app-detector.js) was created to set window.isNativeApp reliably at runtime, ensuring correct detection in the native app environment.
-- New: The native-app detector script (src/native-app-detector.js) will be used to improve the reliability of the Play Store button hiding logic.
-- Play Store button logic and native app detection are now fully implemented and confirmed working as intended.
-- New: Bug identified in referral/registration flow: Alpine.js `referrerUsername` variable is not defined, causing registration state loss and UI errors. Investigation and fix required.
-- RESOLVED: Root cause found—`referrerUsername` was missing from the Alpine.js root object; now added and bug is fixed.
-- New: Bug identified in referral/registration flow: localStorage key mismatch (`lalumo_referral` vs `lalumo_referral_data`) caused registration state loss. Storage key usage is now consistent and bug is fixed.
-
-## Current Goal
-Continue and verify further SEO improvements: social cards, accessibility, content structure, etc.
+- In activity 1_2 "Match the Sounds", after 10 correct answers (progress), the wave sound should always play first after the switch, then revert to random selection among the three options.
+- The frog logic (jumpy melody first after unlock, then random) is working as intended and should be used as a reference.
+- Currently, after the wave unlock, the wave sound is not played first as required.
+- No failsafes should be added; fix the actual logic.
+- Add clear logging with unique tags if further diagnosis is needed.
 
 ## Task List
-- [x] Change checkmark color to green in referrals.html (CSS)
-- [x] Translate referral-related strings to German and add to strings.xml (values-de)
-  - [x] "your_referral_code"
-  - [x] "referred_by"
-  - [x] "referral_info"
-- [x] Extract all user-facing strings from referrals.html (lines 1-92) and add them to strings.xml (both English and German)
-- [x] List all untranslated user-facing strings still present in JavaScript code (systematic scan and list)
-  - [x] Initial alert/confirm messages found
-  - [x] Complete systematic listing of all untranslated JS strings
-  - [x] Extract all dynamically composed and multi-line user-facing strings (e.g., message += ...) for translation
-  - [x] Create a markdown file with a translation prompt for all such strings and filenames in /dev/
-  - [x] Identify further untranslated user-facing strings in other files (e.g., pitches/common.js)
-  - [x] Document isGerman-based translation pattern in translation prompt
-  - [x] Add English referral/progress/copy/share strings to strings.xml
-  - [x] Add German translations to values-de/strings.xml
-  - [x] Localize JavaScript strings in app.js using strings.xml
-  - [x] Add isGerman-based strings from pitches/common.js to strings.xml (EN/DE)
-  - [x] Extract isGerman-based UI strings from pitches.js and add to strings.xml (EN/DE)
-  - [x] Refactor isGerman-based translations in pitches/common.js to use $store.strings/strings.xml
-  - [x] Refactor isGerman-based translations in pitches.js to use $store.strings/strings.xml
-  - [x] Review and update translation_prompt.md examples for accuracy and completeness
-  - [x] Define and document next translation steps (systematic JS string extraction, migration, and verification)
-  - [x] Begin systematic JS code refactor and verification per translation_prompt.md
-  - [x] Continue systematic JS string migration and verification per translation_prompt.md
-  - [x] Migrate copy error messages to $store.strings in app.js
-  - [x] Migrate invalid save code error messages to $store.strings in app.js
-  - [x] Migrate no data to copy error messages to $store.strings in app.js
-  - [x] Migrate progress reset success messages to $store.strings in app.js
-  - [x] Complete systematic JS string migration and verification
-- [x] Refactor website HTML templates: adjacent lang="en"/"de" blocks for all translatable text (index-template.html complete)
-- [x] Implement custom language-loader for HTML (filters by lang at build)
-- [x] Update webpack config for multi-language builds and correct output structure (integrate into existing main config)
-- [x] Adjust all asset and navigation links to use absolute paths and language-specific routing
-- [x] Add SEO tags (hreflang, canonical, meta) for both languages
-- [x] Fix image paths in app/index.html so that images display correctly in the app output (current user focus).
-- [x] Test build: verify /app/index.html, /index.html, /de/index.html output, links, and SEO
-- [x] Fix webpack config and deploy pipeline for homepage images/assets
-- [x] Re-deploy and verify /de/ is now served, then confirm all homepage image assets are available on the live site (lalumo.eu and lalumo.eu/de/), with no missing directories or globs. Test with curl for visibility.
-- [x] Fix privacy, impressum, and agb pages for both EN and DE (ensure accessible and correct output)
-  - [x] Create impressum-template.html with adjacent lang="en"/"de" blocks - COMPLETE
-  - [x] Create agb-template.html with adjacent lang="en"/"de" blocks (EXACT content from old agb.html)
-  - [x] Create privacy-template.html with adjacent lang="en"/"de" blocks - COMPLETE
-  - [x] Integrate new templates into webpack config for multilingual output
-  - [x] Verify EN/DE output and links for these pages
-- [x] Add Play Store link to app navigation (web app only, not Android/iOS)
-- [x] Fix version number display in credits partial ("Loading version...").
-- [x] Comprehensive SEO optimization: meta tags and structured data/schema.org for homepage (EN/DE)
-- [x] Improve homepage content, headings, and structure for SEO (hero, features, etc.)
-- [x] Restore German flag language switcher on homepage
-- [x] Add a 6th point to "Why Lalumo is the Best Music App for Kids" section
-- [x] Remove child lock mention from homepage download button
-- [x] Refactor homepage features section per user instructions (reword fullscreen feature, reorder boxes, update visualization description)
-- [x] Diagnose and fix regression: switching to German in player settings does not work (likely due to strings-de.xml load failure)
-- [x] Adapt mobile-build.sh to new folder structure: only webapp in app/ for Android/iOS, homepage not included in native builds
-- [x] Fix image/assets path in mobile-build.sh for native app build
-- [x] Hide Play Store button in app navigation when running inside Android app (verify window.isNativeApp flag is set reliably; native-app-detector.js created and included in HTML)
-- [x] Play Store button logic and native app detection fully implemented and confirmed working
-- [x] Fix referral/registration bug: ensure Alpine.js `referrerUsername` is always defined and referral state is preserved in registration UI. (Includes fixing localStorage key mismatch)
-- [ ] Continue and verify further SEO improvements: social cards, accessibility, content structure, etc.
+- [x] Analyze current logic for wave sound after 10 correct answers in activity 1_2
+- [ ] Compare with frog logic for jumpy melody after unlock
+- [ ] Adjust code so wave sound always plays first after unlock, then randomizes
+- [ ] Test to confirm correct behavior
+
+## Current Goal
+Fix wave sound trigger after 10 correct answers
