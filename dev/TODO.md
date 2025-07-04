@@ -159,7 +159,6 @@ reset-button:
 
 
 1_2 "Match the Sounds":
-- direkt nach dem Wechsel für die Welle spielt er immer noch keine Welle. 
 - # bereit zur veröffentlichung
 - der reset button in der navi muss auch den hintergrund und die anzeige unten triggern, dass die refresht wird, im moment wird der dann noch einfach weiss
 
@@ -173,7 +172,6 @@ reset-button:
 
 1_4 Does It Sound Right:
 - Tiere beim Melodie raten sind noch zu weit unten positioniert
-- Funkel, Funkel kleiner setern klingt seltsam
 - # bereit zur veröffentlichung
 - der reset button in der navi muss auch die fortschrittsanzeige aktualisieren
 - when the "next melody" button is pressed in the "Does It Sound Right?" activity, the animal images should NOT change
@@ -193,12 +191,14 @@ reset-button:
   - feedback sound soll mit verzögerung abgespielt werden
 
 2_5_chords_color_matching:
-  - Major und  minor soll tendentiell öfter kommen
-  - Erster akkord nach progress Wechsel soll immer der neue sein
-  - automatisch den neuen akkord spielen
-  - reset auch im activity reset, im-und export berücksichtigen
+  - free play mode bevor man den play button drückt:
+    - Wenn man einen button drückt soll der akkord kommen.
+    - erst, wenn man die eule drückt, beginnt der game mode
+  - game mode:
+    - automatisch den neuen akkord spielen, wenn man richtig war, und wiederhlólen, wenn falsch
   - es fehlt ein error feedback shake und der sound
-  - free play mode bevor man den play button drückt
+  - reset auch im activity reset, im-und export berücksichtigen
+
   - # bereit zur veröffentlichung
   - bei progress >=30 sollen die akkorde in der höhe durch einen transpose faktor von +-6 halbtönen variieren:
     - bis 40 schlagen eichhörnchen und octopus in hintergrund, bei 50 wacht das eichhörnchen wieder auf, ... 

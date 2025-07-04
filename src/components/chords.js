@@ -1021,43 +1021,95 @@ export function chords() {
           JSON.parse(progressData)['2_5_chords_characters'] || 0 : 
           this?.progress?.['2_5_chords_characters'] || 0;
         
-        debugLog('CHORDS', `[REPETITION] Current progress: ${progress}`);
+        // Get previous progress to detect progress level changes
+        const previousProgress = this.previousProgress || 0;
+        const progressLevelChanged = 
+          (previousProgress <= 9 && progress >= 10) || 
+          (previousProgress <= 19 && progress >= 20);
+        
+        // Store current progress for next comparison
+        this.previousProgress = progress;
+        
+        debugLog('CHORDS', `[REPETITION] Current progress: ${progress}, previous: ${previousProgress}, levelChanged: ${progressLevelChanged}`);
         
         // Available chord types based on progress
         let chordTypes;
+        let newChordType = null;
+        
         if (progress <= 9) {
           // Progress <= 9: Only happy (major) and sad (minor)
           chordTypes = ['major', 'minor'];
         } else if (progress <= 19) {
           // Progress 10-19: happy, sad, and augmented
           chordTypes = ['major', 'minor', 'augmented'];
+          // The new chord at this progress level is augmented
+          if (progressLevelChanged) newChordType = 'augmented';
         } else {
           // Progress >= 20: All types available
           chordTypes = ['major', 'minor', 'diminished', 'augmented']; // happy, sad, mysterious, tense
+          // The new chord at this progress level is diminished
+          if (progressLevelChanged) newChordType = 'diminished';
         }
         
-        debugLog('CHORDS', `[REPETITION] Available chord types: ${JSON.stringify(chordTypes)}`);
+        debugLog('CHORDS', `[REPETITION] Available chord types: ${JSON.stringify(chordTypes)}, newChordType: ${newChordType}`);
         
-        // Apply repetition constraints based on progress
-        if ((progress >= 10 || this.consecutiveRepeats >= 2) && this.previousChordType && chordTypes.length > 1) {
-          // For progress ≥10 OR when we already had 2 consecutive repeats:
-          // Filter out the previous chord type to avoid repetition
-          const availableTypes = chordTypes.filter(type => type !== this.previousChordType);
-          this.currentChordType = availableTypes[Math.floor(Math.random() * availableTypes.length)];
-          this.consecutiveRepeats = 0; // Reset consecutive repeats as we're changing chord type
-          debugLog('CHORDS', `[REPETITION] Selected non-repeating chord type: ${this.currentChordType}`);
+        // If we just crossed a progress threshold, always use the newly unlocked chord type
+        if (newChordType) {
+          this.currentChordType = newChordType;
+          debugLog('CHORDS', `[REPETITION] Progress level changed! Using new chord type: ${newChordType}`);
         } else {
-          // Normal random selection with tracking repeats
-          this.currentChordType = chordTypes[Math.floor(Math.random() * chordTypes.length)];
+          // No progress level change, use weighted random selection
           
-          // Check if we're repeating the previous chord type
-          if (this.currentChordType === this.previousChordType) {
-            this.consecutiveRepeats++;
-            debugLog('CHORDS', `[REPETITION] Selected same chord type, incrementing repeat counter to: ${this.consecutiveRepeats}`);
+          // Apply repetition constraints based on progress
+          if ((progress >= 10 || this.consecutiveRepeats >= 2) && this.previousChordType && chordTypes.length > 1) {
+            // For progress ≥10 OR when we already had 2 consecutive repeats:
+            // Filter out the previous chord type to avoid repetition
+            const availableTypes = chordTypes.filter(type => type !== this.previousChordType);
+            
+            // Create weighted list to favor major and minor chords
+            const weightedTypes = [];
+            
+            // Add each available type to the weighted list
+            availableTypes.forEach(type => {
+              // Add major and minor twice for higher probability
+              if (type === 'major' || type === 'minor') {
+                weightedTypes.push(type);
+                weightedTypes.push(type); // Add a second time for higher weight
+              } else {
+                weightedTypes.push(type);
+              }
+            });
+            
+            this.currentChordType = weightedTypes[Math.floor(Math.random() * weightedTypes.length)];
+            this.consecutiveRepeats = 0; // Reset consecutive repeats as we're changing chord type
+            debugLog('CHORDS', `[REPETITION] Selected non-repeating chord type: ${this.currentChordType}`);
           } else {
-            // Different chord type selected, reset counter
-            this.consecutiveRepeats = 0;
-            debugLog('CHORDS', `[REPETITION] Selected different chord type, reset repeat counter`);
+            // Create weighted list to favor major and minor chords
+            const weightedTypes = [];
+            
+            // Add each type to the weighted list
+            chordTypes.forEach(type => {
+              // Add major and minor twice for higher probability
+              if (type === 'major' || type === 'minor') {
+                weightedTypes.push(type);
+                weightedTypes.push(type); // Add a second time for higher weight
+              } else {
+                weightedTypes.push(type);
+              }
+            });
+            
+            // Random selection with weighting
+            this.currentChordType = weightedTypes[Math.floor(Math.random() * weightedTypes.length)];
+            
+            // Check if we're repeating the previous chord type
+            if (this.currentChordType === this.previousChordType) {
+              this.consecutiveRepeats++;
+              debugLog('CHORDS', `[REPETITION] Selected same chord type, incrementing repeat counter to: ${this.consecutiveRepeats}`);
+            } else {
+              // Different chord type selected, reset counter
+              this.consecutiveRepeats = 0;
+              debugLog('CHORDS', `[REPETITION] Selected different chord type, reset repeat counter`);
+            }
           }
         }
         
