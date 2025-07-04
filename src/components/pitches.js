@@ -4388,24 +4388,47 @@ export function pitches() {
       
       // Play the note using the audio engine
       try {
-        // Konvertiere Millisekunden zu Tone.js-Notation
+        // FULL_DURATION_DEBUG: Let's add comprehensive logging to debug the note duration issue
         let noteDuration;
+        
+        // Get the actual base quarter note duration - this could be from the context of this sequence
+        // Not a hardcoded value
+        const effectiveQuarterDuration = options.melodyId && this.knownMelodies[options.melodyId]?.quarterNoteDuration || 700;
+        console.log(`DURATION_DEBUG: Using effective quarter note duration: ${effectiveQuarterDuration}ms`);
+        
+        // Get the input parameters for logging
+        console.log(`DURATION_DEBUG: Original note data:`, { 
+          name, 
+          duration, 
+          index, 
+          context, 
+          'melody ID': options.melodyId,
+          'total notes': notes.length,
+          'options': JSON.stringify(options)
+        });
+        
         if (duration) {
-          // Detektiere Notenwerte basierend auf Dauer in ms
-          if (duration <= 125) { // 16tel Note (sehr kurz)
+          // Base the mapping on relative multiples of quarter note duration
+          const relativeToQuarter = duration / effectiveQuarterDuration;
+          
+          // Original mapping logic with better thresholds
+          if (relativeToQuarter <= 0.25) { // 16th note (1/4 of quarter)
             noteDuration = '16n';
-          } else if (duration <= 250) { // 8tel Note
+          } else if (relativeToQuarter <= 0.5) { // 8th note (1/2 of quarter)
             noteDuration = '8n';
-          } else if (duration <= 500) { // Viertel Note
+          } else if (relativeToQuarter <= 0.9) { // Quarter note
             noteDuration = '4n';
-          } else if (duration <= 1000) { // Halbe Note
+          } else if (relativeToQuarter <= 1.9) { // Half note (about 2x quarter)
             noteDuration = '2n';
-          } else { // Ganze Note oder länger
+          } else { // Whole note or longer (4x quarter or more)
             noteDuration = '1n';
           }
+          
+          console.log(`DURATION_DEBUG: Mapped ${duration}ms (${relativeToQuarter}x quarter note) to ${noteDuration}`);
         } else {
-          // Standardwert, falls duration nicht definiert ist
+          // Default value if duration is not defined
           noteDuration = '4n';
+          console.log(`DURATION_DEBUG: No duration provided, defaulting to ${noteDuration}`);
         }
         
         console.log(`AUDIO: Playing note ${index+1}/${notes.length}: ${name} with notation ${noteDuration} (${duration}ms) in context "${context}"`);
@@ -4422,21 +4445,24 @@ export function pitches() {
           volume = 0.85;
         }
         
-        // Explizit die vorige Note stoppen, wenn wir eine neue spielen
-        if (this.lastPlayedNote) {
-          audioEngine.stopNote(this.lastPlayedNote);
-          this.lastPlayedNote = null;
-        }
+        // CRITICAL_FIX: The key insight is that we need to use the ORIGINAL duration 
+        // when playing the note, NOT the converted notation which gets mis-translated
         
-        // Spiele die Note mit musikalischer Notation
-        audioEngine.playNote(processedName, noteDuration, undefined, volume);
+        // Use the duration directly in milliseconds for accurate timing
+        const millisecondDuration = duration / 1000; // Convert ms to seconds for the audio engine
+        
+        console.log(`DURATION_FIX: Playing note with exact duration: ${millisecondDuration}s (${duration}ms)`);
+        
+        // Play the note with exact duration in seconds, not using musical notation
+        // This ensures that the note plays for exactly the duration specified
+        audioEngine.playNote(processedName, millisecondDuration, undefined, volume);
         
         // Speichere die aktuelle Note für zukünftige Stops
         this.lastPlayedNote = processedName;
         
-        // Berechne die tatsächliche Dauer in Millisekunden für das Timing des nächsten Tons
-        // Für die Zeitplanung verwenden wir weiterhin die originale Dauer in ms
-        const nextNoteTiming = duration || Tone.Time(noteDuration).toSeconds() * 1000;
+        // Use the original duration for timing the next note
+        // This ensures perfect synchronization between note length and timing
+        const nextNoteTiming = duration;
         
         // Schedule the next note
         const timeoutId = setTimeout(() => {
