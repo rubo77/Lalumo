@@ -1637,10 +1637,11 @@ section h2 {
   transition: all 0.2s ease;
   box-shadow: none;
   height: min(330px,calc(32vw + (100vw - 360px) * 0.3));
+  z-index: 100;
 }
 
 #\31 _1_pitches > button:nth-child(2){
-  height: 24vh !important;
+  height: max(36vw, 149px) !important;
   position: absolute;
   top: 0px;
 }
@@ -2497,7 +2498,7 @@ section h2 {
 
 .high-low-choices {
   position: absolute;
-  bottom: 15%;
+  top: 0;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
@@ -2505,12 +2506,11 @@ section h2 {
   z-index: 10;
 }
 
-.high-choice,
-.low-choice {
+.high-choice, .low-choice {
   width: 199px;
   height: 290px;
   position: relative;
-  top: -63px;
+  top: min(294px, 63vw);
   border: 0;
   border-radius: 15px;
   cursor: pointer;
