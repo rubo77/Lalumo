@@ -843,9 +843,29 @@ export function app() {
      * Generate a random username for new users
      */
     generateUsername() {
-      const adjectives = ['Happy', 'Clever', 'Brave', 'Bright', 'Creative', 'Curious', 'Eager', 'Friendly', 'Gentle', 'Kind'];
-      const animals = ['Dolphin', 'Tiger', 'Eagle', 'Panda', 'Koala', 'Lion', 'Penguin', 'Rabbit', 'Fox', 'Butterfly'];
-      
+      const adjectives = [
+        'Happy', 'Clever', 'Brave', 'Bright', 'Creative', 'Curious', 'Eager', 'Friendly', 'Gentle', 'Kind',
+        'Cheerful', 'Sunny', 'Shy', 'Playful', 'Calm', 'Witty', 'Bold', 'Joyful', 'Mighty', 'Peaceful',
+        'Cuddly', 'Charming', 'Jolly', 'Quick', 'Wise', 'Dreamy', 'Magical', 'Lucky', 'Quiet', 'Hopeful',
+        'Bubbly', 'Silly', 'Smart', 'Steady', 'Lively', 'Patient', 'Adventurous', 'Noble', 'Daring', 'Glowing',
+        'Graceful', 'Humble', 'Strong', 'Gentle', 'Sparkly', 'Warm', 'Chill', 'Fearless', 'Kindhearted', 'Loyal',
+        'Courageous', 'Inventive', 'Resourceful', 'Spry', 'Starlit', 'Snuggly', 'Peppy', 'Mellow', 'Twinkly', 'Helpful'
+      ];
+    
+      const animals = [
+        'Dolphin', 'Tiger', 'Eagle', 'Panda', 'Koala', 'Lion', 'Penguin', 'Rabbit', 'Fox', 'Butterfly',
+        'Otter', 'Squirrel', 'Owl', 'Wolf', 'Bear', 'Frog', 'Hedgehog', 'Mouse', 'Cat', 'Dog',
+        'Horse', 'Sheep', 'Goat', 'Pig', 'Chicken', 'Duck', 'Goose', 'Seal', 'Walrus', 'Moose',
+        'Giraffe', 'Zebra', 'Elephant', 'Hippo', 'Rhinoceros', 'Kangaroo', 'Bat', 'Swan', 'Peacock', 'Parrot',
+        'Canary', 'Lizard', 'Turtle', 'Chameleon', 'Crab', 'Lobster', 'Octopus', 'Starfish', 'Seahorse', 'Jellyfish',
+        'Bee', 'Ladybug', 'Ant', 'Grasshopper', 'Dragonfly', 'Firefly', 'Spider', 'Snail', 'Worm', 'Moth',
+        'Hamster', 'Gerbil', 'GuineaPig', 'Ferret', 'Mole', 'Shrew', 'Porcupine', 'Armadillo', 'Raccoon', 'Skunk',
+        'Badger', 'Platypus', 'Kookaburra', 'Cockatoo', 'Toucan', 'Orangutan', 'Chimpanzee', 'Lemur', 'Cheetah', 'Leopard',
+        'Jaguar', 'Cougar', 'Lynx', 'Caracal', 'Serval', 'Buffalo', 'Bison', 'Wombat', 'Wallaby', 'TasmanianDevil',
+        'Flamingo', 'Pelican', 'Stork', 'Crane', 'Albatross', 'Dodo', 'Emu', 'Ostrich', 'Hummingbird', 'Kingfisher',
+        'Salamander', 'Toad', 'Newt', 'Alligator', 'Crocodile', 'Gazelle', 'Ibex', 'Okapi', 'Tapir', 'Manatee'
+      ];
+    
       const randomAdjective = adjectives[Math.floor(Math.random() * adjectives.length)];
       const randomAnimal = animals[Math.floor(Math.random() * animals.length)];
       const randomNumber = Math.floor(Math.random() * 100);
