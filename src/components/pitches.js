@@ -660,25 +660,6 @@ export function pitches() {
     // ++++++++++ after here: TODO: migrate to new structure
 
     /**
-     * Setup for the High or Low activity
-     * @activity 1_1_high_or_low
-     */
-    setupHighOrLowMode_1_1() {
-      // Initialize the high or low activity
-      console.log('High or Low mode ready with progress:', this.highOrLowProgress);
-      
-      // Reset the current sequence so a new one will be generated on play
-      this.currentHighOrLowSequence = null;
-      
-      // Reset game state - not started until the user explicitly clicks play
-      this.gameStarted = false;
-      console.log('High or Low game reset, gameStarted:', this.gameStarted);
-      
-      // Show intro message immediately when entering the activity
-      this.showActivityIntroMessage('1_1_pitches_high_or_low');
-    },
-
-    /**
      * Generates a tone (or pair of tones) for the High or Low activity
      * based on the current difficulty stage
      * @activity 1_1_high_or_low

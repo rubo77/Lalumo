@@ -1927,65 +1927,7 @@ export function app() {
         this.isRegistering = false;
       }
     },
-    
-    /**
-     * Kopiert den Referral-Code in die Zwischenablage
-     */
-    copyReferralCode() {
-      if (!this.referralCode) {
-        console.error('Kein Referral-Code vorhanden!');
-        return;
-      }
-      
-      // Code in die Zwischenablage kopieren
-      navigator.clipboard.writeText(this.referralCode)
-        .then(() => {
-          console.log('Referral-Code in die Zwischenablage kopiert');
-          
-          // Visuelles Feedback (hier könnte eine UI-Benachrichtigung sein)
-          const button = document.querySelector('.referral-code-container .secondary-button');
-          if (button) {
-            const originalText = button.textContent;
-            button.textContent = this.$store.strings?.copied || 'Copied!';
-            
-            setTimeout(() => {
-              button.textContent = originalText;
-            }, 2000);
-          }
-        })
-        .catch(err => {
-          console.error('Fehler beim Kopieren des Referral-Codes:', err);
-        });
-    },
-    
-    /**
-     * Teilt den Referral-Code über die native Share-API
-     */
-    shareReferralCode() {
-      if (!this.referralCode) {
-        console.error('Kein Referral-Code vorhanden!');
-        return;
-      }
-      
-      const shareText = `${this.$store.strings?.share_text || 'Try Lalumo and use my referral code'}: ${this.referralCode}`;
-      
-      // Web Share API verwenden, wenn verfügbar
-      if (navigator.share) {
-        navigator.share({
-          title: this.$store.strings?.share_title || 'Lalumo Referral Code',
-          text: shareText,
-          url: window.location.href
-        }).then(() => {
-          console.log('Erfolgreich geteilt');
-        }).catch((error) => {
-          console.error('Fehler beim Teilen:', error);
-        });
-      } else {
-        // Fallback für Browser ohne Share API
-        this.copyReferralCode();
-        alert(this.$store.strings?.share_fallback || 'The referral code has been copied to your clipboard. Share it with your friends!');
-      }
-    },
+
     
     /**
      * Übersetzt Referral-Nachrichtencodes in lokalisierte Strings basierend auf der aktuellen Sprache
