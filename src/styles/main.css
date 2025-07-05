@@ -1413,11 +1413,18 @@ section h2 {
   max-height: min(999px, 163vw);
 }
 
-#\32 _5_chords_characters{
+/* #\32 _5_chords_characters Styles werden bei Bedarf hier definiert */
+
+.character-grid{
+  position: absolute;
+  height: 20px;
+  width: 100%;
+  left: 0;
+  top: 0;
 }
 
 #play-chord-2_5{
-  opacity: 0.2;
+  opacity: 0;
   width: 60%;
   height: min(48vw, 320px);
   background-color: #fff;
@@ -1432,7 +1439,7 @@ section h2 {
 }
 
 #button_2_5_1_major, #button_2_5_1_minor, #button_2_5_1_augmented, #button_2_5_1_diminished{
-  opacity: 0.2;
+  opacity: 0.0;
   position: absolute;
   top: min(47vw, 320px);
   left: 0;
@@ -1440,7 +1447,8 @@ section h2 {
   height: min(50vw, 250px);
   background-color: #fff;
   border-radius: 20%;
-  color:transparent
+  color:transparent;
+  cursor: pointer;
 }
 
 #button_2_5_1_major:hover, #button_2_5_1_minor:hover, #button_2_5_1_augmented:hover, #button_2_5_1_diminished:hover{
@@ -1459,6 +1467,11 @@ section h2 {
 
 #button_2_5_1_augmented{
   left: 70%;
+  top: min(62vw, 356px);
+}
+
+#button_2_5_1_augmented.progress2 {
+  top: min(44vw, 227px);
 }
 
 #button_2_5_1_diminished{

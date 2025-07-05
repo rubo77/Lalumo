@@ -804,7 +804,7 @@
                 <div title="Sad">Sad</div>
               </div>
               
-              <div id="button_2_5_1_augmented" class="character" @click="checkCharacterMatch('augmented')">
+              <div id="button_2_5_1_augmented" @click="checkCharacterMatch('augmented')" :class="(progress['2_5_chords_characters'] || 0) >= 10 && (progress['2_5_chords_characters'] || 0) < 20 ? 'character progress2' : 'character'">
                 <div title="Surprised">Surprised</div>
               </div>
               

@@ -211,8 +211,7 @@ cp package.json dist/
 # Sync with Capacitor
 echo "###### 6. Syncing with Capacitor..."
 
-# Kopieren der app/-Inhalte nach dist/, damit Capacitor sie findet
-# Die ursprüngliche Struktur muss beachtet werden, aber Capacitor erwartet die Dateien in dist/
+# move from dist/app/ to dist/ so Capacitor finds it in the right place dist/
 echo "Kopiere app/-Inhalte in das richtige Verzeichnis für Capacitor..."
 mkdir -p dist-temp
 cp -r dist/app/* dist-temp/
