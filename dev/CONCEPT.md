@@ -157,8 +157,12 @@ Simple triads are translated into colors, moods, or figures. Children can guess,
     - Geht schon, aber viel zu schwer für kleine Kinder
 
 [ ] **Chord Story Characters: (2_5_chords_characters)**
-  Different chord types are represented by distinct characters with matching personalities (e.g., happy character for major, mysterious character for diminished). Children match characters to the chords they hear.
-    - sound geht noch nicht
+  Different chord types are represented by distinct characters with matching personalities (e.g. a happy dog character for major, mysterious octopus character for diminished). Children match characters to the chords they hear.
+  1. When entering the activity, users can freely click any chord character to hear what it sounds like (free play mode)
+  2. When ready to begin the learning game, click the owl button
+  3. In game mode, the play button plays a chord and the user must identify it
+  4. The game provides automatic chord progression after correct answers
+
 
 [ ] **Harmony Gardens: (2_6_chords_harmony-gardens)**
   Children plant and grow virtual flowers by selecting chord sequences. Different chord combinations create different garden patterns, visualizing how harmonies work together in music.

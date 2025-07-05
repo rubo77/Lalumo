@@ -128,6 +128,9 @@ reset-button:
 
 - ganz viel ist noch strings hartkodiert mit `isGerman`
 
+- nach dem creieren des usernamens eine info box mit "dein name ist ... . Du kannst dies in den Einstellungen ändern
+
+
 # play store:
 - In die Texte dass der Bildschirm gesperrt ist
 - "Images created with ChatGpt mindfull. Loving prompts" verbessern
@@ -191,11 +194,6 @@ reset-button:
   - feedback sound soll mit verzögerung abgespielt werden
 
 2_5_chords_color_matching:
-  - free play mode bevor man den play button drückt:
-    - Wenn man einen button drückt soll der akkord kommen.
-    - erst, wenn man die eule drückt, beginnt der game mode
-  - game mode:
-    - automatisch den neuen akkord spielen, wenn man richtig war, und wiederhlólen, wenn falsch
   - es fehlt ein error feedback shake und der sound
   - reset auch im activity reset, im-und export berücksichtigen
 
@@ -223,38 +221,9 @@ reset-button:
 
 # most important
 
+- language setting bleibt nch nicht über den reload erhalten
 
-Implementiere eine robuste Tonzufalls-Steuerung für die 1_1-Aktivität der Lalumo-App mit doppelter Beschränkung:
-
-1. DOPPELTE BESCHRÄNKUNG:
-   - Maximal 3 identische Tonbereiche (hoch/tief) dürfen nacheinander erscheinen
-   - NIE den EXAKT gleichen Ton zweimal hintereinander verwenden
-   - Beide Regeln müssen gleichzeitig erfüllt sein
-   - Diese Beschränkungen gelten für ALLE Progress-Levels gleichmäßig
-
-2. TRACKING-VARIABLEN:
-   - `consecutiveSameRangeCount`: Zählt aufeinanderfolgende gleiche Bereiche
-   - `previousToneRange`: Speichert den vorherigen Tonbereich ('high' oder 'low')
-   - `previousExactTone`: Speichert den zuvor generierten exakten Ton (z.B. 'C5')
-   - Bei der Initialisierung: Diese Variablen auf 0, null bzw. null setzen
-
-3. IMPLEMENTIERUNGSLOGIK:
-   - In [getRandomTone1_1()](cci:1://file:///var/www/Musici/src/components/pitches.js:777:4-790:5): 
-     - Einen Ton wählen, der NICHT `previousExactTone` entspricht
-     - Wenn Filter nötig: Array filtern und zufälligen Ton aus den verbleibenden wählen
-   
-   - In `generate1_1HighOrLowSequence()`:
-     - Wenn `consecutiveSameRangeCount >= 3`: ERZWINGE den entgegengesetzten Bereich
-     - Bestehende `isSameAsPrevious`-Logik beibehalten, um exakte Rätselduplikate zu vermeiden
-     - Nach erfolgreicher Generierung: Update von `previousToneRange` und `consecutiveSameRangeCount`
-       - Wenn gleicher Bereich: Inkrementiere `consecutiveSameRangeCount`
-       - Wenn anderer Bereich: Setze `consecutiveSameRangeCount` auf 1
-     - Speichere den generierten Ton in `previousExactTone`
-
-4. DEBUGGING:
-   - Logging mit dem Tag [1_1_RANDOM] für alle relevanten Schritte
-   - Logge Zustand vor/nach der Auswahl: "Vor Auswahl: count=X, prevRange=Y, prevTone=Z"
-   - Bei erzwungenen Wechseln klar markieren: "ERZWUNGEN: Wechsel zu entgegengesetztem Bereich"
-
-Implementiere diese Logik in `generate1_1HighOrLowSequence()` und [getRandomTone1_1()](cci:1://file:///var/www/Musici/src/components/pitches.js:777:4-790:5), wobei beide Beschränkungen korrekt umgesetzt werden müssen.
-
+generiere mehr Tiere und Moods hier:
+    generateUsername() {
+      const adjectives = ['Happy', 'Clever', 'Brave', 'Bright', 'Creative', 'Curious', 'Eager', 'Friendly', 'Gentle', 'Kind'];
+      const animals = ['Dolphin', 'Tiger', 'Eagle', 'Panda', 'Koala', 'Lion', 'Penguin', 'Rabbit', 'Fox', 'Butterfly'];

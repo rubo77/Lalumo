@@ -17,6 +17,7 @@ app/homepage/images/logo_bird_sings.jpg
 /app/partials/*
 /app/robots.txt
 /app/sitemap.xml
+/app/android/app/src/main/res/values*/strings*.xml
 
 # Generated XML files for web development (copied from android/app/src/main/res/)
 public/android/
@@ -37,6 +38,8 @@ public/android/
 .idea/dynamic.xml
 .idea/uiDesigner.xml
 .idea/dbnavigator.xml
+.idea/misc.xml
+.idea/vcs.xml
 # Also ignore user-specific files in android/.idea/
 android/.idea/workspace.xml
 android/.idea/tasks.xml
@@ -50,6 +53,8 @@ android/.idea/sqlDataSources.xml
 android/.idea/dynamic.xml
 android/.idea/uiDesigner.xml
 android/.idea/dbnavigator.xml
+android/.idea/deploymentTargetSelector.xml
+android/.idea/deviceManager.xml
 # Editor-Verzeichnisse und Dateien
 *.suo
 *.ntvs*
@@ -79,6 +84,8 @@ yarn-error.log*
 /android/.gradle/
 /android/app/release/
 /android/app/src/
+!/android/app/src/main/res/values-de	
+!/android/app/src/main/res/values
 /android/app/build/
 /android/build/
 /android/captures/
@@ -91,12 +98,10 @@ yarn-error.log*
 
 # Admin dashboard
 /admin/
+
+# more
 /app/favicon.ico
 /app/icons/apple-touch-icon.png
 /app/icons/icon-192.png
 /app/icons/icon-512.png
-/app/android/app/src/main/res/values*/strings*.xml
-/android/.idea/deploymentTargetSelector.xml
-/android/.idea/deviceManager.xml
-/.idea/misc.xml
-/.idea/vcs.xml
+	

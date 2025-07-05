@@ -1417,9 +1417,9 @@ section h2 {
 }
 
 #play-chord-2_5{
-  opacity: 0;
+  opacity: 0.2;
   width: 60%;
-  height: min(40vw, 320px);
+  height: min(48vw, 320px);
   background-color: #fff;
   border-radius: 20%;
   position:absolute;
@@ -1432,11 +1432,11 @@ section h2 {
 }
 
 #button_2_5_1_major, #button_2_5_1_minor, #button_2_5_1_augmented, #button_2_5_1_diminished{
-  opacity: 0;
+  opacity: 0.2;
   position: absolute;
   top: min(47vw, 320px);
   left: 0;
-  width: min(37vw, 250px);
+  width: min(37vw, 200px);
   height: min(50vw, 250px);
   background-color: #fff;
   border-radius: 20%;
@@ -1447,8 +1447,13 @@ section h2 {
   opacity: 0.05;
 }
 
+#button_2_5_1_major{
+  top: min(31vw, 220px);
+  height: min(70vw, 350px);
+}
+
 #button_2_5_1_minor{
-  left: min(37vw, 250px);
+  left: min(29vw, 205px);
   width: min(37vw, 180px);
 }
 
@@ -1457,7 +1462,7 @@ section h2 {
 }
 
 #button_2_5_1_diminished{
-  top: min(101vw, 600px);
+  top: min(97vw, 545px);
   width: 100%;
 }
 

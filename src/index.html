@@ -779,7 +779,11 @@
             </button>
           </div>
           
-          <button id="play-chord-2_5" @click="playCurrent2_5Chord()" class="play-button" :title="$store.strings?.play_chord || 'Play Chord'">▶️</button>
+          <!-- start-button, shown in free play mode -->
+          <button id="play-chord-2_5" @click="start2_5GameMode()" class="play-button" x-show="is2_5FreePlayMode" style="font-size: 2em; cursor: pointer;" :title="$store.strings?.start_game || 'Start Game Mode'">🦉</button>
+          
+          <!-- Play button (shown in game mode) -->
+          <button id="play-chord-2_5" @click="playCurrent2_5Chord()" class="play-button" x-show="!is2_5FreePlayMode" :title="$store.strings?.play_chord || 'Play Chord'">▶️</button>
 
           <div class="chords-container">            
             <!-- Progress display -->

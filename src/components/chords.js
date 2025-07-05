@@ -1004,6 +1004,36 @@ export function chords() {
      * ******** Character Matching Activity Methods ********
      * *************************************************** */
     /**
+     * Free play mode flag for 2_5_chord_characters
+     * When true, pressing character buttons plays the chord without checking answers
+     * When false (game mode), the regular game logic applies
+     */
+    is2_5FreePlayMode: true,
+    /**
+     * Start game mode for the character matching activity
+     * Switches from free play mode to game mode
+     * 
+     * @activity 2_5_chord_characters
+     */
+    start2_5GameMode() {
+      debugLog('CHORDS', `[2_5] Switching to game mode`);
+      this.is2_5FreePlayMode = false;
+      // Play first chord in game mode
+      this.currentChordType = null; // Reset to generate a new chord
+      this.playCurrent2_5Chord();
+    },
+    
+    /**
+     * Play a specific chord type directly (for free play mode)
+     * 
+     * @activity 2_5_chord_characters
+     */
+    play2_5ChordByType(chordType) {
+      debugLog('CHORDS', `[2_5] Playing chord in free play mode: ${chordType}`);
+      this.playChordByType(chordType);
+    },
+    
+    /**
      * Play the current chord for the character matching activity
      * 
      * @activity 2_5_chord_characters
@@ -1127,11 +1157,21 @@ export function chords() {
     },
     
     /**
-     * check
+     * Check if the selected chord type matches the current chord type
+     * In free play mode: simply play the chord
+     * In game mode: check answer and handle feedback
      * 
      * @activity 2_5_chord_characters
      */
     checkCharacterMatch(selectedChordType) {
+      // Check if in free play mode
+      if (this.is2_5FreePlayMode) {
+        debugLog('CHORDS', `[2_5] Free play mode: playing ${selectedChordType} chord`);
+        this.play2_5ChordByType(selectedChordType);
+        return;
+      }
+      
+      // Game mode logic
       // Initialize if needed
       if (!this.currentChordType) {
         this.playCurrent2_5Chord(); // This will set a random chord
@@ -1171,6 +1211,9 @@ export function chords() {
           debugLog('CHORDS', `[REPETITION] Setting currentChordType to null after correct answer. previousChordType: ${this.previousChordType}`);
           this.currentChordType = null;
           this.showFeedback = false;
+          
+          // Automatically play the next chord after correct answer (new requirement)
+          this.playCurrent2_5Chord();
         }, 1500);
       } else {
         this.feedbackMessage = this.$store.strings.error_message || 'Not quite right. Try again!';
@@ -1178,6 +1221,9 @@ export function chords() {
         // Hide feedback after delay
         setTimeout(() => {
           this.showFeedback = false;
+          
+          // Repeat the same chord after incorrect answer (new requirement)
+          this.playChordByType(this.currentChordType);
         }, 1500);
       }
       
