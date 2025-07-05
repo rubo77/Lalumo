@@ -139,23 +139,22 @@ reset-button:
 - referral count page aus den settings aufrufbar machen
 - das template in dem partial refferer.html funktioniert nichdt, ev. templates werden in partials nicht gaufgelöst? in commit 4d82fbca wurde ein äjhnliches problem gelöst
 
+- die meisten activities sollen einen free- und einen game-mode haben, in dem man die sounds ausprobieren kann (free) oder das game spielt, bei dem man die richtigen buttons drücken muss, der die richtigen effekte zeigt aus `feedback.js`
 
 ## nach kapitel
 
 1_1 "High or Low?" (1_1_pitches_high_or_low) 
-- max 3x hintereinander der selbe high or low bereich
+- erfolgs und error sound wie in 1_2
 - # bereit zur veröffentlichung
 - die tiefen töne sind eine oktave zu tief
 - der reset button in der navi muss auch die fortschrittsanzeige aktualisieren
 - ändere, dass man immer 1s warten muss, bis man wählen kann, welche Taste man drückt. man soll sofort, wenn man den ton hört schon wählen dürfen
-- die Welle muss Sägezahn sein ohne Brandung 
 - im master level dürfen die töne maximal 3 halbtöne auseinander sein und der erste ton muss nicht mehr C5 sein, sondern kann jeder beliebige sein, es wird nur getestet, ob der 2. ton dann höher oder tiefer ist
 - die erfolgsmeldung muss sich ab level 3 aendern in "der ton war höher" anstatt "hoch" und "der ton war tiefer" anstatt "tief"
 
 - Entferne alle Überbleibsel der alten "Listen to melodies"-Funktionalität:
    - Lösche unnötige Melodie-Abspielfunktionen für die alte Aktivität
 
-- die meisten activities sollen einen free- und einen game-mode haben, in dem man die sounds ausprobieren kann (free) oder das game spielt, bei dem man die richtigen buttons drücken muss, der die richtigen effekte zeigt aus `feedback.js`
 
 - Die volle  bildschirmbreite Aus nutzen auf dem Handy
 
@@ -163,6 +162,7 @@ reset-button:
 
 1_2 "Match the Sounds":
 - # bereit zur veröffentlichung
+- die Welle muss Sägezahn sein ohne Brandung 
 - der reset button in der navi muss auch den hintergrund und die anzeige unten triggern, dass die refresht wird, im moment wird der dann noch einfach weiss
 
 1_3 Draw a Melody:
@@ -210,7 +210,7 @@ reset-button:
 -------------------------------------------
 - Background-Bilder Lazy load testen
 
- - back button in android gesondert handeln: der back-button soll da zurück ins menu gehen, aber nur, wenn die navigation nicht gelockt ist.
+ - back button in android gesondert behandeln: der back-button soll da zurück ins menu gehen, aber nur, wenn die navigation nicht gelockt ist.
 
 - exportProgress funktioniiert nicht merh, wenn man garbage importiert hat
 
@@ -221,9 +221,3 @@ reset-button:
 
 # most important
 
-- language setting bleibt nch nicht über den reload erhalten
-
-generiere mehr Tiere und Moods hier:
-    generateUsername() {
-      const adjectives = ['Happy', 'Clever', 'Brave', 'Bright', 'Creative', 'Curious', 'Eager', 'Friendly', 'Gentle', 'Kind'];
-      const animals = ['Dolphin', 'Tiger', 'Eagle', 'Panda', 'Koala', 'Lion', 'Penguin', 'Rabbit', 'Fox', 'Butterfly'];

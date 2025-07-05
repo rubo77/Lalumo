@@ -688,6 +688,15 @@ export function app() {
           this.showUsernamePrompt = true;
         }
         
+        // Load language preference from localStorage
+        const savedLanguage = localStorage.getItem('lalumo_language');
+        if (savedLanguage) {
+          this.preferredLanguage = savedLanguage;
+          console.log('Language preference loaded:', this.preferredLanguage);
+          // Update the HTML lang attribute immediately
+          document.documentElement.lang = this.preferredLanguage === 'german' ? 'de' : 'en';
+        }
+        
         // Load referral system data from localStorage
         const savedReferralData = localStorage.getItem('lalumo_referral');
         if (savedReferralData) {
