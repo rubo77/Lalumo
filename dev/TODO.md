@@ -192,6 +192,8 @@ reset-button:
     - bis 40 schlafen das eichhörnchen und octopus in hintergrund, bei 50 wacht das eichhörnchen wieder auf, ... 
   - es soll der erfolgssound kommen
   - wenn man während der regenbogen läuft drückt, soll schon der neue akkord abgespielt werden und nicht der letzte
+  - Wenn man einen Fehler macht dann progress ininerhalb der stufe wieder auf Null setzen
+
 
 # mobile-build.sh:
 - die find funktion, die nur das kopieren soll was benutzt wird passiert zu spät, es wird vorher schon mit rsync alles von public/ nach dist/ kopiert. ich habe den original folder da hinzugefügt, aber es wäre schöner, wenn das automatisch nicht gersnynct würde, wenn es nicht bnutzt wird

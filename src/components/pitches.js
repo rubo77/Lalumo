@@ -3629,8 +3629,17 @@ export function pitches() {
         (this.$store.strings?.memory_incorrect || 'Let\'s try again. Listen carefully!');
       
       // Play feedback sound using the central audio engine
-      audioEngine.playNote(isCorrect ? 'success' : 'try_again', 1.0);
-      console.log(`AUDIO: Playing ${isCorrect ? 'success' : 'try_again'} feedback sound with audio engine`);
+      if (isCorrect) {
+        // Add 1 second delay before playing success sound
+        setTimeout(() => {
+          audioEngine.playNote('success', 1.0);
+          console.log('AUDIO: Playing success feedback sound with audio engine after 1s delay');
+        }, 1000);
+      } else {
+        // Play error sound immediately
+        audioEngine.playNote('try_again', 1.0);
+        console.log('AUDIO: Playing try_again feedback sound with audio engine');
+      }
       
       // Show appropriate animation based on result
       if (isCorrect) {

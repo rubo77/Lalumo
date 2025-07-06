@@ -92,6 +92,11 @@
     <string name="unlock_jump_message">Schaffe 20 richtige Antworten für Zufalls-Melodien! 🐸</string>
     <string name="all_patterns_unlocked">Alle Muster freigeschaltet! 🎉</string>
     
+    <!-- Chord Animals Unlocks -->
+    <string name="unlock_squirrel_message">Schaffe 10 richtige für das Eichhörnchen! 🐿️</string>
+    <string name="unlock_octopus_message">Schaffe 20 richtige für den Oktopus! 🐙</string>
+    <string name="all_animals_unlocked">Alle Tiere freigeschaltet! 🎉</string>
+    
     <!-- Mascot Messages for Unlocks -->
     <string name="mascot_wave_unlocked">Toll! Du hast Wellen-Melodien freigeschaltet! 🌊</string>
     <string name="mascot_jump_unlocked">Fantastisch! Du hast Zufalls-Sprung-Melodien freigeschaltet! 🐸</string>

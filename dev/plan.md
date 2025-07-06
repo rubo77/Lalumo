@@ -12,6 +12,7 @@
 - Username info box and update messages are now localized in both English and German
 - Update fallback message in setUsername to English unless localized in German
 - Add 1s delay before memory game feedback sound
+- Localize unlock_squirrel_message, unlock_octopus_message, and all_animals_unlocked in EN/DE
 
 ## Task List
 - [x] Locate where username creation is handled in the codebase
@@ -26,7 +27,8 @@
 - [x] Update fallback message in setUsername method
 - [x] Update referral URL path for local development
 - [x] Test the feature end-to-end
-- [ ] Add 1s delay before playing feedback sound in memory game
+- [x] Add 1s delay before playing feedback sound in memory game
+- [ ] Localize unlock_squirrel_message, unlock_octopus_message, and all_animals_unlocked in EN/DE
 
 ## Current Goal
-Add 1s delay to memory game feedback sound
+Test and verify memory game feedback delay

@@ -92,6 +92,11 @@
     <string name="unlock_jump_message">Get 20 correct to unlock random patterns! 🐸</string>
     <string name="all_patterns_unlocked">All patterns unlocked! 🎉</string>
     
+    <!-- Chord Animals Unlocks -->
+    <string name="unlock_squirrel_message">Get 10 correct to unlock the squirrel! 🐿️</string>
+    <string name="unlock_octopus_message">Get 20 correct to unlock the octopus! 🐙</string>
+    <string name="all_animals_unlocked">All animals unlocked! 🎉</string>
+    
     <!-- Mascot Messages for Unlocks -->
     <string name="mascot_wave_unlocked">Great! You unlocked wavy melodies! 🌊</string>
     <string name="mascot_jump_unlocked">Amazing! You unlocked random jump melodies! 🐸</string>
