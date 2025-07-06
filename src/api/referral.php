@@ -21,19 +21,6 @@ require_once 'utils/js_config.php';
 $config = getJsConfig(__DIR__ . '/../config.js');
 debugLog('Config loaded from primary path: ' . __DIR__ . '/config.js');
 
-// Wenn die Konfiguration nicht geladen werden kann, versuche einen alternativen Pfad
-if (empty($config) || !isset($config['API_BASE_URL'])) {
-    debugLog('Config not found at primary path, trying fallback path');
-    $config = getJsConfig(__DIR__ . '/config.js');
-    debugLog('Config loaded from fallback path: ' . __DIR__ . '/config.js');
-}
-// Wenn die Konfiguration nicht geladen werden kann, versuche einen alternativen Pfad
-if (empty($config) || !isset($config['API_BASE_URL'])) {
-    debugLog('Config not found at primary path, trying fallback path');
-    $config = getJsConfig(__DIR__ . '/../app/config.js');
-    debugLog('Config loaded from fallback path: ' . __DIR__ . '/../config.js');
-}
-
 // Debugging: Konfiguration protokollieren
 debugLog('Config loaded: ' . json_encode($config));
 debugLog('Request from: ' . ($_SERVER['HTTP_ORIGIN'] ?? 'unknown'));
@@ -79,14 +66,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 // Ermittle den richtigen Datenbankpfad je nach Umgebung
 if(preg_match('/^\/var\/www/', __DIR__)) {
     // Lokale Entwicklungsumgebung
-    $dbDir = __DIR__ . '/../../data';
+    $dbDir = '../../';
     debugLog('Using local database path');
 } else {
     // Produktionsumgebung
-    $dbDir =  __DIR__ . '/../../data';
+    $dbDir =  '../../';
     debugLog('Using production database path');
 }
-$dbFile = $dbDir . '/referrals.db';
+$dbFile = $dbDir . 'data/referrals.db';
 debugLog('Database path: ' . $dbFile);
 
 // Erstelle data-Verzeichnis falls es nicht existiert

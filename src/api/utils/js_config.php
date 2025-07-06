@@ -4,6 +4,9 @@
  * Used for reading the central config.js file
  */
 
+// Debug-Modus aktivieren (auf false setzen für Produktion)
+define('DEBUG', true);
+
 // Hilfsfunktion zur Anzeige von Diagnoseinformationen bei direktem Aufruf
 function showDiagnostics() {
     // Nur anzeigen, wenn direkt aufgerufen (nicht als Include)
@@ -55,20 +58,32 @@ function showDiagnostics() {
  * @return array Parsed config as associative array
  */
 function parseJsConfigFile($filePath) {
+    if (!file_exists($filePath)) {
+        debugLog("[CONFIG_ERROR] File not found: $filePath");
+        return [];
+    }
+    
     $contents = file_get_contents($filePath);
+    if (!$contents) {
+        debugLog("[CONFIG_ERROR] Could not read file: $filePath");
+        return [];
+    }
+    
+    debugLog("[CONFIG_DEBUG] Parsing file: $filePath");
     $result = [];
     
-    // Extract the configuration object using regex patterns
-    // This assumes that the config object follows a specific structure in config.js
-    $pattern = '/const\s+configData\s*=\s*({[^;]*});/s';
+    // Pattern angepasst, um auch minifizierten Code zu unterstützen
+    $pattern = '/const\s*configData\s*=\s*({.*?(?=\};|\},\s*is|\},\s*let))/s';
     if (preg_match($pattern, $contents, $matches)) {
         $configBlock = $matches[1];
+        debugLog("[CONFIG_DEBUG] Found config block");
         
-        // Extract development section
+        // Pattern für Entwicklungsumgebung - angepasst für minifizierten Code
         $devPattern = '/development:\s*{([^}]*)}/s';
         if (preg_match($devPattern, $configBlock, $devMatches)) {
             $devSection = $devMatches[1];
-            preg_match_all('/(\w+):\s*[\'"]([^\'"]*)[\'"],?/s', $devSection, $devKeyValues);
+            // Verbesserte Pattern für Key-Value-Paare (unterstützt minifizierten Code)
+            preg_match_all('/([A-Za-z0-9_]+)\s*:\s*"([^"]*)"/', $devSection, $devKeyValues);
             
             $result['development'] = [];
             for ($i = 0; $i < count($devKeyValues[1]); $i++) {
@@ -76,13 +91,18 @@ function parseJsConfigFile($filePath) {
                 $value = $devKeyValues[2][$i];
                 $result['development'][$key] = $value;
             }
+            
+            debugLog("[CONFIG_DEBUG] Found " . count($result['development']) . " development config items");
+        } else {
+            debugLog("[CONFIG_ERROR] Could not extract development section");
         }
         
-        // Extract production section
+        // Pattern für Produktionsumgebung - angepasst für minifizierten Code
         $prodPattern = '/production:\s*{([^}]*)}/s';
         if (preg_match($prodPattern, $configBlock, $prodMatches)) {
             $prodSection = $prodMatches[1];
-            preg_match_all('/(\w+):\s*[\'"]([^\'"]*)[\'"],?/s', $prodSection, $prodKeyValues);
+            // Verbesserte Pattern für Key-Value-Paare (unterstützt minifizierten Code)
+            preg_match_all('/([A-Za-z0-9_]+)\s*:\s*"([^"]*)"/', $prodSection, $prodKeyValues);
             
             $result['production'] = [];
             for ($i = 0; $i < count($prodKeyValues[1]); $i++) {
@@ -90,7 +110,13 @@ function parseJsConfigFile($filePath) {
                 $value = $prodKeyValues[2][$i];
                 $result['production'][$key] = $value;
             }
+            
+            debugLog("[CONFIG_DEBUG] Found " . count($result['production']) . " production config items");
+        } else {
+            debugLog("[CONFIG_ERROR] Could not extract production section");
         }
+    } else {
+        debugLog("[CONFIG_ERROR] Could not find config data in file");
     }
     
     return $result;
@@ -112,6 +138,9 @@ function getJsConfig($configFile) {
               strpos($host, 'lalumo.z11.de') !== false;
     
     // Return appropriate config
+    if(!array_key_exists('production', $config)){
+        debugLog("[LALUMO CONFIG] $configFile : ".json_encode($config));
+    }
     return $isProd ? $config['production'] : $config['development'];
 }
 

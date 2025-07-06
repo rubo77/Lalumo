@@ -6,13 +6,13 @@
 // Hardcode configuration for now until we resolve YAML loading issues
 const configData = {
   development: {
-    API_BASE_URL: 'http://localhost:8080',
+    API_BASE_URL: 'http://localhost:8080/api',
     APP_BASE_URL: 'http://localhost:9091',
-    APP_BASE_PATH: '/'
+    APP_BASE_PATH: '/app/'
   },
   production: {
     API_BASE_URL: 'https://lalumo.eu/api',
-    APP_BASE_URL: 'https://lalumo.eu/app',
+    APP_BASE_URL: 'https://lalumo.eu',
     APP_BASE_PATH: '/app/'
   }
 };
