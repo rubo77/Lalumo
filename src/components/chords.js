@@ -1218,6 +1218,21 @@ export function chords() {
       } else {
         this.feedbackMessage = this.$store.strings.error_message || 'Not quite right. Try again!';
         
+        // Play error sound feedback
+        audioEngine.playNote('try_again', 1.0);
+        console.log('AUDIO: Playing try_again feedback sound for incorrect chord match');
+        
+        // Add shake animation to the incorrect button
+        const selectedButton = document.querySelector(`#button_2_5_1_${selectedChordType}`);
+        if (selectedButton) {
+          selectedButton.classList.add('shake-animation');
+          
+          // Remove shake class after animation completes
+          setTimeout(() => {
+            selectedButton.classList.remove('shake-animation');
+          }, 500);
+        }
+        
         // Hide feedback after delay
         setTimeout(() => {
           this.showFeedback = false;

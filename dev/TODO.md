@@ -181,7 +181,8 @@ reset-button:
 
 
 1_5 memory game:
-  - der feedback sound soll erst mit 1s mit verzögerung abgespielt werden, nachdem man den richtigen tonfolge gespielt hat
+ - Der letzte ton der reihe wird immer nicht abgespielt
+ - Piano Melodie beim erstmal ohne Farben abspielen, nur wenn man einen Fehler gemacht hat, dann noch mal mit Farben wiederholen
   - # bereit zur veröffentlichung
 
 2_5_chords_color_matching:

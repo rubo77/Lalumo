@@ -3481,8 +3481,32 @@ export function pitches() {
       
       // Play memory sequence with timing
       const playMemory = (notes, index = 0) => {
-        if (index >= notes.length) {
-          // Reset highlighting when done
+        // Play the current note
+        if (index < notes.length) {
+          // Highlight current note
+          this.currentHighlightedNote = notes[index];
+          console.log(`DEBUG: Playing memory note ${index+1}/${notes.length}: ${notes[index]}`);
+          
+          // Play current note using the central audio engine
+          audioEngine.playNote(notes[index].toLowerCase(), 0.6);
+          
+          // Schedule next note with tracking
+          const nextNoteTimeoutId = setTimeout(() => {
+            // Timeout aus Tracking entfernen, wenn es ausgeführt wird
+            const timeoutIndex = this.melodyTimeouts.indexOf(nextNoteTimeoutId);
+            if (timeoutIndex !== -1) {
+              this.melodyTimeouts.splice(timeoutIndex, 1);
+              console.log(`DEBUG: Memory sequence timeout executed and removed from tracking (${this.melodyTimeouts.length} remaining)`);
+            }
+            
+            playMemory(notes, index + 1);
+          }, 600);
+          
+          // Timeout im melodyTimeouts-Array tracken
+          this.melodyTimeouts.push(nextNoteTimeoutId);
+          console.log(`DEBUG: Added memory sequence timeout to tracking (${this.melodyTimeouts.length} total)`);
+        } else {
+          // All notes have been played, reset highlighting when done
           const highlightTimeoutId = setTimeout(() => {
             this.currentHighlightedNote = null;
             
@@ -3500,28 +3524,6 @@ export function pitches() {
           return;
         }
         
-        // Highlight current note
-        this.currentHighlightedNote = notes[index];
-        console.log(`DEBUG: Playing memory note ${index+1}/${notes.length}: ${notes[index]}`);
-        
-        // Play current note using the central audio engine
-        audioEngine.playNote(notes[index].toLowerCase(), 0.6);
-        
-        // Schedule next note with tracking
-        const nextNoteTimeoutId = setTimeout(() => {
-          // Timeout aus Tracking entfernen, wenn es ausgeführt wird
-          const timeoutIndex = this.melodyTimeouts.indexOf(nextNoteTimeoutId);
-          if (timeoutIndex !== -1) {
-            this.melodyTimeouts.splice(timeoutIndex, 1);
-            console.log(`DEBUG: Memory sequence timeout executed and removed from tracking (${this.melodyTimeouts.length} remaining)`);
-          }
-          
-          playMemory(notes, index + 1);
-        }, 600);
-        
-        // Timeout im melodyTimeouts-Array tracken
-        this.melodyTimeouts.push(nextNoteTimeoutId);
-        console.log(`DEBUG: Added memory sequence timeout to tracking (${this.melodyTimeouts.length} total)`);
       };
       
       // Start playing

@@ -13,6 +13,10 @@
 - Update fallback message in setUsername to English unless localized in German
 - Add 1s delay before memory game feedback sound
 - Localize unlock_squirrel_message, unlock_octopus_message, and all_animals_unlocked in EN/DE
+- Update sitemap.xml for new homepage, index, impressum, datenschutz, app, and EN/DE links
+- Bug: In 1_5 memory game, the last note of the sequence is not played
+- 2_5_chords_color_matching: Add error feedback shake and sound like in 1_2
+- 1_1_pitches_high_or_low: Use success and error sounds like in 1_2
 
 ## Task List
 - [x] Locate where username creation is handled in the codebase
@@ -28,7 +32,11 @@
 - [x] Update referral URL path for local development
 - [x] Test the feature end-to-end
 - [x] Add 1s delay before playing feedback sound in memory game
-- [ ] Localize unlock_squirrel_message, unlock_octopus_message, and all_animals_unlocked in EN/DE
+- [x] Localize unlock_squirrel_message, unlock_octopus_message, and all_animals_unlocked in EN/DE
+- [x] Fix: Last note of sequence not played in 1_5 memory game
+- [x] 2_5_chords_color_matching: Add error feedback shake and sound
+- [ ] Update sitemap.xml for new homepage, index, impressum, datenschutz, app, and EN/DE links
+- [ ] 1_1_pitches_high_or_low: Use success and error sounds from 1_2
 
 ## Current Goal
-Test and verify memory game feedback delay
+1_1_pitches_high_or_low: Use success and error sounds from 1_2
