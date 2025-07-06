@@ -148,14 +148,10 @@ reset-button:
 - ändere, dass man immer 1s warten muss, bis man wählen kann, welche Taste man drückt. man soll sofort, wenn man den ton hört schon wählen dürfen
 - im master level dürfen die töne maximal 3 halbtöne auseinander sein und der erste ton muss nicht mehr C5 sein, sondern kann jeder beliebige sein, es wird nur getestet, ob der 2. ton dann höher oder tiefer ist
 - die erfolgsmeldung muss sich ab level 3 aendern in "der ton war höher" anstatt "hoch" und "der ton war tiefer" anstatt "tief"
+- Die volle  bildschirmbreite Aus nutzen auf dem Handy
 
 - Entferne alle Überbleibsel der alten "Listen to melodies"-Funktionalität:
    - Lösche unnötige Melodie-Abspielfunktionen für die alte Aktivität
-
-
-- Die volle  bildschirmbreite Aus nutzen auf dem Handy
-
-
 
 1_2 "Match the Sounds":
 - # bereit zur veröffentlichung
@@ -163,7 +159,6 @@ reset-button:
 - der reset button in der navi muss auch den hintergrund und die anzeige unten triggern, dass die refresht wird, im moment wird der dann noch einfach weiss
 
 1_3 Draw a Melody:
-- der Besen Button ist nicht erreichbar (zu weit unten)
 - # bereit zur veröffentlichung
 - reset all progress geht noch nicht
 - wenn der zeichenpfad spitze ecken hat, dann sollen noten, die nahe der spitze sind ganz in die spitze rutschen
@@ -171,7 +166,6 @@ reset-button:
 - Wenn man einen Ton trifft, die Note aufleuchten verbessern, vielieicht den strich an der stelle dick machen oder so
 
 1_4 Does It Sound Right:
-- Tiere beim Melodie raten sind noch zu weit unten positioniert
 - # bereit zur veröffentlichung
 - der reset button in der navi muss auch die fortschrittsanzeige aktualisieren
 - when the "next melody" button is pressed in the "Does It Sound Right?" activity, the animal images should NOT change
@@ -193,7 +187,6 @@ reset-button:
 2_5_chords_color_matching:
   - es fehlt ein error feedback shake und der sound wie in 1_2
   - reset auch im activity reset berücksichtigen
-
   - # bereit zur veröffentlichung
   - bei progress >=30 sollen die akkorde in der höhe durch einen transpose faktor von +-6 halbtönen variieren:
     - bis 40 schlagen eichhörnchen und octopus in hintergrund, bei 50 wacht das eichhörnchen wieder auf, ... 

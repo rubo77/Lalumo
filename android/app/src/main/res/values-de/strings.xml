@@ -112,6 +112,8 @@
     <string name="set_username_first">Bitte lege zuerst einen Benutzernamen in den Einstellungen fest.</string>
     <string name="your_referral_code">Dein Empfehlungscode</string>
     <string name="referred_by">Empfohlen von:</string>
+    <string name="username_created">Dein Name ist {username}. Du kannst dies in den Einstellungen ändern.</string>
+    <string name="username_updated">Dein Name ist {username}. Du kannst dies in den Einstellungen ändern.</string>
     <string name="referral_info">Freunde-Verbindung</string>
     <string name="registered_as">Registriert als:</string>
     <string name="copy_referral_code">Code kopieren</string>

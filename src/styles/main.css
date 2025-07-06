@@ -1662,8 +1662,8 @@ section h2 {
   z-index: 100;
 }
 
-#\31 _1_pitches > button:nth-child(2){
-  height: max(36vw, 149px) !important;
+#\31 _1_pitches > .circular-play-button{
+  height: min(36vw, 268px) !important;
   position: absolute;
   top: 0px;
 }

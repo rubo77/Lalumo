@@ -111,6 +111,8 @@
     <string name="reset_progress_desc">Reset all your game progress and start fresh:</string>
     <string name="reset_confirm">Are you sure? This cannot be undone.</string>
     <string name="username_reset">Username has been reset successfully!</string>
+    <string name="username_created">Your name is {username}. You can change this in the settings.</string>
+    <string name="username_updated">Your name is {username}. You can change this in the settings.</string>
     <string name="help_messages">Help Messages</string>
     <string name="help_messages_desc">Control when mascot help messages appear:</string>
     <string name="help_messages_off">Help Messages Hidden</string>

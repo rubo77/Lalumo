@@ -1,17 +1,30 @@
-# Plan for Fixing Wave Sound Logic in Activity 1_2
+# Username Creation Info Box Plan
 
 ## Notes
-- In activity 1_2 "Match the Sounds", after 10 correct answers (progress), the wave sound should always play first after the switch, then revert to random selection among the three options.
-- The frog logic (jumpy melody first after unlock, then random) is working as intended and should be used as a reference.
-- Currently, after the wave unlock, the wave sound is not played first as required.
-- No failsafes should be added; fix the actual logic.
-- Add clear logging with unique tags if further diagnosis is needed.
+- User wants an info box to appear after username creation.
+- Info box should say: "dein name ist ... . Du kannst dies in den Einstellungen ändern"
+- This should happen immediately after the username is created.
+- Usernames should be editable in the settings.
+- The toast notification system is used for the info box.
+- The info box correctly displays the username via string replacement.
+- The toast auto-dismisses after 5 seconds; no manual close needed.
+- User requested: For local dev, referral URLs must be http://localhost:8080/referral.php (not /api/referral.php)
+- Username info box and update messages are now localized in both English and German
+- Update fallback message in setUsername to English unless localized in German
 
 ## Task List
-- [x] Analyze current logic for wave sound after 10 correct answers in activity 1_2
-- [x] Compare with frog logic for jumpy melody after unlock
-- [ ] Adjust code so wave sound always plays first after unlock, then randomizes
-- [ ] Test to confirm correct behavior
+- [x] Locate where username creation is handled in the codebase
+- [x] Implement logic to trigger info box after username creation
+- [x] Create the info box UI with the required message
+- [x] Add/update localized string resources for username info box
+- [x] Add username info string to strings.xml (EN/DE)
+- [x] Ensure the info box displays the correct username
+- [x] Add a way to dismiss/close the info box
+- [x] Verify that username can be changed in settings
+- [x] Localize username updated message in saveUsername method
+- [x] Update fallback message in setUsername method
+- [x] Update referral URL path for local development
+- [ ] Test the feature end-to-end
 
 ## Current Goal
-Fix wave sound trigger after 10 correct answers
+Test the feature end-to-end

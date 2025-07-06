@@ -83,9 +83,13 @@ yarn-error.log*
 /android/app/src/main/assets/public/
 /android/.gradle/
 /android/app/release/
-/android/app/src/
-!/android/app/src/main/res/values-de	
-!/android/app/src/main/res/values
+/android/app/src/*
+!/android/app/src/main/
+/android/app/src/main/*
+!/android/app/src/main/res/
+/android/app/src/main/res/*
+!/android/app/src/main/res/values-de/
+!/android/app/src/main/res/values/
 /android/app/build/
 /android/build/
 /android/captures/

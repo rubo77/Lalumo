@@ -894,6 +894,12 @@ export function app() {
         localStorage.setItem('lalumo_username', this.username);
         // Set the editable username field to match current username
         this.editableUsername = this.username;
+        
+        // Show info box with username information
+        const message = this.$store.strings?.username_created 
+          ? this.$store.strings.username_created.replace('{username}', this.username)
+          : `Your name is ${this.username}. You can change this in the settings.`;
+        this.showToast(message, 5000);
       } catch (e) {
         console.log('Error saving username', e);
       }
@@ -911,6 +917,12 @@ export function app() {
         
         try {
           localStorage.setItem('lalumo_username', this.username);
+          
+          // Show info box with username information
+          const message = this.$store.strings?.username_updated 
+            ? this.$store.strings.username_updated.replace('{username}', this.username)
+            : `Your name is ${this.username}. You can change this in the settings.`;
+          this.showToast(message, 5000);
         } catch (e) {
           console.log('Error saving custom username', e);
         }
@@ -1781,12 +1793,26 @@ export function app() {
      */
     generateReferralLink() {
       if (!this.referralCode) {
-        console.error('Kein Referral-Code vorhanden!');
+        console.error('[REFERRAL] Kein Referral-Code vorhanden!');
         return '';
       }
       
       // Link zum Backend-Endpoint generieren (wichtig: ?code= Format für Klickzählung)
-      this.referralLink = `${config.API_BASE_URL}/referral.php?code=${this.referralCode}`;
+      // Stelle sicher, dass der Pfad korrekt ist und kein doppeltes /api/ enthält
+      let apiBaseUrl = config.API_BASE_URL;
+      
+      // In der lokalen Entwicklungsumgebung apiBaseUrl anpassen
+      const isProduction = window.location.hostname === 'lalumo.eu' || 
+                        window.location.hostname === 'lalumo.z11.de';
+      
+      console.log('[REFERRAL] Environment:', isProduction ? 'production' : 'development');
+      console.log('[REFERRAL] Original API_BASE_URL:', apiBaseUrl);
+      
+      // Stelle sicher, dass der Pfad zum Referral-Endpoint korrekt ist
+      let referralEndpoint = '/referral.php';
+      // For local development, we want to use /referral.php directly, not /api/referral.php
+      
+      this.referralLink = `${apiBaseUrl}${referralEndpoint}?code=${this.referralCode}`;
       console.log('[REFERRAL] Generierter Link:', this.referralLink);
       
       return this.referralLink;
@@ -1802,6 +1828,83 @@ export function app() {
       }
       
       this.copyToClipboard(this.referralLink, '.referral-link-container .secondary-button');
+    },
+    
+    /**
+     * Kopiert Text in die Zwischenablage und zeigt Feedback-Animation an
+     * @param {string} text - Der zu kopierende Text
+     * @param {string} buttonSelector - CSS-Selektor für den Button, der die Animation zeigen soll
+     */
+    copyToClipboard(text, buttonSelector) {
+      console.log('[CLIPBOARD] Versuche zu kopieren:', text);
+      
+      try {
+        // Moderne Clipboard API verwenden
+        navigator.clipboard.writeText(text)
+          .then(() => {
+            console.log('[CLIPBOARD] Text erfolgreich kopiert');
+            this.showCopyFeedback(buttonSelector, true);
+          })
+          .catch(err => {
+            console.error('[CLIPBOARD] Clipboard-API-Fehler:', err);
+            // Fallback zur alten Methode
+            this.copyToClipboardFallback(text, buttonSelector);
+          });
+      } catch (e) {
+        console.error('[CLIPBOARD] Fehler beim Kopieren:', e);
+        this.copyToClipboardFallback(text, buttonSelector);
+      }
+    },
+    
+    /**
+     * Fallback-Methode für ältere Browser, die die Clipboard API nicht unterstützen
+     */
+    copyToClipboardFallback(text, buttonSelector) {
+      try {
+        // Temporäres Textarea-Element erstellen
+        const textArea = document.createElement('textarea');
+        textArea.value = text;
+        textArea.style.position = 'fixed';
+        textArea.style.left = '0';
+        textArea.style.top = '0';
+        textArea.style.opacity = '0';
+        document.body.appendChild(textArea);
+        
+        // Text auswählen und kopieren
+        textArea.select();
+        const successful = document.execCommand('copy');
+        document.body.removeChild(textArea);
+        
+        // Feedback anzeigen
+        this.showCopyFeedback(buttonSelector, successful);
+        
+        if (!successful) {
+          console.error('[CLIPBOARD] execCommand copy fehlgeschlagen');
+          alert(this.$store.strings?.copy_failed || 'Kopieren fehlgeschlagen. Bitte manuell kopieren.');
+        }
+      } catch (e) {
+        console.error('[CLIPBOARD] Fallback-Fehler:', e);
+        alert(this.$store.strings?.copy_failed || 'Kopieren fehlgeschlagen. Bitte manuell kopieren.');
+      }
+    },
+    
+    /**
+     * Zeigt Feedback-Animation an, wenn Text kopiert wurde
+     */
+    showCopyFeedback(buttonSelector, success) {
+      const button = document.querySelector(buttonSelector);
+      if (!button) return;
+      
+      // Kurze visuelle Bestätigung durch CSS-Klasse
+      const originalText = button.textContent;
+      button.classList.add(success ? 'copy-success' : 'copy-error');
+      button.textContent = success ? (this.$store.strings?.copied || 'Kopiert!') : (this.$store.strings?.copy_failed_short || 'Fehler!');
+      
+      // Nach kurzer Zeit zurücksetzen
+      setTimeout(() => {
+        button.classList.remove('copy-success', 'copy-error');
+        button.textContent = originalText;
+      }, 2000);
     },
     
     // Statusvariablen für UI-Feedback

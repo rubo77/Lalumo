@@ -6,7 +6,7 @@
 // Hardcode configuration for now until we resolve YAML loading issues
 const configData = {
   development: {
-    API_BASE_URL: 'http://localhost:8080/api',
+    API_BASE_URL: 'http://localhost:8080', // No /api prefix for local dev
     APP_BASE_URL: 'http://localhost:9091',
     APP_BASE_PATH: '/app/'
   },
