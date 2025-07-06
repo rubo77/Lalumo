@@ -34,9 +34,9 @@ module.exports = (env, argv) => {
       // Immer Content-Hash für Cache-Busting verwenden
       filename: '[name].[contenthash].js',
       clean: true,
-      // publicPath anpassen für Produktion vs. Entwicklung
-      // Für Subdirectory-Deployment: './' für relative Pfade ohne führenden Slash
-      publicPath: isProduction && env.deploy === 'subdirectory' ? './' : './',
+      // Einheitliche publicPath für Produktion und Entwicklung
+      // Verwende './' für relative Pfade ohne führenden Slash
+      publicPath: './',
     },
     // Copy static assets from public directory
     devServer: {
@@ -152,7 +152,9 @@ module.exports = (env, argv) => {
         chunks: ['main'],
         inject: true,
         hash: true,
-        publicPath: isProduction && env.deploy === 'subdirectory' ? './' : '../',
+        // Für Subdirectory-Deployment mit app-Verzeichnis
+        // bei bereits im app/-Verzeichnis generierten Assets relative Pfade ohne app/ verwenden
+        publicPath: '../',
         minify: {
           collapseWhitespace: true,
           removeComments: true,
@@ -196,6 +198,19 @@ module.exports = (env, argv) => {
           { from: 'homepage/icons', to: 'icons' },
           { from: 'homepage/icons', to: 'de/icons' },
           { from: 'homepage/icons', to: 'app/icons' },  // Auch für App-Verzeichnis kopieren
+          // Partials für Haupt-App und App-Verzeichnis kopieren
+          { from: 'public/partials', to: 'partials' },
+          { from: 'public/partials', to: 'app/partials' },
+          
+          // API-Dateien kopieren
+          { from: 'src/api', to: 'api' },
+          { from: 'src/api', to: 'app/api' },
+          
+          // Wichtige Konfigurationsdatei für die API - nicht minimieren, damit PHP-Parsing funktioniert
+          { from: 'src/config.js', to: 'config.js', transform: (content) => content },
+          { from: 'src/config.js', to: 'app/config.js', transform: (content) => content },
+          { from: 'src/config.js', to: 'api/config.js', transform: (content) => content },
+          { from: 'src/config.js', to: 'app/api/config.js', transform: (content) => content },
           { from: 'public/images/backgrounds', to: 'images/backgrounds' },
           { from: 'public/images/backgrounds', to: 'de/images/backgrounds' },
           { from: 'public/images/backgrounds', to: 'app/images/backgrounds' },  // Auch für App-Verzeichnis kopieren
