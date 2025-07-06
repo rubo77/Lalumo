@@ -3,7 +3,8 @@ merke dir:
 - Nicht selbständig die TODO-Liste abarbeiten, stattdessen auf Anweisungen der USER warten
 - Niemals selbst deployen, außer bei expliziter Aufforderung
 - niemals `git reset` oder `git checkout` aufrufen es sei denn du wirst dazu aufgefordert
-- Keine Failsafes erstellen, stattdessen bessere Diagnosen zur Identifizierung von Problemen implementieren
+- Keine Failsafes und Fallbacks erstellen, stattdessen bessere Diagnosen zur Identifizierung von Problemen implementieren
+- keine errors unterdruecken, sondern die fehler beheben!
 - Bei der Problemanalyse Logging-Anweisungen mit eindeutigen Tags hinzufügen
 - bash file.sh verwenden anstatt chmod +x file.sh
 - Neue Strings nur zur default strings.xml hinzufügen

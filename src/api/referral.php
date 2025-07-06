@@ -76,10 +76,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 }
 
 // SQLite-Datenbank einrichten
-$dbDir = '../data';
-// if __DIR__ starts with /var/www/ it is local
-if(preg_match('/^\/var\/www/', __DIR__)){
+// Ermittle den richtigen Datenbankpfad je nach Umgebung
+if(preg_match('/^\/var\/www/', __DIR__)) {
+    // Lokale Entwicklungsumgebung
     $dbDir = __DIR__ . '/../../data';
+    debugLog('Using local database path');
+} else {
+    // Produktionsumgebung
+    $dbDir =  __DIR__ . '/../../data';
+    debugLog('Using production database path');
 }
 $dbFile = $dbDir . '/referrals.db';
 debugLog('Database path: ' . $dbFile);
