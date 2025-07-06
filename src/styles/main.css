@@ -1387,6 +1387,7 @@ section h2 {
   overflow-y: auto; /* Allow scrolling if content exceeds height */
   height: 154vw !important;
   max-height: 720px;
+  overflow: hidden;
 }
 
 #\31 _1_pitches{
@@ -1597,6 +1598,27 @@ section h2 {
   width: 93%;
   max-width: 400px;
   margin: 0 auto;
+}
+
+.feedback-message, .melody-name {
+  position: relative;
+  color: var(--text-color);
+  padding: 0.5rem 1rem 1.5rem;
+  border-radius: 0.8rem;
+  text-align: center;
+  margin-top: 25px;
+  margin-bottom: -16px;
+  max-width: 80%;
+  font-weight: bold;
+  animation: bounce 0.5s ease;
+  opacity: 0.7;
+  text-shadow: 0 2px 0 rgba(255, 255, 255, 0.5);
+  /* SVG-Biegeeffekt wird durch JS hinzugefügt */
+}
+
+.melody-name {
+  position: relative;
+  top: max(-61px, -8vw);
 }
 
 /* Sound Judgment Level Display - Spezialisierte Anzeige für Sound Judgment Level und Streak */
@@ -1815,23 +1837,23 @@ section h2 {
 .sound-judgment-options {
   display: flex;
   justify-content: center;
-  gap: 9vw;
+  gap: max(1vw, 7px);
   margin-top: 20px;
-  margin-left: 11px;
+  left: min(16vw, 72px);
+  position: absolute;
+  top: min(487px, 78vw);
 }
 
 .animal-card {
   cursor: pointer;
   padding: 15px;
-  min-width: 120px;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+  width: min(26vw, 185px);
 }
 
 .animal-card .animal-icon img {
-  width: 95px;
-  height: 95px;
-  max-width: 120px;
-  max-height: 120px;
+  width: min(25vw, 106px);
+  height: min(25vw, 106px);
   border-radius: 30%;
   object-fit: contain;
   margin-top: 0px;
@@ -1996,15 +2018,13 @@ section h2 {
 /* Drawing mode */
 .drawing-container {
   position: absolute;
-  margin: 2rem auto;
+  margin: 38px auto;
   width: 88%;
   max-width: 600px;
   display: flex;
   justify-content: center;
   top: min(429px, 68vw);
-  height: 48vw;
-  min-height: 204px;
-  max-height: 286px;
+  height: min(48vw, 286px);
 }
 
 .drawing-canvas {
@@ -2013,7 +2033,6 @@ section h2 {
   background-color: rgba(255, 255, 255, 0);
   border: 1px solid rgba(51, 51, 51, 0);
   border-radius: 12px;
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
   cursor: crosshair;
   touch-action: none; /* Prevent scrolling on touch devices */
 }
@@ -2105,7 +2124,6 @@ section h2 {
 .pitch-card-style {
   background-color: rgba(255, 255, 255, 0) !important;
   border-radius: 12px !important;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important;
   transition: all 0.3s ease !important;
 }
 
@@ -2125,7 +2143,7 @@ section h2 {
 
 .clear-drawing-button {
   position: absolute;
-  top: 265px;
+  top: min(42vw, 249px);
   left: 40%;
   transform: translateX(-50%);
   z-index: 20;
@@ -2419,23 +2437,6 @@ section h2 {
 .progress-dot.active {
   background-color: var(--secondary-color);
   transform: scale(1.2);
-}
-
-/* Feedback messages and melody name */
-.feedback-message, .melody-name {
-  position: relative;
-  color: var(--text-color);
-  padding: 0.5rem 1rem 1.5rem;
-  border-radius: 0.8rem;
-  text-align: center;
-  margin-top: 25px;
-  margin-bottom: -16px;
-  max-width: 80%;
-  font-weight: bold;
-  animation: bounce 0.5s ease;
-  opacity: 0.7;
-  text-shadow: 0 2px 0 rgba(255, 255, 255, 0.5);
-  /* SVG-Biegeeffekt wird durch JS hinzugefügt */
 }
 
 @keyframes bounce {
