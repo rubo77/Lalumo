@@ -520,6 +520,18 @@ elseif ($method === 'GET') {
             
             // Leite zur App mit dem Code in einem URL-Parameter weiter
             $app_url = $config['APP_BASE_URL'];
+            
+            // For local development, explicitly use port 9091
+            $host = $_SERVER['HTTP_HOST'] ?? '';
+            if (preg_match('/localhost|127\.0\.0\.1/', $host)) {
+                $app_url = 'http://localhost:9091';
+            }
+            
+            // Debug output to see what URL is being used
+            error_log("Config dump: " . json_encode($config));
+            error_log("APP_BASE_URL: " . $app_url);
+            error_log("Redirecting to: " . $app_url . '/app/#ref=' . urlencode($code));
+            
             header ('Location: '.$app_url.'/app/#ref=' . urlencode($code));
             exit;
         } else {
