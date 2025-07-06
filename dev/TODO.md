@@ -181,15 +181,15 @@ reset-button:
 
 
 1_5 memory game:
+  - der feedback sound soll erst mit 1s mit verzögerung abgespielt werden, nachdem man den richtigen tonfolge gespielt hat
   - # bereit zur veröffentlichung
-  - feedback sound soll mit verzögerung abgespielt werden
 
 2_5_chords_color_matching:
   - es fehlt ein error feedback shake und der sound wie in 1_2
   - reset auch im activity reset berücksichtigen
   - # bereit zur veröffentlichung
   - bei progress >=30 sollen die akkorde in der höhe durch einen transpose faktor von +-6 halbtönen variieren:
-    - bis 40 schlagen eichhörnchen und octopus in hintergrund, bei 50 wacht das eichhörnchen wieder auf, ... 
+    - bis 40 schlafen das eichhörnchen und octopus in hintergrund, bei 50 wacht das eichhörnchen wieder auf, ... 
   - es soll der erfolgssound kommen
   - wenn man während der regenbogen läuft drückt, soll schon der neue akkord abgespielt werden und nicht der letzte
 

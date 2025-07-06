@@ -1790,8 +1790,7 @@ section h2 {
 }
 
 .pitch-icon.jump.animate-jump {
-  animation: jump-bounce 1.5s ease-in-out;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0);
 }
 
 .pitch-card .play-button:hover {
@@ -1983,7 +1982,6 @@ section h2 {
 }
 
 .active .pitch-icon.jump img {
-  animation: jump-bounce 3s 1 forwards;
 }
 
 @keyframes jump-bounce {

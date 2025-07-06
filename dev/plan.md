@@ -11,6 +11,7 @@
 - User requested: For local dev, referral URLs must be http://localhost:8080/referral.php (not /api/referral.php)
 - Username info box and update messages are now localized in both English and German
 - Update fallback message in setUsername to English unless localized in German
+- Add 1s delay before memory game feedback sound
 
 ## Task List
 - [x] Locate where username creation is handled in the codebase
@@ -24,7 +25,8 @@
 - [x] Localize username updated message in saveUsername method
 - [x] Update fallback message in setUsername method
 - [x] Update referral URL path for local development
-- [ ] Test the feature end-to-end
+- [x] Test the feature end-to-end
+- [ ] Add 1s delay before playing feedback sound in memory game
 
 ## Current Goal
-Test the feature end-to-end
+Add 1s delay to memory game feedback sound
