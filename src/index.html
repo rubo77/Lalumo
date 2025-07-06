@@ -305,7 +305,7 @@
             <div class="mascot-speech-bubble">
               <p x-text="mascotMessage || ''"></p>
             </div>
-            <button class="close-mascot-button" @click="$store.mascotSettings.showMascot = false; $store.mascotSettings.showHelpMessages = false">&times;</button>
+            <button class="close-mascot-button" @click="console.log('MASCOT: Close button clicked'); showMascot = false; mascotSettings.showHelpMessages = false">&times;</button>
           </div>
         </div>
         
