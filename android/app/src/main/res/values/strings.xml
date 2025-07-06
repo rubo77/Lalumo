@@ -203,7 +203,6 @@
     <!-- Reset Confirmations -->
     <string name="reset_activity_confirm">Reset progress for "%1$s"?</string>
     <string name="reset_generic_confirm">No matching activity found. Reset anyway?</string>
-    <string name="component_not_available">Error: Component not available. Please reload the page.</string>
     <string name="reset_success">Progress has been reset!</string>
     
     <!-- Draw Melody UI Elements -->

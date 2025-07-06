@@ -112,9 +112,6 @@ Dies soll in allen aktionen:
 
 - Verschiedene Instrumente
 
-
-- store username and language in export string in Preferences
-
 - übersetze Credits, ... @index.html#L912-935 dies und @index.html#L973 und @index.html#L963-964 @index.html#L883-893 @index.html#L896-908 @pitches.js#L3356-3359 
 
 - when pressed on a button, the finger moves and is released, it should also trigger the buttons click event
@@ -194,8 +191,8 @@ reset-button:
   - feedback sound soll mit verzögerung abgespielt werden
 
 2_5_chords_color_matching:
-  - es fehlt ein error feedback shake und der sound
-  - reset auch im activity reset, im-und export berücksichtigen
+  - es fehlt ein error feedback shake und der sound wie in 1_2
+  - reset auch im activity reset berücksichtigen
 
   - # bereit zur veröffentlichung
   - bei progress >=30 sollen die akkorde in der höhe durch einen transpose faktor von +-6 halbtönen variieren:

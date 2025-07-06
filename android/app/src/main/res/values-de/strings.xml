@@ -117,7 +117,7 @@
     <string name="copy_referral_code">Code kopieren</string>
     <string name="shareable_link">Teilbarer Link:</string>
     <string name="copy_link">Link kopieren</string>
-    <string name="link_explanation">Teile diesen Link mit Freunden - sie erhalten Punkte fürs Klicken und du bekommst eine Gutschrift, wenn sie sich registrieren!</string>
+    <string name="link_explanation">Teile diesen Link mit Freunden - erhalte Punkte fürs Klicken und du bekommst eine Gutschrift, wenn sie sich registrieren!</string>
     <string name="registrations">Registrierungen</string>
     <string name="chords_unlocked">Akkorde freigeschaltet!</string>
     <string name="link_clicks">Link-Klicks</string>
@@ -203,7 +203,6 @@
     <!-- Reset Confirmations -->
     <string name="reset_activity_confirm">Fortschritt für "%1$s" zurücksetzen?</string>
     <string name="reset_generic_confirm">Keine passende Aktivität gefunden. Trotzdem zurücksetzen?</string>
-    <string name="component_not_available">Fehler: Komponente nicht verfügbar. Bitte laden Sie die Seite neu.</string>
     <string name="reset_success">Fortschritt wurde zurückgesetzt!</string>
     
     <!-- Draw Melody UI Elements -->

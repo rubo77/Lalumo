@@ -965,58 +965,42 @@ export function app() {
     
     /**
      * Export the user's progress as a save game string
+     * This now exports the complete localStorage contents for maximum compatibility
      */
     exportProgress() {
       // Reset exportedData vor jedem neuen Export
       this.exportedData = '';
       
       try {
-        console.log('Starte Export des Fortschritts...');
+        console.log('Starte Export aller Daten aus dem localStorage...');
         
-        // Lese den aktuellen Fortschritt aus dem localStorage
-        const pitchProgressRaw = localStorage.getItem('lalumo_progress') || '{}';
-        console.log('Roher Fortschritt aus localStorage:', pitchProgressRaw);
-        
-        let pitchProgress = JSON.parse(pitchProgressRaw);
-        console.log('Geparster Fortschritt:', pitchProgress);
-        
-        // Prüfe auf freigeschaltete Features für bessere Diagnose
-        let unlockedFeatures = [];
-        
-        // Prüfe auf freigeschaltete Welle in 1_2
-        if (pitchProgress && pitchProgress['1_2_pitches_match-sounds'] && 
-            pitchProgress['1_2_pitches_match-sounds'] >= 5) {
-          unlockedFeatures.push('Wave mode in "Match Sounds"');
+        // Sammle alle localStorage Daten
+        const localStorageData = {};
+        for (let i = 0; i < localStorage.length; i++) {
+          const key = localStorage.key(i);
+          localStorageData[key] = localStorage.getItem(key);
         }
-
-        // Sammle alle Fortschrittsdaten
-        const progressData = {
-          username: this.username || 'Player',
-          lastSaved: new Date().toISOString(),
-          pitchProgress: pitchProgress, // Direkt als Objekt speichern, keine erneute JSON-Konvertierung
-          memoryGameLevel: parseInt(localStorage.getItem('lalumo_memory_level') || '0', 10),
-          lastActivity: this.active,
-          unlockedFeatures: unlockedFeatures, // Speichere freigeschaltete Features für bessere Diagnose
-          
-          // Speichere Draw-a-Melody spezifische Fortschrittsdaten
-          drawMelodyLevel: parseInt(localStorage.getItem('lalumo_draw_melody_level') || '0', 10),
-          drawMelodySuccessCounter: parseInt(localStorage.getItem('lalumo_draw_melody_success_counter') || '0', 10),
-          
-          // Speichere Sound-Judgment ("Does It Sound Right?") spezifische Fortschrittsdaten
-          soundJudgmentLevel: parseInt(localStorage.getItem('lalumo_soundJudgmentLevel') || '1', 10),
-          soundJudgmentStreak: parseInt(localStorage.getItem('lalumo_soundJudgmentStreak') || '0', 10)
+        
+        // Füge Metadaten hinzu
+        const exportData = {
+          version: "2.0", // Neue Version mit vollständigem localStorage
+          timestamp: new Date().toISOString(),
+          device: navigator.userAgent,
+          localStorageData: localStorageData
         };
         
+        console.log('Export Daten:', exportData);
+        
         // Konvertieren zu JSON und codieren für Export
-        const jsonString = JSON.stringify(progressData);
-        console.log('JSON-String für Export:', jsonString);
+        const jsonString = JSON.stringify(exportData);
+        console.log('JSON-String Länge:', jsonString.length);
         
         const encoded = btoa(jsonString);
-        console.log('Kodierter String:', encoded, 'Länge:', encoded.length);
+        console.log('Kodierter String Länge:', encoded.length);
         
         if(!encoded || encoded.length === 0) {
           console.error('Kodierter String ist leer');
-          alert(this.$store.strings?.export_error_empty || 'Error exporting progress: encoded string is empty');
+          alert(this.$store.strings?.export_error_empty || 'Error exporting data: encoded string is empty');
           return null;
         }
         
@@ -1024,129 +1008,137 @@ export function app() {
         setTimeout(() => {
           // Set the exportedData property for display in the UI
           this.exportedData = encoded;
-          console.log('ExportedData wurde gesetzt auf:', this.exportedData);
+          console.log('ExportedData wurde gesetzt auf:', '[Länge: ' + encoded.length + ']');
           
           // Log für bessere Diagnose
-          console.log('Progress exported successfully with these features:', unlockedFeatures);
+          console.log('All localStorage data exported successfully');
         }, 10);
         
         return encoded;
       } catch (e) {
         console.error('Fehler beim Exportieren:', e);
-        alert(this.$store.strings?.export_error_dynamic.replace('%1$s', e.message) || 
-              'Error exporting progress: ' + e.message);
+        alert(this.$store.strings?.export_error_dynamic?.replace('%1$s', e.message) || 
+              'Error exporting data: ' + e.message);
         return null;
       }
     },
     
     /**
-     * Import progress from a save game string
+     * Copy the exported progress code to clipboard
      */
-    importProgress() {
-      if (!this.importData || this.importData.trim() === '') {
-        alert(this.$store.strings?.enter_progress_code || 'Please enter a progress code first!');
+    copyExportedData() {
+      if (!this.exportedData) {
+        alert(this.$store.strings?.no_export_data || 'Please export your progress first!');
         return;
       }
       
       try {
-        // Decode and parse the save code
-        const jsonString = atob(this.importData);
-        const progressData = JSON.parse(jsonString);
-        
-        // Validate the data
-        if (!progressData || !progressData.username) {
-          console.log('Invalid save code');
-          alert(this.$store.strings?.invalid_save_code || 'Invalid save code. Please check your progress string.');
-          return false;
-        }
-        
-        // Restore the username
-        this.username = progressData.username;
-        localStorage.setItem('lalumo_username', this.username);
-        
-        // Prepare the unlocked features message
-        let unlockedFeatures = [];
-        
-        // Restore pitch progress
-        if (progressData.pitchProgress) {
-          // Parse the progress if it's a string, otherwise use directly
-          let pitchProgress = typeof progressData.pitchProgress === 'string' 
-            ? JSON.parse(progressData.pitchProgress) 
-            : progressData.pitchProgress;
-          
-          // Store as JSON string in localStorage
-          localStorage.setItem('lalumo_progress', JSON.stringify(pitchProgress));
-          
-          // Check for unlocked wave in 1_2
-          if (pitchProgress && pitchProgress['1_2_pitches_match-sounds'] && 
-              pitchProgress['1_2_pitches_match-sounds'] >= 5) {
-            unlockedFeatures.push('Wave mode in "Match Sounds" activity');
-          }
-          
-          // Check other activities progress
-          for (const activity in pitchProgress) {
-            if (pitchProgress[activity] > 0) {
-              // Format activity name for display
-              const activityName = activity.split('_').slice(2).join(' ')
-                .replace(/-/g, ' ')
-                .replace(/\b\w/g, l => l.toUpperCase());
-              unlockedFeatures.push(`Progress in ${activityName}: Level ${pitchProgress[activity]}`);
-            }
-          }
-        }
-        
-        // Restore last activity
-        if (progressData.lastActivity) {
-          this.active = progressData.lastActivity;
-        }
-        
-        // Restore Draw-a-Melody specific progress data
-        if (typeof progressData.drawMelodyLevel !== 'undefined') {
-          localStorage.setItem('lalumo_draw_melody_level', progressData.drawMelodyLevel);
-          console.log('Restored Draw-a-Melody level:', progressData.drawMelodyLevel);
-          
-          // Add to unlocked features message
-          unlockedFeatures.push(`Draw-a-Melody: Level ${progressData.drawMelodyLevel + 1} (${progressData.drawMelodyLevel + 3} notes)`);
-        }
-        
-        if (typeof progressData.drawMelodySuccessCounter !== 'undefined') {
-          localStorage.setItem('lalumo_draw_melody_success_counter', progressData.drawMelodySuccessCounter);
-          console.log('Restored Draw-a-Melody success counter:', progressData.drawMelodySuccessCounter);
-        }
-        
-        // Restore Sound Judgment ("Does It Sound Right?") specific progress data
-        if (typeof progressData.soundJudgmentLevel !== 'undefined') {
-          localStorage.setItem('lalumo_soundJudgmentLevel', progressData.soundJudgmentLevel);
-          console.log('SOUND JUDGMENT: Imported level:', progressData.soundJudgmentLevel);
-          
-          // Add to unlocked features message
-          unlockedFeatures.push(`Does It Sound Right?: Level ${progressData.soundJudgmentLevel} (${7-progressData.soundJudgmentLevel} levels to go)`);
-        }
-        
-        if (typeof progressData.soundJudgmentStreak !== 'undefined') {
-          localStorage.setItem('lalumo_soundJudgmentStreak', progressData.soundJudgmentStreak);
-          console.log('SOUND JUDGMENT: Imported streak counter:', progressData.soundJudgmentStreak);
-        }
-        
-        // Show detailed success message
-        let message = `Progress imported successfully for ${this.username}!`;
-        
-        if (unlockedFeatures.length > 0) {
-          message += '\n\nUnlocked features:';
-          unlockedFeatures.forEach(feature => {
-            message += '\n- ' + feature;
+        // Copy to clipboard
+        navigator.clipboard.writeText(this.exportedData)
+          .then(() => {
+            alert(this.$store.strings?.progress_code_copied || 'Progress code copied to clipboard!');
+          })
+          .catch(err => {
+            console.error('Clipboard write failed:', err);
+            alert(this.$store.strings?.copy_failed || 'Failed to copy to clipboard. Please manually select and copy the code.');
           });
-        } else {
-          message += '\n\nNo special features unlocked yet.';
+      } catch (e) {
+        console.error('Error copying progress data:', e);
+        alert(this.$store.strings?.copy_failed || 'Failed to copy to clipboard. Please manually select and copy the code.');
+      }
+    },
+    
+    /**
+     * Import user progress from a save game string
+     * Only supports version 2.0 format with complete localStorage data
+     */
+    importProgress() {
+      try {
+        console.log('Import-Debug: importData =', this.importData, 'importedData =', this.importedData);
+        
+        // Verwende die richtige Property (importData statt importedData)
+        // Die Property muss mit dem x-model in settings.html übereinstimmen
+        if (!this.importData) {
+          console.error('Import-Debug: Keine Importdaten gefunden in this.importData');
+          alert(this.$store.strings?.import_error_empty || 'Error: No import data provided');
+          return;
         }
         
-        alert(message);
-        console.log('Imported progress for', this.username, 'with unlocked features:', unlockedFeatures);
-        return true;
+        // Entferne Whitespaces und überprüfe erneut
+        const cleanedData = this.importData.trim();
+        if (cleanedData === '') {
+          console.error('Import-Debug: Importdaten sind leer nach Trim');
+          alert(this.$store.strings?.import_error_empty || 'Error: No import data provided');
+          return;
+        }
+        
+        console.log('Attempting to import data...', cleanedData.substring(0, 20) + '...');
+        
+        // Base64-Dekodierung mit verbesserten Fehlerprüfungen
+        let decodedData;
+        try {
+          decodedData = atob(cleanedData);
+          console.log('Decoded data successfully, length:', decodedData.length, 'Preview:', decodedData.substring(0, 50) + '...');
+        } catch (e) {
+          console.error('Base64 decoding failed:', e, 'Data was:', cleanedData.substring(0, 100));
+          alert(this.$store.strings?.import_error_format || 'Error: Invalid import data format');
+          return;
+        }
+        
+        // JSON-Parsing mit Fehlerbehandlung
+        let parsedData;
+        try {
+          parsedData = JSON.parse(decodedData);
+          console.log('Import data parsed successfully:', Object.keys(parsedData));
+        } catch (e) {
+          console.error('JSON parsing failed:', e, 'Decoded data was:', decodedData.substring(0, 100));
+          alert(this.$store.strings?.import_error_json || 'Error: Could not parse import data');
+          return;
+        }
+        
+        // Überprüfe Version und Datenformat
+        if (!parsedData.version || parsedData.version !== "2.0" || !parsedData.localStorageData) {
+          console.error('Unsupported import format:', JSON.stringify(parsedData).substring(0, 200));
+          alert(this.$store.strings?.import_error_version || 'Error: Unsupported import format. Only version 2.0 is supported.');
+          return;
+        }
+        
+        console.log('Detected version 2.0 format with complete localStorage data');
+        
+        // Wiederherstellung aller localStorage-Einträge
+        const localStorageData = parsedData.localStorageData;
+        const restoredItems = [];
+        
+        // Setze alle Einträge in den localStorage
+        for (const key in localStorageData) {
+          localStorage.setItem(key, localStorageData[key]);
+          
+          // Formatiere Schlüsselnamen für bessere Anzeige
+          if (key.includes('lalumo_')) {
+            const readableName = key.replace('lalumo_', '').replace(/_/g, ' ')
+              .replace(/\b\w/g, l => l.toUpperCase());
+            restoredItems.push(readableName);
+          } else {
+            restoredItems.push(key);
+          }
+        }
+        
+        console.log('Restored all localStorage data successfully');
+        
+        // Feedback anzeigen und Seite neu laden
+        const restoredMessage = restoredItems.length > 0 
+          ? `Restored: ${restoredItems.join(', ')}` 
+          : 'No data restored';
+          
+        alert(this.$store.strings?.import_success || 'Import successful! ' + restoredMessage);
+        
+        // Reload the page to apply changes
+        window.location.reload();
+        
       } catch (e) {
-        alert(this.$store.strings?.import_error_invalid || 'Error importing progress. The provided string may be invalid.');
-        console.log('Error importing progress', e);
-        return false;
+        console.error('Error importing data:', e);
+        alert(this.$store.strings?.import_error_dynamic?.replace('%1$s', e.message) || 
+              'Error importing data: ' + e.message);
       }
     },
     
