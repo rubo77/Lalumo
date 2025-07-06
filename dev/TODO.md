@@ -86,6 +86,7 @@ unter chrome auf dem handy android 15:
 
 - nach der erfolgsmeldung wird die z-index erniedrigt, das soll aber auch on top bleiben also über der box mit dem Fortschritt
 
+- dev/Concept_Referral-System.md TODOs
 
 - main.css und pitch-cards.css zusammenführen in einer strukturierten main.css:
     - Alle Stile in einer Datei mit klaren Abschnitten
@@ -93,7 +94,6 @@ unter chrome auf dem handy android 15:
     - nicht benutzte stile entfernen
 
 # mascot message:
-    - tts disablen
     - die richtige zugehörige mascot message überall soll direkt wenn man die activity öffnet kommen. im moment kommt die alte message, wo man vorher war in dem mascot message container
     - es soll niemals eine mascot message starten, wenn man in irgendeiner activity auf den play button drückt
     - die einstellungen haben erst nach einem neuladen effekt, ohne bleibt die message bleibt verschwunden
