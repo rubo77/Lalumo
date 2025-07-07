@@ -1264,8 +1264,24 @@ export function pitches() {
      * @param {boolean} generateNew - Whether to generate a new melody
      * @activity 1_1_high_or_low
      */
+    /**
+     * Play a melody for the Sound Judgment activity (1_4)
+     * In practice mode, this will transition to game mode on first press
+     * In game mode, it will play the current or generate a new melody
+     * 
+     * @param {boolean} generateNew - Whether to generate a new melody (true) or replay the current one (false)
+     */
     playMelodyForSoundHighOrLow(generateNew = true) {
-      console.log(`AUDIO: playMelodyForSoundHighOrLow called with generateNew=${generateNew}`);
+      console.log(`AUDIO: playMelodyForSoundHighOrLow called with generateNew=${generateNew}, gameMode=${this.gameMode}`);
+      
+      // If in practice mode, switch to game mode instead
+      if (!this.gameMode) {
+        console.log('SOUND JUDGMENT: Transitioning from practice mode to game mode');
+        this.startSoundJudgmentGame();
+        return; // startSoundJudgmentGame will handle playing the melody
+      }
+      
+      // We're in game mode now, continue with normal melody playback
       
       // Stoppe zuerst alle aktuellen Sounds, um Überlagerungen zu vermeiden
       this.stopCurrentSound();
@@ -3875,8 +3891,16 @@ export function pitches() {
       }
     },
     
-    setupSoundHighOrLowMode_1_4(playSound = true) {
-      console.log('Setting up Sound HighOrLow mode');
+    /**
+     * Setup for the "Does It Sound Right?" activity
+     * Now includes practice mode and game mode separation
+     * @param {boolean} playSound - Whether to play a melody right away
+     */
+    setupSoundHighOrLowMode_1_4(playSound = false) {
+      console.log('Setting up Sound HighOrLow mode in practice mode');
+      
+      // Initialize in practice mode
+      this.gameMode = false;
       
       // Reset state variables specific to this activity
       this.melodyHasWrongNote = false;
@@ -3900,8 +3924,8 @@ export function pitches() {
       
       // Show an introductory message
       const introMessage = language === 'de' 
-        ? 'Hör dir die Melodie an! Klingt sie richtig? Oder ist da ein falscher Ton?'
-        : 'Listen to the melody! Does it sound right? Or is there a wrong note?';
+        ? 'Drücke auf Play, um eine Melodie zu hören. Klingt sie richtig? Oder ist da ein falscher Ton?'
+        : 'Press play to hear a melody. Does it sound right? Or is there a wrong note?';
       
       // Track activity usage and initialize level from preferences if available
       if (!this.progress['1_4_pitches_does-it-sound-right']) {
@@ -3918,24 +3942,149 @@ export function pitches() {
         this.soundJudgmentLevel = 1;
       }
       
-      // Aktualisiere die UI-Anzeige des Levels
-      this.update_progress_display();
-      
       // Show mascot message first (moved from playback completion)
       this.showMascotMessage(introMessage);
       
-      // Always generate a melody to ensure we have a current sequence even if we don't play it
-      // This way, the first play button click will have a melody to play
-      const shouldPlay = playSound;
-      // Generate new melody but only play it if shouldPlay is true
+      // Generate a melody in preparation for game mode
       this.generateSoundHighOrLowMelody();
       
-      // Play the melody if requested
-      if (shouldPlay) {
+      // In practice mode, we don't automatically play the melody
+      if (playSound && this.gameMode) {
         this.playMelodySequence(this.currentSequence, 'sound-judgment', this.currentMelodyId);
       }
-
     },
+    
+    /**
+     * Start the "Does It Sound Right?" game mode from practice mode
+     * This transitions from showing just the play button to the full game UI
+     * 
+     * @param {string} instrument - Optional instrument to use in practice mode ('violin', 'flute', 'tuba')
+     */
+    startSoundJudgmentGame(instrument = null) {
+      console.log(`SOUND JUDGMENT: Starting game mode from practice mode with instrument: ${instrument || 'default'}`);
+      
+      if (instrument) {
+        // Practice mode with specific instrument - don't transition to game mode yet
+        this.currentInstrument = instrument;
+        
+        // Get the current language
+        const language = localStorage.getItem('lalumo_language') === 'german' ? 'de' : 'en';
+        
+        // Show a message about which instrument is playing
+        let instrumentMessage = '';
+        
+        if (language === 'de') {
+          if (instrument === 'violin') {
+            instrumentMessage = 'Höre die Melodie auf der Geige!';
+          } else if (instrument === 'flute') {
+            instrumentMessage = 'Höre die Melodie auf der Flöte!';
+          } else if (instrument === 'tuba') {
+            instrumentMessage = 'Höre die Melodie auf der Tuba!';
+          }
+        } else {
+          if (instrument === 'violin') {
+            instrumentMessage = 'Listen to the melody on the violin!';
+          } else if (instrument === 'flute') {
+            instrumentMessage = 'Listen to the melody on the flute!';
+          } else if (instrument === 'tuba') {
+            instrumentMessage = 'Listen to the melody on the tuba!';
+          }
+        }
+        
+        // Show the instrument-specific message
+        this.showMascotMessage(instrumentMessage);
+        
+        // Generate a melody without wrong notes for practice mode
+        this.generatePracticeMelody();
+        
+        // Play the melody with the selected instrument
+        this.playPracticeMelody(instrument);
+      } else {
+        // Standard game mode transition
+        // Set game mode to true to show the game interface
+        this.gameMode = true;
+        
+        // Reset any selected instrument
+        this.currentInstrument = null;
+        
+        // Get the current language
+        const language = localStorage.getItem('lalumo_language') === 'german' ? 'de' : 'en';
+        
+        // Show an introductory message for game mode
+        const gameMessage = language === 'de' 
+          ? 'Hör dir die Melodie an! Klingt sie richtig? Oder ist da ein falscher Ton?'
+          : 'Listen to the melody! Does it sound right? Or is there a wrong note?';
+        
+        // Show the game mode message
+        this.showMascotMessage(gameMessage);
+        
+        // Update the progress display now that we're in game mode
+        this.update_progress_display();
+        
+        // Play the first melody immediately when entering game mode
+        this.playMelodyForSoundHighOrLow(true);
+      }
+    },
+    
+    /**
+     * Generate a practice melody without wrong notes
+     */
+    generatePracticeMelody() {
+      console.log('SOUND JUDGMENT: Generating practice melody without wrong notes');
+      
+      // Generate a melody without wrong notes for practice mode
+      // Similar to generateSoundHighOrLowMelody but without wrong notes
+      
+      // Get a random melody from our known melodies
+      const availableMelodyIds = Object.keys(this.knownMelodies);
+      const randomIndex = Math.floor(Math.random() * availableMelodyIds.length);
+      const selectedMelodyId = availableMelodyIds[randomIndex];
+      
+      console.log(`SOUND JUDGMENT PRACTICE: Selected melody ${selectedMelodyId}`);
+      
+      // Get the notes for this melody
+      const melodyNotes = this.knownMelodies[selectedMelodyId].notes;
+      
+      // Store the melody ID and name for feedback
+      this.currentMelodyId = selectedMelodyId;
+      this.currentMelodyName = this.knownMelodies[selectedMelodyId].name;
+      
+      // Use the notes directly - no wrong notes in practice mode
+      this.currentSequence = [...melodyNotes];
+      this.melodyHasWrongNote = false; // Always correct in practice mode
+      
+      return true;
+    },
+    
+    /**
+     * Play a melody in practice mode with the selected instrument
+     * @param {string} instrument - The instrument to use ('violin', 'flute', 'tuba')
+     */
+    playPracticeMelody(instrument) {
+      console.log(`SOUND JUDGMENT: Playing practice melody with instrument: ${instrument}`);
+      
+      // Stop any currently playing sounds
+      this.stopCurrentSound();
+      
+      // Disable all instrument buttons during playback
+      document.querySelectorAll('.instrument-button').forEach(btn => {
+        btn.disabled = true;
+        btn.classList.add('disabled');
+      });
+      
+      // Play the melody with the selected instrument
+      // We pass the instrument to playMelodySequence
+      this.playMelodySequence(this.currentSequence, 'practice', this.currentMelodyId, { instrument });
+      
+      // Re-enable the buttons after playback completes
+      setTimeout(() => {
+        document.querySelectorAll('.instrument-button').forEach(btn => {
+          btn.disabled = false;
+          btn.classList.remove('disabled');
+        });
+      }, this.currentSequence.length * 700 + 500); // Approximate melody duration
+    },
+
     /**
      * Aktualisiert die Anzeige des aktuellen Levels in der UI
      * @activity common
@@ -4257,7 +4406,7 @@ export function pitches() {
       };
     },
     
-    playMelodySequence(notes, context = 'sound-judgment', melodyId = null) {
+    playMelodySequence(notes, context = 'sound-judgment', melodyId = null, options = {}) {
       console.log(`AUDIO: Playing melody sequence for '${context}' with ${notes.length} notes`);
       
       // If already playing, stop the current sound
@@ -4532,7 +4681,34 @@ export function pitches() {
         let processedName = name;
         let volume = 0.75;
         
-        if (context === 'sound-judgment') {
+        // Handle different instrument types and contexts
+        if (context === 'practice' && options.instrument) {
+          // For practice mode with specific instruments
+          const instrument = options.instrument;
+          
+          // Use the name with octave but prefix with instrument name
+          // Tone.js will use this to play with the appropriate instrument
+          if (instrument === 'violin') {
+            // Use string instrument sound
+            audioEngine.useInstrument('violin');
+            volume = 0.8;
+          } else if (instrument === 'flute') {
+            // Use wind instrument sound
+            audioEngine.useInstrument('flute');
+            volume = 0.75;
+          } else if (instrument === 'tuba') {
+            // Use brass instrument sound
+            audioEngine.useInstrument('tuba');
+            volume = 0.9; // Tuba needs higher volume
+          } else {
+            // Fallback to standard sound
+            audioEngine.useInstrument('default');
+          }
+          
+          console.log(`AUDIO: Playing ${instrument} note: ${name} with volume ${volume}`);
+        } else if (context === 'sound-judgment') {
+          // Reset to default instrument
+          audioEngine.useInstrument('default');
           // Für die "Does It Sound Right?"-Aktivität: Präfix hinzufügen
           processedName = `sound_${name.toLowerCase()}`;
         } else if (context === 'feedback') {

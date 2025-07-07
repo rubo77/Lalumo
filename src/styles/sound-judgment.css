@@ -1,0 +1,203 @@
+/* Sound Judgment (1_4) Activity CSS */
+
+/* Practice Mode Styles */
+.practice-mode {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  padding: 20px;
+}
+
+.center-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  max-width: 90%;
+  background-color: rgba(255, 255, 255, 0);
+  border-radius: 15px;
+  position: absolute;
+  top: min(200px, 17vw);
+}
+
+/* Instrument Selection Buttons */
+.instrument-buttons {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin: 15px 0;
+}
+
+.instrument-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 16vw;
+  height: 27vw;
+  border: none;
+  border-radius: 12px;
+  padding: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0);
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.instrument-button:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+.instrument-button:active {
+  transform: translateY(-2px);
+}
+
+.instrument-icon {
+  font-size: 40px;
+  margin-bottom: 10px;
+}
+
+.instrument-name {
+  font-size: 14px;
+  font-weight: bold;
+  color: #333;
+}
+
+/* Specific instrument styles */
+.violin {
+  background-color: transparent;
+  border: 0;
+}
+
+.violin:hover:not(.disabled) {
+  background-color: transparent;
+}
+
+.flute {
+  background-color: transparent;
+  border: 0;
+}
+
+.flute:hover:not(.disabled) {
+  background-color: transparent;
+}
+
+.tuba {
+  background-color: transparent;
+  border: 0;
+}
+
+.tuba:hover:not(.disabled) {
+  background-color: transparent;
+}
+
+/* Disabled state for all instruments */
+.instrument-button.disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.instrument-button.disabled:hover {
+  transform: none;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Start Game Button */
+.start-game-container {
+  position: fixed;
+  bottom: 50px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  z-index: 10;
+}
+
+.start-game-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #ff8c2a;
+  color: white;
+  border: none;
+  border-radius: 50px;
+  padding: 15px 40px;
+  font-size: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.start-game-button:hover {
+  transform: scale(1.05);
+  background-color: #ff9f43;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+.start-game-button:active {
+  transform: scale(0.98);
+}
+
+.play-icon {
+  font-size: 24px;
+  margin-right: 10px;
+}
+
+.play-text {
+  font-weight: bold;
+}
+
+/* Game Mode Button (kept for reference) */
+.large-play-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent;
+  color: white;
+  border: none;
+  border-radius: 50px;
+  padding: 15px 40px;
+  font-size: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  margin: 20px 0;
+}
+
+.large-play-button:hover {
+  transform: scale(1.05);
+  background-color: #ff9f43;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+.large-play-button:active {
+  transform: scale(0.98);
+}
+
+/* Game Mode Styles */
+.sound-judgment-options {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  margin-top: 20px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .large-play-button {
+    padding: 12px 30px;
+    font-size: 18px;
+  }
+}
+
+@media (max-width: 480px) {
+  .sound-judgment-options {
+    gap: 15px;
+  }
+}

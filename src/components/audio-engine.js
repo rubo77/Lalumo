@@ -59,6 +59,75 @@ export class AudioEngine {
         });
         return synth;
       },
+      // Violin - String Instrument
+      violin: () => {
+        const synth = new Tone.PolySynth(Tone.AMSynth);
+        synth.set({
+          harmonicity: 2.5,
+          oscillator: {
+            type: "sine"
+          },
+          envelope: {
+            attack: 0.1,
+            decay: 0.2,
+            sustain: 0.8,
+            release: 1.2
+          },
+          modulation: {
+            type: "sine"
+          },
+          modulationEnvelope: {
+            attack: 0.5,
+            decay: 0.1,
+            sustain: 1,
+            release: 0.5
+          }
+        });
+        return synth;
+      },
+      // Flute - Wind Instrument
+      flute: () => {
+        const synth = new Tone.PolySynth(Tone.Synth);
+        synth.set({
+          oscillator: {
+            type: "sine"
+          },
+          envelope: {
+            attack: 0.05,
+            decay: 0.1,
+            sustain: 0.7,
+            release: 0.15
+          }
+        });
+        return synth;
+      },
+      // Tuba - Brass Instrument
+      tuba: () => {
+        const synth = new Tone.PolySynth(Tone.FMSynth);
+        synth.set({
+          harmonicity: 0.5,
+          modulationIndex: 2,
+          oscillator: {
+            type: "sine"
+          },
+          envelope: {
+            attack: 0.08,
+            decay: 0.1,
+            sustain: 0.8,
+            release: 0.4
+          },
+          modulation: {
+            type: "square"
+          },
+          modulationEnvelope: {
+            attack: 0.01,
+            decay: 0.5,
+            sustain: 0.2,
+            release: 0.1
+          }
+        });
+        return synth;
+      },
       bell: () => {
         const synth = new Tone.PolySynth(Tone.FMSynth);
         synth.set({
@@ -116,7 +185,7 @@ export class AudioEngine {
   
   /**
    * Ändert den Synthesizer-Typ
-   * @param {string} instrumentType - Typ des Instruments ('default', 'piano', 'marimba', 'bell')
+   * @param {string} instrumentType - Typ des Instruments ('default', 'piano', 'marimba', 'violin', 'flute', 'tuba', 'bell')
    */
   setInstrument(instrumentType) {
     if (!this._instrumentTypes[instrumentType]) {
@@ -134,6 +203,33 @@ export class AudioEngine {
     this._currentInstrument = instrumentType;
     
     console.log(`Instrument geändert zu: ${instrumentType}`);
+  }
+  
+  /**
+   * Wechselt schnell zwischen Instrumenten, ohne den aktuellen Synth zu unterbrechen
+   * Für Aktivitäten, die verschiedene Instrumenten-Sounds benötigen
+   * @param {string} instrumentType - Typ des Instruments ('default', 'piano', 'violin', 'flute', 'tuba', etc.)
+   */
+  useInstrument(instrumentType) {
+    // Prüfen, ob das angeforderte Instrument existiert
+    if (!this._instrumentTypes[instrumentType]) {
+      console.warn(`Unbekannter Instrument-Typ: ${instrumentType}, verwende Standard-Synth`);
+      instrumentType = 'default';
+    }
+    
+    // Instrument nur wechseln, wenn es sich geändert hat
+    if (this._currentInstrument !== instrumentType) {
+      // Bisherigen Synth entfernen und neuen erstellen
+      if (this._synth) {
+        this._synth.disconnect();
+      }
+      
+      this._synth = this._instrumentTypes[instrumentType]();
+      this._synth.toDestination();
+      this._currentInstrument = instrumentType;
+      
+      console.log(`Schneller Instrumentenwechsel zu: ${instrumentType}`);
+    }
   }
   
   /**

@@ -477,28 +477,65 @@
             </button>
           </div>
 
-          <!-- Play Melody Button -->
-          <div class="melody-play-container">
-            <button class="circular-play-button" @click="playCurrentMelody()" aria-label="Play Melody" title="Play Melody">
-              
-            </button>
-            <div class="melody-name" x-show="currentMelodyName" x-text="currentMelodyName"></div>
-            <!-- Next melody button -->
-            <button class="next-melody-button" @click="playMelodyForSoundHighOrLow(true)" aria-label="Next melody" title="Next melody">
-              <span style="font-size: 18px;">⏭</span>
-            </button>
-          </div>
-
-          <!-- Animal choice buttons -->
-          <div class="sound-judgment-options">
-            <div class="pitch-card animal-card happy" @click="checkSoundHighOrLow(true)" aria-label="Sounds good" title="Sounds good">
-              <div class="pitch-icon animal-icon" title="Sounds good!">
-                <img src="images/1_5_pitches_good_cat.png" alt="Happy cat">
+          <!-- Practice Mode -->
+          <div class="practice-mode" x-show="!gameMode">
+            <div class="center-container">
+              <!-- Instrument Selection Buttons -->
+              <div class="instrument-buttons">
+                <!-- Violin Button -->
+                <button class="instrument-button violin" @click="startSoundJudgmentGame('violin')" title="Violin" aria-label="Play with violin">
+                  <div class="instrument-icon violin-icon">🎻</div>
+                  <span class="instrument-name" x-text="currentLanguage === 'de' ? 'Geige' : 'Violin'"></span>
+                </button>
+                
+                <!-- Flute Button -->
+                <button class="instrument-button flute" @click="startSoundJudgmentGame('flute')" title="Flute" aria-label="Play with flute">
+                  <div class="instrument-icon flute-icon">🎵</div>
+                  <span class="instrument-name" x-text="currentLanguage === 'de' ? 'Flöte' : 'Flute'"></span>
+                </button>
+                
+                <!-- Tuba Button -->
+                <button class="instrument-button tuba" @click="startSoundJudgmentGame('tuba')" title="Tuba" aria-label="Play with tuba">
+                  <div class="instrument-icon tuba-icon">🎺</div>
+                  <span class="instrument-name" x-text="currentLanguage === 'de' ? 'Tuba' : 'Tuba'"></span>
+                </button>
               </div>
             </div>
-            <div class="pitch-card animal-card unhappy" @click="checkSoundHighOrLow(false)" aria-label="Sounds wrong" title="Sounds wrong">
-              <div class="pitch-icon animal-icon" title="Sounds wrong!">
-                <img src="images/1_5_pitches_bad_snake.png" alt="Unhappy snake">
+            
+            <!-- Start Game Mode Button (at the bottom) -->
+            <div class="start-game-container">
+              <button class="start-game-button" @click="startSoundJudgmentGame()" aria-label="Start Game" title="Start Game">
+                <span class="play-icon">▶</span>
+                <span class="play-text" x-text="currentLanguage === 'de' ? 'Spiel starten' : 'Start Game'"></span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Game Mode -->
+          <div class="game-mode" x-show="gameMode">
+            <!-- Play Melody Button -->
+            <div class="melody-play-container">
+              <button class="circular-play-button" @click="playCurrentMelody()" aria-label="Play Melody" title="Play Melody">
+                
+              </button>
+              <div class="melody-name" x-show="currentMelodyName" x-text="currentMelodyName"></div>
+              <!-- Next melody button -->
+              <button class="next-melody-button" @click="playMelodyForSoundHighOrLow(true)" aria-label="Next melody" title="Next melody">
+                <span style="font-size: 18px;">⏭</span>
+              </button>
+            </div>
+
+            <!-- Animal choice buttons -->
+            <div class="sound-judgment-options">
+              <div class="pitch-card animal-card happy" @click="checkSoundHighOrLow(true)" aria-label="Sounds good" title="Sounds good">
+                <div class="pitch-icon animal-icon" title="Sounds good!">
+                  <img src="images/1_5_pitches_good_cat.png" alt="Happy cat">
+                </div>
+              </div>
+              <div class="pitch-card animal-card unhappy" @click="checkSoundHighOrLow(false)" aria-label="Sounds wrong" title="Sounds wrong">
+                <div class="pitch-icon animal-icon" title="Sounds wrong!">
+                  <img src="images/1_5_pitches_bad_snake.png" alt="Unhappy snake">
+                </div>
               </div>
             </div>
           </div>

@@ -4,6 +4,7 @@ import Alpine from 'alpinejs';
 // Import styles
 import './styles/main.css';
 import './styles/clickable-map.css';
+import './styles/sound-judgment.css';
 
 // Import Debug Utility
 import { checkStoredDebugSettings, debugLog } from './utils/debug';
