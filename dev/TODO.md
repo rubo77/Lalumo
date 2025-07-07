@@ -180,7 +180,9 @@ reset-button:
 
 
 1_5 memory game:
-  - Piano Melodie beim erstmal ohne Farben abspielen, nur wenn man einen Fehler gemacht hat, ab dann immer mit Farben wiederholen, bis man es richtig hat, beim nächsten wieder den ersten ohne farben
+  - First play of a sequence: play only the sound, no highlighting of piano keys (no colors)
+    - After a mistake: Show colored highlighted keys like now on the piano during replay
+    - After a correct sequence: Next sequence starts without colors again
   - # bereit zur veröffentlichung
 
 2_5_chords_color_matching:

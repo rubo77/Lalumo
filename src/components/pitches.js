@@ -76,6 +76,7 @@ export function pitches() {
     longPressThreshold: 800, // milliseconds for long press
     lastSelectedPatternType: null, // Speichert den letzten ausgewählten Pattern-Typ
     consecutivePatternCount: 0,    // Zählt, wie oft das gleiche Pattern hintereinander ausgewählt wurde
+    showMemoryHighlighting: false, // Whether to show highlighting in memory game
     
     // Progress tracking
     progress: {
@@ -194,8 +195,8 @@ export function pitches() {
         de: 'Schlaf, Kindlein, schlaf',
         quarterNoteDuration: 550,
         notes: [
-          'E:h', 'D4', 'D4', 'C4:h', 'C', // Frère Jacques (erster Teil)
-          'G3', 'E', 'E', 'D4', 'D4', 'C4:h', 'C', // Wiederholung
+          'E:h', 'D4', 'D4', 'C4:W',
+          'G3', 'E', 'E', 'D4', 'D4', 'C4:w',
         ]
       },
       'little-hans': { // Hänschen klein
@@ -3505,6 +3506,7 @@ export function pitches() {
      */
     playMemorySequence() {
       console.log('MEMORY_GAME: Starting memory sequence playback with', this.currentSequence.length, 'notes');
+      console.log('MEMORY_GAME: Visual highlighting is', this.showMemoryHighlighting ? 'enabled' : 'disabled');
       
       // Zuerst alle vorherigen Sounds stoppen (wichtig für sauberen Reset)
       this.stopCurrentSound();
@@ -3525,9 +3527,13 @@ export function pitches() {
         
         // Schedule this note with proper delay
         const playTimeoutId = setTimeout(() => {
-          // Highlight current note
-          this.currentHighlightedNote = note;
-          console.log(`MEMORY_GAME: Playing note ${i+1}/${this.currentSequence.length}: ${note}`);
+          // Only highlight current note if highlighting is enabled
+          if (this.showMemoryHighlighting) {
+            this.currentHighlightedNote = note;
+            console.log(`MEMORY_GAME: Playing note ${i+1}/${this.currentSequence.length}: ${note} (with highlighting)`);
+          } else {
+            console.log(`MEMORY_GAME: Playing note ${i+1}/${this.currentSequence.length}: ${note} (sound only)`);
+          }
           
           // Play current note using the central audio engine
           audioEngine.playNote(note.toLowerCase(), 0.6);
@@ -3629,6 +3635,10 @@ export function pitches() {
         this.showFeedback = true;
         this.feedback = (this.$store.strings?.memory_incorrect || 'Let\'s try again. Listen carefully!');
         
+        // Enable highlighting for the next playback after an error
+        this.showMemoryHighlighting = true;
+        console.log('MEMORY_GAME: Error detected, enabling highlighting for next playback');
+        
         // Reset after a delay
         setTimeout(() => {
           this.showFeedback = false;
@@ -3703,6 +3713,10 @@ export function pitches() {
         if (!this.progress['1_5_pitches_memory-game']) {
           this.progress['1_5_pitches_memory-game'] = 0;
         }
+        
+        // Reset to sound-only mode for the next sequence
+        this.showMemoryHighlighting = false;
+        console.log('MEMORY_GAME: Success! Disabling highlighting for next sequence');
         
         // Store the maximum success count as the progress value
         this.progress['1_5_pitches_memory-game'] = Math.max(this.memorySuccessCount, this.progress['1_5_pitches_memory-game'] || 0);
@@ -4359,11 +4373,20 @@ export function pitches() {
             case 'w': // whole note :w
               duration = baseQuarterNoteDuration * 4;
               break;
+            case 'W': // whole note, punctuated :W
+              duration = baseQuarterNoteDuration * 6;
+              break;
             case 'h': // half note :h
               duration = baseQuarterNoteDuration * 2;
               break;
+            case 'H': // half note, punctuated :H
+              duration = baseQuarterNoteDuration * 3;
+              break;
             case 'q': // quarter note (default) :q
               duration = baseQuarterNoteDuration;
+              break;
+            case 'Q': // quarter note, punctuated :Q
+              duration = baseQuarterNoteDuration * 1.5;
               break;
             case 'e': // eighth note :e
               duration = baseQuarterNoteDuration / 2;
