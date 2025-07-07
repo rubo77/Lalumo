@@ -14,9 +14,7 @@
 - Add 1s delay before memory game feedback sound
 - Localize unlock_squirrel_message, unlock_octopus_message, and all_animals_unlocked in EN/DE
 - Update sitemap.xml for new homepage, index, impressum, datenschutz, app, and EN/DE links
-- Bug: In 1_5 memory game, the last note of the sequence is not played
-- 2_5_chords_color_matching: Add error feedback shake and sound like in 1_2
-- 1_1_pitches_high_or_low: Use success and error sounds like in 1_2
+- Bug: In 1_5 memory game, the user's last pressed note is not played before the success sound is played, resulting in an incomplete sequence playback.
 
 ## Task List
 - [x] Locate where username creation is handled in the codebase
@@ -37,6 +35,7 @@
 - [x] 2_5_chords_color_matching: Add error feedback shake and sound
 - [x] 1_1_pitches_high_or_low: Use success and error sounds from 1_2
 - [x] Update sitemap.xml for new homepage, index, impressum, datenschutz, app, and EN/DE links
+- [x] Fix: Play last user-pressed note before success sound in 1_5 memory game
 
 ## Current Goal
 All tasks complete

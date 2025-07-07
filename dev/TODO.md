@@ -180,8 +180,7 @@ reset-button:
 
 
 1_5 memory game:
- - Der letzte ton der reihe wird immer nicht abgespielt
- - Piano Melodie beim erstmal ohne Farben abspielen, nur wenn man einen Fehler gemacht hat, dann noch mal mit Farben wiederholen
+  - Piano Melodie beim erstmal ohne Farben abspielen, nur wenn man einen Fehler gemacht hat, ab dann immer mit Farben wiederholen, bis man es richtig hat, beim nächsten wieder den ersten ohne farben
   - # bereit zur veröffentlichung
 
 2_5_chords_color_matching:

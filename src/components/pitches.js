@@ -3504,60 +3504,74 @@ export function pitches() {
      * @activity 1_5_memory_game
      */
     playMemorySequence() {
-      console.log('DEBUG: Starting memory sequence playback');
+      console.log('MEMORY_GAME: Starting memory sequence playback with', this.currentSequence.length, 'notes');
       
       // Zuerst alle vorherigen Sounds stoppen (wichtig für sauberen Reset)
       this.stopCurrentSound();
       
-      // Play memory sequence with timing
-      const playMemory = (notes, index = 0) => {
-        // Play the current note
-        if (index < notes.length) {
+      // Clear all existing timeouts to prevent overlap issues
+      this.clearAllMelodyTimeouts();
+      
+      // Ensure we have a sequence to play
+      if (!this.currentSequence || this.currentSequence.length === 0) {
+        console.log('MEMORY_GAME: No sequence to play');
+        return;
+      }
+      
+      // Play each note in the sequence with delays
+      for (let i = 0; i < this.currentSequence.length; i++) {
+        const note = this.currentSequence[i];
+        const isLastNote = i === this.currentSequence.length - 1;
+        
+        // Schedule this note with proper delay
+        const playTimeoutId = setTimeout(() => {
           // Highlight current note
-          this.currentHighlightedNote = notes[index];
-          console.log(`DEBUG: Playing memory note ${index+1}/${notes.length}: ${notes[index]}`);
+          this.currentHighlightedNote = note;
+          console.log(`MEMORY_GAME: Playing note ${i+1}/${this.currentSequence.length}: ${note}`);
           
           // Play current note using the central audio engine
-          audioEngine.playNote(notes[index].toLowerCase(), 0.6);
+          audioEngine.playNote(note.toLowerCase(), 0.6);
           
-          // Schedule next note with tracking
-          const nextNoteTimeoutId = setTimeout(() => {
-            // Timeout aus Tracking entfernen, wenn es ausgeführt wird
-            const timeoutIndex = this.melodyTimeouts.indexOf(nextNoteTimeoutId);
-            if (timeoutIndex !== -1) {
-              this.melodyTimeouts.splice(timeoutIndex, 1);
-              console.log(`DEBUG: Memory sequence timeout executed and removed from tracking (${this.melodyTimeouts.length} remaining)`);
-            }
+          // Remove this timeout from tracking once executed
+          const timeoutIndex = this.melodyTimeouts.indexOf(playTimeoutId);
+          if (timeoutIndex !== -1) {
+            this.melodyTimeouts.splice(timeoutIndex, 1);
+          }
+          
+          // If this is the last note, schedule the final cleanup
+          if (isLastNote) {
+            console.log('MEMORY_GAME: Last note played, scheduling highlight cleanup');
             
-            playMemory(notes, index + 1);
-          }, 600);
-          
-          // Timeout im melodyTimeouts-Array tracken
-          this.melodyTimeouts.push(nextNoteTimeoutId);
-          console.log(`DEBUG: Added memory sequence timeout to tracking (${this.melodyTimeouts.length} total)`);
-        } else {
-          // All notes have been played, reset highlighting when done
-          const highlightTimeoutId = setTimeout(() => {
-            this.currentHighlightedNote = null;
+            const cleanupTimeoutId = setTimeout(() => {
+              this.currentHighlightedNote = null;
+              console.log('MEMORY_GAME: Memory sequence complete, highlighting cleared');
+              
+              // Remove from tracking
+              const idx = this.melodyTimeouts.indexOf(cleanupTimeoutId);
+              if (idx !== -1) {
+                this.melodyTimeouts.splice(idx, 1);
+              }
+            }, 300);
             
-            // Timeout aus Tracking entfernen
-            const timeoutIndex = this.melodyTimeouts.indexOf(highlightTimeoutId);
-            if (timeoutIndex !== -1) {
-              this.melodyTimeouts.splice(timeoutIndex, 1);
-              console.log('DEBUG: Memory highlight timeout completed and removed from tracking');
-            }
-          }, 300);
-          
-          // Highlight-Timeout tracken
-          this.melodyTimeouts.push(highlightTimeoutId);
-          console.log(`DEBUG: Added highlight timeout to tracking (${this.melodyTimeouts.length} total)`);
-          return;
-        }
+            this.melodyTimeouts.push(cleanupTimeoutId);
+          }
+        }, i * 600); // 600ms between notes
         
-      };
-      
-      // Start playing
-      playMemory(this.currentSequence);
+        // Track this timeout
+        this.melodyTimeouts.push(playTimeoutId);
+      }
+    },
+    
+    /**
+     * Helper method to clear all pending melody timeouts
+     * @activity 1_5_memory_game
+     */
+    clearAllMelodyTimeouts() {
+      if (this.melodyTimeouts && this.melodyTimeouts.length > 0) {
+        console.log(`MEMORY_GAME: Clearing ${this.melodyTimeouts.length} pending timeouts`);
+        this.melodyTimeouts.forEach(timeoutId => clearTimeout(timeoutId));
+        this.melodyTimeouts = [];
+      }
     },
     
     /**
@@ -3627,7 +3641,11 @@ export function pitches() {
       
       // Check if the sequence is complete
       if (this.userSequence.length === this.currentSequence.length) {
-        this.checkMemorySequence();
+        // Allow the last note to fully play before checking the sequence
+        console.log('MEMORY_GAME: Last note played, waiting before checking sequence');
+        setTimeout(() => {
+          this.checkMemorySequence();
+        }, 500); // Wait 500ms to let the last note play
       }
     },
     
