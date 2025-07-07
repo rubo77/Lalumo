@@ -125,6 +125,13 @@ reset-button:
 
 - nach dem creieren des usernamens eine info box mit "dein name ist ... . Du kannst dies in den Einstellungen ändern
 
+- Cheat codes die man beim beim Import eingeben kann
+
+- Wenn die seite das erste mal lädt, Das Lalumo Bild als loading spinner mit weißem Hintergrund und lazy loading
+
+- Je höher der Ton, umso leiser machen
+
+
 
 # play store:
 - In die Texte dass der Bildschirm gesperrt ist
@@ -157,6 +164,7 @@ reset-button:
 
 1_3 Draw a Melody:
 - # bereit zur veröffentlichung
+- Zeichnen geht nicht mehr auf den Handy, man schiebt den bildschirm hin und her, anstatt zu malen. könnte helfen: overflow hiddern
 - play sound and rainbow exact after the painted melody is played (in case it is a longer melody)
 - reset all progress geht noch nicht
 - wenn der zeichenpfad spitze ecken hat, dann sollen noten, die nahe der spitze sind ganz in die spitze rutschen
