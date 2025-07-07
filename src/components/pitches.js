@@ -344,12 +344,22 @@ export function pitches() {
         }
         
         // Listen for pitch mode changes from the menu
-        window.addEventListener('set-pitch-mode', (event) => {
-          const newMode = event.detail;
-          console.log('Received pitch mode change event:', newMode);
-          this.setMode(newMode);
+        // Listen for the unified activity mode event
+        window.addEventListener('set-activity-mode', (event) => {
+          const { component, mode } = event.detail;
+          
+          // Only handle the event if it's for the pitches component
+          if (component === 'pitches') {
+            console.log('Received unified activity mode event for pitches:', mode);
+            this.setMode(mode);
+            
+            // Update the unified activity mode in the Alpine store
+            if (window.Alpine?.store) {
+              window.Alpine.store('currentActivityMode', { component: 'pitches', mode });
+            }
+          }
         });
-      
+        
       // Set initial mode based on Alpine store
       if (this.$store.pitchMode) {
         this.mode = this.$store.pitchMode;

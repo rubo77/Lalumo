@@ -249,11 +249,21 @@ export function chords() {
       }
       
       // Listen for chord mode changes via event
-      document.addEventListener('set-chord-mode', (event) => {
-        const mode = event.detail || 'main';
-        debugLog('CHORDS', `Received chord mode change event: ${mode}`);
-        // Call our own setMode method to ensure proper initialization
-        this.setMode(mode);
+      // Listen for the unified activity mode event
+      document.addEventListener('set-activity-mode', (event) => {
+        const { component, mode } = event.detail;
+        
+        // Only handle the event if it's for the chords component
+        if (component === 'chords') {
+          debugLog('CHORDS', `Received unified activity mode event: ${mode}`);
+          // Call our own setMode method to ensure proper initialization
+          this.setMode(mode || 'main');
+          
+          // Update the unified activity mode in the Alpine store
+          if (window.Alpine?.store) {
+            window.Alpine.store('currentActivityMode', { component: 'chords', mode: mode || 'main' });
+          }
+        }
       });
       
       // Setup navigation elements after DOM is fully loaded

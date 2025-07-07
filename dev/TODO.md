@@ -32,8 +32,6 @@ TODO
     - schlage etwas vor
 
   - **2_5_chords_characters**:
-   - es spielt noch kein sound
-   - Implementiere Tone.js Audio-Engine-Integration für Akkord-Wiedergabe
    
   - **2_6_chords_harmony-gardens**:
    - es spielt noch kein sound
@@ -181,8 +179,6 @@ reset-button:
   - # bereit zur veröffentlichung
 
 2_5_chords_color_matching:
-  - Wenn man einen Fehler macht dann den progress innerhalb der momentanen stufe wieder auf Null setzen, also, wenn >10 ist, dann auf 10 setzen, wenn >20 ist dann auf 20 setzen und so weiter
-  - reset auch im "reset current activity" in der navigation berücksichtigen
   - # bereit zur veröffentlichung
   - bei progress >=30 sollen die akkorde in der höhe durch einen transpose faktor von +-6 halbtönen variieren:
     - bis 40 schlafen das eichhörnchen und octopus in hintergrund, bei 50 wacht das eichhörnchen wieder auf, ... 

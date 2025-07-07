@@ -105,7 +105,7 @@
         
         <div class="menu-chapters">
           <!-- pitches -->
-          <button @click="active = 'pitches'; $dispatch('set-pitch-mode', 'main')" :class="{ 'active': active === 'pitches' }">
+          <button @click="active = 'pitches'; $dispatch('set-activity-mode', 'main')" :class="{ 'active': active === 'pitches' }">
             <span x-text="$store.strings?.menu_pitches || 'Pitches & Melodies'"></span>
           </button>
         </div>
@@ -114,41 +114,41 @@
         <template x-if="active === 'pitches'">
           <div class="menu-activities">
             <button id="nav_1_1"
-              @click="$dispatch('set-pitch-mode', '1_1_pitches_high_or_low'); window.innerWidth < 1024 ? menuOpen = false : null"
+              @click="$dispatch('set-activity-mode', {component: 'pitches', mode: '1_1_pitches_high_or_low'}); window.innerWidth < 1024 ? menuOpen = false : null"
               x-data="{ isActive: false }"
-              x-init="$watch('$store.pitchMode', value => isActive = value === '1_1_pitches_high_or_low')"
+              x-init="$watch('$store.currentActivityMode', value => isActive = value && value.component === 'pitches' && value.mode === '1_1_pitches_high_or_low')"
               :class="{ 'active': isActive }"
               style="display: auto;"
             >
               🔊 <span x-text="$store.strings?.high_or_low || 'High or Low?'"></span>
             </button>
             <button id="nav_1_2"
-              @click="$dispatch('set-pitch-mode', '1_2_pitches_match-sounds'); window.innerWidth < 1024 ? menuOpen = false : null"
+              @click="$dispatch('set-activity-mode', {component: 'pitches', mode: '1_2_pitches_match-sounds'}); window.innerWidth < 1024 ? menuOpen = false : null"
               x-data="{ isActive: false }"
-              x-init="$watch('$store.pitchMode', value => isActive = value === '1_2_pitches_match-sounds')"
+              x-init="$watch('$store.currentActivityMode', value => isActive = value && value.component === 'pitches' && value.mode === '1_2_pitches_match-sounds')"
               :class="{ 'active': isActive }"
             >
             🎵 <span x-text="$store.strings?.match_sounds || 'Match Sounds'"></span>
             </button>
             <button id="nav_1_3"
-              @click="$dispatch('set-pitch-mode', '1_3_pitches_draw-melody'); window.innerWidth < 1024 ? menuOpen = false : null"
+              @click="$dispatch('set-activity-mode', {component: 'pitches', mode: '1_3_pitches_draw-melody'}); window.innerWidth < 1024 ? menuOpen = false : null"
               x-data="{ isActive: false }"
-              x-init="$watch('$store.pitchMode', value => isActive = value === '1_3_pitches_draw-melody')"
+              x-init="$watch('$store.currentActivityMode', value => isActive = value && value.component === 'pitches' && value.mode === '1_3_pitches_draw-melody')"
               :class="{ 'active': isActive }"
             >
               ✏️ <span x-text="$store.strings?.draw_melody || 'Draw a Melody'"></span>
             </button>
             <button id="nav_1_4"
-              @click="$dispatch('set-pitch-mode', '1_4_pitches_does-it-sound-right'); window.innerWidth < 1024 ? menuOpen = false : null"
+              @click="$dispatch('set-activity-mode', {component: 'pitches', mode: '1_4_pitches_does-it-sound-right'}); window.innerWidth < 1024 ? menuOpen = false : null"
               x-data="{ isActive: false }"
-              x-init="$watch('$store.pitchMode', value => isActive = value === '1_4_pitches_does-it-sound-right')"
+              x-init="$watch('$store.currentActivityMode', value => isActive = value && value.component === 'pitches' && value.mode === '1_4_pitches_does-it-sound-right')"
               :class="{ 'active': isActive }">
               👉 <span x-text="$store.strings?.does_it_sound_right || 'Does It Sound Right?'"></span>
             </button>
             <button id="nav_1_5"
-              @click="$dispatch('set-pitch-mode', '1_5_pitches_memory-game'); window.innerWidth < 1024 ? menuOpen = false : null"
+              @click="$dispatch('set-activity-mode', {component: 'pitches', mode: '1_5_pitches_memory-game'}); window.innerWidth < 1024 ? menuOpen = false : null"
               x-data="{ isActive: false }"
-              x-init="$watch('$store.pitchMode', value => isActive = value === '1_5_pitches_memory-game')"
+              x-init="$watch('$store.currentActivityMode', value => isActive = value && value.component === 'pitches' && value.mode === '1_5_pitches_memory-game')"
               :class="{ 'active': isActive }"
             >
             🎹 <span x-text="$store.strings?.memory_game || 'Memory Game'"></span>
@@ -162,14 +162,14 @@
             <span>🔒 <span x-text="$store.strings?.menu_chords || 'Chords'"></span></span>
           </button>
           <!-- extra button always visible for debug-->
-          <button class="debug-element" @click="active = 'chords'; $dispatch('set-chord-mode', 'main')" :class="{ 'active': active === 'chords' }">
+          <button class="debug-element" @click="active = 'chords'; $dispatch('set-activity-mode', {component: 'chords', mode: '2_5_chords_characters'})" :class="{ 'active': active === 'chords' }">
             <span x-text="$store.strings?.menu_chords || 'Chords'"></span>
           </button>
         </div>
 
         <div class="menu-chapters" x-show="isChordChapterUnlocked">
           <!-- chords button (visible when unlocked through referrals) -->
-          <button @click="active = 'chords'; $dispatch('set-chord-mode', 'main')" :class="{ 'active': active === 'chords' }">
+          <button @click="active = 'chords'; $dispatch('set-activity-mode', {component: 'chords', mode: '2_5_chords_characters'})" :class="{ 'active': active === 'chords' }">
             <span x-text="$store.strings?.menu_chords || 'Chords'"></span>
           </button>
         </div>
@@ -178,53 +178,53 @@
         <template x-if="active === 'chords'">
           <div class="menu-activities">
             <button id="nav_2_1"
-              @click="$dispatch('set-chord-mode', '2_1_chords_color-matching'); window.innerWidth < 1024 ? menuOpen = false : null"
+              @click="$dispatch('set-activity-mode', {component: 'chords', mode: '2_1_chords_color-matching'}); window.innerWidth < 1024 ? menuOpen = false : null"
               x-data="{ isActive: false }"
-              x-init="$watch('$store.chordMode', value => isActive = value === '2_1_chords_color-matching')"
+              x-init="$watch('$store.currentActivityMode', value => isActive = value && value.component === 'chords' && value.mode === '2_1_chords_color-matching')"
               :class="{ 'active': isActive }"
               class="debug-element"
             >
               🌈 <span x-text="$store.strings?.chord_color_matching || 'Color Matching'"></span>
             </button>
             <button id="nav_2_2"
-              @click="$dispatch('set-chord-mode', '2_2_chords_mood-landscapes'); window.innerWidth < 1024 ? menuOpen = false : null"
+              @click="$dispatch('set-activity-mode', {component: 'chords', mode: '2_2_chords_mood-landscapes'}); window.innerWidth < 1024 ? menuOpen = false : null"
               x-data="{ isActive: false }"
-              x-init="$watch('$store.chordMode', value => isActive = value === '2_2_chords_mood-landscapes')"
+              x-init="$watch('$store.currentActivityMode', value => isActive = value && value.component === 'chords' && value.mode === '2_2_chords_mood-landscapes')"
               :class="{ 'active': isActive }"
               class="debug-element"
             >
               🏞️ <span x-text="$store.strings?.mood_landscapes || 'Mood Landscapes'"></span>
             </button>
             <button id="nav_2_3"
-              @click="$dispatch('set-chord-mode', '2_3_chords_chord-building'); window.innerWidth < 1024 ? menuOpen = false : null"
+              @click="$dispatch('set-activity-mode', {component: 'chords', mode: '2_3_chords_chord-building'}); window.innerWidth < 1024 ? menuOpen = false : null"
               x-data="{ isActive: false }"
-              x-init="$watch('$store.chordMode', value => isActive = value === '2_3_chords_chord-building')"
+              x-init="$watch('$store.currentActivityMode', value => isActive = value && value.component === 'chords' && value.mode === '2_3_chords_chord-building')"
               :class="{ 'active': isActive }"
               class="debug-element"
             >
               🧱 <span x-text="$store.strings?.chord_building || 'Chord Building'"></span>
             </button>
             <button id="nav_2_4"
-              @click="$dispatch('set-chord-mode', '2_4_chords_missing-note'); window.innerWidth < 1024 ? menuOpen = false : null"
+              @click="$dispatch('set-activity-mode', {component: 'chords', mode: '2_4_chords_missing-note'}); window.innerWidth < 1024 ? menuOpen = false : null"
               x-data="{ isActive: false }"
-              x-init="$watch('$store.chordMode', value => isActive = value === '2_4_chords_missing-note')"
+              x-init="$watch('$store.currentActivityMode', value => isActive = value && value.component === 'chords' && value.mode === '2_4_chords_missing-note')"
               :class="{ 'active': isActive }"
               class="debug-element"
             >
               🎼 <span x-text="$store.strings?.missing_note || 'Missing Note'"></span>
             </button>
             <button id="nav_2_5"
-              @click="$dispatch('set-chord-mode', '2_5_chords_characters'); window.innerWidth < 1024 ? menuOpen = false : null"
+              @click="$dispatch('set-activity-mode', {component: 'chords', mode: '2_5_chords_characters'}); window.innerWidth < 1024 ? menuOpen = false : null"
               x-data="{ isActive: false }"
-              x-init="$watch('$store.chordMode', value => isActive = value === '2_5_chords_characters')"
+              x-init="$watch('$store.currentActivityMode', value => isActive = value && value.component === 'chords' && value.mode === '2_5_chords_characters')"
               :class="{ 'active': isActive }"
             >
               🎭 <span x-text="$store.strings?.chord_characters || 'Character Matching'"></span>
             </button>
             <button id="nav_2_6"
-              @click="$dispatch('set-chord-mode', '2_6_chords_harmony-gardens'); window.innerWidth < 1024 ? menuOpen = false : null"
+              @click="$dispatch('set-activity-mode', {component: 'chords', mode: '2_6_chords_harmony-gardens'}); window.innerWidth < 1024 ? menuOpen = false : null"
               x-data="{ isActive: false }"
-              x-init="$watch('$store.chordMode', value => isActive = value === '2_6_chords_harmony-gardens')"
+              x-init="$watch('$store.currentActivityMode', value => isActive = value && value.component === 'chords' && value.mode === '2_6_chords_harmony-gardens')"
               :class="{ 'active': isActive }"
               class="debug-element"
             >

@@ -463,9 +463,9 @@ export function app() {
           const activityId = params.activity;
           
           if (activityId.startsWith('1_')) {
-            // Pitch activities - dispatch the set-pitch-mode event
+            // Pitch activities - dispatch the set-activity-mode event
             console.log('[DEEPLINK] Starting pitch activity:', activityId);
-            window.dispatchEvent(new CustomEvent('set-pitch-mode', {
+            window.dispatchEvent(new CustomEvent('set-activity-mode', {
               detail: activityId
             }));
             
@@ -475,9 +475,9 @@ export function app() {
               if (navButton) navButton.focus();
             });
           } else if (activityId.startsWith('2_')) {
-            // Chord activities - dispatch the set-chord-mode event
+            // Chord activities - dispatch the set-activity-mode event
             console.log('[DEEPLINK] Starting chord activity:', activityId);
-            window.dispatchEvent(new CustomEvent('set-chord-mode', {
+            window.dispatchEvent(new CustomEvent('set-activity-mode', {
               detail: activityId
             }));
             

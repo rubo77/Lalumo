@@ -22,13 +22,48 @@ export function testCommonModuleImport() {
 
 /**
  * Reset dispatcher - determines current activity and calls appropriate reset method
- * @param {string} currentMode - The current activity mode
+ * @param {string} currentMode - The current activity mode (optional - will use the unified store if not provided)
  */
 export function resetCurrentActivity(currentMode) {
-  // Auto-detect current mode if no parameter is passed
-  if (!currentMode && window.pitchesComponent && window.pitchesComponent.mode) {
-    currentMode = window.pitchesComponent.mode;
-    console.log('RESET_CURRENT: Auto-detected mode from component:', currentMode);
+  // Auto-detect current mode using the unified store if no parameter is passed
+  if (!currentMode && window.Alpine?.store) {
+    // Get the current activity mode from the Alpine store
+    const currentActivityMode = window.Alpine.store('currentActivityMode');
+    
+    if (currentActivityMode && currentActivityMode.component && currentActivityMode.mode) {
+      currentMode = currentActivityMode.mode;
+      console.log(`RESET_CURRENT: Using unified activity mode: ${currentActivityMode.component}.${currentMode}`);
+    } else {
+      console.log('RESET_CURRENT: No unified activity mode found, falling back to DOM detection');
+      
+      // Fallback: Check if any chord activity is currently visible
+      const isChordActivityVisible = document.querySelector('.chord-activity[style*="display: block"]') !== null;
+      
+      if (isChordActivityVisible) {
+        // A chord activity is visible, prioritize chordsComponent
+        if (window.chordsComponent && window.chordsComponent.mode && window.chordsComponent.mode !== 'main') {
+          currentMode = window.chordsComponent.mode;
+          console.log('RESET_CURRENT: Auto-detected active mode from chords component:', currentMode);
+        }
+      } else {
+        // No chord activity visible, check pitches component
+        if (window.pitchesComponent && window.pitchesComponent.mode && window.pitchesComponent.mode !== 'main') {
+          currentMode = window.pitchesComponent.mode;
+          console.log('RESET_CURRENT: Auto-detected active mode from pitches component:', currentMode);
+        }
+      }
+      
+      // Last-resort fallback if DOM checking didn't work
+      if (!currentMode) {
+        if (window.pitchesComponent?.mode && window.pitchesComponent.mode !== 'main') {
+          currentMode = window.pitchesComponent.mode;
+          console.log('RESET_CURRENT: Fallback detected mode from pitches component:', currentMode);
+        } else if (window.chordsComponent?.mode && window.chordsComponent.mode !== 'main') {
+          currentMode = window.chordsComponent.mode;
+          console.log('RESET_CURRENT: Fallback detected mode from chords component:', currentMode);
+        }
+      }
+    }
   }
   
   console.log('RESET_CURRENT: Current mode detected:', currentMode);
@@ -50,11 +85,16 @@ export function resetCurrentActivity(currentMode) {
     '1_3_pitches_draw-melody': isGerman ? 'Melodie zeichnen' : 'Draw Melody',
     '1_4_pitches_does-it-sound-right': isGerman ? 'Klingt das richtig?' : 'Does It Sound Right?',
     '1_5_pitches_memory-game': isGerman ? 'Memory-Spiel' : 'Memory Game',
-    '2_1_chords_color-matching': isGerman ? 'Akkord-Farb Zuordnung' : 'Chord Color Matching'
+    '2_1_chords_color-matching': isGerman ? 'Akkord-Farb Zuordnung' : 'Chord Color Matching',
+    '2_2_chords_mood-landscapes': isGerman ? 'Akkord-Mood-Landscapes' : 'Chord Mood Landscapes',
+    '2_3_chords_chord-building': isGerman ? 'Akkord-Bau' : 'Chord Building',
+    '2_4_chords_missing-note': isGerman ? 'Fehlende Noten' : 'Missing Note',
+    '2_5_chords_characters': isGerman ? 'Akkord-Charaktere' : 'Chord Characters',
+    '2_6_chords_harmony-gardens': isGerman ? 'Harmonie Garten' : 'Harmony Gardens'
   };
   
   console.log('RESET_CURRENT: Available activity names:', Object.keys(activityNames));
-  console.log('RESET_CURRENT: Mode match found:', activityNames[currentMode] ? 'YES' : 'NO');
+  console.log('RESET_CURRENT: Mode match found for activity ' + currentMode + ':', activityNames[currentMode] ? 'YES' : 'NO');
   
   const activityName = activityNames[currentMode];
   
@@ -86,7 +126,7 @@ export function resetCurrentActivity(currentMode) {
     '1_3_pitches_draw-melody': () => reset_1_3_DrawMelody_Progress(window.pitchesComponent),
     '1_4_pitches_does-it-sound-right': () => reset_1_4_SoundJudgment_Progress(window.pitchesComponent),
     '1_5_pitches_memory-game': () => reset_1_5_MemoryGame_Progress(window.pitchesComponent),
-    '2_1_chords_color-matching': () => reset_2_1_Chords_Progress(window.pitchesComponent)
+    '2_5_chords_characters': () => reset_2_5_ChordTypes_Progress(window.pitchesComponent)
   };
   
   const resetMethod = resetMethods[currentMode];

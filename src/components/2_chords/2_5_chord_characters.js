@@ -72,21 +72,49 @@ function preloadBackgroundImage(imageUrl) {
 
 /**
  * Reset progress for Chord Types activity (2_5)
- * @param {Object} component - The pitches component instance
+ * Used by the resetCurrentActivity function
  */
-export function reset_2_5_ChordTypes_Progress(component) {
-  console.log('Resetting Chord Types progress...');
+export function reset_2_5_ChordTypes_Progress() {
+  debugLog(['CHORDS', 'RESET'], 'Resetting 2_5_chords_characters progress...');
   
-  // Clear localStorage data
-  localStorage.removeItem('lalumo_chords_progress');
-  
-  // Reset any in-memory state if applicable
-  if (component && component.chords) {
-    if (component.chords.chordsProgress) {
-      component.chords.chordsProgress = 0;
-    }
+  // Get the chordsComponent from window global
+  const chordsComponent = window.chordsComponent;
+  if (!chordsComponent) {
+    console.error('Cannot reset 2_5_chords_characters: chordsComponent not found');
+    return;
   }
   
-  console.log('Chord Types progress reset complete');
+  // Get existing progress from localStorage
+  let progressData = localStorage.getItem('lalumo_chords_progress');
+  let progress = {};
+  
+  if (progressData) {
+    try {
+      progress = JSON.parse(progressData);
+      // Reset just the 2_5_chords_characters activity progress
+      progress['2_5_chords_characters'] = 0;
+    } catch (error) {
+      debugLog(['CHORDS', 'ERROR'], `Error parsing progress data: ${error.message}`);
+      progress = { '2_5_chords_characters': 0 };
+    }
+  } else {
+    progress = { '2_5_chords_characters': 0 };
+  }
+  
+  // Save updated progress back to localStorage
+  localStorage.setItem('lalumo_chords_progress', JSON.stringify(progress));
+  
+  // Update component's in-memory state
+  if (chordsComponent.progress) {
+    chordsComponent.progress['2_5_chords_characters'] = 0;
+  }
+  
+  // Update UI to reflect reset progress
+  updateCharacterBackground(chordsComponent);
+  if (typeof chordsComponent.updateChordButtonsVisibility === 'function') {
+    chordsComponent.updateChordButtonsVisibility();
+  }
+  
+  debugLog(['CHORDS', 'RESET'], '2_5_chords_characters progress reset complete');
 }
 
