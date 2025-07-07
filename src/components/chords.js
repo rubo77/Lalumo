@@ -62,6 +62,9 @@ import '../styles/2_chords.css';
 // test-chords-module.js
 import { testChordsModuleImport } from './test-chords-modules.js';
 
+// Define constants for the chord activities
+const CHORD_CHARACTERS_LEVEL_STEP = 10; // Level progression step for 2_5_chords_characters
+
 export function chords() {
   return {
     // Current activity mode
@@ -72,6 +75,9 @@ export function chords() {
     oscillators: {},
     activeChord: null,
     isPlaying: false,
+    
+    // Constants for activity configuration
+    LEVEL_STEP: CHORD_CHARACTERS_LEVEL_STEP,
     
     /**
      * Update chord buttons visibility based on user progress
@@ -577,6 +583,51 @@ export function chords() {
       this.totalQuestions = 0;
       this.feedbackMessage = '';
       this.showFeedback = false;
+      
+      // Reset for 2_5_chords_characters activity
+      if (this.mode === '2_5_chords_color_matching') {
+        // Reset progress to 0 for this activity
+        if (this.progress && this.progress['2_5_chords_characters']) {
+          this.progress['2_5_chords_characters'] = 0;
+          
+          // Save updated progress
+          localStorage.setItem('lalumo_chords_progress', JSON.stringify(this.progress));
+          
+          // Update background to reflect reset progress
+          updateCharacterBackground(this);
+          
+          // Update button visibility
+          this.updateChordButtonsVisibility();
+          
+          console.log('CHORDS: Reset progress for 2_5_chords_characters activity');
+        }
+      }
+    },
+    
+    /**
+     * Reset progress to the start of current level
+     * For 2_5_chords_characters activity, levels progress in steps defined by LEVEL_STEP
+     */
+    resetProgressToCurrentLevel() {
+      if (!this.progress || !this.progress['2_5_chords_characters']) return;
+      
+      const currentProgress = this.progress['2_5_chords_characters'];
+      
+      // Calculate the start of the current level (floor to nearest multiple of LEVEL_STEP)
+      const currentLevel = Math.floor(currentProgress / this.LEVEL_STEP);
+      const newProgress = currentLevel * this.LEVEL_STEP;
+      
+      console.log(`CHORDS: Resetting progress from ${currentProgress} to ${newProgress} (level ${currentLevel})`);
+      
+      // Update progress
+      this.progress['2_5_chords_characters'] = newProgress;
+      
+      // Save to localStorage
+      localStorage.setItem('lalumo_chords_progress', JSON.stringify(this.progress));
+      
+      // Update background and button visibility
+      updateCharacterBackground(this);
+      this.updateChordButtonsVisibility();
     },
     
     /**
@@ -1221,6 +1272,9 @@ export function chords() {
         // Play error sound feedback
         audioEngine.playNote('try_again', 1.0);
         console.log('AUDIO: Playing try_again feedback sound for incorrect chord match');
+        
+        // Reset progress to the beginning of the current level
+        this.resetProgressToCurrentLevel();
         
         // Add shake animation to the incorrect button
         const selectedButton = document.querySelector(`#button_2_5_1_${selectedChordType}`);

@@ -170,8 +170,6 @@ reset-button:
 - when the "next melody" button is pressed in the "Does It Sound Right?" activity, the animal images should NOT change
 - fix gebogenen text
 - es kommt mehrmals in log "Generated sound judgment melody:..."
-- die tonlängen Stimmen noch nicht alle. 
-- die tiere müssen noch durchsichtigen rand haben:
 - baue die lieder im TODO block im pitches.js
 - auch erst einen Modus, wo man nur drauf drückt, ohne die good or bad Tiere unten.
 - jede der drei Tiere mit einem anderen Instrument
@@ -180,20 +178,16 @@ reset-button:
 
 
 1_5 memory game:
-  - First play of a sequence: play only the sound, no highlighting of piano keys (no colors)
-    - After a mistake: Show colored highlighted keys like now on the piano during replay
-    - After a correct sequence: Next sequence starts without colors again
   - # bereit zur veröffentlichung
 
 2_5_chords_color_matching:
-  - es fehlt ein error feedback shake und der sound wie in 1_2
-  - reset auch im activity reset berücksichtigen
+  - Wenn man einen Fehler macht dann den progress innerhalb der momentanen stufe wieder auf Null setzen, also, wenn >10 ist, dann auf 10 setzen, wenn >20 ist dann auf 20 setzen und so weiter
+  - reset auch im "reset current activity" in der navigation berücksichtigen
   - # bereit zur veröffentlichung
   - bei progress >=30 sollen die akkorde in der höhe durch einen transpose faktor von +-6 halbtönen variieren:
     - bis 40 schlafen das eichhörnchen und octopus in hintergrund, bei 50 wacht das eichhörnchen wieder auf, ... 
   - es soll der erfolgssound kommen
   - wenn man während der regenbogen läuft drückt, soll schon der neue akkord abgespielt werden und nicht der letzte
-  - Wenn man einen Fehler macht dann progress ininerhalb der stufe wieder auf Null setzen
 
 
 # mobile-build.sh:
