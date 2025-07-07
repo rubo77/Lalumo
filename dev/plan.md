@@ -35,8 +35,8 @@
 - [x] Localize unlock_squirrel_message, unlock_octopus_message, and all_animals_unlocked in EN/DE
 - [x] Fix: Last note of sequence not played in 1_5 memory game
 - [x] 2_5_chords_color_matching: Add error feedback shake and sound
-- [ ] Update sitemap.xml for new homepage, index, impressum, datenschutz, app, and EN/DE links
-- [ ] 1_1_pitches_high_or_low: Use success and error sounds from 1_2
+- [x] 1_1_pitches_high_or_low: Use success and error sounds from 1_2
+- [x] Update sitemap.xml for new homepage, index, impressum, datenschutz, app, and EN/DE links
 
 ## Current Goal
-1_1_pitches_high_or_low: Use success and error sounds from 1_2
+All tasks complete

@@ -905,7 +905,7 @@ body {
     #3498db calc(var(--unlock-progress) * 360deg),
     transparent 0deg
   );
-  opacity: 0.2;
+  opacity: 0.02;
   z-index: 1;
 }
 

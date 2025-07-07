@@ -133,8 +133,8 @@ export function showResetFeedback(activityMode) {
   
   const activityName = activityNames[activityMode] || activityMode;
   const message = isGerman ? 
-    `${activityName} Fortschritt erfolgreich zurückgesetzt! Bitte Neu starten.` : 
-    `${activityName} progress successfully reset! Reload to apply.`;
+    `${activityName} Fortschritt zurückgesetzt! Starte neu in 3 Sekunden ...` : 
+    `${activityName} progress reset! Reloading to apply ...`;
   
   // Create or update feedback element
   let feedbackElement = document.querySelector('.reset-feedback');
@@ -161,6 +161,7 @@ export function showResetFeedback(activityMode) {
       if (feedbackElement && feedbackElement.parentNode) {
         feedbackElement.parentNode.removeChild(feedbackElement);
       }
+      window.location.reload();
     }, 300);
   }, 3000);
 }

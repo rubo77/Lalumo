@@ -1119,6 +1119,10 @@ export function pitches() {
         this.saveProgress_1_1();
         console.log('Updated progress in localStorage:', this.highOrLowProgress);
         
+        // Play success sound
+        audioEngine.playNote('success', 1.0);
+        console.log('AUDIO: Playing success feedback sound with audio engine');
+        
         // Create and show rainbow success animation
         
         // Auto play next tone after 2 seconds
@@ -1176,6 +1180,15 @@ export function pitches() {
         }
       } else {
         // Wrong answer
+        // Play error sound
+        audioEngine.playNote('try_again', 1.0);
+        console.log('AUDIO: Playing try_again feedback sound with audio engine');
+        
+        // play tone again after 2 seconds
+        setTimeout(() => {
+          this.playHighOrLowTone();
+        }, 2000);
+
         if (stage >= 3) {
           // For comparison stages
           this.feedback = (this.$store.strings?.high_or_low_wrong_comparison || 'Try again. The second tone was {0}.')
@@ -2632,6 +2645,7 @@ export function pitches() {
     
     /**
      * Schaltet den Melodie-Challenge-Modus ein oder aus
+     * @activity 1_3_draw_melody
      */
     toggleMelodyChallenge() {
       this.melodyChallengeMode = !this.melodyChallengeMode;
@@ -2650,6 +2664,7 @@ export function pitches() {
     
     /**
      * Aktualisiert die UI für den Zeichenmodus mit der Referenzmelodie
+     * @activity 1_3_draw_melody
      */
     updateDrawingModeUI() {
       // Entferne bestehende Referenzmelodie-Anzeige
@@ -2790,6 +2805,7 @@ export function pitches() {
     /**
      * Generiert eine zufällige Referenzmelodie für den Challenge-Modus
      * mit einer Länge basierend auf dem aktuellen Level des Benutzers
+     * @activity 1_3_draw_melody
      */
     generateReferenceSequence_1_3() {
       // Verwende den gleichen Notenbereich wie im Canvas (höhere Oktave) für konsistente Melodievergleiche
@@ -2831,6 +2847,7 @@ export function pitches() {
     
     /**
      * Stop any running reference playback
+     * @activity 1_3_draw_melody
      */
     stopReferencePlayback() {
       if (this.referencePlaybackTimeouts) {
@@ -2842,6 +2859,7 @@ export function pitches() {
     
     /**
      * Spielt die Referenzmelodie ab
+     * @activity 1_3_draw_melody
      */
     playReferenceSequence() {
       // Erzeuge eine Referenzmelodie, falls keine existiert
@@ -3194,6 +3212,7 @@ export function pitches() {
      * Compares the user's drawn melody with the reference melody
      * and adjusts the user's level based on success
      * @param {Array} drawnSequence - The sequence of notes from the user's drawing
+     * @activity 1_3_draw_melody
      */
     compareWithReferenceSequence_1_3(drawnSequence) {
       // Cannot compare if there's no reference
@@ -3287,6 +3306,7 @@ export function pitches() {
             console.warn('Could not save draw melody level to localStorage', e);
           }
           
+          // TODO: move translation to strings.xml
           feedback = isGerman ? 
             `Super! Du hast 10 Melodien erfolgreich gespielt! Jetzt versuche längere Melodien mit ${this.drawMelodyLevel + 3} Tönen.` : 
             `Great job! You've successfully played 10 melodies! Now try longer melodies with ${this.drawMelodyLevel + 3} notes.`;
@@ -3297,22 +3317,32 @@ export function pitches() {
             showRainbowSuccess();
           }
         } else {
+          // TODO: move translation to strings.xml
           feedback = isGerman ? 
             'Fantastisch! Du hast alle Melodien gemeistert!' : 
             'Amazing! You\'ve mastered all the melodies!';
           
-          // Always show rainbow for mastering all levels
-          showRainbowSuccess();
+          // TODO: play sound and rainbow exact after the painted melody is played (in case it is a longer melody)
+          setTimeout(() => {
+            // Play success sound
+            audioEngine.playNote('success', 1.0);
+            debugLog('AUDIO', '[1_3] Playing success feedback sound with audio engine. level: ' + this.levelSuccessCounter);
+            
+            // Always show rainbow for mastering all levels
+            showRainbowSuccess();
+          }, 2000);
         }
         
         // Visual feedback
         this.showSuccessFeedback();
       } else if (matchPercentage >= 50) {
+          // TODO: move translation to strings.xml
         // Good attempt
         feedback = isGerman ? 
           'Fast! Versuche es noch einmal.' : 
           'Almost there! Try again.';
       } else {
+          // TODO: move translation to strings.xml
         // Poor match
         feedback = isGerman ? 
           'Versuche, der Melodie genauer zu folgen.' : 

@@ -141,7 +141,6 @@ reset-button:
 ## nach kapitel
 
 1_1 "High or Low?" (1_1_pitches_high_or_low) 
-- erfolgs und error sound wie in 1_2
 - # bereit zur veröffentlichung
 - die tiefen töne sind eine oktave zu tief
 - der reset button in der navi muss auch die fortschrittsanzeige aktualisieren
@@ -160,6 +159,7 @@ reset-button:
 
 1_3 Draw a Melody:
 - # bereit zur veröffentlichung
+- play sound and rainbow exact after the painted melody is played (in case it is a longer melody)
 - reset all progress geht noch nicht
 - wenn der zeichenpfad spitze ecken hat, dann sollen noten, die nahe der spitze sind ganz in die spitze rutschen
 - wenn man beim malen den rand des canvas überschreitet, sollte der strich weiter im canvas gemalt werden, an der kante entlang
@@ -167,7 +167,6 @@ reset-button:
 
 1_4 Does It Sound Right:
 - # bereit zur veröffentlichung
-- der reset button in der navi muss auch die fortschrittsanzeige aktualisieren
 - when the "next melody" button is pressed in the "Does It Sound Right?" activity, the animal images should NOT change
 - fix gebogenen text
 - es kommt mehrmals in log "Generated sound judgment melody:..."
