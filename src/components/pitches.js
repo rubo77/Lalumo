@@ -195,8 +195,8 @@ export function pitches() {
         de: 'Schlaf, Kindlein, schlaf',
         quarterNoteDuration: 550,
         notes: [
-          'E:h', 'D4', 'D4', 'C4:W',
-          'G3', 'E', 'E', 'D4', 'D4', 'C4:w',
+          'E:h', 'D4', 'D4', 'C4:H',
+          'G3', 'E', 'E', 'D4', 'D4', 'C4:h',
         ]
       },
       'little-hans': { // Hänschen klein
@@ -4380,29 +4380,32 @@ export function pitches() {
           
           // Calculate actual duration based on modifier
           switch(durationModifier) {
-            case 'w': // whole note :w
-              duration = baseQuarterNoteDuration * 4;
-              break;
             case 'W': // whole note, punctuated :W
               duration = baseQuarterNoteDuration * 6;
               break;
-            case 'h': // half note :h
-              duration = baseQuarterNoteDuration * 2;
+            case 'w': // whole note :w
+              duration = baseQuarterNoteDuration * 4;
               break;
             case 'H': // half note, punctuated :H
               duration = baseQuarterNoteDuration * 3;
               break;
-            case 'q': // quarter note (default) :q
-              duration = baseQuarterNoteDuration;
+            case 'h': // half note :h
+              duration = baseQuarterNoteDuration * 2;
               break;
             case 'Q': // quarter note, punctuated :Q
               duration = baseQuarterNoteDuration * 1.5;
               break;
+            case 'q': // quarter note (default) :q
+              duration = baseQuarterNoteDuration;
+              break;
+            case 'E': // eighth note, punctuated :E
+              duration = baseQuarterNoteDuration * 0.75;
+              break;
             case 'e': // eighth note :e
-              duration = baseQuarterNoteDuration / 2;
+              duration = baseQuarterNoteDuration * 0.5;
               break;
             case 's': // sixteenth note :s
-              duration = baseQuarterNoteDuration / 4;
+              duration = baseQuarterNoteDuration * 0.25;
               break;
             default:
               // For unknown modifiers, use default duration
