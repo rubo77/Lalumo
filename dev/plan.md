@@ -1,41 +1,22 @@
-# Username Creation Info Box Plan
+# Musici Piano Sound Integration Plan
 
 ## Notes
-- User wants an info box to appear after username creation.
-- Info box should say: "dein name ist ... . Du kannst dies in den Einstellungen ändern"
-- This should happen immediately after the username is created.
-- Usernames should be editable in the settings.
-- The toast notification system is used for the info box.
-- The info box correctly displays the username via string replacement.
-- The toast auto-dismisses after 5 seconds; no manual close needed.
-- User requested: For local dev, referral URLs must be http://localhost:8080/referral.php (not /api/referral.php)
-- Username info box and update messages are now localized in both English and German
-- Update fallback message in setUsername to English unless localized in German
-- Add 1s delay before memory game feedback sound
-- Localize unlock_squirrel_message, unlock_octopus_message, and all_animals_unlocked in EN/DE
-- Update sitemap.xml for new homepage, index, impressum, datenschutz, app, and EN/DE links
-- Bug: In 1_5 memory game, the user's last pressed note is not played before the success sound is played, resulting in an incomplete sequence playback.
+- User has local piano MP3 samples in /public/sounds/piano/ (e.g., C4.mp3, A4.mp3, Ds4.mp3, Fs4.mp3, E4.mp3)
+- Piano instrument implemented in audio-engine.js using Tone.js Sampler
+- Current error: "buffer is either not set or not loaded" when playing notes
+- HTTP 200 for sample requests, but samples not used correctly
+- Samples seem to be downloaded instead of used directly
+- Webpack/build process may not include samples correctly
+- Path to samples is /sounds/piano/, but may be incorrect or not resolved as expected
+- Goal: Use local MP3s for immediate, reliable piano playback (no fallback synth needed)
 
 ## Task List
-- [x] Locate where username creation is handled in the codebase
-- [x] Implement logic to trigger info box after username creation
-- [x] Create the info box UI with the required message
-- [x] Add/update localized string resources for username info box
-- [x] Add username info string to strings.xml (EN/DE)
-- [x] Ensure the info box displays the correct username
-- [x] Add a way to dismiss/close the info box
-- [x] Verify that username can be changed in settings
-- [x] Localize username updated message in saveUsername method
-- [x] Update fallback message in setUsername method
-- [x] Update referral URL path for local development
-- [x] Test the feature end-to-end
-- [x] Add 1s delay before playing feedback sound in memory game
-- [x] Localize unlock_squirrel_message, unlock_octopus_message, and all_animals_unlocked in EN/DE
-- [x] Fix: Last note of sequence not played in 1_5 memory game
-- [x] 2_5_chords_color_matching: Add error feedback shake and sound
-- [x] 1_1_pitches_high_or_low: Use success and error sounds from 1_2
-- [x] Update sitemap.xml for new homepage, index, impressum, datenschutz, app, and EN/DE links
-- [x] Fix: Play last user-pressed note before success sound in 1_5 memory game
+- [ ] Diagnose why Tone.Sampler is not loading/using local MP3 samples
+- [ ] Check and fix sample path resolution in audio-engine.js (Sampler config)
+- [ ] Ensure /public/sounds/piano/ is correctly included in production build (webpack/static assets)
+- [ ] Test sample fetching in browser dev tools (network tab, correct path, correct HTTP response)
+- [ ] Fix code so that local samples are played without download attempts or errors
+- [ ] Confirm piano sound is loud, clear, and immediate in the memory game
 
 ## Current Goal
-All tasks complete
+Diagnose and fix Tone.Sampler sample loading
