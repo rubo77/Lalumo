@@ -59,73 +59,91 @@ export class AudioEngine {
         });
         return synth;
       },
-      // Violin - String Instrument
+      // Violin - String Instrument with vibrato and sharp attack
       violin: () => {
-        const synth = new Tone.PolySynth(Tone.AMSynth);
-        synth.set({
-          harmonicity: 2.5,
+        // Verwendung eines speziellen Synthesizers für Streichinstrumente
+        const synth = new Tone.PolySynth(Tone.AMSynth, {
+          harmonicity: 1.5,
+          detune: 0,
+          oscillator: {
+            type: "triangle" // Dreieckswelle für schärferen Streicherklang
+          },
+          envelope: {
+            attack: 0.1,
+            decay: 0.2,
+            sustain: 0.6,
+            release: 1.5
+          },
+          modulation: {
+            type: "sine" // Sinuswelle für Vibrato
+          },
+          modulationEnvelope: {
+            attack: 0.5,
+            decay: 0.1,
+            sustain: 0.8,
+            release: 1.0
+          }
+        });
+        
+        return synth;
+      },
+      
+      // Flute - Airy wind instrument with breathy quality
+      flute: () => {
+        // Blasinstrumente klingen am besten mit einfachem Synth und sinusförmigen Wellenformen
+        const synth = new Tone.PolySynth(Tone.Synth, {
           oscillator: {
             type: "sine"
           },
           envelope: {
             attack: 0.1,
+            decay: 0.1,
+            sustain: 0.9,
+            release: 0.5
+          }
+        });
+        
+        // Höhenbetonung für Flötencharakter
+        synth.set({
+          portamento: 0.02,
+          volume: 2
+        });
+        
+        return synth;
+      },
+      
+      // Tuba - Low, resonant brass instrument
+      tuba: () => {
+        // Tiefes Blasinstrument mit FMSynth für komplexere Obertöne
+        const synth = new Tone.PolySynth(Tone.FMSynth, {
+          harmonicity: 0.5,
+          modulationIndex: 3.5,
+          oscillator: {
+            type: "square8" // Rechteckwelle für kräftigeren Klang
+          },
+          envelope: {
+            attack: 0.1,
             decay: 0.2,
             sustain: 0.8,
-            release: 1.2
+            release: 0.5
           },
           modulation: {
-            type: "sine"
+            type: "triangle"
           },
           modulationEnvelope: {
             attack: 0.5,
             decay: 0.1,
-            sustain: 1,
-            release: 0.5
-          }
-        });
-        return synth;
-      },
-      // Flute - Wind Instrument
-      flute: () => {
-        const synth = new Tone.PolySynth(Tone.Synth);
-        synth.set({
-          oscillator: {
-            type: "sine"
-          },
-          envelope: {
-            attack: 0.05,
-            decay: 0.1,
-            sustain: 0.7,
-            release: 0.15
-          }
-        });
-        return synth;
-      },
-      // Tuba - Brass Instrument
-      tuba: () => {
-        const synth = new Tone.PolySynth(Tone.FMSynth);
-        synth.set({
-          harmonicity: 0.5,
-          modulationIndex: 2,
-          oscillator: {
-            type: "sine"
-          },
-          envelope: {
-            attack: 0.08,
-            decay: 0.1,
-            sustain: 0.8,
-            release: 0.4
-          },
-          modulation: {
-            type: "square"
-          },
-          modulationEnvelope: {
-            attack: 0.01,
-            decay: 0.5,
             sustain: 0.2,
             release: 0.1
           }
         });
+        
+        // Tiefere Oktave für Tuba-Charakter
+        synth.set({
+          detune: -1200, // Eine Oktave tiefer
+          volume: -2 // Etwas leiser, um nicht zu dominant zu sein
+        });
+        
         return synth;
       },
       bell: () => {
@@ -285,6 +303,7 @@ export class AudioEngine {
       this._notesPlaying.delete(parsedNote);
     }, cleanupTime);
     
+    console.log(`[INSTRUMENT] Playing note ${note} with instrument: ${this._currentInstrument}`);
     console.log(`Note gespielt: ${parsedNote}, Dauer: ${duration} (${durationInSeconds.toFixed(3)}s)`);
   }
   

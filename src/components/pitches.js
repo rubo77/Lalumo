@@ -1258,27 +1258,28 @@ export function pitches() {
       }
     },
     
-        
+
     /**
-     * Play a melody for the "Does It Sound Right?" activity
-     * @param {boolean} generateNew - Whether to generate a new melody
-     * @activity 1_1_high_or_low
-     */
-    /**
-     * Play a melody for the Sound Judgment activity (1_4)
-     * In practice mode, this will transition to game mode on first press
-     * In game mode, it will play the current or generate a new melody
+     * Play a melody for the current activity
+     * This is a generic melody player used by multiple activities
      * 
+     * @activity common
+     * @used_by 1_2_match_sounds
+     * @used_by 1_4_pitches_does-it-sound-right
+     * @used_by 1_5_pitches_memory-game
      * @param {boolean} generateNew - Whether to generate a new melody (true) or replay the current one (false)
      */
-    playMelodyForSoundHighOrLow(generateNew = true) {
-      console.log(`AUDIO: playMelodyForSoundHighOrLow called with generateNew=${generateNew}, gameMode=${this.gameMode}`);
+    playMelody(generateNew = true) {
+      console.log(`AUDIO: playMelody called with generateNew=${generateNew}, mode=${this.mode}`);
       
-      // If in practice mode, switch to game mode instead
-      if (!this.gameMode) {
-        console.log('SOUND JUDGMENT: Transitioning from practice mode to game mode');
-        this.startSoundJudgmentGame();
-        return; // startSoundJudgmentGame will handle playing the melody
+      // Based on the current activity mode, handle appropriately
+      if (this.mode === '1_4_pitches_does-it-sound-right') {
+        // For Sound Judgment activity
+        if (!this.gameMode) {
+          console.log('SOUND JUDGMENT: In practice mode, need to start game');
+          this.startSoundJudgmentGame();
+          return; // startSoundJudgmentGame will handle playing the melody
+        }
       }
       
       // We're in game mode now, continue with normal melody playback
@@ -3799,7 +3800,7 @@ export function pitches() {
         }
       } else if (this.mode === '1_4_pitches_does-it-sound-right') {
         // Pass false to indicate we want to replay the current melody, not generate a new one
-        this.playMelodyForSoundHighOrLow(false);
+        this.playMelody(false);
       } else if (this.mode === '1_5_pitches_memory-game') {
         if (!this.gameMode) {
           // Neue Tiere beim Start des Memory-Spiels anzeigen
@@ -4022,7 +4023,7 @@ export function pitches() {
         this.update_progress_display();
         
         // Play the first melody immediately when entering game mode
-        this.playMelodyForSoundHighOrLow(true);
+        this.playMelody(true);
       }
     },
     
@@ -4683,26 +4684,28 @@ export function pitches() {
         
         // Handle different instrument types and contexts
         if (context === 'practice' && options.instrument) {
-          // For practice mode with specific instruments
           const instrument = options.instrument;
           
           // Use the name with octave but prefix with instrument name
           // Tone.js will use this to play with the appropriate instrument
+          console.log(`[INSTRUMENT] Selected instrument for melody: ${instrument}`);
           if (instrument === 'violin') {
-            // Use string instrument sound
             audioEngine.useInstrument('violin');
-            volume = 0.8;
+            volume = 0.65; // Reduced violin volume as it has enhanced harmonics now
+            console.log('[INSTRUMENT] Using violin instrument with AMSynth (triangle oscillator, vibrato)');
           } else if (instrument === 'flute') {
-            // Use wind instrument sound
             audioEngine.useInstrument('flute');
-            volume = 0.75;
+            volume = 0.85; // Increased flute volume as it has a purer tone
+            console.log('[INSTRUMENT] Using flute instrument with Synth (sine wave, increased volume)');
           } else if (instrument === 'tuba') {
             // Use brass instrument sound
             audioEngine.useInstrument('tuba');
-            volume = 0.9; // Tuba needs higher volume
+            volume = 0.6; // Reduced tuba volume as it has enhanced bass response
+            console.log('[INSTRUMENT] Using tuba instrument with FMSynth (square8 wave, octave down)');
           } else {
             // Fallback to standard sound
             audioEngine.useInstrument('default');
+            console.log('[INSTRUMENT] Using default instrument (PolySynth)');
           }
           
           console.log(`AUDIO: Playing ${instrument} note: ${name} with volume ${volume}`);
@@ -4714,6 +4717,9 @@ export function pitches() {
         } else if (context === 'feedback') {
           // Für Feedback-Sounds: Keine Modifikation des Notennamens, aber höhere Lautstärke
           volume = 0.85;
+        } else {
+          // Default case: use default instrument
+          audioEngine.useInstrument('default');
         }
         
         // CRITICAL_FIX: The key insight is that we need to use the ORIGINAL duration 
@@ -4860,11 +4866,11 @@ export function pitches() {
         
         if (isCorrect) {
           // If the answer was correct, generate a new melody
-          this.playMelodyForSoundHighOrLow(true);
+          this.playMelody(true);
         } else {
           // If the answer was incorrect, replay the same melody
           // Pass false to indicate not to generate a new melody
-          this.playMelodyForSoundHighOrLow(false);
+          this.playMelody(false);
         }
       }, 2000);
     },

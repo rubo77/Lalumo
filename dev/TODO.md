@@ -71,7 +71,25 @@ dabei:
 
 - Cookie Banner
 
+## Code blockweise verschieben Für jede Aktivität:
+- Identifizieren aller zugehörigen Funktionen in pitches.js (bzw. chords.js): 
+- add `* @activity 1_1_high_or_low`, ... to function comments
+- Verschieben dieser Funktionen in das entsprechende Modul (e.g. 1_1_high_or_low.js)
+- Exportieren der Funktionen aus dem Modul:
+  - füge `export` hinzu, e.g. `export function resetHighOrLow() { ... }`
+  - falls `this` innerhalb der Funktionen verwendet wird:
+     - füge als argument `component` hinzu, e.g. `export function resetHighOrLow(component) { ... }`
+     - innerhalb der Funktionen ersetze `this` durch `component`
+  - ersetze alle aufrufe in der app, e.g. `this.resetHighOrLow()` durch `resetHighOrLow()` bzw. `resetHighOrLow(this)`
+- Ersetzen der Funktionen in pitches.js durch **direkte Imports**:
+  e.g. `import { resetHighOrLow } from './pitches/1_1_high_or_low.js';`
+- **WICHTIG**:
+  - Imports sollen direkt von den Modulen kommen: `./pitches/1_1_high_or_low.js`
+  - Nicht über Zwischenschichten wie `./pitches/index.js`
+  - falls die methode im template index.html benutzt werden soll, muss am ende des modul-files dies ergänzt werden:
+  e.g. `window.resetHighOrLow = resetHighOrLow;`
 
+# TODOs
 unter chrome auf dem handy android 15:
 -Multi Touch: wenn mulititouch bemerkt wird, alle anderen touchs ignorieren und trotzdem den knopf drücken, also den letzten, der zählt
 
