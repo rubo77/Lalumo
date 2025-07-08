@@ -111,32 +111,34 @@
 /* Start Game Button */
 .start-game-container {
   position: fixed;
-  bottom: 50px;
+  top: min(400px, 78vw);
+  height: 30vw;
   left: 0;
   right: 0;
   display: flex;
   justify-content: center;
   z-index: 10;
+  color: transparent;
+  background-color: transparent;
 }
 
 .start-game-button {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #ff8c2a;
-  color: white;
+  color: transparent;
+  background-color: transparent;
   border: none;
   border-radius: 50px;
   padding: 15px 40px;
   font-size: 20px;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0);
 }
 
 .start-game-button:hover {
   transform: scale(1.05);
-  background-color: #ff9f43;
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
 }
 

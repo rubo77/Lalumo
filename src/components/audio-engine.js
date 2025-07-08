@@ -202,10 +202,13 @@ export class AudioEngine {
   }
   
   /**
-   * Ändert den Synthesizer-Typ
-   * @param {string} instrumentType - Typ des Instruments ('default', 'piano', 'marimba', 'violin', 'flute', 'tuba', 'bell')
+   * Wechselt schnell zwischen Instrumenten, ohne den aktuellen Synth zu unterbrechen
+   * Für Aktivitäten, die verschiedene Instrumenten-Sounds benötigen
+   * @param {string} instrumentType - Typ des Instruments ('default', 'piano', 'violin', 'flute', 'tuba', etc.)
    */
-  setInstrument(instrumentType) {
+  useInstrument(instrumentType) {
+    // Always create a fresh synth instance regardless of current state
+    // This ensures each note gets a clean instrument setup
     if (!this._instrumentTypes[instrumentType]) {
       console.warn(`Unbekannter Instrument-Typ: ${instrumentType}, verwende Standard-Synth`);
       instrumentType = 'default';
@@ -220,61 +223,47 @@ export class AudioEngine {
     this._synth.toDestination();
     this._currentInstrument = instrumentType;
     
-    console.log(`Instrument geändert zu: ${instrumentType}`);
+    console.log(`[INSTRUMENT] Instrumentenwechsel zu: ${instrumentType}`);
   }
   
   /**
-   * Wechselt schnell zwischen Instrumenten, ohne den aktuellen Synth zu unterbrechen
-   * Für Aktivitäten, die verschiedene Instrumenten-Sounds benötigen
-   * @param {string} instrumentType - Typ des Instruments ('default', 'piano', 'violin', 'flute', 'tuba', etc.)
+   * Spielt eine einzelne Note
+   * @param {string} noteName - Name der Note (C4, D#3, etc.) oder 'success' oder 'try_again'
+   * @param {number} duration - Dauer in Sekunden
+   * @param {number} time - Zeitpunkt für den Start der Note (Optional)
+   * @param {number} volume - Lautstärke (0.0 - 1.0)
+   * @param {string} instrument - Instrument to use ('violin', 'flute', 'tuba', 'default')
+   * @param {Object} options - Zusätzliche Optionen (NICHT mehr für Instrument verwenden!)
    */
-  useInstrument(instrumentType) {
-    // Prüfen, ob das angeforderte Instrument existiert
-    if (!this._instrumentTypes[instrumentType]) {
-      console.warn(`Unbekannter Instrument-Typ: ${instrumentType}, verwende Standard-Synth`);
-      instrumentType = 'default';
-    }
-    
-    // Instrument nur wechseln, wenn es sich geändert hat
-    if (this._currentInstrument !== instrumentType) {
-      // Bisherigen Synth entfernen und neuen erstellen
-      if (this._synth) {
-        this._synth.disconnect();
-      }
-      
-      this._synth = this._instrumentTypes[instrumentType]();
-      this._synth.toDestination();
-      this._currentInstrument = instrumentType;
-      
-      console.log(`Schneller Instrumentenwechsel zu: ${instrumentType}`);
-    }
-  }
-  
-  /**
-   * Spielt eine einzelne Note oder einen speziellen Sound-Effekt
-   * @param {string} note - Die zu spielende Note (z.B. 'C4', 'D#4', etc.) oder ein spezieller Sound ('success', 'try_again')
-   * @param {string|number} duration - Notendauer als Tone.js-Notation ('4n', '8n', '16n', etc.) oder in Sekunden
-   * @param {*} [time] - Zeitpunkt, zu dem die Note abgespielt werden soll (optional)
-   * @param {number} [velocity] - Lautstärke der Note (0-1)
-   */
-  playNote(note, duration = '4n', time = undefined, velocity = 0.7) {
+  playNote(noteName, duration = 0.5, time, velocity = 0.75, instrument = 'default', options = {}) {
     if (!this._isInitialized) {
-      console.warn('Audio-Engine nicht initialisiert. Initialisiere zuerst mit initialize()');
+      console.warn('Audio-Engine wurde noch nicht initialisiert!');
       return;
     }
     
+    // Always use the direct instrument parameter
+    // Never read from options.instrument anymore
+    if (instrument) {
+      this.useInstrument(instrument);
+      console.log(`[INSTRUMENT] Using instrument: ${instrument} for note ${noteName}`);
+    } else {
+      // This should never happen with the default parameter, but just in case
+      console.warn(`[INSTRUMENT WARNING] No instrument specified for note ${noteName}, using default`);
+      this.useInstrument('default');
+    }
+    
     // Prüfen, ob es sich um einen speziellen Sound handelt
-    if (this._specialSounds[note]) {
-      console.log(`AUDIO: Spiele speziellen Sound-Effekt: ${note}`);
-      this._playSpecialSound(note, velocity);
+    if (this._specialSounds[noteName]) {
+      console.log(`AUDIO: Spiele speziellen Sound-Effekt: ${noteName}`);
+      this._playSpecialSound(noteName, velocity);
       return;
     }
     
     // Noten-Format überprüfen und ggf. korrigieren
-    const parsedNote = this._parseNoteString(note);
+    const parsedNote = this._parseNoteString(noteName);
     
     if (!parsedNote) {
-      console.error(`Ungültige Note: ${note}`);
+      console.error(`Ungültige Note: ${noteName}`);
       return;
     }
     
@@ -303,8 +292,7 @@ export class AudioEngine {
       this._notesPlaying.delete(parsedNote);
     }, cleanupTime);
     
-    console.log(`[INSTRUMENT] Playing note ${note} with instrument: ${this._currentInstrument}`);
-    console.log(`Note gespielt: ${parsedNote}, Dauer: ${duration} (${durationInSeconds.toFixed(3)}s)`);
+    console.log(`[INSTRUMENT] playNote() ${noteName} with instrument: ${this._currentInstrument}, parsedNote: ${parsedNote}, duration: ${duration} (${durationInSeconds.toFixed(3)}s)`);
   }
   
   /**

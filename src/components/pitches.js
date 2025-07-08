@@ -4585,9 +4585,16 @@ export function pitches() {
         this.melodyTimeouts = [];
       }
       
-      // Start playing notes sequentially
+      // CRITICAL FIX: Make sure we explicitly preserve and log the instrument parameter
+      // Extract the instrument from original options
+      const instrumentToUse = options.instrument || 'default';
+      console.log(`[INSTRUMENT_CRITICAL] Starting melody sequence with instrument: ${instrumentToUse}`);
+      
+      // Start playing notes sequentially with the correct instrument
       this.playProcessedNoteSequence(processedNotes, 0, context, {
         melodyId: melodyId,
+        // CRITICAL: Preserve the instrument parameter!
+        instrument: instrumentToUse,
         onComplete: () => {
           console.log(`AUDIO: Sound judgment melody playback complete`);
           // Safely reset isPlaying flag and ensure UI is updated
@@ -4613,9 +4620,18 @@ export function pitches() {
      * @param {Array} notes - Array of {name, duration} objects
      * @param {number} index - Current index to play
      * @param {string} context - Context of playback
-     * @param {Object} options - Additional options
+     * @param {Object} options - Additional options including instrument selection
      */
     playProcessedNoteSequence(notes, index, context = 'general', options = {}) {
+      // REFACTORED: Always track instrument directly through the chain
+      // Add specific debugging to trace instrument through the async calls
+      const instrumentTracking = options.instrument || 'default';
+      
+      console.log(`[INSTRUMENT_TRACKING] Note ${index}/${notes.length} with instrument: ${instrumentTracking}`);
+      
+      // Save the instrument at the start of each note to ensure consistency
+      const currentSequenceInstrument = instrumentTracking;
+      
       // If we've reached the end of the sequence or playback was stopped
       if (!this.isPlaying || index >= notes.length) {
         if (this.isPlaying) { // Make sure we only call onComplete if we didn't stop manually
@@ -4682,44 +4698,47 @@ export function pitches() {
         let processedName = name;
         let volume = 0.75;
         
-        // Handle different instrument types and contexts
-        if (context === 'practice' && options.instrument) {
-          const instrument = options.instrument;
+        // REFACTORED: Handle different instrument types more explicitly and consistently
+        // Extract instrument directly from options for clarity
+        const requestedInstrument = options.instrument || 'default';
+        
+        if (context === 'practice' && requestedInstrument !== 'default') {
+          // Log the explicit instrument we're using for this melody
+          console.log(`[INSTRUMENT_EXPLICIT] Using explicit instrument for melody: ${requestedInstrument}`);
           
-          // Use the name with octave but prefix with instrument name
-          // Tone.js will use this to play with the appropriate instrument
-          console.log(`[INSTRUMENT] Selected instrument for melody: ${instrument}`);
-          if (instrument === 'violin') {
-            audioEngine.useInstrument('violin');
+          // Set volume based on instrument type - but don't call useInstrument here
+          // We'll pass the instrument directly to each note instead
+          if (requestedInstrument === 'violin') {
             volume = 0.65; // Reduced violin volume as it has enhanced harmonics now
-            console.log('[INSTRUMENT] Using violin instrument with AMSynth (triangle oscillator, vibrato)');
-          } else if (instrument === 'flute') {
-            audioEngine.useInstrument('flute');
+            console.log('[INSTRUMENT_SETUP] Using violin with volume 0.65 (AMSynth with triangle oscillator)');
+          } else if (requestedInstrument === 'flute') {
             volume = 0.85; // Increased flute volume as it has a purer tone
-            console.log('[INSTRUMENT] Using flute instrument with Synth (sine wave, increased volume)');
-          } else if (instrument === 'tuba') {
-            // Use brass instrument sound
-            audioEngine.useInstrument('tuba');
+            console.log('[INSTRUMENT_SETUP] Using flute with volume 0.85 (Synth with sine wave)');
+          } else if (requestedInstrument === 'tuba') {
             volume = 0.6; // Reduced tuba volume as it has enhanced bass response
-            console.log('[INSTRUMENT] Using tuba instrument with FMSynth (square8 wave, octave down)');
+            console.log('[INSTRUMENT_SETUP] Using tuba with volume 0.6 (FMSynth with square8 wave)');
           } else {
             // Fallback to standard sound
-            audioEngine.useInstrument('default');
-            console.log('[INSTRUMENT] Using default instrument (PolySynth)');
+            console.log('[INSTRUMENT_SETUP] Using default instrument with standard volume (PolySynth)');
           }
           
-          console.log(`AUDIO: Playing ${instrument} note: ${name} with volume ${volume}`);
+          // Make sure the instrument is explicitly logged
+          console.log(`[INSTRUMENT_VERBOSE] Playing ${requestedInstrument} note: ${name} with volume ${volume}`);
         } else if (context === 'sound-judgment') {
-          // Reset to default instrument
-          audioEngine.useInstrument('default');
+          // REFACTORED: Don't call useInstrument here, always pass 'default' as the instrument parameter
+          // Instead of relying on global state that can be lost in async calls
+          console.log('[INSTRUMENT_SOUND_JUDGMENT] Using default instrument for sound judgment');
+          
           // Für die "Does It Sound Right?"-Aktivität: Präfix hinzufügen
           processedName = `sound_${name.toLowerCase()}`;
-        } else if (context === 'feedback') {
-          // Für Feedback-Sounds: Keine Modifikation des Notennamens, aber höhere Lautstärke
+
+          // Feedback-Sounds haben eine höhere Lautstärke
           volume = 0.85;
         } else {
-          // Default case: use default instrument
-          audioEngine.useInstrument('default');
+          // REFACTORED: Don't call useInstrument here either, just log what we're doing
+          // and let the direct parameter passing take care of it
+          console.log('[INSTRUMENT_DEFAULT] Using default instrument for general playback');
+          // Default instrument will be passed directly as parameter
         }
         
         // CRITICAL_FIX: The key insight is that we need to use the ORIGINAL duration 
@@ -4730,9 +4749,18 @@ export function pitches() {
         
         console.log(`DURATION_FIX: Playing note with exact duration: ${millisecondDuration}s (${duration}ms)`);
         
-        // Play the note with exact duration in seconds, not using musical notation
-        // This ensures that the note plays for exactly the duration specified
-        audioEngine.playNote(processedName, millisecondDuration, undefined, volume);
+        // REFACTORED: Always get instrument directly from options and pass it as a direct parameter
+        // Never embed it within the options object again
+        const instrumentToUse = options.instrument || 'default';
+        
+        // Log the instrument being used for this note
+        console.log(`[INSTRUMENT_DIRECT] Playing note ${processedName} with instrument: ${instrumentToUse}`);
+        
+        // Pass the instrument directly as a parameter - never inside options
+        // Make sure we're matching the audioEngine.playNote signature correctly:
+        // playNote(noteName, duration, time, velocity, instrument, options)
+        console.log(`[INSTRUMENT_DEBUG] About to call playNote with instrument: ${instrumentToUse}`);
+        audioEngine.playNote(processedName, millisecondDuration, undefined, volume, instrumentToUse);
         
         // Speichere die aktuelle Note für zukünftige Stops
         this.lastPlayedNote = processedName;
@@ -4749,8 +4777,15 @@ export function pitches() {
             this.melodyTimeouts.splice(idx, 1);
           }
           
-          // Play the next note
-          this.playProcessedNoteSequence(notes, index + 1, context, options);
+          // REFACTORED: Never rely on options object for instrument passing - capture it explicitly
+          // This is the critical fix that ensures instrument consistency across the entire melody
+          // Extract the instrument to make it clear and explicit in logs what's being passed
+          const instrumentForNextNote = currentSequenceInstrument;
+          console.log(`[INSTRUMENT_PRESERVED] Scheduling next note with instrument: ${instrumentForNextNote}`);
+          
+          // Pass the instrument in the options object but in a way that it's explicitly tracked
+          const nextOptions = {...options, instrument: instrumentForNextNote};
+          this.playProcessedNoteSequence(notes, index + 1, context, nextOptions);
         }, nextNoteTiming);
         
         // Track this timeout for potential stopping
