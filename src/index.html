@@ -18,6 +18,50 @@
       background-image: url('./images/x.gif');
       background-size: contain;
       background-position: top left;
+    }
+    
+    /* Loading spinner styles */
+    #loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      transition: opacity 0.5s ease-in-out;
+    }
+    
+    #loading-overlay.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+    
+    #loading-logo {
+      width: 150px;
+      height: 150px;
+      margin-bottom: 20px;
+    }
+    
+    .spinner {
+      display: inline-block;
+      width: 40px;
+      height: 40px;
+      border: 4px solid rgba(0, 0, 0, 0.1);
+      border-radius: 50%;
+      border-top-color: #3498db;
+      animation: spin 1s ease-in-out infinite;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    body {
       background-repeat: no-repeat;
     }
     .container { width: 100%; max-width: 100%; overflow-x: hidden; min-height: 100%; }
@@ -49,6 +93,20 @@
   
 </head>
 <body>
+  <!-- Loading spinner overlay -->
+  <div id="loading-overlay">
+    <img id="loading-logo" src="./icons/icon-512.png" alt="Lalumo Logo">
+    <div class="spinner"></div>
+  </div>
+  
+  <script>
+    // Hide loading overlay when page is fully loaded
+    window.addEventListener('load', function() {
+      setTimeout(function() {
+        document.getElementById('loading-overlay').classList.add('hidden');
+      }, 50); // small delay for smoother transition
+    });
+  </script>
   <!-- app.js -->
   <main id="app" x-data="app()" x-init="init(); initLazyLoading();" @click="unlockAudio()" @touchstart="unlockAudio()" class="container">
     
