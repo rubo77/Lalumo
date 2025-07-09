@@ -260,6 +260,16 @@ module.exports = (env, argv) => {
             from: 'package.json',
             to: 'package.json'
           },
+          // Copy piano sound samples
+          {
+            from: 'public/sounds/piano',
+            to: 'sounds/piano',
+          },
+          // Also copy piano samples to app/ directory to maintain consistency
+          {
+            from: 'public/sounds/piano',
+            to: 'app/sounds/piano',
+          },
           // Icons für Root-Version
           {
             from: 'homepage/icons',

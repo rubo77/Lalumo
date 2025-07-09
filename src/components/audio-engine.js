@@ -35,15 +35,7 @@ export class AudioEngine {
     // Instrument-Typen, die verwendet werden können
     this._instrumentTypes = {
       default: () => new Tone.PolySynth(Tone.Synth),
-      piano: () => new Tone.Sampler({
-        urls: {
-          A4: "A4.mp3",
-          C4: "C4.mp3",
-          E4: "E4.mp3",
-        },
-        baseUrl: "https://tonejs.github.io/audio/salamander/",
-        onload: () => console.log("Piano samples loaded")
-      }),
+      // Piano instrument defined below
       marimba: () => {
         const synth = new Tone.PolySynth(Tone.Synth);
         synth.set({
@@ -59,73 +51,291 @@ export class AudioEngine {
         });
         return synth;
       },
-      // Violin - String Instrument with vibrato and sharp attack
-      violin: () => {
-        // Verwendung eines speziellen Synthesizers für Streichinstrumente
-        const synth = new Tone.PolySynth(Tone.AMSynth, {
-          harmonicity: 1.5,
-          detune: 0,
-          oscillator: {
-            type: "triangle" // Dreieckswelle für schärferen Streicherklang
+      piano: () => {
+        console.log("[PIANO] Creating piano with MP3 samples");
+        
+        // Create a temporary synth for use while samples load
+        const tempSynth = new Tone.PolySynth(Tone.Synth, {
+          maxPolyphony: 12,
+          volume: 5,
+        }).set({
+          oscillator: { 
+            type: "triangle8" 
           },
           envelope: {
-            attack: 0.1,
+            attack: 0.004,
             decay: 0.2,
-            sustain: 0.6,
+            sustain: 0.2,
             release: 1.5
-          },
-          modulation: {
-            type: "sine" // Sinuswelle für Vibrato
-          },
-          modulationEnvelope: {
-            attack: 0.5,
-            decay: 0.1,
-            sustain: 0.8,
-            release: 1.0
           }
         });
         
+        // Create the reverb effect
+        const reverb = new Tone.Reverb({
+          decay: 1.8,
+          wet: 0.3,
+          preDelay: 0.01
+        }).toDestination();
+        
+        // Connect the temp synth to reverb
+        tempSynth.connect(reverb);
+        
+        // Track whether samples are loaded - use global variable to maintain state across calls
+        // This fixes the issue with free play mode where new piano instances are created
+        if (window._pianoSamplesLoaded === undefined) {
+          window._pianoSamplesLoaded = false;
+        }
+        let samplesLoaded = window._pianoSamplesLoaded;
+        
+        // Create loading diagnostic display
+        console.log("[PIANO] Attempting to load piano samples from ./sounds/piano/");
+        console.log("[PIANO] Global samples loaded state:", samplesLoaded ? "LOADED" : "NOT LOADED");
+        
+        // Force preload samples immediately when instrument is created
+        if (!samplesLoaded) {
+          // Try preloading common note files directly to warm up browser cache
+          const preloadUrls = ['C4.mp3', 'D4.mp3', 'E4.mp3', 'G4.mp3', 'A4.mp3'];
+          preloadUrls.forEach(url => {
+            const audio = new Audio(`./sounds/piano/${url}`);
+            audio.preload = 'auto';
+            audio.load();
+          });
+          
+          console.log("[PIANO] Preloaded sample URLs to warm browser cache");
+        }
+        
+        // Progressive status updates during loading
+        if (!samplesLoaded) {
+          setTimeout(() => {
+            console.log("[PIANO] Loading status check 1: ", 
+                      window._pianoSamplesLoaded ? "✅ LOADED" : "⏳ STILL LOADING");
+          }, 500);
+          
+          setTimeout(() => {
+            console.log("[PIANO] Loading status check 2: ", 
+                      window._pianoSamplesLoaded ? "✅ LOADED" : "⏳ STILL LOADING");
+          }, 1000);
+        }
+        
+        // Create the sampler with our piano samples
+        const sampler = new Tone.Sampler({
+          urls: {
+            // We have these MP3 files locally - using all available piano samples
+            "C4": "C4.mp3",
+            "D4": "D4.mp3",
+            "E4": "E4.mp3",
+            "F4": "F4.mp3",
+            "G4": "G4.mp3",
+            "A4": "A4.mp3",
+            "B4": "B4.mp3",
+          },
+          baseUrl: "./sounds/piano/", // Use relative path with ./ prefix to ensure proper resolution
+          release: 1.5,
+          volume: 10,
+          onload: () => { 
+            console.log("[PIANO] 🎹 Piano samples loaded successfully!");
+            // Update both local and global state to ensure free play mode works
+            samplesLoaded = true;
+            window._pianoSamplesLoaded = true;
+            console.log("[PIANO] Global piano sample state set to LOADED");
+          },
+          onerror: (err) => {
+            console.error("[PIANO] ERROR: Could not load piano samples:", err);
+            console.log("[PIANO] Attempting to load with alternate paths as fallback");
+            
+            // Try alternative approaches to loading samples
+            // First, try direct Audio preloading to force browser cache
+            const forcePreloadUrls = ['C4.mp3', 'D4.mp3', 'E4.mp3', 'G4.mp3', 'A4.mp3'];
+            forcePreloadUrls.forEach(url => {
+              // Try multiple path variations to ensure one works
+              ['./sounds/piano/', '/sounds/piano/', '../sounds/piano/'].forEach(basePath => {
+                const audio = new Audio(`${basePath}${url}`);
+                audio.preload = 'auto';
+                audio.load();
+                console.log(`[PIANO] Force preloading ${basePath}${url}`);
+              });
+            });
+          }
+        }).connect(reverb);
+        
+        // Create a wrapper that safely handles the loading state
+        return {
+          triggerAttackRelease: function(note, duration, time, velocity) {
+            // Get the current URL to detect the 1_5 memory game activity
+            const is1_5Activity = window.location.pathname.includes('/pitches/1_5');
+            
+            try {
+              // First normalize the note name to ensure proper format for Tone.js
+              note = note.toString().toUpperCase();
+              // Clean up duration and velocity to sensible defaults if missing
+              duration = duration || 0.8;
+              velocity = velocity || 1.0;
+              
+              // When in free play or 1_5 activity, boost volume for better sound
+              if (velocity < 0.5) velocity = 0.7; // Boost quiet notes
+              
+              // Check both local and global sample loading state
+              // This ensures we catch loading that happened in other piano instances
+              const samplesReady = samplesLoaded || window._pianoSamplesLoaded;
+              
+              // Store the actual ready state of the sampler buffers
+              // This is different from the loading flag and ensures we don't try to play before buffers are loaded
+              window._pianoSamplesActuallyReady = window._pianoSamplesActuallyReady || false;
+              
+              try {
+                // Test if the sample buffer for C4 is actually loaded and ready
+                if (samplesReady && sampler.loaded && sampler.buffers && 
+                    sampler.buffers.has('C4') && 
+                    sampler.buffers.get('C4').loaded) {
+                  window._pianoSamplesActuallyReady = true;
+                }
+              } catch (e) {
+                console.log("[PIANO] Buffer check failed", e);
+              }
+              
+              // Special handling for 1_5 memory game activity - NEVER use fallback synth
+              if (is1_5Activity) {
+                // In 1_5 activity: Only play if samples are ACTUALLY ready, otherwise silent
+                if (samplesReady && window._pianoSamplesActuallyReady) {
+                  console.log(`[PIANO] [1_5] Playing sampled note: ${note} (dur: ${duration}, vel: ${velocity})`);
+                  const scheduledTime = time || Tone.now();
+                  sampler.triggerAttackRelease(note, duration, scheduledTime, velocity);
+                } else {
+                  console.log(`[PIANO] [1_5] ⚠️ SKIPPING playback - samples not fully ready yet. NO FALLBACK USED.`);
+                  // Try preloading again if needed
+                  if (!window._pianoPreloadAttempted) {
+                    window._pianoPreloadAttempted = true;
+                    console.log("[PIANO] Making one more attempt to preload samples");
+                    const audio = new Audio(`./sounds/piano/C4.mp3`);
+                    audio.addEventListener('canplaythrough', () => {
+                      console.log("[PIANO] Preload success!");
+                    });
+                    audio.load();
+                  }
+                }
+              } else {
+                // Normal behavior for other activities - use fallback if needed
+                if (samplesReady && window._pianoSamplesActuallyReady) {
+                  console.log(`[PIANO] Playing sampled note: ${note} (dur: ${duration}, vel: ${velocity})`);
+                  const scheduledTime = time || Tone.now();
+                  sampler.triggerAttackRelease(note, duration, scheduledTime, velocity);
+                } else {
+                  console.log(`[PIANO] Samples not ready yet (global: ${window._pianoSamplesLoaded}, actual: ${window._pianoSamplesActuallyReady}), using temp synth`);
+                  tempSynth.triggerAttackRelease(note, duration, time, velocity);
+                }
+              }
+            } catch (err) {
+              console.error("[PIANO] Error in piano playback:", err);
+              
+              // Only use fallback if NOT in 1_5 activity
+              if (!is1_5Activity) {
+                try {
+                  console.log("[PIANO] Using fallback synth (non-1_5 activity)");
+                  tempSynth.triggerAttackRelease(note || "C4", duration || 0.5, time, velocity || 0.8);
+                } catch (finalErr) {
+                  console.error("[PIANO] Even fallback failed:", finalErr);
+                }
+              }
+            }
+          },
+          connect: function(destination) {
+            reverb.connect(destination);
+            return this;
+          },
+          disconnect: function() {
+            reverb.disconnect();
+            return this;
+          },
+          toDestination: function() {
+            return this;
+          },
+          dispose: function() {
+            sampler.dispose();
+            tempSynth.dispose();
+            reverb.dispose();
+          },
+          releaseAll: function(time) {
+            if (samplesLoaded) {
+              sampler.releaseAll(time);
+            }
+            tempSynth.releaseAll(time);
+          },
+          triggerAttack: function(notes, time, velocity) {
+            if (samplesLoaded) {
+              try {
+                sampler.triggerAttack(notes, time, velocity);
+              } catch (err) {
+                tempSynth.triggerAttack(notes, time, velocity);
+              }
+            } else {
+              tempSynth.triggerAttack(notes, time, velocity);
+            }
+          },
+          triggerRelease: function(notes, time) {
+            if (samplesLoaded) {
+              try {
+                sampler.triggerRelease(notes, time);
+              } catch (err) {
+                tempSynth.triggerRelease(notes, time);
+              }
+            } else {
+              tempSynth.triggerRelease(notes, time);
+            }
+          }
+        };
+      },
+      violin: () => {
+        // Verwende AMSynth für Geigenklang mit Vibrato-Effekt
+        const synth = new Tone.AMSynth({
+          oscillator: {
+            type: "triangle"
+          },
+          envelope: {
+            attack: 0.2,
+            decay: 0.1,
+            sustain: 0.5,
+            release: 0.8
+          },
+          modulation: {
+            type: "sine"
+          },
+          modulationEnvelope: {
+            attack: 0.5,
+            decay: 0.05,
+            sustain: 0.8,
+            release: 0.5
+          }
+        });
         return synth;
       },
-      
-      // Flute - Airy wind instrument with breathy quality
       flute: () => {
-        // Blasinstrumente klingen am besten mit einfachem Synth und sinusförmigen Wellenformen
-        const synth = new Tone.PolySynth(Tone.Synth, {
+        // Verwende einfachen Synth mit Sinus-Welle für klaren Flötenklang
+        const synth = new Tone.Synth({
           oscillator: {
             type: "sine"
           },
           envelope: {
             attack: 0.1,
-            decay: 0.1,
-            sustain: 0.9,
-            release: 0.5
+            decay: 0.2,
+            sustain: 0.4,
+            release: 0.8
           }
         });
-        
-        // Höhenbetonung für Flötencharakter
-        synth.set({
-          portamento: 0.02,
-          volume: 2
-        });
-        
         return synth;
       },
-      
-      // Tuba - Low, resonant brass instrument
       tuba: () => {
-        // Tiefes Blasinstrument mit FMSynth für komplexere Obertöne
-        const synth = new Tone.PolySynth(Tone.FMSynth, {
-          harmonicity: 0.5,
-          modulationIndex: 3.5,
+        // Verwende FMSynth für reichhaltigeren Tuba-Klang
+        const synth = new Tone.FMSynth({
+          harmonicity: 3.01,
+          modulationIndex: 14,
           oscillator: {
-            type: "square8" // Rechteckwelle für kräftigeren Klang
+            type: "square8"
           },
           envelope: {
-            attack: 0.1,
-            decay: 0.2,
-            sustain: 0.8,
-            release: 0.5
+            attack: 0.2,
+            decay: 0.3,
+            sustain: 0.4,
+            release: 0.8
           },
           modulation: {
             type: "triangle"

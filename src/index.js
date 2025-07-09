@@ -9,6 +9,14 @@ import './styles/sound-judgment.css';
 // Import Debug Utility
 import { checkStoredDebugSettings, debugLog } from './utils/debug';
 
+// Import and initialize the global Tone.js instance
+import { initToneJs } from './utils/pianoSampler';
+
+// Initialize Tone.js with piano samples (loads once for entire app)
+initToneJs().then(() => {
+  debugLog('Piano', 'Global Tone.js instance initialized');
+});
+
 // Import HTML include utility
 import { loadHtmlPartials } from './utils/html-include';
 

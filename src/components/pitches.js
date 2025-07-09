@@ -5,6 +5,8 @@
 
 // Importiere die zentrale Audio-Engine für alle Audiofunktionen
 import audioEngine from './audio-engine.js';
+// Import direct Tone.js piano sampler (one global instance for all piano sound)
+import { playPianoNote, isPianoReady } from '../utils/pianoSampler';
 
 // Importiere Debug-Utilities
 import { debugLog } from '../utils/debug.js';
@@ -3532,8 +3534,8 @@ export function pitches() {
      * @activity 1_5_memory_game
      */
     playMemorySequence() {
-      console.log('MEMORY_GAME: Starting memory sequence playback with', this.currentSequence.length, 'notes');
-      console.log('MEMORY_GAME: Visual highlighting is', this.showMemoryHighlighting ? 'enabled' : 'disabled');
+      debugLog("PIANO_DIRECT", "Starting memory sequence playback with", this.currentSequence.length, 'notes');
+      debugLog("PIANO_DIRECT", "Visual highlighting is", this.showMemoryHighlighting ? 'enabled' : 'disabled');
       
       // Zuerst alle vorherigen Sounds stoppen (wichtig für sauberen Reset)
       this.stopCurrentSound();
@@ -3543,7 +3545,7 @@ export function pitches() {
       
       // Ensure we have a sequence to play
       if (!this.currentSequence || this.currentSequence.length === 0) {
-        console.log('MEMORY_GAME: No sequence to play');
+        debugLog("PIANO_DIRECT", "No sequence to play");
         return;
       }
       
@@ -3562,8 +3564,19 @@ export function pitches() {
             console.log(`MEMORY_GAME: Playing note ${i+1}/${this.currentSequence.length}: ${note} (sound only)`);
           }
           
-          // Play current note using the central audio engine
-          audioEngine.playNote(note.toLowerCase(), 0.6);
+          // DIRECT TONE.JS: Use global sampler directly for memory game sequence
+          // This bypasses the audio engine completely for more reliable playback
+          debugLog("PIANO_DIRECT", `Memory game sequence: playing ${note}`);
+          
+          const noteUpperCase = note.toUpperCase();
+          
+          // Play with direct Tone.js approach if ready
+          if (isPianoReady()) {
+            // Use slightly higher velocity (1.0) for sequence notes
+            playPianoNote(noteUpperCase, 0.8, 1.0);
+          } else {
+            debugLog("PIANO_DIRECT", `Skipping note ${noteUpperCase} - sampler not ready`);
+          }
           
           // Remove this timeout from tracking once executed
           const timeoutIndex = this.melodyTimeouts.indexOf(playTimeoutId);
@@ -3573,11 +3586,11 @@ export function pitches() {
           
           // If this is the last note, schedule the final cleanup
           if (isLastNote) {
-            console.log('MEMORY_GAME: Last note played, scheduling highlight cleanup');
+            debugLog("PIANO_DIRECT", "Last note played, scheduling highlight cleanup");
             
             const cleanupTimeoutId = setTimeout(() => {
               this.currentHighlightedNote = null;
-              console.log('MEMORY_GAME: Memory sequence complete, highlighting cleared');
+              debugLog("PIANO_DIRECT", "Memory sequence complete, highlighting cleared");
               
               // Remove from tracking
               const idx = this.melodyTimeouts.indexOf(cleanupTimeoutId);
@@ -3620,8 +3633,16 @@ export function pitches() {
       // Highlight the key when pressed
       this.currentHighlightedNote = note;
       
-      // Play the note using the central audio engine
-      audioEngine.playNote(note.toLowerCase(), 0.6);
+      // Play the note using direct Tone.js for memory game free play
+      debugLog("PIANO_DIRECT", `Memory game free play: ${note}`);
+      const noteUpperCase = note.toUpperCase();
+      
+      // Play with direct Tone.js approach if ready
+      if (isPianoReady()) {
+        playPianoNote(noteUpperCase, 0.8, 0.9);
+      } else {
+        debugLog("PIANO_DIRECT", `Skipping note ${noteUpperCase} - sampler not ready`);
+      }
       
       // Remove highlighting after a short delay
       setTimeout(() => {
@@ -3664,7 +3685,7 @@ export function pitches() {
         
         // Enable highlighting for the next playback after an error
         this.showMemoryHighlighting = true;
-        console.log('MEMORY_GAME: Error detected, enabling highlighting for next playback');
+        debugLog("PIANO_DIRECT", "Error detected, enabling highlighting for next playback");
         
         // Reset after a delay
         setTimeout(() => {
@@ -3679,7 +3700,7 @@ export function pitches() {
       // Check if the sequence is complete
       if (this.userSequence.length === this.currentSequence.length) {
         // Allow the last note to fully play before checking the sequence
-        console.log('MEMORY_GAME: Last note played, waiting before checking sequence');
+        debugLog("PIANO_DIRECT", "Last note played, waiting before checking sequence");
         setTimeout(() => {
           this.checkMemorySequence();
         }, 500); // Wait 500ms to let the last note play
@@ -3743,7 +3764,7 @@ export function pitches() {
         
         // Reset to sound-only mode for the next sequence
         this.showMemoryHighlighting = false;
-        console.log('MEMORY_GAME: Success! Disabling highlighting for next sequence');
+        debugLog("PIANO_DIRECT", "Success! Disabling highlighting for next sequence");
         
         // Store the maximum success count as the progress value
         this.progress['1_5_pitches_memory-game'] = Math.max(this.memorySuccessCount, this.progress['1_5_pitches_memory-game'] || 0);
