@@ -1,5 +1,6 @@
 import { debugLog } from '../utils/debug';
 import config from '../config.js';
+import { initMultiTouchHandler } from '../utils/touch-handler.js';
 
 /**
  * Main application component
