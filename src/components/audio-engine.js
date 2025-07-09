@@ -5,6 +5,7 @@
  * Verwendet Tone.js für qualitativ hochwertige Audiowiedergabe.
  */
 import * as Tone from 'tone';
+import { playToneNote, playViolinNote, playFluteNote, playBrassNote, playInstrument } from '../utils/toneJsSampler.js';
 
 // Audio-Engine Hauptklasse
 export class AudioEngine {
@@ -451,17 +452,6 @@ export class AudioEngine {
       return;
     }
     
-    // Always use the direct instrument parameter
-    // Never read from options.instrument anymore
-    if (instrument) {
-      this.useInstrument(instrument);
-      console.log(`[INSTRUMENT] Using instrument: ${instrument} for note ${noteName}`);
-    } else {
-      // This should never happen with the default parameter, but just in case
-      console.warn(`[INSTRUMENT WARNING] No instrument specified for note ${noteName}, using default`);
-      this.useInstrument('default');
-    }
-    
     // Prüfen, ob es sich um einen speziellen Sound handelt
     if (this._specialSounds[noteName]) {
       console.log(`AUDIO: Spiele speziellen Sound-Effekt: ${noteName}`);
@@ -477,32 +467,61 @@ export class AudioEngine {
       return;
     }
     
-    // Note spielen mit musikalischer Zeitnotation
-    this._synth.triggerAttackRelease(parsedNote, duration, time, velocity);
-    
-    // Note als aktiv markieren
-    this._notesPlaying.add(parsedNote);
-    
-    // Berechne die tatsächliche Dauer in Sekunden für das Cleanup
-    let durationInSeconds;
+    // Convert duration to seconds if it's a string notation
+    let durationInSeconds = duration;
     if (typeof duration === 'string') {
-      // Wenn es eine musikalische Notation wie '4n', '8n', etc. ist
       durationInSeconds = Tone.Time(duration).toSeconds();
-    } else {
-      // Wenn es bereits eine Zahl in Sekunden ist
-      durationInSeconds = duration;
     }
     
-    // Nach Ablauf der Note aus der aktiven Liste entfernen
-    const cleanupTime = time !== undefined ? 
-      (typeof time === 'number' ? time + durationInSeconds : Tone.Time(time).toSeconds() + durationInSeconds) : 
-      Tone.now() + durationInSeconds;
+    // Log the instrument being used
+    console.log(`[INSTRUMENT] playNote() ${noteName} with instrument: ${instrument}, parsedNote: ${parsedNote}, duration: ${durationInSeconds.toFixed(3)}s`);
     
-    Tone.Transport.scheduleOnce(() => {
-      this._notesPlaying.delete(parsedNote);
-    }, cleanupTime);
+    // INTEGRATION POINT: Use our toneJsSampler instruments based on the instrument type
+    let played = false;
     
-    console.log(`[INSTRUMENT] playNote() ${noteName} with instrument: ${this._currentInstrument}, parsedNote: ${parsedNote}, duration: ${duration} (${durationInSeconds.toFixed(3)}s)`);
+    // Use the right instrument type from toneJsSampler
+    switch(instrument.toLowerCase()) {
+      case 'piano':
+        played = playToneNote(parsedNote, durationInSeconds, velocity);
+        break;
+      case 'violin':
+        played = playViolinNote(parsedNote, durationInSeconds, velocity);
+        break;
+      case 'flute':
+        played = playFluteNote(parsedNote, durationInSeconds, velocity);
+        break;
+      case 'brass': // Used as replacement for 'tuba' in the free mode
+        played = playBrassNote(parsedNote, durationInSeconds, velocity);
+        break;
+      default:
+        // For backwards compatibility, use the internal synth for non-matched instruments
+        try {
+          // Always use the direct instrument parameter
+          this.useInstrument(instrument);
+          
+          // Note spielen mit musikalischer Zeitnotation
+          this._synth.triggerAttackRelease(parsedNote, duration, time, velocity);
+          
+          // Note als aktiv markieren
+          this._notesPlaying.add(parsedNote);
+          
+          // Nach Ablauf der Note aus der aktiven Liste entfernen
+          const cleanupTime = time !== undefined ? 
+            (typeof time === 'number' ? time + durationInSeconds : Tone.Time(time).toSeconds() + durationInSeconds) : 
+            Tone.now() + durationInSeconds;
+          
+          Tone.Transport.scheduleOnce(() => {
+            this._notesPlaying.delete(parsedNote);
+          }, cleanupTime);
+          
+          played = true;
+        } catch (err) {
+          console.error(`[INSTRUMENT] Error playing with legacy synth: ${err}`);
+          played = false;
+        }
+    }
+    
+    return played;
   }
   
   /**

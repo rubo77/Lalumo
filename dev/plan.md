@@ -30,6 +30,11 @@
 - Implementation now uses a single global Tone.js Sampler instance, initialized once and used everywhere for piano playback—no fallback, no multiple samplers, no extra abstraction layer.
 - All memory game playback code updated to use this direct global instance.
 - Only one direct Tone.js instance for all piano playback (no fallback, no multiple samplers/players, no extra abstraction).
+- User now requests to extend the shared toneJsSampler.js to provide nice-sounding synth violin, flute, and brass instruments for use in 1_4 free mode.
+- Synth violin, flute, and brass are now implemented and exposed in toneJsSampler.js for use in 1_4 free mode.
+- Generic playInstrument and readiness functions for all instruments are now implemented in toneJsSampler.js.
+- Instruments are now integrated into 1_4 free mode playback logic.
+- Test and verify sound quality/usability in 1_4 free mode
 
 ## Task List
 - [x] Diagnose why Tone.Sampler is not loading/using local MP3 samples
@@ -54,6 +59,9 @@
 - [x] Confirm all memory game notes are buffer-ready and audible
 - [x] Test and verify audible piano playback for all memory game notes using new buffer logic
 - [x] Add debugLog("[PIANO_DIRECT]", ...) logging to sampler playback code for deeper diagnosis
+- [x] Implement and expose synth violin, flute, brass in toneJsSampler.js
+- [x] Integrate new instruments into 1_4 free mode playback logic
+- [ ] Test and verify sound quality and usability of new instruments in 1_4 free mode
 
 ## Current Goal
-Monitor for regressions and user feedback.
+Test and verify sound quality/usability in 1_4 free mode
