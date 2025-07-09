@@ -225,7 +225,6 @@ reset-button:
 
 - Webpack-Bundle-Analyzer verwenden um große Abhängigkeiten zu identifizieren
 
-- build for ios
 - class .debug-elements always hidden in production
 
 # most important

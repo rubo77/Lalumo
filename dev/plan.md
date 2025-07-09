@@ -50,6 +50,7 @@
 - New finding: There is another invalid oscillator type ("fat4") in the brass synth definition in toneJsSampler.js. All such invalid types must be corrected to valid Tone.js oscillator types before further testing.
 - Next: Debug and fix all invalid oscillator types (including doublebass and brass) in toneJsSampler.js, then test doublebass sound in 1_4 free mode.
 - Test doublebass sound in 1_4 free mode.
+- All invalid oscillator types (doublebass and brass) in toneJsSampler.js have now been fixed. The next step is to test the doublebass sound in 1_4 free mode.
 
 ## Task List
 - [x] Diagnose why Tone.Sampler is not loading/using local MP3 samples
@@ -84,8 +85,9 @@
 - [x] Test and verify sound quality and usability of new instruments in 1_4 free mode
 - [x] Diagnose and fix doublebass synth initialization and readiness (ensure doublebassSynth is set and ready before playback)
 - [x] Remove redundant doublebass, violin, and flute synth instantiation in audio-engine.js (no fallbacks, all centralized in toneJsSampler.js)
-- [ ] Debug and fix doublebass synth initialization error (invalid oscillator type) in toneJsSampler.js
+- [x] Debug and fix doublebass synth initialization error (invalid oscillator type) in toneJsSampler.js
+- [x] Debug and fix invalid oscillator type in brass synth in toneJsSampler.js
 - [ ] Test doublebass sound in 1_4 free mode
 
 ## Current Goal
-Debug and fix all invalid oscillator types (including doublebass and brass) in toneJsSampler.js, then test doublebass sound in 1_4 free mode
+Test doublebass sound in 1_4 free mode
