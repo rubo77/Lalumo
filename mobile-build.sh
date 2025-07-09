@@ -211,19 +211,19 @@ cp package.json dist/
 # Sync with Capacitor
 echo "###### 6. Syncing with Capacitor..."
 
-# move from dist/app/ to dist/ so Capacitor finds it in the right place dist/
-echo "Kopiere app/-Inhalte in das richtige Verzeichnis für Capacitor..."
-mkdir -p dist-temp
-cp -r dist/app/* dist-temp/
-rm -rf dist/app/
-cp -r dist-temp/* dist/
-rm -rf dist-temp
+# Copy content from dist/app/ to dist/ so Capacitor finds it in the right place dist/
+# but without deleting the original app/ directory to maintain proper image paths
+echo "Copying app/ contents to dist/ for Capacitor while preserving the app/ directory..."
 
-# Erstelle unsere native-app-detector.js direkt in dist/
-echo "Erstelle native-app-detector.js für die App..."
+# Copy everything from dist/app/ to dist/ directly (no need for temp directory)
+cp -r dist/app/* dist/
+
+# Ensure dist/app/ directory exists (it should, but let's be safe)
+mkdir -p dist/app/
+
+# Create our native-app-detector.js directly in both locations
+echo "Creating native-app-detector.js for the app..."
 cp src/native-app-detector.js dist/
-
-# Kopiere die native-app-detector.js auch nach dist/app/
 cp src/native-app-detector.js dist/app/
 
 # Jetzt mit der Standardkonfiguration synchronisieren (webDir ist bereits auf 'dist' eingestellt)

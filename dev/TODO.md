@@ -141,11 +141,7 @@ reset-button:
 
 - ganz viel ist noch strings hartkodiert mit `isGerman`
 
-- nach dem creieren des usernamens eine info box mit "dein name ist ... . Du kannst dies in den Einstellungen ändern
-
 - Cheat codes die man beim beim Import eingeben kann
-
-- Wenn die seite das erste mal lädt, Das Lalumo Bild als loading spinner mit weißem Hintergrund und lazy loading
 
 - Je höher der Ton, umso leiser machen
 
