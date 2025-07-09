@@ -562,9 +562,8 @@
             
             <!-- Start Game Mode Button (at the bottom) -->
             <div class="start-game-container">
-              <button class="start-game-button" @click="startSoundJudgmentGame()" aria-label="Start Game" title="Start Game">
+              <button class="start-game-button" @click="startSoundJudgmentGame()" aria-label="Start Game" title="$store.strings?.start_game || 'Start Game'">
                 <span class="play-icon">▶</span>
-                <span class="play-text" x-text="$store.strings?.start_game || 'Start Game'"></span>
               </button>
             </div>
           </div>
