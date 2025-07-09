@@ -500,6 +500,7 @@ export function app() {
     },
     
     async init() {
+      debugLog('APP', 'Initializing app');
       // We'll initialize audio only on first user interaction
       this.isAudioEnabled = false;
       
@@ -515,6 +516,9 @@ export function app() {
       // Registriere Plattform-Erkennungsfunktionen für Template-Zugriff
       window.Alpine.store('isAndroidApp', this.isAndroidApp.bind(this));
       window.Alpine.store('isIOSApp', this.isIOSApp.bind(this));
+      
+      // Initialize multi-touch handler for Android Chrome
+      initMultiTouchHandler();
       
       // Load user data (including language) from localStorage
       this.loadUserData();

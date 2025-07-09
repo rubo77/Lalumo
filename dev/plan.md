@@ -1,93 +1,59 @@
-# Musici Piano Sound Integration Plan
+# Asset Sync & Build Debug Plan (ARCHIVED)
 
 ## Notes
-- User has local piano MP3 samples in /public/sounds/piano/ (e.g., C4.mp3, A4.mp3, Ds4.mp3, Fs4.mp3, E4.mp3)
-- Piano instrument implemented in audio-engine.js using Tone.js Sampler
-- Current error: "buffer is either not set or not loaded" when playing notes
-- HTTP 200 for sample requests, but samples not used correctly
-- Samples seem to be downloaded instead of used directly
-- Webpack/build process may not include samples correctly
-- Path to samples is /sounds/piano/, but may be incorrect or not resolved as expected
-- Webpack config now copies /public/sounds/piano/ and MP3s to build (CopyWebpackPlugin updated)
-- Goal: Use local MP3s for immediate, reliable piano playback (no fallback synth needed)
-- Memory game calls audioEngine.playNote(note, duration, velocity, 'piano') for playback
-- Memory game sequence uses only C4, D4, E4, G4, A4 notes
-- Piano sample URLs in audio-engine.js now include all chromatic notes (C4, D4, D#4, E4, F4, F#4, G4, A4, B4)
-- In 1_5 free play mode, piano sound is still a synth, not a sample (needs fix)
-- Confirmed: free play mode calls playNote(..., 'piano') but synth is played, not sample (instrument switch/sample loading bug)
-- Global sample loading state and preloading implemented to fix free play bug
-- User requires: absolutely no fallback synth in 1_5 activity—only piano samples should sound; if samples are not loaded, silence is preferred over fallback
-- Fallback synth now removed for 1_5 activity; only piano samples will play (or silence if not loaded)
-- Still playing before sample buffers are actually ready; must block playback until all buffers are confirmed loaded
-- Refactor direction: Remove audio engine, create and share global Tone.js Sampler instance (renamed to toneJsSampler.js for clarity), update all playback calls
-- Created global toneJsSampler.js module that exports init, playToneNote, isToneJsReady, and state helpers
-- toneJsSampler.js is now imported and initialized in index.js at app startup
-- After refactor, still no sound: '[PIANO] Buffer not ready for note G4' and '[PIANO_DIRECT] Playing note G4 with global sampler' appear, but no audio is heard. Indicates a possible Tone.js sampler/buffer readiness or sample loading issue.
-- Enhanced sampler implementation: aggressively preloads samples, tracks buffer readiness per note, and logs detailed buffer status for debugging. Now uses both Tone.js and native Audio preloading for reliability.
-- playToneNote and isToneJsReady now use per-note buffer logic, skipping playback if the note's buffer is not ready. Next: confirm this results in audible piano playback for all memory game notes.
-- User requests more debug logging using debugLog("[PIANO_DIRECT]", ...) in sampler playback code for deeper diagnosis.
-- User requests only one direct Tone.js instance for all piano playback (no fallback, no multiple samplers/players, no extra abstraction).
-- Implementation now uses a single global Tone.js Sampler instance, initialized once and used everywhere for piano playback—no fallback, no multiple samplers, no extra abstraction layer.
-- All memory game playback code updated to use this direct global instance.
-- Only one direct Tone.js instance for all piano playback (no fallback, no multiple samplers/players, no extra abstraction).
-- User now requests to extend the shared toneJsSampler.js to provide nice-sounding synth violin, flute, and brass instruments for use in 1_4 free mode.
-- Synth violin, flute, and brass are now implemented and exposed in toneJsSampler.js for use in 1_4 free mode.
-- Generic playInstrument and readiness functions for all instruments are now implemented in toneJsSampler.js.
-- Instruments are now integrated into 1_4 free mode playback logic.
-- User wants to keep brass, add new "doublebass" instrument, and replace the Tuba button with a Double Bass button in the UI.
-- Renaming: toneJsSampler should be renamed to pianoSampler for clarity, since it only handles piano samples.
-- Double Bass currently plays default synth sound, not a double bass. Needs fixing.
-- Double Bass button styling is now transparent like the others, including hover state.
-- Double Bass synth bug: instrument not ready at playback time; fixed by adding readiness check before attempting playback in audio-engine.js.
-- Doublebass synth initialization sequence and debug logging improved; verify if issue is resolved.
-- Doublebass synth initialization and readiness issue resolved.
-- User attempted to add a local doublebass synth in audio-engine.js, but this is not needed and may conflict with the global synth in toneJsSampler.js.
-- Violin, flute, and doublebass synth instantiations in audio-engine.js are redundant and must be removed; all synth instrument definitions should be centralized in toneJsSampler.js only. No fallbacks or local synths in audio-engine.js.
-- Redundant violin and flute synth instantiations in audio-engine.js have been removed; only global synths from toneJsSampler.js are used.
-- Redundant doublebass synth instantiation in audio-engine.js has also been removed; only global synths from toneJsSampler.js are used.
-- Current bug: Tone.js error 'Oscillator: invalid type: 4' when initializing doublebass PolySynth in toneJsSampler.js—must fix oscillator type configuration. This error persists despite code changes; root cause must be found and fixed before further testing.
-- Despite code changes, the doublebass synth still fails with the same oscillator error. The initialization code may not be called or updated as expected—root cause must be found and fixed before further testing.
-- New finding: There is another invalid oscillator type ("fat4") in the brass synth definition in toneJsSampler.js. All such invalid types must be corrected to valid Tone.js oscillator types before further testing.
-- Next: Debug and fix all invalid oscillator types (including doublebass and brass) in toneJsSampler.js, then test doublebass sound in 1_4 free mode.
-- Test doublebass sound in 1_4 free mode.
-- All invalid oscillator types (doublebass and brass) in toneJsSampler.js have now been fixed. The next step is to test the doublebass sound in 1_4 free mode.
+- Sound assets are synced for Android and iOS via general rsync from public/ to dist/; there is no filtering for unused sound files (all are included).
+- Images are filtered and only used ones are copied to Android assets, but for the web build, all public/ assets should be available unless excluded or mishandled by the build process.
+- .gitignore excludes /ios/App/App/public/ and /android/app/src/main/assets/public/ so these are not tracked by git.
+- User reported that an image (2_5_chords_dog_cat_owl_no_squirrel_no_octopus.jpg) is missing from the webpack web build at /app/images/backgrounds/.
+- Confirmed: image exists in public/, but is missing in dist/app/images/backgrounds/ after build.
+- Webpack config includes a rule to copy backgrounds to app/images/backgrounds/, but the image is not present there after build; next step is to debug why this copy is not occurring as expected.
+- Fixed error in ios-build.sh where it tried to copy to dist/app/ after deletion; script now only copies to dist/.
+- ios-build.sh now runs successfully after fix (no errors).
+- Confirmed: dist/app/images/backgrounds/ directory does not exist after build, even though image is present in dist/images/backgrounds/.
+- Discovered: mobile-build.sh deletes dist/app/ after build (lines 217-218), causing loss of app/images/backgrounds/ and other assets copied there by webpack.
+- Refactored mobile-build.sh to preserve dist/app/ and its assets after build (no deletion).
+- Refactored ios-build.sh to preserve dist/app/ and its assets after build (no deletion).
 
 ## Task List
-- [x] Diagnose why Tone.Sampler is not loading/using local MP3 samples
-- [x] Check and fix sample path resolution in audio-engine.js (Sampler config)
-- [x] Ensure /public/sounds/piano/ is correctly included in production build (webpack/static assets)
-- [x] Update CopyWebpackPlugin config to copy /public/sounds/piano/ directory and MP3s
-- [x] Build application and restart server to test sample integration
-- [x] Test sample fetching in browser dev tools (network tab, correct path, correct HTTP response)
-- [x] Fix code so that local samples are played without download attempts or errors
-- [x] Confirm piano sound is loud, clear, and immediate in the memory game
-- [x] Ensure free play mode in 1_5 uses piano samples, not synth
-  - [x] Debug instrument switching/sample loading for free play mode
-  - [x] Verify global sample loading state and preloading fixes issue
-  - [x] Enforce "no fallback synth" in 1_5 activity—if samples aren't loaded, do not play sound
-- [x] Block playback until all sample buffers are actually loaded (no sound until ready)
-- [x] Remove custom audio engine abstraction; use Tone.js directly throughout app
-- [x] Create global toneJsSampler.js module for shared Tone.js Sampler
-- [x] Import and initialize toneJsSampler.js in index.js
-- [x] Update pitches.js to use shared Tone.js sampler for 1_5 memory game
-- [x] Update all playback calls in activities (e.g., 1_5) to use shared Tone.js instance directly
-- [x] Update all memory game playback code to use single direct Tone.js instance
-- [x] Confirm all memory game notes are buffer-ready and audible
-- [x] Test and verify audible piano playback for all memory game notes using new buffer logic
-- [x] Add debugLog("[PIANO_DIRECT]", ...) logging to sampler playback code for deeper diagnosis
-- [x] Implement and expose synth violin, flute, brass in toneJsSampler.js
-- [x] Integrate new instruments into 1_4 free mode playback logic
-- [x] Add doublebass as a new synth instrument in toneJsSampler.js
-- [x] Replace Tuba button with Double Bass button in index.html UI
-- [x] Rename toneJsSampler to pianoSampler throughout codebase for clarity
-- [x] Fix doublebass synth to sound like a doublebass (not default synth)
-- [x] Update Double Bass button styling for transparency and hover effect
-- [x] Test and verify sound quality and usability of new instruments in 1_4 free mode
-- [x] Diagnose and fix doublebass synth initialization and readiness (ensure doublebassSynth is set and ready before playback)
-- [x] Remove redundant doublebass, violin, and flute synth instantiation in audio-engine.js (no fallbacks, all centralized in toneJsSampler.js)
-- [x] Debug and fix doublebass synth initialization error (invalid oscillator type) in toneJsSampler.js
-- [x] Debug and fix invalid oscillator type in brass synth in toneJsSampler.js
-- [ ] Test doublebass sound in 1_4 free mode
+- [x] Confirm sound asset syncing for Android and iOS
+- [x] Create iOS build script based on mobile-build.sh
+- [x] Confirm image exists in public/images/backgrounds/
+- [x] Check if image exists in dist/app/images/backgrounds/ after build
+- [x] Investigate if image exists in dist/images/backgrounds/
+- [x] Fix ios-build.sh script error and verify successful run
+- [x] Identify that mobile-build.sh deletes dist/app/ after build
+- [x] Refactor build process to ensure assets persist in dist/app/
+- [x] Verify that assets now persist in dist/app/ after build
+- [x] Confirm issue is resolved and close task
 
 ## Current Goal
-Test doublebass sound in 1_4 free mode
+Task complete: asset sync/build issue resolved
+
+# Multi-Touch Handling for Android Chrome
+
+## Notes
+- User wants multi-touch handling: when multi-touch is detected, all other touches should be ignored and only the last touch should trigger the button.
+- Target: Chrome on Android 15 (mobile web, possibly PWA or hybrid app context).
+- Touch event handlers are found in index.html, app.js, pitches.js, chords.js, and other component files.
+- No global addEventListener("touch...") found, but touchstart is handled in various places (including AlpineJS inline handlers).
+- Debug logging is available via debugLog utility.
+- Multi-touch handler utility (touch-handler.js) implemented to process only the last touch on Android Chrome.
+- User wants multi-touch handler to run on all browsers, not just Android Chrome, and reports that browser detection may not be working as intended.
+- Multi-touch handler refactored to run on all browsers (browser detection removed).
+- Debug logging for multi-touch events improved and made consistent with app-wide debugLog usage.
+- App initialization and multi-touch handler are both being called twice (double initialization bug observed in logs).
+- Multi-touch handler throws an error when lastTouchTarget is null (needs null check). Null check implemented; error should be resolved.
+- Investigating root cause of double initialization by reviewing HTML/app structure and AlpineJS usage.
+
+## Task List
+- [x] Identify all relevant touch event handlers for buttons/interactions
+- [x] Implement logic to ignore all but the last touch when multi-touch is detected (Android Chrome)
+- [x] Integrate multi-touch handler utility into main app.js
+- [x] Refactor handler to run on all browsers and fix detection logic
+- [x] Add debug logging for multi-touch events (optional)
+- [ ] Test on all browsers to confirm correct behavior
+- [x] Fix multi-touch handler crash when lastTouchTarget is null
+- [ ] Fix double initialization of app and multi-touch handler
+
+## Current Goal
+Fix double initialization of app and multi-touch handler
