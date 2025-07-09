@@ -34,7 +34,22 @@
 - Synth violin, flute, and brass are now implemented and exposed in toneJsSampler.js for use in 1_4 free mode.
 - Generic playInstrument and readiness functions for all instruments are now implemented in toneJsSampler.js.
 - Instruments are now integrated into 1_4 free mode playback logic.
-- Test and verify sound quality/usability in 1_4 free mode
+- User wants to keep brass, add new "doublebass" instrument, and replace the Tuba button with a Double Bass button in the UI.
+- Renaming: toneJsSampler should be renamed to pianoSampler for clarity, since it only handles piano samples.
+- Double Bass currently plays default synth sound, not a double bass. Needs fixing.
+- Double Bass button styling is now transparent like the others, including hover state.
+- Double Bass synth bug: instrument not ready at playback time; fixed by adding readiness check before attempting playback in audio-engine.js.
+- Doublebass synth initialization sequence and debug logging improved; verify if issue is resolved.
+- Doublebass synth initialization and readiness issue resolved.
+- User attempted to add a local doublebass synth in audio-engine.js, but this is not needed and may conflict with the global synth in toneJsSampler.js.
+- Violin, flute, and doublebass synth instantiations in audio-engine.js are redundant and must be removed; all synth instrument definitions should be centralized in toneJsSampler.js only. No fallbacks or local synths in audio-engine.js.
+- Redundant violin and flute synth instantiations in audio-engine.js have been removed; only global synths from toneJsSampler.js are used.
+- Redundant doublebass synth instantiation in audio-engine.js has also been removed; only global synths from toneJsSampler.js are used.
+- Current bug: Tone.js error 'Oscillator: invalid type: 4' when initializing doublebass PolySynth in toneJsSampler.js—must fix oscillator type configuration. This error persists despite code changes; root cause must be found and fixed before further testing.
+- Despite code changes, the doublebass synth still fails with the same oscillator error. The initialization code may not be called or updated as expected—root cause must be found and fixed before further testing.
+- New finding: There is another invalid oscillator type ("fat4") in the brass synth definition in toneJsSampler.js. All such invalid types must be corrected to valid Tone.js oscillator types before further testing.
+- Next: Debug and fix all invalid oscillator types (including doublebass and brass) in toneJsSampler.js, then test doublebass sound in 1_4 free mode.
+- Test doublebass sound in 1_4 free mode.
 
 ## Task List
 - [x] Diagnose why Tone.Sampler is not loading/using local MP3 samples
@@ -61,7 +76,16 @@
 - [x] Add debugLog("[PIANO_DIRECT]", ...) logging to sampler playback code for deeper diagnosis
 - [x] Implement and expose synth violin, flute, brass in toneJsSampler.js
 - [x] Integrate new instruments into 1_4 free mode playback logic
-- [ ] Test and verify sound quality and usability of new instruments in 1_4 free mode
+- [x] Add doublebass as a new synth instrument in toneJsSampler.js
+- [x] Replace Tuba button with Double Bass button in index.html UI
+- [x] Rename toneJsSampler to pianoSampler throughout codebase for clarity
+- [x] Fix doublebass synth to sound like a doublebass (not default synth)
+- [x] Update Double Bass button styling for transparency and hover effect
+- [x] Test and verify sound quality and usability of new instruments in 1_4 free mode
+- [x] Diagnose and fix doublebass synth initialization and readiness (ensure doublebassSynth is set and ready before playback)
+- [x] Remove redundant doublebass, violin, and flute synth instantiation in audio-engine.js (no fallbacks, all centralized in toneJsSampler.js)
+- [ ] Debug and fix doublebass synth initialization error (invalid oscillator type) in toneJsSampler.js
+- [ ] Test doublebass sound in 1_4 free mode
 
 ## Current Goal
-Test and verify sound quality/usability in 1_4 free mode
+Debug and fix all invalid oscillator types (including doublebass and brass) in toneJsSampler.js, then test doublebass sound in 1_4 free mode

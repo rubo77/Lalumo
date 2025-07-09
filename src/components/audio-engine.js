@@ -5,7 +5,7 @@
  * Verwendet Tone.js für qualitativ hochwertige Audiowiedergabe.
  */
 import * as Tone from 'tone';
-import { playToneNote, playViolinNote, playFluteNote, playBrassNote, playInstrument } from '../utils/toneJsSampler.js';
+import { playToneNote, playViolinNote, playFluteNote, playBrassNote, playDoubleBassNote, isInstrumentReady } from '../utils/toneJsSampler.js';
 
 // Audio-Engine Hauptklasse
 export class AudioEngine {
@@ -286,43 +286,14 @@ export class AudioEngine {
         };
       },
       violin: () => {
-        // Verwende AMSynth für Geigenklang mit Vibrato-Effekt
-        const synth = new Tone.AMSynth({
-          oscillator: {
-            type: "triangle"
-          },
-          envelope: {
-            attack: 0.2,
-            decay: 0.1,
-            sustain: 0.5,
-            release: 0.8
-          },
-          modulation: {
-            type: "sine"
-          },
-          modulationEnvelope: {
-            attack: 0.5,
-            decay: 0.05,
-            sustain: 0.8,
-            release: 0.5
-          }
-        });
-        return synth;
+        // This is now handled by toneJsSampler.js
+        console.log("[AUDIO ENGINE] Using global violin from toneJsSampler.js");
+        return null; // We should never reach this point as playNote() will call toneJsSampler directly
       },
       flute: () => {
-        // Verwende einfachen Synth mit Sinus-Welle für klaren Flötenklang
-        const synth = new Tone.Synth({
-          oscillator: {
-            type: "sine"
-          },
-          envelope: {
-            attack: 0.1,
-            decay: 0.2,
-            sustain: 0.4,
-            release: 0.8
-          }
-        });
-        return synth;
+        // This is now handled by toneJsSampler.js
+        console.log("[AUDIO ENGINE] Using global flute from toneJsSampler.js");
+        return null; // We should never reach this point as playNote() will call toneJsSampler directly
       },
       tuba: () => {
         // Verwende FMSynth für reichhaltigeren Tuba-Klang
@@ -356,6 +327,11 @@ export class AudioEngine {
         });
         
         return synth;
+      },
+      doublebass: () => {
+        // This is now handled by toneJsSampler.js
+        console.log("[AUDIO ENGINE] Using global doublebass from toneJsSampler.js");
+        return null; // We should never reach this point as playNote() will call toneJsSampler directly
       },
       bell: () => {
         const synth = new Tone.PolySynth(Tone.FMSynth);
@@ -479,6 +455,16 @@ export class AudioEngine {
     // INTEGRATION POINT: Use our toneJsSampler instruments based on the instrument type
     let played = false;
     
+    // First check if the requested instrument is ready
+    const instrumentReady = isInstrumentReady(instrument.toLowerCase());
+    if (!instrumentReady) {
+      console.log(`[INSTRUMENT] Instrument ${instrument} is not ready yet. Initializing...`);
+      // Give some time for instrument to initialize if not ready
+      setTimeout(() => {
+        console.log(`[INSTRUMENT] Delayed check for ${instrument} readiness: ${isInstrumentReady(instrument.toLowerCase())}`);
+      }, 500);
+    }
+    
     // Use the right instrument type from toneJsSampler
     switch(instrument.toLowerCase()) {
       case 'piano':
@@ -486,6 +472,9 @@ export class AudioEngine {
         break;
       case 'violin':
         played = playViolinNote(parsedNote, durationInSeconds, velocity);
+        break;
+      case 'doublebass':
+        played = playDoubleBassNote(parsedNote, durationInSeconds, velocity);
         break;
       case 'flute':
         played = playFluteNote(parsedNote, durationInSeconds, velocity);

@@ -86,12 +86,12 @@
   background-color: transparent;
 }
 
-.tuba {
+.doublebass {
   background-color: transparent;
   border: 0;
 }
 
-.tuba:hover:not(.disabled) {
+.doublebass:hover:not(.disabled) {
   background-color: transparent;
 }
 

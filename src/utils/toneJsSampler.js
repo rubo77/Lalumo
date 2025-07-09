@@ -3,10 +3,11 @@ import * as Tone from 'tone';
 import { debugLog } from './debug';
 
 // Global Tone.js instances - single instances for each instrument type
-let toneJsSampler = null;      // Piano sampler with MP3 samples
+let pianoSampler = null;      // Piano sampler with MP3 samples
 let violinSynth = null;        // Violin synth
 let fluteSynth = null;         // Flute synth
 let brassSynth = null;         // Brass synth
+let doublebassSynth = null;    // Double Bass (double bass) synth
 
 let isInitialized = false;     // Overall initialization status
 
@@ -16,7 +17,12 @@ let isInitialized = false;     // Overall initialization status
  */
 export async function initToneJs() {
   // Avoid multiple initialization
-  if (isInitialized) return;
+  if (isInitialized) {
+    debugLog("TONE_JS", "🎵 Already initialized, skipping");
+    return;
+  }
+  
+  debugLog("TONE_JS", "🎵 Starting global instrument initialization...");
   
   debugLog("TONE_JS", "Starting Tone.js context and initializing instruments");
   
@@ -26,7 +32,7 @@ export async function initToneJs() {
     debugLog("TONE_JS", "Tone.js audio context started successfully");
     
     // 1. Create piano sampler with MP3 samples
-    toneJsSampler = new Tone.Sampler({
+    pianoSampler = new Tone.Sampler({
       urls: {
         "C4": "C4.mp3",
         "D4": "D4.mp3",
@@ -116,7 +122,7 @@ export async function initToneJs() {
       maxPolyphony: 4
     }).set({
       oscillator: {
-        type: "fat4",
+        type: "sine",
         spread: 60
       },
       envelope: {
@@ -129,8 +135,76 @@ export async function initToneJs() {
       volume: 6
     }).toDestination();
     
+    // 5. Create doublebass synth - deep, resonant string sound with bow attack
+    debugLog("TONE_JS", "Creating doublebass synth...");
+    doublebassSynth = new Tone.PolySynth(Tone.MonoSynth, {
+      maxPolyphony: 1
+    }).set({
+      oscillator: {
+        type: "sawtooth",  // Simple sawtooth for string-like sound
+      },
+      filter: {
+        Q: 2,
+        type: "lowpass",
+        rolloff: -24,
+        frequency: 800  // Lower filter for deep bass tone
+      },
+      envelope: {
+        attack: 0.1,      // Slow attack for bow sound
+        decay: 0.3,
+        sustain: 0.8,
+        release: 1.5
+      },
+      filterEnvelope: {
+        attack: 0.08,
+        decay: 0.5,
+        sustain: 0.5,
+        release: 1.5,
+        baseFrequency: 80,
+        octaves: 2.5,
+        exponent: 3
+      },
+      portamento: 0.08,  // For smooth bass slides
+      volume: 10        // Boost volume for better presence
+    });
+    
+    // Add effects chain for doublebass
+    const doublebassEQ = new Tone.EQ3({
+      low: 6,           // Boost lows for deeper bass
+      mid: 0,
+      high: -6          // Reduce highs for warmth
+    });
+    
+    const doublebassReverb = new Tone.Reverb({
+      decay: 1.5,       // Natural room reverb
+      wet: 0.12         // Just a touch of reverb
+    });
+    
+    // Add subtle distortion for bow friction sound
+    const doublebassDistortion = new Tone.Distortion({
+      distortion: 0.05,
+      wet: 0.1
+    });
+    
+    // Connect effects chain
+    if (doublebassSynth) {
+      debugLog("TONE_JS", "Connecting doublebass effects chain...");
+      doublebassSynth.chain(doublebassEQ, doublebassDistortion, doublebassReverb, Tone.Destination);
+      debugLog("TONE_JS", "Doublebass synth ready with effects");
+    } else {
+      debugLog("TONE_JS", "ERROR: Failed to create doublebass synth!");
+    }
+    
     // Wait until all assets are loaded
     await Tone.loaded();
+    
+    // Final check of instrument status
+    debugLog("TONE_JS", "🎵 Piano sampler ready: " + (pianoSampler !== null));
+    debugLog("TONE_JS", "🎵 Violin synth ready: " + (violinSynth !== null));
+    debugLog("TONE_JS", "🎵 Flute synth ready: " + (fluteSynth !== null));
+    debugLog("TONE_JS", "🎵 Brass synth ready: " + (brassSynth !== null));
+    debugLog("TONE_JS", "🎵 Doublebass synth ready: " + (doublebassSynth !== null));
+    
     debugLog("TONE_JS", "🎵 All instruments initialized and ready");
     isInitialized = true;
     
@@ -148,14 +222,14 @@ export function playToneNote(note, duration = 0.8, velocity = 0.8) {
     note = note.toString().toUpperCase();
     
     // First check if Tone.js and sampler are ready
-    if (!toneJsSampler) {
+    if (!pianoSampler) {
       debugLog("TONE_JS", "No piano sampler available yet");
       return false;
     }
     
     // Play the note directly through Tone.js
     debugLog("TONE_JS", `Playing piano note ${note} (dur: ${duration}s, vel: ${velocity})`);
-    toneJsSampler.triggerAttackRelease(note, duration, Tone.now(), velocity);
+    pianoSampler.triggerAttackRelease(note, duration, Tone.now(), velocity);
     return true;
     
   } catch (err) {
@@ -240,6 +314,45 @@ export function playBrassNote(note, duration = 0.8, velocity = 0.8) {
 }
 
 /**
+ * Play a doublebass note using the global synth
+ */
+export function playDoubleBassNote(note, duration = 0.8, velocity = 0.8) {
+  try {
+    // Make sure note is properly formatted
+    note = note.toString().toUpperCase();
+    
+    // First check if Tone.js and synth are ready
+    if (!doublebassSynth) {
+      debugLog("TONE_JS", "No doublebass synth available yet - attempting to re-initialize");
+      
+      // Force re-init of Tone.js as a recovery attempt
+      if (!isInitialized) {
+        initToneJs();
+        return false; // Return false for now, next call might succeed
+      }
+      return false;
+    }
+    
+    // Lower the note by one octave to get real double bass range
+    // Only if the note doesn't already specify an octave below 4
+    if (note.includes('4') || note.includes('5') || note.includes('6')) {
+      note = note.replace(/([A-G][#b]?)([4-6])/, function(match, noteName, octave) {
+        return noteName + (parseInt(octave) - 1);
+      });
+    }
+    
+    // Play the note directly through Tone.js
+    debugLog("TONE_JS", `Playing doublebass note ${note} (dur: ${duration}s, vel: ${velocity})`);
+    doublebassSynth.triggerAttackRelease(note, duration, Tone.now(), velocity);
+    return true;
+    
+  } catch (err) {
+    debugLog("TONE_JS", "Error playing doublebass note:", err);
+    return false;
+  }
+}
+
+/**
  * Check if Tone.js and all instruments are initialized
  */
 export function isToneJsReady() {
@@ -252,18 +365,37 @@ export function isToneJsReady() {
  * @returns {boolean} - Whether the instrument is ready
  */
 export function isInstrumentReady(instrument) {
-  switch(instrument.toLowerCase()) {
-    case 'piano':
-      return toneJsSampler !== null;
-    case 'violin':
-      return violinSynth !== null;
-    case 'flute':
-      return fluteSynth !== null;
-    case 'brass':
-      return brassSynth !== null;
-    default:
-      return false;
+  // First check if Tone.js is ready overall
+  if (!isInitialized) {
+    debugLog("INSTRUMENT_CHECK", `Tone.js not initialized yet when checking ${instrument}`);
+    return false;
   }
+
+  let result = false;
+  
+  // Check specific instrument
+  switch (instrument.toLowerCase()) {
+    case 'piano':
+      result = pianoSampler !== null;
+      break;
+    case 'violin':
+      result = violinSynth !== null;
+      break;
+    case 'flute':
+      result = fluteSynth !== null;
+      break;
+    case 'brass':
+      result = brassSynth !== null;
+      break;
+    case 'doublebass':
+      result = doublebassSynth !== null;
+      break;
+    default:
+      result = false;
+  }
+  
+  debugLog("INSTRUMENT_CHECK", `Instrument ${instrument} ready: ${result}`);
+  return result;
 }
 
 /**
@@ -284,6 +416,10 @@ export function playInstrument(instrument, note, duration = 0.8, velocity = 0.8)
     case 'flute':
       return playFluteNote(note, duration, velocity);
     case 'brass':
+      return playBrassNote(note, duration, velocity);
+    case 'doublebass':
+      return playDoubleBassNote(note, duration, velocity);
+    case 'tuba':  // Map 'tuba' to 'brass' for backwards compatibility
       return playBrassNote(note, duration, velocity);
     default:
       debugLog("TONE_JS", `Unknown instrument: ${instrument}`);
