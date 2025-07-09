@@ -6,7 +6,7 @@
 // Importiere die zentrale Audio-Engine für alle Audiofunktionen
 import audioEngine from './audio-engine.js';
 // Import direct Tone.js piano sampler (one global instance for all piano sound)
-import { playPianoNote, isPianoReady } from '../utils/pianoSampler';
+import { playToneNote, isToneJsReady } from '../utils/toneJsSampler';
 
 // Importiere Debug-Utilities
 import { debugLog } from '../utils/debug.js';
@@ -3571,9 +3571,9 @@ export function pitches() {
           const noteUpperCase = note.toUpperCase();
           
           // Play with direct Tone.js approach if ready
-          if (isPianoReady()) {
+          if (isToneJsReady()) {
             // Use slightly higher velocity (1.0) for sequence notes
-            playPianoNote(noteUpperCase, 0.8, 1.0);
+            playToneNote(noteUpperCase, 0.8, 1.0);
           } else {
             debugLog("PIANO_DIRECT", `Skipping note ${noteUpperCase} - sampler not ready`);
           }
@@ -3638,8 +3638,8 @@ export function pitches() {
       const noteUpperCase = note.toUpperCase();
       
       // Play with direct Tone.js approach if ready
-      if (isPianoReady()) {
-        playPianoNote(noteUpperCase, 0.8, 0.9);
+      if (isToneJsReady()) {
+        playToneNote(noteUpperCase, 0.8, 0.9);
       } else {
         debugLog("PIANO_DIRECT", `Skipping note ${noteUpperCase} - sampler not ready`);
       }

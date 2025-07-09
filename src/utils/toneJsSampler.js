@@ -3,7 +3,7 @@ import * as Tone from 'tone';
 import { debugLog } from './debug';
 
 // Global tone.js sampler instance - this is the ONLY instance we'll use
-let pianoSampler = null;
+let toneJsSampler = null;
 let isInitialized = false;
 
 /**
@@ -14,15 +14,15 @@ export async function initToneJs() {
   // Avoid multiple initialization
   if (isInitialized) return;
   
-  debugLog("PIANO", "Starting Tone.js context and initializing piano");
+  debugLog("PIANO_TONEJS", "Starting Tone.js context and initializing piano");
   
   try {
     // Start Tone.js audio context (needed for audio to work)
     await Tone.start();
-    debugLog("PIANO", "Tone.js audio context started successfully");
+    debugLog("PIANO_TONEJS", "Tone.js audio context started successfully");
     
     // Create one single piano sampler
-    pianoSampler = new Tone.Sampler({
+    toneJsSampler = new Tone.Sampler({
       urls: {
         "C4": "C4.mp3",
         "D4": "D4.mp3",
@@ -36,37 +36,37 @@ export async function initToneJs() {
       volume: 15,
       release: 1,
       onload: () => {
-        debugLog("PIANO", "🎹 Piano samples loaded!");
+        debugLog("PIANO_TONEJS", "🎹 Piano samples loaded!");
         isInitialized = true;
       }
     }).toDestination();
     
     // Wait until everything is loaded
     await Tone.loaded();
-    debugLog("PIANO", "All Tone.js assets fully loaded");
+    debugLog("PIANO_TONEJS", "All Tone.js assets fully loaded");
     
   } catch (err) {
-    debugLog("PIANO", "Error initializing Tone.js:", err);
+    debugLog("PIANO_TONEJS", "Error initializing Tone.js:", err);
   }
 }
 
 /**
  * Play a piano note using the global Tone.js sampler
  */
-export function playPianoNote(note, duration = 0.8, velocity = 0.8) {
+export function playToneNote(note, duration = 0.8, velocity = 0.8) {
   try {
     // Make sure note is properly formatted
     note = note.toString().toUpperCase();
     
     // First check if Tone.js and sampler are ready
-    if (!pianoSampler) {
+    if (!toneJsSampler) {
       debugLog("PIANO_DIRECT", "No sampler available yet");
       return false;
     }
     
     // Play the note directly through Tone.js
     debugLog("PIANO_DIRECT", `Playing note ${note} (dur: ${duration}s, vel: ${velocity})`);
-    pianoSampler.triggerAttackRelease(note, duration, Tone.now(), velocity);
+    toneJsSampler.triggerAttackRelease(note, duration, Tone.now(), velocity);
     return true;
     
   } catch (err) {
@@ -78,8 +78,8 @@ export function playPianoNote(note, duration = 0.8, velocity = 0.8) {
 /**
  * Check if the piano sampler is initialized
  */
-export function isPianoReady() {
-  return isInitialized && pianoSampler !== null;
+export function isToneJsReady() {
+  return isInitialized && toneJsSampler !== null;
 }
 
 /**
@@ -90,7 +90,7 @@ export function isPianoReady() {
  * @param {boolean} is1_5Activity - Whether this is the 1_5 memory game activity (no fallback)
  * @returns {boolean} - Whether the note was played
  */
-export function playPianoNoteWithBufferCheck(note, duration = 0.8, velocity = 0.8, is1_5Activity = false) {
+export function playToneNoteWithBufferCheck(note, duration = 0.8, velocity = 0.8, is1_5Activity = false) {
   // Normalize parameters
   note = note.toString().toUpperCase();
   

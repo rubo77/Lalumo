@@ -19,12 +19,12 @@
 - User requires: absolutely no fallback synth in 1_5 activity—only piano samples should sound; if samples are not loaded, silence is preferred over fallback
 - Fallback synth now removed for 1_5 activity; only piano samples will play (or silence if not loaded)
 - Still playing before sample buffers are actually ready; must block playback until all buffers are confirmed loaded
-- Refactor direction: Remove audio engine, create and share global Tone.js Sampler instance, update all playback calls
-- Created global pianoSampler.js module that exports init, play, and state helpers
-- pianoSampler.js is now imported and initialized in index.js at app startup
+- Refactor direction: Remove audio engine, create and share global Tone.js Sampler instance (renamed to toneJsSampler.js for clarity), update all playback calls
+- Created global toneJsSampler.js module that exports init, playToneNote, isToneJsReady, and state helpers
+- toneJsSampler.js is now imported and initialized in index.js at app startup
 - After refactor, still no sound: '[PIANO] Buffer not ready for note G4' and '[PIANO_DIRECT] Playing note G4 with global sampler' appear, but no audio is heard. Indicates a possible Tone.js sampler/buffer readiness or sample loading issue.
 - Enhanced sampler implementation: aggressively preloads samples, tracks buffer readiness per note, and logs detailed buffer status for debugging. Now uses both Tone.js and native Audio preloading for reliability.
-- playPianoNote and isPianoReady now use per-note buffer logic, skipping playback if the note's buffer is not ready. Next: confirm this results in audible piano playback for all memory game notes.
+- playToneNote and isToneJsReady now use per-note buffer logic, skipping playback if the note's buffer is not ready. Next: confirm this results in audible piano playback for all memory game notes.
 - User requests more debug logging using debugLog("[PIANO_DIRECT]", ...) in sampler playback code for deeper diagnosis.
 - User requests only one direct Tone.js instance for all piano playback (no fallback, no multiple samplers/players, no extra abstraction).
 - Implementation now uses a single global Tone.js Sampler instance, initialized once and used everywhere for piano playback—no fallback, no multiple samplers, no extra abstraction layer.
@@ -46,8 +46,8 @@
   - [x] Enforce "no fallback synth" in 1_5 activity—if samples aren't loaded, do not play sound
 - [x] Block playback until all sample buffers are actually loaded (no sound until ready)
 - [x] Remove custom audio engine abstraction; use Tone.js directly throughout app
-- [x] Create global pianoSampler.js module for shared Tone.js Sampler
-- [x] Import and initialize pianoSampler.js in index.js
+- [x] Create global toneJsSampler.js module for shared Tone.js Sampler
+- [x] Import and initialize toneJsSampler.js in index.js
 - [x] Update pitches.js to use shared Tone.js sampler for 1_5 memory game
 - [x] Update all playback calls in activities (e.g., 1_5) to use shared Tone.js instance directly
 - [x] Update all memory game playback code to use single direct Tone.js instance
