@@ -1,5 +1,5 @@
 <!-- Referral Code Page -->
-<section x-show="active === 'referral-code' && (window.innerWidth >= 1024 || !menuOpen)" x-transition class="settings-page referral-code-page"
+<section id="referral_code_partial" x-show="active === 'referral-code' && (window.innerWidth >= 1024 || !menuOpen)" x-transition class="settings-page referral-code-page"
        x-data="{
          referrerUsername: localStorage.getItem('lalumo_referral') ? JSON.parse(localStorage.getItem('lalumo_referral'))?.referrerUsername || '' : ''
        }">

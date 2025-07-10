@@ -1,5 +1,5 @@
 <!-- Legal: Impressum -->
-<section x-show="active === 'impressum' && (window.innerWidth >= 1024 || !menuOpen)" x-transition>
+<section id="imprint_partial" x-show="active === 'impressum' && (window.innerWidth >= 1024 || !menuOpen)" x-transition>
   <h2 x-text="$store.strings?.impressum_header || 'Impressum'"></h2>
   <div class="legal-content">
     <p x-text="$store.strings?.impressum_app_description || 'Lalumo App - Musik lernen für Kinder'"></p>
@@ -10,7 +10,7 @@
 </section>
 
 <!-- Legal: Datenschutz -->
-<section x-show="active === 'datenschutz' && (window.innerWidth >= 1024 || !menuOpen)" x-transition>
+<section id="privacy_partial" x-show="active === 'datenschutz' && (window.innerWidth >= 1024 || !menuOpen)" x-transition>
   <h2 x-text="$store.strings?.datenschutz_header || 'Datenschutz'"></h2>
   <div class="legal-content">
     <p x-text="$store.strings?.privacy_intro || 'Datenschutzerklärung für die Lalumo App'"></p>

@@ -50,6 +50,16 @@
 - Added note: Strict chord/transposition persistence after errors is still not fully fixed and requires further debugging and refactoring.
 - Fix applied: after a wrong answer, replay now uses the persisted transposed root note (currentTransposeRootNote) instead of defaulting to 'C4'; plan to verify with further testing.
 - Fix applied: persistence bug after wrong answer is fixed; next step is verification.
+- Verified: strict chord/transposition persistence after errors is now fully fixed and consistent (both play button and error replay use the same persisted values).
+- Confirmed: In CSS, only the absolute path `/app/images/backgrounds/` works for background images due to webpack output structure; relative or webpack-imported paths (e.g. `./images/...`, `~public/...`) do not resolve as expected.
+- Multiple troubleshooting steps (relative, absolute, webpack module paths) were attempted for CSS backgrounds; only `/app/images/backgrounds/` is reliable for menu backgrounds in the deployed app.
+- After extensive troubleshooting, confirmed that only absolute paths work for CSS background images due to how Webpack handles asset resolution.
+- CSS background image paths must be absolute (`/app/images/backgrounds/`) to ensure correct resolution in the deployed app.
+- Troubleshooting steps included testing relative paths, absolute paths, and Webpack module paths for CSS background images.
+- The solution was to use absolute paths for CSS background images, as this is the only approach that works reliably due to Webpack's output structure.
+- The final solution was to update the CSS to use absolute paths for background images, ensuring correct resolution in the deployed app.
+- Menu background CSS selectors were refactored to use section IDs (e.g., #credits_partial, #imprint_partial, #privacy_partial, #referral_code_partial) instead of x-show attribute selectors for improved maintainability and clarity.
+- Responsive padding (desktop/mobile) was added for all menu background sections (settings, credits, impressum, privacy) in CSS for consistent layout across devices.
 
 ## Task List
 - [x] Add debug logging to show the actual transpose value used for playback
@@ -66,10 +76,14 @@
 - [x] Update chord repetition and transpose persistence logic per new requirements
 - [x] Refine transpose/chord persistence: new on correct, repeat on wrong
 - [x] Debug and fix: after wrong answer, ensure replayed chord and play button always use the same persisted rootNote and transposeAmount until solved
-- [ ] Verify strict chord/transposition persistence after errors
+- [x] Verify strict chord/transposition persistence after errors
+- [x] Integrate credits.jpg as background for credits menu
+- [x] Integrate impressum.jpg as background for impressum menu
+- [x] Integrate settings.jpg as background for settings menu
+- [x] Ensure responsive padding for all menu backgrounds (settings, credits, impressum, privacy)
 
 ## Current Goal
-Verify strict chord/transposition persistence after errors
+Integrate new menu backgrounds (credits, impressum, settings)
 
 # Multi-Touch Handling for Android Chrome
 
@@ -118,3 +132,18 @@ Verify strict chord/transposition persistence after errors
 
 ## Current Goal
 Task complete: multi-touch & native detection refactor complete
+
+# Background Image Integration for Menus
+
+## Notes
+- User added new background images: credits.jpg, impressum.jpg, settings.jpg to public/images/backgrounds/.
+- User requested these images to be set as backgrounds for the respective menus (credits, impressum, settings).
+
+## Task List
+- [x] Integrate credits.jpg as background for credits menu
+- [x] Integrate impressum.jpg as background for impressum menu
+- [x] Integrate settings.jpg as background for settings menu
+- [x] Ensure responsive padding for all menu backgrounds (settings, credits, impressum, privacy)
+
+## Current Goal
+Task complete: all requested menu backgrounds integrated

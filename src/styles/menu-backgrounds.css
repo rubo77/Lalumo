@@ -1,0 +1,268 @@
+/* Menu background styles */
+
+/* Settings page styling */
+.settings-page {
+  position: relative;
+  z-index: 1;
+  padding-left: calc(27vw - 60px);
+}
+
+@media (max-width: 900px) {
+  .settings-page {
+    padding-left: 6vw;
+  }
+}
+
+.settings-page::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url('/app/images/backgrounds/settings.jpg');
+  background-size: cover;
+  background-position: center;
+  opacity: 0.9;
+  z-index: -2;
+}
+
+.settings-page::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: -1;
+}
+
+/* Text color for all settings content */
+.settings-page h2,
+.settings-page h3,
+.settings-page p,
+.settings-page label,
+.settings-page .profile-details {
+  color: #ffffff;
+  position: relative;
+  z-index: 2;
+}
+
+/* Credits page styling */
+#credits_partial {
+  position: relative;
+  padding: 20px;
+  color: #ffffff;
+  z-index: 1;
+  padding-left: calc(27vw - 60px);
+}
+
+@media (max-width: 900px) {
+  #credits_partial {
+    padding-left: 6vw;
+  }
+}
+
+#credits_partial::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url('/app/images/backgrounds/credits.jpg');
+  background-size: cover;
+  background-position: center;
+  opacity: 0.9;
+  z-index: -2;
+}
+
+#credits_partial::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: -1;
+}
+
+/* Impressum page styling */
+#imprint_partial {
+  position: relative;
+  padding: 20px;
+  color: #ffffff;
+  z-index: 1;
+  padding-left: calc(27vw - 60px);
+}
+
+#imprint_partial h2{
+  color: white;
+  margin-bottom: 5px;
+}
+
+@media (max-width: 900px) {
+  #imprint_partial {
+    padding-left: 27vw;
+  }
+}
+
+#imprint_partial::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url('/app/images/backgrounds/impressum.jpg');
+  background-size: cover;
+  background-position: center;
+  opacity: 0.9;
+  z-index: -2;
+}
+
+#imprint_partial::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: -1;
+}
+
+/* Datenschutz page styling */
+#privacy_partial {
+  position: relative;
+  padding: 20px;
+  color: #ffffff;
+  z-index: 1;
+  padding-left: calc(27vw - 60px);
+}
+
+@media (max-width: 900px) {
+  #privacy_partial {
+    padding-left: 6vw;
+  }
+}
+
+#privacy_partial::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url('/app/images/backgrounds/impressum.jpg');
+  background-size: cover;
+  background-position: center;
+  opacity: 0.9;
+  z-index: -2;
+}
+
+#privacy_partial::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: -1;
+}
+
+/* Links in menu pages */
+#credits_partial a,
+#imprint_partial a,
+#privacy_partial a,
+#referral_code_partial a {
+  color: #fdcb6e;
+  text-decoration: underline;
+}
+
+#credits_partial a:hover,
+#imprint_partial a:hover,
+#privacy_partial a:hover,
+#referral_code_partial a:hover {
+  color: #ffeaa7;
+}
+
+
+/* Referral Code Section Styles */
+.referral-code-page h2 {
+  color: var(--color-accent);
+  margin-bottom: 1rem;
+}
+
+.referral-section {
+  background-color: rgba(67, 67, 67, 0.5);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 24px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.referral-info {
+  background-color: var(--color-success-light);
+  border-radius: 8px;
+  padding: 12px;
+  margin: 16px 0;
+}
+
+.referral-highlight {
+  font-size: 1.4rem;
+  font-weight: bold;
+  color: var(--color-accent);
+  margin-right: 8px;
+}
+
+.referral-code-container, .friend-code-container {
+  display: flex;
+  gap: 8px;
+  margin: 12px 0;
+}
+
+.referral-code-input, .friend-code-input {
+  flex: 1;
+  padding: 10px 12px;
+  font-family: monospace;
+  font-size: 1.1rem;
+  letter-spacing: 1px;
+  border: 2px solid var(--color-accent-light);
+  border-radius: 8px;
+  background: rgb(67, 67, 67, 0.5);
+  color: var(--color-text-dark);
+}
+
+.referral-link-input{
+  min-width: min(360px, 80%);
+}
+
+.warning-text {
+  color: var(--color-warning);
+  font-style: italic;
+  margin: 8px 0;
+}
+
+.referral-status {
+  margin: 16px 0;
+  font-weight: bold;
+}
+
+.username-lock-section, .registered-user-section {
+  background-color: var(--color-background);
+  border-radius: 8px;
+  padding: 16px;
+  margin-top: 16px;
+  border: 1px solid var(--color-accent-light);
+}
+
+.current-username-display, .registered-username {
+  margin: 12px 0;
+  padding: 8px;
+  background-color: rgba(255, 255, 255, 0.6);
+  border-radius: 6px;
+}

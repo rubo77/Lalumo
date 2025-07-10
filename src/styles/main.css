@@ -278,6 +278,23 @@ html body.dev-mode .debug-element {
 /* Settings page */
 .settings-page {
   padding: 20px;
+  background-image: url('/app/images/backgrounds/settings.jpg');
+  background-size: cover;
+  background-position: center;
+  color: #ffffff;
+  position: relative;
+}
+
+/* Fügt einen abgedunkelten Overlay hinzu, damit der Text lesbar bleibt */
+.settings-page::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: -1;
 }
 
 .settings-section {
@@ -308,81 +325,6 @@ html body.dev-mode .debug-element {
   border-top: 1px solid var(--color-accent-light);
 }
 
-/* Referral Code Section Styles */
-.referral-code-page h2 {
-  color: var(--color-accent);
-  margin-bottom: 1rem;
-}
-
-.referral-section {
-  background-color: var(--color-background-lighter);
-  border-radius: 12px;
-  padding: 16px;
-  margin-bottom: 24px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-}
-
-.referral-info {
-  background-color: var(--color-success-light);
-  border-radius: 8px;
-  padding: 12px;
-  margin: 16px 0;
-}
-
-.referral-highlight {
-  font-size: 1.4rem;
-  font-weight: bold;
-  color: var(--color-accent);
-  margin-right: 8px;
-}
-
-.referral-code-container, .friend-code-container {
-  display: flex;
-  gap: 8px;
-  margin: 12px 0;
-}
-
-.referral-code-input, .friend-code-input {
-  flex: 1;
-  padding: 10px 12px;
-  font-family: monospace;
-  font-size: 1.1rem;
-  letter-spacing: 1px;
-  border: 2px solid var(--color-accent-light);
-  border-radius: 8px;
-  background: white;
-  color: var(--color-text-dark);
-}
-
-.referral-link-input{
-  min-width: min(360px, 80%);
-}
-
-.warning-text {
-  color: var(--color-warning);
-  font-style: italic;
-  margin: 8px 0;
-}
-
-.referral-status {
-  margin: 16px 0;
-  font-weight: bold;
-}
-
-.username-lock-section, .registered-user-section {
-  background-color: var(--color-background);
-  border-radius: 8px;
-  padding: 16px;
-  margin-top: 16px;
-  border: 1px solid var(--color-accent-light);
-}
-
-.current-username-display, .registered-username {
-  margin: 12px 0;
-  padding: 8px;
-  background-color: rgba(255, 255, 255, 0.6);
-  border-radius: 6px;
-}
 
 .help-text {
   font-size: 0.9rem;
@@ -1982,6 +1924,7 @@ section h2 {
 }
 
 .active .pitch-icon.jump img {
+  animation: jump-bounce 1s 1 forwards;
 }
 
 @keyframes jump-bounce {
