@@ -10,7 +10,7 @@ CHANGELOG_DE_MD="CHANGELOG_de.md"
 PLAYSTORE_DIR="fastlane/metadata/android/playstore"
 
 # Get version from build.gradle
-VERSION_NAME=2.1
+VERSION_NAME=3.0
 # Get current date
 CURRENT_DATE=$(date +"%Y-%m-%d")
 
@@ -41,15 +41,25 @@ check_length() {
 
 # German Changelog
 DE_CHANGES=$(cat << EOF
-- Neues Kapitel: Akkorde Erkennen (freischaltbar durch Referrals)
-- verbesserte Zufallsgenerierung der Tonfolgen
+- Neue Akkordspiele mit Transponierung, freiem Spiel und dynamischem Fortschritt
+- verschiedene Klänge: Kontrabass, Violine, Flöte und Klavier
+- verbesserte Ton-Merkspiele: Farb-Hilfen nur bei Fehlern
+- Alle Texte auf Deutsch und Englisch
+- Neue Bilder und verbesserte Darstellung in Menüs und Einstellungen
+- Fortschritt kann nun vollständig exportiert und importiert werden
+- Multi-Touch erkennung verbessert um Kinderbedienung zu verbessern
 EOF
 )
 
 # English Changelog
 EN_CHANGES=$(cat << EOF
-- New Chapter: Chords minor or major (accessible through referral program)
-- improve randomness in tone generation
+- New Chords games with transposition, free play and dynamic progress
+- different sounds: Contrabass, Violin, Flute and Piano
+- improved tone memory games: color hints only on errors
+- All texts in German and English
+- New images and improved menu and settings display
+- Progress can now be fully exported and imported
+- Multi-Touch recognition improved to tolerate children's clumsy handling
 EOF
 )
 

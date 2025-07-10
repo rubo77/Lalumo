@@ -1,0 +1,20 @@
+# Play Store Changelogs für Version 3.0
+
+<en-GB>
+- New Chords games with transposition, free play and dynamic progress
+- different sounds: Contrabass, Violin, Flute and Piano
+- improved tone memory games: color hints only on errors
+- All texts in German and English
+- New images and improved menu and settings display
+- Progress can now be fully exported and imported
+- Multi-Touch recognition improved to tolerate children's clumsy handling
+</en-GB>
+<de-DE>
+- Neue Akkordspiele mit Transponierung, freiem Spiel und dynamischem Fortschritt
+- verschiedene Klänge: Kontrabass, Violine, Flöte und Klavier
+- verbesserte Ton-Merkspiele: Farb-Hilfen nur bei Fehlern
+- Alle Texte auf Deutsch und Englisch
+- Neue Bilder und verbesserte Darstellung in Menüs und Einstellungen
+- Fortschritt kann nun vollständig exportiert und importiert werden
+- Multi-Touch erkennung verbessert um Kinderbedienung zu verbessern
+</de-DE>

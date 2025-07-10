@@ -2,6 +2,15 @@
 =========
 
 
+## Version 3.0 (2025-07-10)
+- New Chords games with transposition, free play and dynamic progress
+- different sounds: Contrabass, Violin, Flute and Piano
+- improved tone memory games: color hints only on errors
+- All texts in German and English
+- New images and improved menu and settings display
+- Progress can now be fully exported and imported
+- Multi-Touch recognition improved to tolerate children's clumsy handling
+
 ## Version 2.1 (2025-06-25)
 - New Chapter: Chords minor or major (accessible through referral program)
 - improve randomness in tone generation
