@@ -162,14 +162,9 @@ reset-button:
 1_1 "High or Low?" (1_1_pitches_high_or_low) 
 - # bereit zur veröffentlichung
 - die tiefen töne sind eine oktave zu tief
-- der reset button in der navi muss auch die fortschrittsanzeige aktualisieren
-- ändere, dass man immer 1s warten muss, bis man wählen kann, welche Taste man drückt. man soll sofort, wenn man den ton hört schon wählen dürfen
 - im master level dürfen die töne maximal 3 halbtöne auseinander sein und der erste ton muss nicht mehr C5 sein, sondern kann jeder beliebige sein, es wird nur getestet, ob der 2. ton dann höher oder tiefer ist
 - die erfolgsmeldung muss sich ab level 3 aendern in "der ton war höher" anstatt "hoch" und "der ton war tiefer" anstatt "tief"
-- Die volle  bildschirmbreite Aus nutzen auf dem Handy
-
-- Entferne alle Überbleibsel der alten "Listen to melodies"-Funktionalität:
-   - Lösche unnötige Melodie-Abspielfunktionen für die alte Aktivität
+- Die volle  bildschirmbreite Ausnutzen auf dem Handy
 
 1_2 "Match the Sounds":
 - # bereit zur veröffentlichung

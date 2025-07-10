@@ -33,7 +33,7 @@
 - Debug logging for transpose value in playback has been added; now verifying if/why transposition is not applied during playback.
 - Verified: Transpose value is being logged, but remains 0 at high progress (e.g. 68); root cause appears to be that transposition is only calculated when currentChordType is null, so after the first chord, no new transpose value is generated for subsequent chords.
 - Root cause: Transpose value is only generated once per session/chord type; must refactor so a new transpose value is generated for every chord/playback at progress >=30.
-- Solution in progress: Add a generateTranspose() function and call it on every chord/playback to ensure correct randomization and application of transpose at progress >=30.
+- Solution in progress: Add a generateTranspose() function and call it on every chord playback to ensure correct randomization and application of transpose at progress >=30.
 - generateTranspose function implemented. Syntax issue fixed; now must ensure it is called on every chord playback.
 - generateTranspose is now called on every chord playback; transposition logic is fully integrated and correct.
 - New requirement: For progress <10, allow up to 3 consecutive repeats of the same chord; for all other progress levels (except 30–39), no repeats allowed.
@@ -63,6 +63,21 @@
 - Bug fixed: For progress 30-39, exact chord (type + transpose) is now prevented from repeating directly; logic now persists and checks both type and transpose.
 - User request: Fix menu auto-close logic so that it triggers when exactly one normal (non-debug) menu item is present, regardless of the number of debug items.
 - Menu auto-close logic updated and build completed; now auto-closes when exactly one normal menu item is present, or if none then exactly one debug item.
+- Confirmed: Both resetProgress() functions in app.js and pitches.js were unused and have been removed from the codebase.
+- Cheatcode logic in app.js was broken for all formats, including secondary value handling and "direct:" paths; user requested removal of "direct:" support and added debug logging to show exactly which localStorage variable is being changed by the cheatcode handler. Code and documentation were updated for accurate cheatcode handling and improved debug output.
+- Cheatcode logic improved: "direct:" format removed, detailed debug logging added for all progress-setting operations.
+- Note: User identified duplicate copyReferralCode functions (one async, one not) in app.js and requested clarification/removal of the unused one.
+- Bug: Error in cheatcode handler: TypeError: this.updateProgressFromStorage is not a function. Needs investigation/fix.
+- User requested to simplify cheatcode handler: remove all manual component/UI reload code and just use window.location.reload() after applying a cheatcode.
+- Note: User identified duplicate setupHighOrLowMode_1_1 functions in pitches.js and pitches/1_1_high_or_low.js and requested to determine which is used and remove the other.
+- Note: User reported that on Android, after clicking the "high or low" choice buttons (1_1 activity, index.html:L412-L439) or the play button (index.html:L405-L410), the box shadow/focus ring remains visible, unlike in web where focus is removed. This is a UI bug affecting touch/blur handling on Android and needs a cross-platform fix (possibly programmatically blurring or removing focus after click/tap).
+- Fix: Added a cross-platform blur/focus handler (blurElement) in index.html to ensure focus is removed on both web and Android for high/low choice and play buttons in 1_1 activity.
+- Issue: Box shadow/focus ring still persists on Android Chrome after blurElement; adding debug logging to investigate why blur is not working as intended.
+- Result: Debug logging confirms blurElement is called and all steps execute, but on Android Chrome the button remains visually focused (box shadow persists) even after all programmatic blur attempts.
+- New requirement: Focus should remain for ~1 second after click, then blur (not immediate blur).
+- New bug: After 1s, blur occurs for a tenth of a second, but the border/focus ring reappears on the button (Android Chrome); need to diagnose why focus returns after blur.
+- Fix: Aggressive permanent focus style removal works for high/low buttons, but play button still shows opacity background after blur; need to diagnose and fix this specific case.
+- New bug: After 1s, blur occurs for a tenth of a second, but the border/focus ring reappears on the button (Android Chrome); need to diagnose why focus returns after blur.
 
 ## Task List
 - [x] Add debug logging to show the actual transpose value used for playback
@@ -91,6 +106,11 @@
 - [x] Implement auto-close of navigation if only one submenu (debug-element) is available after clicking "chords"
 - [x] Fix menu auto-close logic to trigger when exactly one normal menu item is present, regardless of debug items
 - [x] Expand cheatcode logic to allow setting all relevant localStorage progress items and add a comment list of all supported cheats
+- [x] Fix Android focus/box-shadow persistence on high/low choice and play buttons in 1_1 activity (ensure blur/focus removal works as on web)
+- [x] Add debug logging to blurElement to investigate Android Chrome box-shadow persistence
+- [x] Update blurElement logic to blur after 1 second delay (per user request)
+- [ ] Diagnose and fix: After delayed blur, border/focus ring reappears briefly (Android Chrome)
+  - [ ] Diagnose and fix: Play button still shows opacity background after blur (Android Chrome)
 
 ## Current Goal
 All planned requirements are complete

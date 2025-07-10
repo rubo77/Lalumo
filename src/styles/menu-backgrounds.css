@@ -100,7 +100,9 @@
 
 #imprint_partial h2{
   color: white;
-  margin-bottom: 5px;
+  margin-bottom: 55px;
+  text-align: left;
+  margin-top: 20px;
 }
 
 @media (max-width: 900px) {

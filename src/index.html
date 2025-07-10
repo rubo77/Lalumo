@@ -401,15 +401,10 @@
         width: 100%;
         background-size: 100% 100%;
         background-repeat: no-repeat;">
-          <div class="mode-header">
-            <button class="back-to-main" @click="setMode('main')" aria-label="Back to main menu">
-              <span style="font-size: 24px;">🏠</span>
-            </button>
-          </div>
           
           <!-- Play button - bird in background -->
           <button class="circular-play-button" 
-                  @click="playHighOrLowTone()" 
+                  @click="playHighOrLowTone(); blurElement($event)" 
                   :aria-label="$store.strings?.play_tone_a11y || 'Play tone'" 
                   :title="$store.strings?.play_tone_a11y || 'Play tone'">
           </button>
@@ -417,7 +412,7 @@
           <!-- High or Low choice buttons -->
           <div class="high-low-choices">
             <div class="pitch-card low-choice" 
-                 @click="checkHighOrLowAnswer('low'); this.blur()" 
+                 @click="checkHighOrLowAnswer('low'); blurElement($event)" 
                  :aria-label="currentHighOrLowStage >= 3 ? ($store.strings?.second_tone_lower_a11y || 'The second tone is lower') : ($store.strings?.low_choice_a11y || 'Low tone')"
                  :title="currentHighOrLowStage >= 3 ? ($store.strings?.second_tone_lower_a11y || 'The second tone is lower') : ($store.strings?.low_choice_a11y || 'Low tone')">
               <div class="pitch-icon low-icon">
@@ -429,7 +424,7 @@
               </div>
             </div>
             <div class="pitch-card high-choice" 
-                 @click="checkHighOrLowAnswer('high'); this.blur()" 
+                 @click="checkHighOrLowAnswer('high'); blurElement($event)" 
                  :aria-label="currentHighOrLowStage >= 3 ? ($store.strings?.second_tone_higher_a11y || 'The second tone is higher') : ($store.strings?.high_choice_a11y || 'High tone')"
                  :title="currentHighOrLowStage >= 3 ? ($store.strings?.second_tone_higher_a11y || 'The second tone is higher') : ($store.strings?.high_choice_a11y || 'High tone')">
               <div class="pitch-icon high-icon">
@@ -459,11 +454,6 @@
         <!-- Matching Mode -->
         <div id="1_2_pitches" x-show="mode === '1_2_pitches_match-sounds'" class="activity-container lazyload-bg" data-background-image="./images/backgrounds/pitches_action1_2.jpg"
         style="background-size: cover; background-position: top left; background-image: 1s ease">
-          <div class="mode-header">
-            <button class="back-to-main" @click="setMode('main')" aria-label="Back to main menu">
-              <span style="font-size: 24px;">🏠</span>
-            </button>
-          </div>
           
           <!-- Play button - only show when not in game mode -->
           <button x-show="!gameMode" class="circular-play-button" 
@@ -518,11 +508,6 @@
         
         <!-- Drawing Mode -->
         <div id="1_3_pitches" x-show="mode === '1_3_pitches_draw-melody'" class="activity-container lazyload-bg" data-background-image="./images/backgrounds/pitches_action1_3.jpg">
-          <div class="mode-header">
-            <button class="back-to-main" @click="setMode('main')" aria-label="Back to main menu">
-              <span style="font-size: 24px;">🏠</span>
-            </button>
-          </div>
           
           <div style="height:52vw"></div>
 
@@ -540,11 +525,6 @@
         
         <!-- Does It Sound Right? Activity -->
         <div id="1_4_pitches" x-show="mode === '1_4_pitches_does-it-sound-right'" class="activity-container lazyload-bg" data-background-image="./images/backgrounds/pitches_action1_4.jpg">
-          <div class="mode-header">
-            <button class="back-to-main" @click="setMode('main')" aria-label="Back to main menu">
-              <span style="font-size: 24px;">🏠</span>
-            </button>
-          </div>
 
           <!-- Practice Mode -->
           <div class="practice-mode" x-show="!gameMode">
@@ -615,11 +595,6 @@
         
         <!-- Memory Mode -->
         <div id="1_5_pitches" x-show="mode === '1_5_pitches_memory-game'" class="activity-container lazyload-bg" data-background-image="./images/backgrounds/pitches_action1_5.jpg">
-          <div class="mode-header">
-            <button class="back-to-main" @click="setMode('main')" aria-label="Back to main menu">
-              <span style="font-size: 24px;">🏠</span>
-            </button>
-          </div>
           <button class="circular-play-button" @click="playCurrentMelody()" aria-label="Play Melody" title="Play Melody">
             
           </button>
@@ -690,11 +665,6 @@
         
         <!-- 2_1 Chords - Color Matching Activity -->
         <div x-show="mode === '2_1_chords_color-matching'" class="chord-activity">
-          <div class="mode-header">
-            <button class="back-to-main" @click="setMode('main')" aria-label="Back to main menu">
-              <span style="font-size: 24px;">🏠</span>
-            </button>
-          </div>
           
           <div class="chords-container">
             <h2 x-text="$store.strings?.chord_color_matching_title || 'Match Colors to Chords'">Match Colors to Chords</h2>
@@ -765,11 +735,6 @@
         
         <!-- 2_2 Chords - Mood Landscapes Activity -->
         <div x-show="mode === '2_2_chords_mood-landscapes'" class="chord-activity">
-          <div class="mode-header">
-            <button class="back-to-main" @click="setMode('main')" aria-label="Back to main menu">
-              <span style="font-size: 24px;">🏠</span>
-            </button>
-          </div>
           
           <div class="chords-container">
             <h2 x-text="$store.strings?.mood_landscapes_title || 'Chord Mood Landscapes'">Chord Mood Landscapes</h2>
@@ -811,11 +776,6 @@
         
         <!-- 2_3 Chords - Chord Building Activity -->
         <div x-show="mode === '2_3_chords_chord-building'" class="chord-activity">
-          <div class="mode-header">
-            <button class="back-to-main" @click="setMode('main')" aria-label="Back to main menu">
-              <span style="font-size: 24px;">🏠</span>
-            </button>
-          </div>
           
           <div class="chords-container">
             <h2 x-text="$store.strings?.chord_building_title || 'Build Your Own Chords'">Build Your Own Chords</h2>
@@ -843,11 +803,6 @@
         
         <!-- 2_4 Chords - Missing Note Activity -->
         <div x-show="mode === '2_4_chords_missing-note'" class="chord-activity">
-          <div class="mode-header">
-            <button class="back-to-main" @click="setMode('main')" aria-label="Back to main menu">
-              <span style="font-size: 24px;">🏠</span>
-            </button>
-          </div>
           
           <div class="chords-container">
             <h2 x-text="$store.strings?.missing_note_title || 'Find the Missing Note'">Find the Missing Note</h2>
@@ -878,11 +833,6 @@
         
         <!-- 2_5 Chords - Character Matching Activity -->
         <div id="2_5_chords_characters" x-show="mode === '2_5_chords_characters'" class="chord-activity activity-container lazyload-bg" data-background-image="./images/backgrounds/2_5_chords_dog_cat_owl_no_squirrel_no_octopus.jpg">
-          <div class="mode-header">
-            <button class="back-to-main" @click="setMode('main')" aria-label="Back to main menu">
-              <span style="font-size: 24px;">🏠</span>
-            </button>
-          </div>
           
           <!-- start-button, shown in free play mode -->
           <button id="play-chord-2_5" @click="start2_5GameMode()" class="play-button" x-show="is2_5FreePlayMode" style="font-size: 2em; cursor: pointer;" :title="$store.strings?.start_game || 'Start Game Mode'">🦉</button>
@@ -929,11 +879,6 @@
         
         <!-- 2_6 Chords - Harmony Gardens Activity -->
         <div x-show="mode === '2_6_chords_harmony-gardens'" class="chord-activity">
-          <div class="mode-header">
-            <button class="back-to-main" @click="setMode('main')" aria-label="Back to main menu">
-              <span style="font-size: 24px;">🏠</span>
-            </button>
-          </div>
           
           <div class="chords-container">
             <h2 x-text="$store.strings?.harmony_gardens_title || 'Harmony Gardens'">Harmony Gardens</h2>
@@ -1030,6 +975,67 @@
     </div>-->
 
   </main>
+
+<script>
+  // Cross-platform blur helper for removing focus on touch/click events with a 1 second delay
+  // This works on both web and Android platforms
+  window.blurElement = function(event) {
+    // Get the target element
+    const target = event.currentTarget || event.target;
+    console.log('[BLUR] Will blur element after 1 second delay:', target && target.tagName, target && target.className);
+    
+    // Let the focus stay for 1 second, then remove it
+    setTimeout(() => {
+      console.log('[BLUR] Now removing focus after delay, active element:', document.activeElement && document.activeElement.tagName);
+      
+      // Blur the element
+      if (target && typeof target.blur === 'function') {
+        console.log('[BLUR] Calling blur() on target');
+        target.blur();
+      } else {
+        console.log('[BLUR] Could not call blur() on target:', target);
+      }
+      
+      // Remove focus from active element as well
+      if (document.activeElement && typeof document.activeElement.blur === 'function') {
+        console.log('[BLUR] Calling blur() on document.activeElement:', document.activeElement.tagName);
+        document.activeElement.blur();
+      } else {
+        console.log('[BLUR] Could not call blur() on document.activeElement:', document.activeElement);
+      }
+      
+      // On Android, we need to ensure focus is removed from the element
+      // This helps with removing the box shadow/focus ring that persists on touch devices
+      if (target && target.classList) {
+        console.log('[BLUR] Permanently removing focus styles to prevent them from reappearing');
+        
+        // For Android Chrome, we need to be more aggressive - don't restore styles afterward
+        target.style.outline = 'none';
+        target.style.boxShadow = 'none';
+        target.style.webkitBoxShadow = 'none';
+        target.style.webkitTapHighlightColor = 'transparent';
+        
+        // Apply these styles to prevent refocus
+        target.setAttribute('tabindex', '-1');
+        
+        // Force a repaint/reflow to ensure changes take effect
+        target.offsetHeight; // Trigger reflow
+        
+        console.log('[BLUR] Completed blur sequence with permanent style changes');
+        
+        // Add an event listener to prevent refocusing
+        const preventRefocus = function(e) {
+          e.preventDefault();
+          target.blur();
+          console.log('[BLUR] Prevented refocus attempt');
+          // Remove after handling once
+          target.removeEventListener('focus', preventRefocus);
+        };
+        target.addEventListener('focus', preventRefocus, { once: true });
+      }
+    }, 1000); // 1 second delay before blurring
+  };
+</script>
 
 <script>
   // Globale Funktionen für Lazy Loading, Back-Button-Handling und Menü-Interaktion

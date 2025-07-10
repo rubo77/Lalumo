@@ -4182,12 +4182,12 @@ export function pitches() {
       
       // Set the melody name in the appropriate language
       this.currentMelodyName = selectedMelody[language] || selectedMelody.en;
-  console.log(`MELODY_NAME_DEBUG: Set currentMelodyName to "${this.currentMelodyName}" for melody ID "${randomMelodyKey}"`);
-  
-  // Update UI immediately after setting melody name
-  document.querySelectorAll('.sound-status').forEach(el => {
-    el.textContent = this.currentMelodyName;
-  });
+      console.log(`MELODY_NAME_DEBUG: Set currentMelodyName to "${this.currentMelodyName}" for melody ID "${randomMelodyKey}"`);
+      
+      // Update UI immediately after setting melody name
+      document.querySelectorAll('.sound-status').forEach(el => {
+        el.textContent = this.currentMelodyName;
+      });
       
       // Create a copy of the melody notes
       let melodyToPlay = [...selectedMelody.notes];
