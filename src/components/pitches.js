@@ -3980,16 +3980,16 @@ export function pitches() {
             instrumentMessage = 'Höre die Melodie auf der Geige!';
           } else if (instrument === 'flute') {
             instrumentMessage = 'Höre die Melodie auf der Flöte!';
-          } else if (instrument === 'tuba') {
-            instrumentMessage = 'Höre die Melodie auf der Tuba!';
+          } else if (instrument === 'doublebass') {
+            instrumentMessage = 'Höre die Melodie auf dem Kontrabass!';
           }
         } else {
           if (instrument === 'violin') {
             instrumentMessage = 'Listen to the melody on the violin!';
           } else if (instrument === 'flute') {
             instrumentMessage = 'Listen to the melody on the flute!';
-          } else if (instrument === 'tuba') {
-            instrumentMessage = 'Listen to the melody on the tuba!';
+          } else if (instrument === 'doublebass') {
+            instrumentMessage = 'Listen to the melody on the double bass!';
           }
         }
         

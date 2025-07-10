@@ -1,9 +1,11 @@
 #!/bin/bash
-# Mobile build script for Lalumo app using Capacitor
-# This script builds the web app and syncs it with native platforms
+# Multi-platform build script for Lalumo app using Capacitor
+# This script builds the web app and syncs it with Android and iOS platforms
 
 # Default configuration
 UPDATE_VERSION=false
+FORCE_SYNC=false
+PLATFORM=""
 
 # Show help information
 show_help() {
@@ -48,56 +50,9 @@ parse_args() {
   done
 }
 
-# find path to Android Studio dynamically, independent of snap version
-find_android_studio() {
-  # try to find latest snap path
-  SNAP_STUDIO=$(find /snap/android-studio -name studio.sh -type f | sort -r | head -n 1 2>/dev/null)
-  
-  if [ -n "$SNAP_STUDIO" ] && [ -x "$SNAP_STUDIO" ]; then
-    echo "$SNAP_STUDIO"
-    return
-  fi
-  
-  # try other common installation paths
-  for path in \
-    "/usr/local/android-studio/bin/studio.sh" \
-    "$HOME/android-studio/bin/studio.sh" \
-    "/opt/android-studio/bin/studio.sh"
-  do
-    if [ -x "$path" ]; then
-      echo "$path"
-      return
-    fi
-  done
-  
-  # fallback: try to find studio.sh in PATH
-  command -v studio.sh
-}
+# Platform initialization
+echo "###### 1. Initializing build for platform: ${PLATFORM:-all}"
 
-# Set paths based on platform
-if [ "$PLATFORM" = "android" ] || [ -z "$PLATFORM" ]; then
-    echo "###### 1. set path to Android Studio"
-    STUDIO_PATH=$(find_android_studio)
-
-    if [ -n "$STUDIO_PATH" ]; then
-        echo "Android Studio found at: $STUDIO_PATH"
-    else
-        echo "Android Studio not found. Continuing anyway..."
-        STUDIO_PATH=""
-    fi
-fi
-
-if [ "$PLATFORM" = "ios" ]; then
-    echo "###### 1. set path to Xcode"
-    XCODE_PATH=$(xcode-select -p)
-
-    if [ -n "$XCODE_PATH" ]; then
-        echo "Xcode found at: $XCODE_PATH"
-    else
-        echo "Xcode not found. Continuing anyway..."
-        XCODE_PATH=""
-    fi
-fi
 
 # Update version in package.json and sync to build.gradle
 update_version() {
@@ -287,13 +242,13 @@ rm -rf "$TEMP_IMG_DIR"
 echo "Only used images copied successfully"
 
 echo "###### 14. Platform-specific commands"
-if [ "$1" == "android" ]; then
+if [ "$PLATFORM" == "android" ]; then
   echo "Opening Android project in Android Studio..."
   npx cap open android
-elif [ "$1" == "ios" ]; then
+elif [ "$PLATFORM" == "ios" ]; then
   echo "Opening iOS project in Xcode..."
   npx cap open ios
-elif [ "$1" == "update" ]; then
+elif [ "$PLATFORM" == "update" ]; then
   echo "Just updating native apps with latest web code."
 else
   echo "\nUsage: bash mobile-build.sh [platform]\n"
