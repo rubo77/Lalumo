@@ -108,23 +108,28 @@ export function chords() {
         debugLog(['CHORDS', 'BUTTONS'], 'Progress < 10: Hiding mysterious and surprised buttons');
       } else if (progress < 20) {
         // Progress 10-19: hide mysterious octopus (diminished), show surprised squirrel (augmented)
-        diminishedBtn.style.display = 'none';
         augmentedBtn.style.display = '';
+        diminishedBtn.style.display = 'none';
         debugLog(['CHORDS', 'BUTTONS'], 'Progress 10-19: Showing surprised, hiding mysterious button');
-      } else if (progress < 40) {
-        // Progress 20-39: Show all basic buttons, but hide animal buttons while chords are being transposed
-        diminishedBtn.style.display = 'none';
-        augmentedBtn.style.display = 'none';
-        debugLog(['CHORDS', 'BUTTONS'], 'Progress 20-39: Showing basic buttons, hiding animal buttons (transposition phase)');
-      } else if (progress < 60) {
-        // Progress 40-59: Show all buttons except octopus
-        diminishedBtn.style.display = 'none';
+      } else if (progress < 30) {
+        // Progress 20-29: show all
         augmentedBtn.style.display = '';
-        debugLog(['CHORDS', 'BUTTONS'], 'Progress 40-59: Showing squirrel, hiding octopus');
+        diminishedBtn.style.display = '';
+        debugLog(['CHORDS', 'BUTTONS'], 'Progress 20-29: Showing all buttons');
+      } else if (progress < 40) {
+        // Progress 20-39: Show basic buttons, but hide squirrel and octopus (diminished and augmented)
+        augmentedBtn.style.display = 'none';
+        diminishedBtn.style.display = 'none';
+        debugLog(['CHORDS', 'BUTTONS'], 'Progress 20-39: Hiding octopus and squirrel (transposition phase)');
+      } else if (progress < 60) {
+        // Progress 40-59: Show all buttons except octopus (diminished)
+        augmentedBtn.style.display = '';
+        diminishedBtn.style.display = 'none';
+        debugLog(['CHORDS', 'BUTTONS'], 'Progress 40-59: Hiding octopus, showing squirrel');
       } else {
         // Progress >= 60: Show all buttons
-        diminishedBtn.style.display = '';
         augmentedBtn.style.display = '';
+        diminishedBtn.style.display = '';
         debugLog(['CHORDS', 'BUTTONS'], 'Progress >= 60: Showing all chord buttons and animals');
       }
     },
