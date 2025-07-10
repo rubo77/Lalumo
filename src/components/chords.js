@@ -121,13 +121,13 @@ export function chords() {
         augmentedBtn.style.display = 'none';
         diminishedBtn.style.display = 'none';
         debugLog(['CHORDS', 'BUTTONS'], 'Progress 20-39: Hiding octopus and squirrel (transposition phase)');
-      } else if (progress < 60) {
+      } else if (progress < 50) {
         // Progress 40-59: Show all buttons except octopus (diminished)
         augmentedBtn.style.display = '';
         diminishedBtn.style.display = 'none';
         debugLog(['CHORDS', 'BUTTONS'], 'Progress 40-59: Hiding octopus, showing squirrel');
       } else {
-        // Progress >= 60: Show all buttons
+        // Progress >= 50: Show all buttons
         augmentedBtn.style.display = '';
         diminishedBtn.style.display = '';
         debugLog(['CHORDS', 'BUTTONS'], 'Progress >= 60: Showing all chord buttons and animals');
@@ -356,7 +356,25 @@ export function chords() {
       // Apply chord height variation at progress >= 30
       if (progress >= 30) {
         // Random transpose between -6 and +6 semitones
-        transposeAmount = Math.floor(Math.random() * 13) - 6; // -6 to +6
+        // For progress 30-39, avoid repeating the exact same transpose amount
+        if (progress >= 30 && progress < 40) {
+          // Avoid using the same transpose value as the previous chord
+          let attempts = 0;
+          do {
+            // transposeAmount = Math.floor(Math.random() * 13) - 6; // -6 to +6
+            transposeAmount = Math.floor(Math.random() * 5) - 2; // -2 to +2 (debug)
+            attempts++;
+          } while (transposeAmount === this.previousTransposeAmount && attempts < 10);
+          
+          // Store this value for next comparison
+          this.currentTransposeAmount = transposeAmount;
+          debugLog('CHORDS', `[TRANSPOSE] Generated new transpose: ${transposeAmount}, previous was: ${this.previousTransposeAmount}`);
+        } else {
+          // For other progress levels, just get a random transpose
+          // transposeAmount = Math.floor(Math.random() * 13) - 6; // -6 to +6
+          transposeAmount = Math.floor(Math.random() * 5) - 2; // -2 to +2 (debug)
+          this.currentTransposeAmount = transposeAmount;
+        }
         
         if (transposeAmount !== 0) {
           // Base note C4 is MIDI note 60
@@ -1213,6 +1231,16 @@ export function chords() {
      * When false (game mode), the regular game logic applies
      */
     is2_5FreePlayMode: true,
+    
+    /**
+     * Store the previous transposition amount to avoid direct repetition
+     */
+    previousTransposeAmount: 0,
+    
+    /**
+     * Store the current transposition amount
+     */
+    currentTransposeAmount: 0,
     /**
      * Start game mode for the character matching activity
      * Switches from free play mode to game mode
@@ -1327,8 +1355,25 @@ export function chords() {
             maxRepeats = 3; // Allow up to 3 repeats for beginners and transposition phase
           }
           
-          if ((progress >= 10 || this.consecutiveRepeats >= maxRepeats) && this.previousChordType && chordTypes.length > 1) {
-            // For progress ≥10 OR when we already had 2 consecutive repeats:
+          // Determine if we should avoid repeating the previous chord
+          const shouldAvoidRepeat = (
+            // For progress <10, only avoid repeats after reaching the maximum
+            ((progress < 10) && this.consecutiveRepeats >= maxRepeats) ||
+            // For progress 10-29, always avoid repeats
+            (progress >= 10 && progress < 30) ||
+            // For progress 30-39, avoid direct repeats but allow the same type again later
+            // (up to 3 total of same type, but never two identical in a row)
+            (progress >= 30 && progress < 40 && this.consecutiveRepeats >= 1) ||
+            // For progress 40-59, always avoid repeats
+            (progress >= 40 && progress < 60) ||
+            // For progress ≥60, avoid direct repeats but allow the same type again later
+            (progress >= 60 && this.consecutiveRepeats >= 1)
+          ) && 
+            // Only apply if we have a previous chord type and more than one option
+            this.previousChordType && 
+            chordTypes.length > 1;
+          
+          if (shouldAvoidRepeat) {
             // Filter out the previous chord type to avoid repetition
             const availableTypes = chordTypes.filter(type => type !== this.previousChordType);
             
@@ -1375,7 +1420,9 @@ export function chords() {
               // Different chord type selected, reset counter
               this.consecutiveRepeats = 0;
               this.currentChordChanged = true;
-              debugLog('CHORDS', `[REPETITION] Selected different chord type, reset repeat counter`);
+              // Make sure we're also updating previousTransposeAmount when chord type changes
+              this.previousTransposeAmount = this.currentTransposeAmount;
+              debugLog('CHORDS', `[REPETITION] Selected different chord type, reset repeat counter. Previous transpose: ${this.previousTransposeAmount}`);
             }
           }
         }
@@ -1472,6 +1519,9 @@ export function chords() {
           // Set currentChordType to null to ensure new chord generation next time
           debugLog('CHORDS', `[REPETITION] Setting currentChordType to null after correct answer. previousChordType: ${this.previousChordType}`);
           this.currentChordType = null;
+          // Update previousTransposeAmount to avoid direct repeats in next chord
+          this.previousTransposeAmount = this.currentTransposeAmount;
+          debugLog('CHORDS', `[TRANSPOSE] After correct answer: updated previousTransposeAmount to ${this.previousTransposeAmount}`);
           this.showFeedback = false;
           
           // Automatically play the next chord after correct answer (new requirement)
