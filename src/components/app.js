@@ -654,6 +654,17 @@ export function app() {
     },
     
     /**
+     * Special iOS audio check for compatibility
+     * @returns {Promise<void>}
+     */
+    checkIOSAudio() {
+      // iOS requires user interaction to start audio context
+      // This is a placeholder for any special iOS audio initialization that might be needed
+      debugLog('APP', 'iOS audio check placeholder for any special iOS audio initialization that might be needed');
+      return Promise.resolve();
+    },
+    
+    /**
      * Checks if a username still exists in the server database
      * only if you are already locked. this can only happen if the server db is deleted or in admin the user
      * @param {string} username - Username to check

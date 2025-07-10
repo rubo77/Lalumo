@@ -123,10 +123,15 @@ document.addEventListener('DOMContentLoaded', () => {
   console.log('Lalumo app running on platform:', capacitor.getPlatform());
 });
 
-// Start Alpine
+// Start Alpine, but only if it hasn't been started already
 window.Alpine = Alpine;
-// Start Alpine.js
-Alpine.start();
+
+// Only start Alpine if it hasn't been initialized yet
+if (!window._alpineInitialized) {
+  window._alpineInitialized = true;
+  debugLog('App', 'Starting Alpine.js');
+  Alpine.start();
+}
 
 // Load HTML partials after Alpine is initialized
 loadHtmlPartials();

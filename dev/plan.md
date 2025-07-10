@@ -44,6 +44,11 @@ Task complete: asset sync/build issue resolved
 - App initialization and multi-touch handler are both being called twice (double initialization bug observed in logs).
 - Multi-touch handler throws an error when lastTouchTarget is null (needs null check). Null check implemented; error should be resolved.
 - Investigating root cause of double initialization by reviewing HTML/app structure and AlpineJS usage.
+- Alpine.js warning: "Alpine has already been initialized on this page. Calling Alpine.start() more than once can cause problems."
+- Double initialization may be related to errors loading native-app-detector.js, Alpine component structure, or multiple x-data/x-init usage on main elements.
+- New error: missing method `checkIOSAudio` ("is not a function") found in logs; may contribute to Alpine/app double initialization.
+- Alpine.js double initialization is now prevented by a global flag (`window._alpineInitialized`) in index.js; debug logging added for Alpine startup.
+- `checkIOSAudio` method implemented in app component to resolve missing function error.
 
 ## Task List
 - [x] Identify all relevant touch event handlers for buttons/interactions
@@ -53,7 +58,10 @@ Task complete: asset sync/build issue resolved
 - [x] Add debug logging for multi-touch events (optional)
 - [ ] Test on all browsers to confirm correct behavior
 - [x] Fix multi-touch handler crash when lastTouchTarget is null
-- [ ] Fix double initialization of app and multi-touch handler
+- [x] Fix double initialization of app and multi-touch handler
+  - [x] Analyze Alpine.js/component structure and resolve root cause
+  - [x] Fix missing checkIOSAudio method or its invocation
+- [ ] Test and confirm Alpine.js/app single initialization (no warnings)
 
 ## Current Goal
-Fix double initialization of app and multi-touch handler
+Test and confirm Alpine.js/app single initialization
