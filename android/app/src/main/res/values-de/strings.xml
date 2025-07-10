@@ -237,8 +237,6 @@
     <string name="progress_reset_success">Fortschritt wurde erfolgreich zurückgesetzt</string>
     
     <!-- Legal Pages Headers -->
-    <string name="credits_header">Mitwirkende</string>
-    <string name="impressum_header">Impressum</string>
     <string name="datenschutz_header">Datenschutz</string>
     
     <!-- Credits Content -->
