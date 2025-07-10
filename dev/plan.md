@@ -22,8 +22,8 @@
 - 2_5_chords_color_matching: at progress >=30, chords should vary in height by a transpose factor of ±6 semitones (see chords.js#L983-1006); until 40, squirrel and octopus buttons should be display:none, at 50 only octopus display:none, at 60 all visible again; texts need to be updated.
 - At progress >=30, diminished/augmented chords must not be selected or played; currently, a diminished chord is played at progress 30 due to new-level logic—this needs fixing.
 - Cheatcode for 2_5 activity does not update progress as expected; investigate and fix cheatcode logic in app.js.
+- User request: Expand cheatcode logic in app.js to directly set all relevant localStorage progress items (from 2_5_chord_characters.js, 1_1_high_or_low.js, 1_2_match_sounds.js, 1_3_draw_melody.js, 1_4_sound_judgment.js, 1_5_memory_game.js), and add a comment list of all supported cheats.
 - Investigation ongoing: At progress 30, diminished chords are still being played, indicating the selection logic fix is not complete.
-- User requested: Between progress 30-39, random chord selection should allow up to 3 consecutive repeats of the same chord type (limit should be relaxed in this range).
 - User reported that an image (2_5_chords_dog_cat_owl_no_squirrel_no_octopus.jpg) is missing from the webpack web build at /app/images/backgrounds/.
 - User reported: Chord transposition (transpose ±6 semitones) at progress >=30 is not working as expected and needs debugging/fixing.
 - Chord transposition bug: baseNotes object extended to cover full ±6 semitone range (F#2–F#5), but transpose behavior at progress >=30 is still incorrect.
@@ -61,8 +61,8 @@
 - Chord repetition logic for progress ≥60 is now implemented: chord-type repeats allowed, but no direct repeats (no two identical chords in a row)
 - New bug: For progress 30-39, exact chord (type + transpose) can still repeat; logic only checks type, not transposition. Needs fix so that exact chord (type + transpose) is not repeated directly.
 - Bug fixed: For progress 30-39, exact chord (type + transpose) is now prevented from repeating directly; logic now persists and checks both type and transpose.
-- New requirement: When "chords" is clicked in the menu, and only one submenu item (with class="debug-element" and not disabled) is available, the navigation should close immediately.
-- Feature implemented: Auto-close of navigation if only one submenu (debug-element) is available after clicking "chords".
+- User request: Fix menu auto-close logic so that it triggers when exactly one normal (non-debug) menu item is present, regardless of the number of debug items.
+- Menu auto-close logic updated and build completed; now auto-closes when exactly one normal menu item is present, or if none then exactly one debug item.
 
 ## Task List
 - [x] Add debug logging to show the actual transpose value used for playback
@@ -89,6 +89,8 @@
 - [x] Implement chord repetition logic for progress ≥60: allow chord-type repeats, but no direct repeats
 - [x] Fix chord repetition logic for progress 30-39 to prevent exact chord (type + transpose) repeats
 - [x] Implement auto-close of navigation if only one submenu (debug-element) is available after clicking "chords"
+- [x] Fix menu auto-close logic to trigger when exactly one normal menu item is present, regardless of debug items
+- [x] Expand cheatcode logic to allow setting all relevant localStorage progress items and add a comment list of all supported cheats
 
 ## Current Goal
 All planned requirements are complete

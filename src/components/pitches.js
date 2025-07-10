@@ -5024,42 +5024,6 @@ export function pitches() {
       this.gameMode = true;
       this.setupMatchingMode_1_2(true, true); // Play sound and generate new
       this.showContextMessage(); // Update instructions
-    },
-
-    // ENTFERNT: Doppelte Definition von stopCurrentSound wurde entfernt, 
-    // da sie ein Duplikat der Methode in Zeile ~1570 war und zu unerwünschtem Verhalten führte.
-    // Die ursprüngliche Methode wird stattdessen für alle Aufrufe verwendet.
-
-    /**
-     * Reset all progress for this component (can be called after global reset)
-     * Setzt sowohl den In-Memory-Status als auch localStorage zurück.
-     * Sollte nach einem globalen Reset aufgerufen werden, falls kein Reload erfolgt.
-     */
-    resetProgress() {
-      // Logging for debugging
-      console.log('RESET: Resetting all progress in pitches component');
-      
-      // Reset main progress object
-      this.progress = { '1_1_pitches_high_or_low': 0, match: 0, draw: 0, guess: 0, memory: 0, '1_4_pitches_does-it-sound-right': 0 };
-      this.correctAnswersCount = 0;
-      this.unlockedPatterns = ['up', 'down'];
-      this.memorySuccessCount = 0;
-      
-      // Reset sound judgment level and streak
-      this.soundJudgmentLevel = 1;
-      this.soundJudgmentCorrectStreak = 0;
-      console.log('SOUND JUDGMENT: Reset level to 1 and streak to 0');
-      
-      // Remove all progress from localStorage
-      localStorage.removeItem('lalumo_progress');
-      localStorage.removeItem('lalumo_memory_level');
-      localStorage.removeItem('lalumo_difficulty'); // Wichtig: unlockedPatterns & correctAnswersCount
-      localStorage.removeItem('lalumo_soundJudgmentLevel');
-      localStorage.removeItem('lalumo_soundJudgmentStreak');
-      localStorage.removeItem('lalumo_draw_melody_level');
-      localStorage.removeItem('lalumo_draw_melody_success_counter')
-      localStorage.removeItem('lalumo_chords_progress')
-      
     }
   };
 }
