@@ -302,4 +302,7 @@
     <string name="does_it_sound_right_intro">Hör dir die Melodie an! Klingt sie richtig? Oder ist da ein falscher Ton?</string>
     <string name="memory_practice">Drücke frei auf die Tasten zum Üben. Drücke ▶️ für das Spiel!</string>
     <string name="memory_game_intro">Höre dir die Melodie an und tippe dann auf die farbigen Knöpfe in der gleichen Reihenfolge!</string>
+    
+    <!-- Piano Key Labels -->
+    <string name="piano_key_b">H</string>
 </resources>

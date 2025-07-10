@@ -13,7 +13,7 @@
     <string name="menu_chords">Chords</string>
     <string name="menu_freeplay">Free Play</string>
     <string name="menu_settings">Settings</string>
-    <string name="menu_impressum">Impressum</string>
+    <string name="menu_impressum">Imprint</string>
     <string name="menu_datenschutz">Privacy Policy</string>
     <string name="menu_credits">Credits</string>
     <string name="menu_share">Share</string>
@@ -298,4 +298,7 @@
 
     <!-- Back Button Messages -->
     <string name="back_button_confirm_exit">Do you really want to leave this page? Your session progress might be lost.</string>
+
+    <!-- Piano Key Labels -->
+    <string name="piano_key_b">B</string>
 </resources>

@@ -627,7 +627,7 @@
             <div class="piano-key black" aria-hidden="true"></div>
             <button class="piano-key white a4" @click="addToSequence('A4')" :class="{ 'active': currentHighlightedNote === 'A4' }">A</button>
             <div class="piano-key black" aria-hidden="true"></div>
-            <div class="piano-key inactive b4" aria-hidden="true">B</div>
+            <div class="piano-key inactive b4" aria-hidden="true" x-text="$store.strings?.piano_key_b || 'B'"></div>
           </div>
           
           <div class="sequence-progress">

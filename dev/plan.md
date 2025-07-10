@@ -62,6 +62,7 @@ Task complete: asset sync/build issue resolved
   - [x] Analyze Alpine.js/component structure and resolve root cause
   - [x] Fix missing checkIOSAudio method or its invocation
 - [ ] Test and confirm Alpine.js/app single initialization (no warnings)
+- [x] Add translation/localization string keys for piano key label (H/B)
 
 ## Current Goal
-Test and confirm Alpine.js/app single initialization
+Test and confirm correct localization for piano key label (H/B)
