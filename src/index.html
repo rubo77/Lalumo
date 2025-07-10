@@ -547,19 +547,19 @@
               <div class="instrument-buttons">
                 <!-- Violin Button -->
                 <button class="instrument-button violin" @click="startSoundJudgmentGame('violin')" 
-                  title="$store.strings?.violin || 'Violin'" aria-label="Play with violin">
+                  :title="$store.strings?.violin || 'Violin'" aria-label="Play with violin">
                   <div class="instrument-icon violin-icon">🎻</div>
                 </button>
                 
                 <!-- Flute Button -->
                 <button class="instrument-button flute" @click="startSoundJudgmentGame('flute')" 
-                  title="$store.strings?.flute || 'Flute'" aria-label="Play with flute">
+                  :title="$store.strings?.flute || 'Flute'" aria-label="Play with flute">
                   <div class="instrument-icon flute-icon">🎵</div>
                 </button>
                 
                 <!-- Double Bass Button -->
                 <button class="instrument-button doublebass" @click="startSoundJudgmentGame('doublebass')"
-                  title="$store.strings?.doublebass || 'Double Bass'" aria-label="Play with doublebass">
+                  :title="$store.strings?.doublebass || 'Double Bass'" aria-label="Play with doublebass">
                   <div class="instrument-icon doublebass-icon">🎻</div>
                 </button>
               </div>
@@ -567,7 +567,7 @@
             
             <!-- Start Game Mode Button (at the bottom) -->
             <div class="start-game-container">
-              <button class="start-game-button" @click="startSoundJudgmentGame()" aria-label="Start Game" title="$store.strings?.start_game || 'Start Game'">
+              <button class="start-game-button" @click="startSoundJudgmentGame()" aria-label="Start Game" :title="$store.strings?.start_game || 'Start Game'">
                 <span class="play-icon">▶</span>
               </button>
             </div>

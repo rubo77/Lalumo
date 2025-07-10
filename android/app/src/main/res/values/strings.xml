@@ -301,4 +301,10 @@
 
     <!-- Piano Key Labels -->
     <string name="piano_key_b">B</string>
+    
+    <!-- Instruments -->
+    <string name="violin">Violin</string>
+    <string name="flute">Flute</string>
+    <string name="doublebass">Double Bass</string>
+    <string name="start_game">Start Game</string>
 </resources>

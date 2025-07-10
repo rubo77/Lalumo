@@ -305,4 +305,10 @@
     
     <!-- Piano Key Labels -->
     <string name="piano_key_b">H</string>
+    
+    <!-- Instruments -->
+    <string name="violin">Geige</string>
+    <string name="flute">Flöte</string>
+    <string name="doublebass">Kontrabass</string>
+    <string name="start_game">Spiel starten</string>
 </resources>
