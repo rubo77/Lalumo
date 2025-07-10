@@ -241,20 +241,22 @@ rm -rf "$TEMP_IMG_DIR"
 
 echo "Only used images copied successfully"
 
-echo "###### 14. Platform-specific commands"
-if [ "$PLATFORM" == "android" ]; then
-  echo "Opening Android project in Android Studio..."
-  npx cap open android
+echo "###### 14. Build process completed"
+echo "Platform: ${PLATFORM:-all}"
+
+if [ -z "$PLATFORM" ] || [ "$PLATFORM" == "update" ]; then
+  echo "Native apps updated with latest web code."
+elif [ "$PLATFORM" == "android" ]; then
+  echo "Android project built successfully."
+  echo "To open in Android Studio, run: npx cap open android"
 elif [ "$PLATFORM" == "ios" ]; then
-  echo "Opening iOS project in Xcode..."
-  npx cap open ios
-elif [ "$PLATFORM" == "update" ]; then
-  echo "Just updating native apps with latest web code."
+  echo "iOS project built successfully."
+  echo "To open in Xcode, run: npx cap open ios"
 else
   echo "\nUsage: bash mobile-build.sh [platform]\n"
   echo "Available platforms:"
-  echo "  android  - Build and open Android project"
-  echo "  ios      - Build and open iOS project"
+  echo "  android  - Build Android project"
+  echo "  ios      - Build iOS project"
   echo "  update   - Only update native apps with latest web code"
 fi
 
