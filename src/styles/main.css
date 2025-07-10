@@ -1790,32 +1790,21 @@ section h2 {
   padding: 15px;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   width: min(26vw, 185px);
+  border-radius: 50%;
 }
 
 .animal-card .animal-icon img {
   width: min(25vw, 106px);
   height: min(25vw, 106px);
-  border-radius: 30%;
   object-fit: contain;
   margin-top: 0px;
 }
 
-/* Special states for animal cards */
-.animal-card.happy:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-}
-
-.animal-card.unhappy:hover {
-  background-color: rgba(235, 77, 75, 0.1);
-}
-
 .animal-card.happy:active {
-  background-color: rgba(46, 213, 115, 0.3);
   transform: scale(0.95);
 }
 
 .animal-card.unhappy:active {
-  background-color: rgba(235, 77, 75, 0.3);
   transform: scale(0.95);
 }
 
@@ -2063,25 +2052,25 @@ section h2 {
 }
 
 .challenge-toggle button:hover {
-  background-color: rgba(255, 255, 255, 0.2) !important;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  background-color: rgba(255, 255, 255, 0) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0) !important;
   transform: translateY(-2px);
 }
 
 .challenge-toggle button.active {
-  background-color: rgba(52, 152, 219, 0.6);
-  box-shadow: 0 3px 8px rgba(52, 152, 219, 0.4);
+  background-color: rgba(52, 152, 219, 0.1);
+  box-shadow: 0 3px 8px rgba(52, 152, 219, 0.1);
 }
 
-.pitch-card-style {
+.draw-melody-button {
   background-color: rgba(255, 255, 255, 0) !important;
   border-radius: 12px !important;
   transition: all 0.3s ease !important;
 }
 
-.pitch-card-style:hover {
+.draw-melody-button:hover {
   transform: translateY(-3px);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2) !important;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0) !important;
 }
 
 #new-melody-button {

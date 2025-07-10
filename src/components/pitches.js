@@ -2573,13 +2573,13 @@ export function pitches() {
         
         // Create transparent buttons with accessibility attributes but no text
         challengeToggle.innerHTML = `
-          <button id="challenge-button" 
-            class="pitch-card-style"
+          <button id="challenge-button" onclick="blur()"
+            class="draw-melody-button"
             title="${this.$store.strings.challenge_mode_activate}" 
             alt="${this.$store.strings.challenge_mode}_a11y">
           </button>
-          <button id="new-melody-button" 
-            class="pitch-card-style"
+          <button id="new-melody-button" onclick="blur()" 
+            class="draw-melody-button"
             title="${this.$store.strings.generate_melody}" 
             alt="${this.$store.strings.new_melody}_a11y">
           </button>
@@ -2601,9 +2601,9 @@ export function pitches() {
           document.body.appendChild(challengeToggle);
         }
         
-        // Create the transparent clear button without text, pitch-card-style
+        // Create the transparent clear button without text, draw-melody-button
         const clearButton = document.createElement('button');
-        clearButton.className = 'clear-drawing-button pitch-card-style';
+        clearButton.className = 'clear-drawing-button draw-melody-button';
         clearButton.title = isGerman ? 'Zeichnung löschen' : 'Clear drawing';
         clearButton.setAttribute('alt', `${isGerman ? 'Löschen' : 'Clear'}_a11y`);
         clearButton.setAttribute('aria-label', isGerman ? 'Zeichnung löschen' : 'Clear drawing');

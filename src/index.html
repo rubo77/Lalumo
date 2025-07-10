@@ -457,38 +457,38 @@
           
           <!-- Play button - only show when not in game mode -->
           <button x-show="!gameMode" class="circular-play-button" 
-          @click="playCurrentMelody()" aria-label="Start Game" title="Play">
+          @click="playCurrentMelody(); blurElement($event)" aria-label="Start Game" title="Play">
           </button>
           
           <!-- Game mode play button - only show when in game mode -->
-          <button x-show="gameMode" class="circular-play-button" @click="playCurrentMelody()" aria-label="Play Melody" title="Play">
+          <button x-show="gameMode" class="circular-play-button" @click="playCurrentMelody(); blurElement($event)" aria-label="Play Melody" title="Play">
           </button>
 
           <!-- Grid-Container für Match-Sounds mit richtigem rowspan-Verhalten -->
           <div class="match-sounds-container">
             <!-- Up pattern (immer sichtbar) - oben links -->
-            <div class="pitch-card up-card" @click="checkMatch('up')" @mousedown="startLongPress('up')" @mouseup="cancelLongPress()" @mouseleave="cancelLongPress()">
+            <div class="pitch-card up-card" @click="checkMatch('up'); blurElement($event)" @mousedown="startLongPress('up')" @mouseup="cancelLongPress()" @mouseleave="cancelLongPress()">
               <div class="pitch-icon up">
                 <img src="images/1x1.gif" alt="Rocket going up" />
               </div>
             </div>
             
             <!-- Down pattern (immer sichtbar) - rechts mit möglichem rowspan -->
-            <div class="pitch-card down-card" @click="checkMatch('down')" @mousedown="startLongPress('down')" @mouseup="cancelLongPress()" @mouseleave="cancelLongPress()">
+            <div class="pitch-card down-card" @click="checkMatch('down'); blurElement($event)" @mousedown="startLongPress('down')" @mouseup="cancelLongPress()" @mouseleave="cancelLongPress()">
               <div class="pitch-icon down">
                 <img src="images/1x1.gif" alt="Slide going down" />
               </div>
             </div>
             
             <!-- Wave pattern (wenn freigeschaltet) - unten links -->
-            <div x-show="unlockedPatterns.includes('wave')" class="pitch-card wave-card" @click="checkMatch('wave')" @mousedown="startLongPress('wave')" @mouseup="cancelLongPress()" @mouseleave="cancelLongPress()">
+            <div x-show="unlockedPatterns.includes('wave')" class="pitch-card wave-card" @click="checkMatch('wave'); blurElement($event)" @mousedown="startLongPress('wave')" @mouseup="cancelLongPress()" @mouseleave="cancelLongPress()">
               <div class="pitch-icon wave">
                 <img src="images/1x1.gif" alt="Wave pattern" />
               </div>
             </div>
             
             <!-- Jump pattern (wenn freigeschaltet) - unten rechts -->
-            <div x-show="unlockedPatterns.includes('jump')" class="pitch-card jump-card" @click="checkMatch('jump')" @mousedown="startLongPress('jump')" @mouseup="cancelLongPress()" @mouseleave="cancelLongPress()">
+            <div x-show="unlockedPatterns.includes('jump')" class="pitch-card jump-card" @click="checkMatch('jump'); blurElement($event)" @mousedown="startLongPress('jump')" @mouseup="cancelLongPress()" @mouseleave="cancelLongPress()">
               <div class="pitch-icon jump">
                 <img src="images/1x1.gif" alt="Jumping frog" />
               </div>
@@ -532,19 +532,19 @@
               <!-- Instrument Selection Buttons -->
               <div class="instrument-buttons">
                 <!-- Violin Button -->
-                <button class="instrument-button violin" @click="startSoundJudgmentGame('violin')" 
+                <button class="instrument-button violin" @click="startSoundJudgmentGame('violin'); blurElement($event)" 
                   :title="$store.strings?.violin || 'Violin'" aria-label="Play with violin">
                   <div class="instrument-icon violin-icon">🎻</div>
                 </button>
                 
                 <!-- Flute Button -->
-                <button class="instrument-button flute" @click="startSoundJudgmentGame('flute')" 
+                <button class="instrument-button flute" @click="startSoundJudgmentGame('flute'); blurElement($event)" 
                   :title="$store.strings?.flute || 'Flute'" aria-label="Play with flute">
                   <div class="instrument-icon flute-icon">🎵</div>
                 </button>
                 
                 <!-- Double Bass Button -->
-                <button class="instrument-button doublebass" @click="startSoundJudgmentGame('doublebass')"
+                <button class="instrument-button doublebass" @click="startSoundJudgmentGame('doublebass'); blurElement($event)"
                   :title="$store.strings?.doublebass || 'Double Bass'" aria-label="Play with doublebass">
                   <div class="instrument-icon doublebass-icon">🎻</div>
                 </button>
@@ -553,7 +553,7 @@
             
             <!-- Start Game Mode Button (at the bottom) -->
             <div class="start-game-container">
-              <button class="start-game-button" @click="startSoundJudgmentGame()" aria-label="Start Game" :title="$store.strings?.start_game || 'Start Game'">
+              <button class="start-game-button" @click="startSoundJudgmentGame(); blurElement($event)" aria-label="Start Game" :title="$store.strings?.start_game || 'Start Game'">
                 <span class="play-icon">▶</span>
               </button>
             </div>
@@ -563,24 +563,24 @@
           <div class="game-mode" x-show="gameMode">
             <!-- Play Melody Button -->
             <div class="melody-play-container">
-              <button class="circular-play-button" @click="playCurrentMelody()" aria-label="Play Melody" title="Play Melody">
+              <button class="circular-play-button" @click="playCurrentMelody(); blurElement($event)" aria-label="Play Melody" title="Play Melody">
                 
               </button>
               <div class="melody-name" x-show="currentMelodyName" x-text="currentMelodyName"></div>
               <!-- Next melody button -->
-              <button class="next-melody-button" @click="playMelody(true)" aria-label="Next melody" title="Next melody">
+              <button class="next-melody-button" @click="playMelody(true); blurElement($event)" aria-label="Next melody" title="Next melody">
                 <span style="font-size: 18px;">⏭</span>
               </button>
             </div>
 
             <!-- Animal choice buttons -->
             <div class="sound-judgment-options">
-              <div class="pitch-card animal-card happy" @click="checkSoundHighOrLow(true)" aria-label="Sounds good" title="Sounds good">
+              <div class="pitch-card animal-card happy" @click="checkSoundHighOrLow(true); blurElement($event)" aria-label="Sounds good" title="Sounds good">
                 <div class="pitch-icon animal-icon" title="Sounds good!">
                   <img src="images/1_5_pitches_good_cat.png" alt="Happy cat">
                 </div>
               </div>
-              <div class="pitch-card animal-card unhappy" @click="checkSoundHighOrLow(false)" aria-label="Sounds wrong" title="Sounds wrong">
+              <div class="pitch-card animal-card unhappy" @click="checkSoundHighOrLow(false); blurElement($event)" aria-label="Sounds wrong" title="Sounds wrong">
                 <div class="pitch-icon animal-icon" title="Sounds wrong!">
                   <img src="images/1_5_pitches_bad_snake.png" alt="Unhappy snake">
                 </div>
@@ -595,7 +595,7 @@
         
         <!-- Memory Mode -->
         <div id="1_5_pitches" x-show="mode === '1_5_pitches_memory-game'" class="activity-container lazyload-bg" data-background-image="./images/backgrounds/pitches_action1_5.jpg">
-          <button class="circular-play-button" @click="playCurrentMelody()" aria-label="Play Melody" title="Play Melody">
+          <button class="circular-play-button" @click="playCurrentMelody(); blurElement($event)" aria-label="Play Melody" title="Play Melody">
             
           </button>
 
@@ -1009,11 +1009,23 @@
       if (target && target.classList) {
         console.log('[BLUR] Permanently removing focus styles to prevent them from reappearing');
         
-        // For Android Chrome, we need to be more aggressive - don't restore styles afterward
+        // Check if this is the play button which has special styling
+        const isPlayButton = target.classList.contains('circular-play-button');
+        
+        // For Android Chrome, we need to be more aggressive - reset all styles that could persist
         target.style.outline = 'none';
         target.style.boxShadow = 'none';
         target.style.webkitBoxShadow = 'none';
         target.style.webkitTapHighlightColor = 'transparent';
+        
+        // Special handling for play button - reset background color
+        if (isPlayButton) {
+          console.log('[BLUR] Resetting play button background color');
+          // Reset to transparent background (original state)
+          target.style.backgroundColor = 'transparent';
+          // Reset transform as well
+          target.style.transform = 'none';
+        }
         
         // Apply these styles to prevent refocus
         target.setAttribute('tabindex', '-1');
@@ -1027,6 +1039,12 @@
         const preventRefocus = function(e) {
           e.preventDefault();
           target.blur();
+          
+          // For play button, ensure background color stays reset
+          if (isPlayButton) {
+            target.style.backgroundColor = 'transparent';
+          }
+          
           console.log('[BLUR] Prevented refocus attempt');
           // Remove after handling once
           target.removeEventListener('focus', preventRefocus);
