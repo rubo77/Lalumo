@@ -26,28 +26,56 @@ export function updateCharacterBackground(component) {
       JSON.parse(progressData)['2_5_chords_characters'] || 0 : 
       component?.progress?.['2_5_chords_characters'] || 0;
     
+    // Preload function for smoother transitions
+    const preloadBackgroundImage = (src) => {
+      const img = new Image();
+      img.src = src;
+    };
+    
+    // Determine background image based on progress
     let backgroundImage;
     
-    // Progress thresholds change at exactly 10 and 20 successes
-    if (progress <= 9) { // Change at exactly 10
+    // Background image changes based on progress thresholds
+    if (progress <= 9) { // Initial background (no animals)
       backgroundImage = './images/backgrounds/2_5_chords_dog_cat_owl_no_squirrel_no_octopus.jpg';
       
       // Preload next background when approaching transition point
       if (progress === 9) {
         preloadBackgroundImage('./images/backgrounds/2_5_chords_dog_cat_owl_squirrel_no_octopus.jpg');
       }
-    } else if (progress <= 19) { // Change at exactly 20
+    } else if (progress <= 19) { // At 10+: squirrel appears
       backgroundImage = './images/backgrounds/2_5_chords_dog_cat_owl_squirrel_no_octopus.jpg';
       
       // Preload next background when approaching transition point
       if (progress === 19) {
         preloadBackgroundImage('./images/backgrounds/2_5_chords_dog_cat_owl_squirrel_octopus.jpg');
       }
-    } else {
+    } else if (progress <= 29) { // At 20+: octopus appears
+      backgroundImage = './images/backgrounds/2_5_chords_dog_cat_owl_squirrel_octopus.jpg';
+      
+      // Preload next background when approaching transition point
+      if (progress === 29) {
+        preloadBackgroundImage('./images/backgrounds/2_5_chords_dog_cat_owl_sleeping_squirrel_sleeping_octopus.png');
+      }
+    } else if (progress <= 39) { // At 30+: both squirrel and octopus sleeping
+      backgroundImage = './images/backgrounds/2_5_chords_dog_cat_owl_sleeping_squirrel_sleeping_octopus.png';
+      
+      // Preload next background when approaching transition point
+      if (progress === 39) {
+        preloadBackgroundImage('./images/backgrounds/2_5_chords_dog_with_melodica_cat_kibitz_squirrel_octopus_sleeping.png');
+      }
+    } else if (progress <= 49) { // At 40+: squirrel awake, dog with melodica, octopus still sleeping
+      backgroundImage = './images/backgrounds/2_5_chords_dog_with_melodica_cat_kibitz_squirrel_octopus_sleeping.png';
+      
+      // Preload next background when approaching transition point
+      if (progress === 49) {
+        preloadBackgroundImage('./images/backgrounds/2_5_chords_dog_cat_owl_squirrel_octopus.jpg');
+      }
+    } else { // At 50+: everyone awake again
       backgroundImage = './images/backgrounds/2_5_chords_dog_cat_owl_squirrel_octopus.jpg';
     }
     
-    // Update the background
+    // Update the background in the DOM
     const characterActivity = document.querySelector('[x-show="mode === \'2_5_chords_characters\'"]');
     if (characterActivity) {
       characterActivity.style.backgroundImage = `url(${backgroundImage})`;

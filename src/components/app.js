@@ -1079,11 +1079,19 @@ export function app() {
     /**
      * Import user progress from a save game string
      * Only supports version 2.0 format with complete localStorage data
+     * Also supports cheatcodes in format <activity_id>:<progress-level>
+     * For activities needing two values, use a one-letter prefix (e.g., 2_5:19s10 where 's' is the prefix)
      */
     importProgress() {
       try {
         console.log('Import-Debug: importData =', this.importData, 'importedData =', this.importedData);
         
+        // Check if input is a cheatcode
+        if (this.importData && this.importData.includes(':')) {
+          return this.handleCheatcode(this.importData);
+        }
+        
+        // Regular import process
         // Verwende die richtige Property (importData statt importedData)
         // Die Property muss mit dem x-model in settings.html übereinstimmen
         if (!this.importData) {
@@ -2211,6 +2219,151 @@ export function app() {
       } catch (error) {
         console.error('Fehler beim Einlösen des Codes:', error);
         alert(this.$store.strings?.redeem_error || 'Error redeeming code. Please try again.');
+      }
+    },
+    
+    /**
+     * Handle cheatcodes for setting specific activity progress
+     * Format: <activity_id>:<progress-level>
+     * For activities needing two values, use a one-letter prefix for second value
+     * Example: 2_5:19 (sets 2_5_chords_characters to 19)
+     * Example with two values: 2_5:19s10 (sets progress to 19 and second value with prefix 's' to 10)
+     * @param {string} code - The cheatcode string
+     * @returns {boolean} - Success status
+     */
+    handleCheatcode(code) {
+      try {
+        if (!code) return false;
+        
+        // Handle comma-separated multiple cheatcodes
+        if (code.includes(',')) {
+          const codes = code.split(',');
+          let allSuccess = true;
+          
+          // Process each cheatcode
+          codes.forEach(singleCode => {
+            if (!this.handleCheatcode(singleCode.trim())) {
+              allSuccess = false;
+            }
+          });
+          
+          return allSuccess;
+        }
+        
+        // Process single cheatcode
+        const parts = code.trim().split(':');
+        if (parts.length !== 2) {
+          console.error('Invalid cheatcode format. Use <activity_id>:<progress-level>');
+          alert('Invalid cheatcode format. Use <activity_id>:<progress-level>');
+          return false;
+        }
+        
+        const activityId = parts[0].trim();
+        const progressPart = parts[1].trim();
+        
+        // Determine if we have a secondary value with prefix
+        let progressValue = parseInt(progressPart, 10);
+        let secondaryKey = null;
+        let secondaryValue = null;
+        
+        // Check for secondary value with letter prefix
+        const secondaryMatch = progressPart.match(/^\d+([a-zA-Z])(\d+)$/);
+        if (secondaryMatch) {
+          progressValue = parseInt(progressPart.split(secondaryMatch[1])[0], 10);
+          secondaryKey = secondaryMatch[1];
+          secondaryValue = parseInt(secondaryMatch[2], 10);
+        }
+        
+        // Validate values
+        if (isNaN(progressValue)) {
+          console.error('Invalid progress value in cheatcode');
+          alert('Invalid progress value in cheatcode');
+          return false;
+        }
+        
+        // Handle different activity types
+        if (activityId.startsWith('2_')) {
+          // For chord activities
+          let chordsProgressData = {};
+          const existingChordsData = localStorage.getItem('lalumo_chords_progress');
+          if (existingChordsData) {
+            try {
+              chordsProgressData = JSON.parse(existingChordsData);
+            } catch(e) {
+              console.error('Error parsing existing chords progress data:', e);
+            }
+          }
+          
+          // Special handling for 2_5 activity
+          if (activityId === '2_5' || activityId === '2_5_chords_characters') {
+            // Always update the 2_5_chords_characters key for this activity
+            chordsProgressData['2_5_chords_characters'] = progressValue;
+            console.log(`Setting 2_5_chords_characters progress to ${progressValue}`);
+            debugLog(['CHEATCODE', '2_5'], `Setting 2_5_chords_characters progress to ${progressValue}`);
+            
+            // Handle secondary value if present
+            if (secondaryKey && secondaryValue !== null) {
+              if (secondaryKey === 's') {
+                chordsProgressData['2_5_chords_characters_stage'] = secondaryValue;
+                console.log(`Setting 2_5_chords_characters_stage to ${secondaryValue}`);
+              } else {
+                console.warn(`Unknown secondary key ${secondaryKey} for activity ${activityId}`);
+              }
+            }
+          } else {
+            // Generic chord activity
+            chordsProgressData[activityId] = progressValue;
+            console.log(`Setting chord activity ${activityId} progress to ${progressValue}`);
+          }
+          
+          // Save updated chords progress
+          localStorage.setItem('lalumo_chords_progress', JSON.stringify(chordsProgressData));
+          console.log(`Chords progress updated: ${activityId} = ${progressValue}`);
+        } else {
+          // For pitch activities
+          let pitchesProgressData = {};
+          const existingPitchesData = localStorage.getItem('lalumo_pitches_progress');
+          if (existingPitchesData) {
+            try {
+              pitchesProgressData = JSON.parse(existingPitchesData);
+            } catch(e) {
+              console.error('Error parsing existing pitches progress data:', e);
+            }
+          }
+          
+          // Set the pitches progress
+          pitchesProgressData[activityId] = progressValue;
+          
+          // Handle secondary value if present
+          if (secondaryKey && secondaryValue !== null) {
+            // Example: 's' could be for stage
+            if (secondaryKey === 's') {
+              pitchesProgressData[`${activityId}_stage`] = secondaryValue;
+            } else {
+              console.warn(`Unknown secondary key ${secondaryKey} for activity ${activityId}`);
+            }
+          }
+          
+          // Save updated pitches progress
+          localStorage.setItem('lalumo_pitches_progress', JSON.stringify(pitchesProgressData));
+          console.log(`Pitches progress updated: ${activityId} = ${progressValue}`);
+        }
+        
+        // Update the UI if needed
+        if (this.$refs.chordsComponent && activityId.startsWith('2_')) {
+          this.$refs.chordsComponent.loadProgress();
+        } else if (this.$refs.pitchesComponent && !activityId.startsWith('2_')) {
+          this.$refs.pitchesComponent.loadProgress();
+        }
+        
+        // Show success message
+        console.log(`Cheatcode applied: ${activityId} set to ${progressValue}${secondaryKey ? ', ' + secondaryKey + ' set to ' + secondaryValue : ''}`);
+        alert(`Cheatcode applied: ${activityId} set to ${progressValue}${secondaryKey ? ', ' + secondaryKey + ' set to ' + secondaryValue : ''}`);
+        return true;
+      } catch (error) {
+        console.error('Error applying cheatcode:', error);
+        alert('Error applying cheatcode: ' + error.message);
+        return false;
       }
     }
   };

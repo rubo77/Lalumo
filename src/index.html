@@ -890,7 +890,10 @@
               <p x-text="($store.strings?.correct_answers_count || 'Correct answers: {0}').replace('{0}', progress['2_5_chords_characters'] || 0)"></p>
               <p x-show="(progress['2_5_chords_characters'] || 0) < 10" x-text="$store.strings?.unlock_squirrel_message || 'Get 10 correct to unlock the squirrel! 🐿️'"></p>
               <p x-show="(progress['2_5_chords_characters'] || 0) >= 10 && (progress['2_5_chords_characters'] || 0) < 20" x-text="$store.strings?.unlock_octopus_message || 'Get 20 correct to unlock the octopus! 🐙'"></p>
-              <p x-show="(progress['2_5_chords_characters'] || 0) >= 20" x-text="$store.strings?.all_animals_unlocked || 'All animals unlocked! 🎉'"></p>
+              <p x-show="(progress['2_5_chords_characters'] || 0) >= 20 && (progress['2_5_chords_characters'] || 0) < 30" x-text="$store.strings?.all_animals_unlocked || 'All animals unlocked! 🎉'"></p>
+              <p x-show="(progress['2_5_chords_characters'] || 0) >= 30 && (progress['2_5_chords_characters'] || 0) < 40" x-text="$store.strings?.transpose_challenge || 'Listen carefully! Chords are now changing pitch! 🎵'"></p>
+              <p x-show="(progress['2_5_chords_characters'] || 0) >= 40 && (progress['2_5_chords_characters'] || 0) < 60" x-text="$store.strings?.squirrel_returns || 'The squirrel is back to help! Octopus still sleeping. 🐿️'"></p>
+              <p x-show="(progress['2_5_chords_characters'] || 0) >= 60" x-text="$store.strings?.all_friends_return || 'All friends are back to help you! 🐿️🐙'"></p>
             </div>
             
             

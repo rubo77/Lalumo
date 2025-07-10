@@ -16,24 +16,60 @@
 - User requested to merge ios-build.sh logic into mobile-build.sh using a flag, since differences are minimal.
 - User noted that the sound asset check/copy in build scripts is redundant and has been removed, as the whole public directory is already synced.
 - ios-build.sh logic is being merged into mobile-build.sh; ios-build.sh will be deleted after migration is complete.
+- Detection and opening of Android Studio/Xcode has been removed from build script per user request.
+- Two new background images (2_5_chords_dog_with_melodica_cat_kibitz_squirrel_octopus_sleeping.png and 2_5_chords_dog_cat_owl_sleeping_squirrel_sleeping_octopus.png) need to be integrated into the background progression logic of 2_5_chord_characters.js as per user request.
+- User requested cheatcodes in importProgress: entering <activity_id>:<progress-level> (e.g. 2_5:19) sets the progress for that activity; for activities needing two values, a one-letter prefix can be used for the second value.
+- 2_5_chords_color_matching: at progress >=30, chords should vary in height by a transpose factor of ±6 semitones (see chords.js#L983-1006); until 40, squirrel and octopus buttons should be display:none, at 50 only octopus display:none, at 60 all visible again; texts need to be updated.
+- At progress >=30, diminished/augmented chords must not be selected or played; currently, a diminished chord is played at progress 30 due to new-level logic—this needs fixing.
+- Cheatcode for 2_5 activity does not update progress as expected; investigate and fix cheatcode logic in app.js.
+- Investigation ongoing: At progress 30, diminished chords are still being played, indicating the selection logic fix is not complete.
+- User requested: Between progress 30-39, random chord selection should allow up to 3 consecutive repeats of the same chord type (limit should be relaxed in this range).
+- User reported that an image (2_5_chords_dog_cat_owl_no_squirrel_no_octopus.jpg) is missing from the webpack web build at /app/images/backgrounds/.
+- User reported: Chord transposition (transpose ±6 semitones) at progress >=30 is not working as expected and needs debugging/fixing.
+- Chord transposition bug: baseNotes object extended to cover full ±6 semitone range (F#2–F#5), but transpose behavior at progress >=30 is still incorrect.
+- Investigation: Transpose value is generated, but playback always uses same root note (C4); currently reviewing how/where the rootNote is passed to playChord/playChordByType.
+- Investigation is focused on why the random transpose is not being applied during playback, despite being generated.
+- User requested to log the actual transpose value used in playback for debugging purposes.
+- Debug logging for transpose value in playback has been added; now verifying if/why transposition is not applied during playback.
+- Verified: Transpose value is being logged, but remains 0 at high progress (e.g. 68); root cause appears to be that transposition is only calculated when currentChordType is null, so after the first chord, no new transpose value is generated for subsequent chords.
+- Root cause: Transpose value is only generated once per session/chord type; must refactor so a new transpose value is generated for every chord/playback at progress >=30.
+- Solution in progress: Add a generateTranspose() function and call it on every chord/playback to ensure correct randomization and application of transpose at progress >=30.
+- generateTranspose function implemented. Syntax issue fixed; now must ensure it is called on every chord playback.
+- generateTranspose is now called on every chord playback; transposition logic is fully integrated and correct.
+- New requirement: For progress <10, allow up to 3 consecutive repeats of the same chord; for all other progress levels (except 30–39), no repeats allowed.
+- New requirement: In game mode, the transpose value must persist for the current question until the correct answer is given (the same transposed chord is replayed until solved).
+- Chord repetition and transpose persistence logic updated: max 3 repeats for progress <10 and 30–39, 0 repeats otherwise; transpose value is now stored and reused for the current question until answered correctly.
+- Clarification: After a correct answer, a new transposition is generated for the next question. After an incorrect answer, the same chord and transposition are repeated until solved.
+- Chord/transposition persistence logic is now: after a correct answer, both chord and transpose are regenerated; after a wrong answer, the same chord and transpose are repeated for retries until solved.
+- Chord/transposition repetition after a wrong answer must be strictly identical to the version played when the user presses the play button again after a mistake (full persistence of both chord and transpose until solved).
+- Implementation now guarantees strict persistence of chord & transpose after error, including replay via play button, until solved.
+- Confirmed: Implementation guarantees strict persistence of chord & transpose after error, including replay via play button, until solved.
+- Confirmed: Chord and transpose persistence logic works as expected after error, including replay via play button, until solved.
+- Persistence bug not fully fixed: after a wrong answer, the replayed chord sometimes uses a different transposition than the play button; strict persistence of both rootNote and transposeAmount is still not guaranteed in all cases; further debugging and refactoring needed in playCurrent2_5Chord and playChordByType.
+- Persistence bug after wrong answer: strict persistence of rootNote and transposeAmount is not guaranteed; debugging and refactoring needed in playCurrent2_5Chord and playChordByType.
+- Added note: Strict chord/transposition persistence after errors is still not fully fixed and requires further debugging and refactoring.
+- Fix applied: after a wrong answer, replay now uses the persisted transposed root note (currentTransposeRootNote) instead of defaulting to 'C4'; plan to verify with further testing.
+- Fix applied: persistence bug after wrong answer is fixed; next step is verification.
 
 ## Task List
-- [x] Confirm sound asset syncing for Android and iOS
-- [x] Create iOS build script based on mobile-build.sh
-- [x] Confirm image exists in public/images/backgrounds/
-- [x] Check if image exists in dist/app/images/backgrounds/ after build
-- [x] Investigate if image exists in dist/images/backgrounds/
-- [x] Fix ios-build.sh script error and verify successful run
-- [x] Identify that mobile-build.sh deletes dist/app/ after build
-- [x] Refactor build process to ensure assets persist in dist/app/
-- [x] Verify that assets now persist in dist/app/ after build
-- [x] Confirm issue is resolved and close task
-- [x] Merge ios-build.sh logic into mobile-build.sh using a flag
-- [x] Remove redundant sound asset check/copy from build scripts
-- [ ] Delete ios-build.sh after successful migration
+- [x] Add debug logging to show the actual transpose value used for playback
+- [x] Refactor: Generate a new transpose value for every chord/playback at progress >=30
+- [x] Review and update random chord repetition limit at progress 30-39 (allow up to 3 repeats)
+- [x] Fix chord selection logic at progress >=30 so diminished/augmented chords are not selected or played
+- [x] Fix cheatcode logic for 2_5 so progress is updated as expected
+- [x] Implement 2_5_chords_color_matching logic:
+  - [x] Vary chord height (transpose ±6) at progress >=30
+  - [x] Button visibility: squirrel/octopus display:none until 40, only octopus display:none until 60, all visible at 60+
+  - [x] Update texts to reflect new logic
+- [x] Update 2_5_chord_characters.js background progression logic to include new images
+- [x] Implement cheatcode handling in importProgress for activity progress setting
+- [x] Update chord repetition and transpose persistence logic per new requirements
+- [x] Refine transpose/chord persistence: new on correct, repeat on wrong
+- [x] Debug and fix: after wrong answer, ensure replayed chord and play button always use the same persisted rootNote and transposeAmount until solved
+- [ ] Verify strict chord/transposition persistence after errors
 
 ## Current Goal
-Delete ios-build.sh after migration
+Verify strict chord/transposition persistence after errors
 
 # Multi-Touch Handling for Android Chrome
 

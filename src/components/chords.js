@@ -105,17 +105,27 @@ export function chords() {
         // Progress < 10: Hide mysterious (diminished) and surprised (augmented)
         diminishedBtn.style.display = 'none';
         augmentedBtn.style.display = 'none';
-        debugLog('CHORDS', 'Progress < 10: Hiding mysterious and surprised buttons');
+        debugLog(['CHORDS', 'BUTTONS'], 'Progress < 10: Hiding mysterious and surprised buttons');
       } else if (progress < 20) {
         // Progress 10-19: hide mysterious octopus (diminished), show surprised squirrel (augmented)
         diminishedBtn.style.display = 'none';
         augmentedBtn.style.display = '';
-        debugLog('CHORDS', 'Progress 10-19: Showing mysterious, hiding surprised button');
+        debugLog(['CHORDS', 'BUTTONS'], 'Progress 10-19: Showing surprised, hiding mysterious button');
+      } else if (progress < 40) {
+        // Progress 20-39: Show all basic buttons, but hide animal buttons while chords are being transposed
+        diminishedBtn.style.display = 'none';
+        augmentedBtn.style.display = 'none';
+        debugLog(['CHORDS', 'BUTTONS'], 'Progress 20-39: Showing basic buttons, hiding animal buttons (transposition phase)');
+      } else if (progress < 60) {
+        // Progress 40-59: Show all buttons except octopus
+        diminishedBtn.style.display = 'none';
+        augmentedBtn.style.display = '';
+        debugLog(['CHORDS', 'BUTTONS'], 'Progress 40-59: Showing squirrel, hiding octopus');
       } else {
-        // Progress >= 20: Show all buttons
+        // Progress >= 60: Show all buttons
         diminishedBtn.style.display = '';
         augmentedBtn.style.display = '';
-        debugLog('CHORDS', 'Progress >= 20: Showing all chord buttons');
+        debugLog(['CHORDS', 'BUTTONS'], 'Progress >= 60: Showing all chord buttons and animals');
       }
     },
     
@@ -138,10 +148,13 @@ export function chords() {
     
     // Base notes for chord building
     baseNotes: {
+      // Extended range for transposition: from F#2 to F#5
+      'F#2': 92.50, 'G2': 98.00, 'G#2': 103.83, 'A2': 110.00, 'A#2': 116.54, 'B2': 123.47,
       'C3': 130.81, 'C#3': 138.59, 'D3': 146.83, 'D#3': 155.56, 'E3': 164.81, 'F3': 174.61,
       'F#3': 185.00, 'G3': 196.00, 'G#3': 207.65, 'A3': 220.00, 'A#3': 233.08, 'B3': 246.94,
       'C4': 261.63, 'C#4': 277.18, 'D4': 293.66, 'D#4': 311.13, 'E4': 329.63, 'F4': 349.23,
-      'F#4': 369.99, 'G4': 392.00, 'G#4': 415.30, 'A4': 440.00, 'A#4': 466.16, 'B4': 493.88
+      'F#4': 369.99, 'G4': 392.00, 'G#4': 415.30, 'A4': 440.00, 'A#4': 466.16, 'B4': 493.88,
+      'C5': 523.25, 'C#5': 554.37, 'D5': 587.33, 'D#5': 622.25, 'E5': 659.26, 'F5': 698.46, 'F#5': 739.99
     },
     
     // Current state for activities
@@ -323,6 +336,46 @@ export function chords() {
      * @activity all
      * @used_by 2_1_chord_color_matching, 2_4_missing_note
      */
+    /**
+     * Generate a new transpose amount for chords at progress level >= 30
+     * @returns {Object} Object with rootNote and transposeAmount
+     */
+    generateTranspose() {
+      // Get the progress level
+      const progress = this?.progress?.['2_5_chords_characters'] || 0;
+      
+      // Default values
+      let rootNote = 'C4';
+      let transposeAmount = 0;
+      
+      // Apply chord height variation at progress >= 30
+      if (progress >= 30) {
+        // Random transpose between -6 and +6 semitones
+        transposeAmount = Math.floor(Math.random() * 13) - 6; // -6 to +6
+        
+        if (transposeAmount !== 0) {
+          // Base note C4 is MIDI note 60
+          const baseNoteNumber = 60;
+          const newNoteNumber = baseNoteNumber + transposeAmount;
+          
+          // Convert MIDI note number back to note name with octave
+          const noteNames = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+          const noteName = noteNames[newNoteNumber % 12];
+          const octave = Math.floor(newNoteNumber / 12) - 1; // MIDI octaves start at -1
+          
+          rootNote = `${noteName}${octave}`;
+        }
+        
+        debugLog(['CHORDS', '2_5_TRANSPOSE'], `Generated new transpose: ${transposeAmount} semitones, rootNote: ${rootNote} (Progress: ${progress})`);
+      }
+      
+      // Save the transpose amount for later reference
+      this.currentTransposeAmount = transposeAmount;
+      this.currentRootNote = rootNote;
+      
+      return { rootNote, transposeAmount };
+    },
+    
     async playChordByType(chordType, rootNote = 'C4', options = { duration: 2 }) {
       this.stopAllSounds();
       debugLog('CHORDS', 'playChord called with chordType:', chordType, 'rootNote:', rootNote);
@@ -330,6 +383,12 @@ export function chords() {
       // Debug information for 2_1 activity
       debugLog('CHORDS_2_1_DEBUG', `playChord called with chordType: ${chordType}, component has currentChordType: ${this.currentChordType}`);
       debugLog('CHORDS_2_1_DEBUG', `Current component state: mode=${this.mode}, totalQuestions=${this.totalQuestions}`);
+      
+      // Debug information specifically for transpose
+      if (this.mode === '2_5_chords_characters') {
+        const progress = this?.progress?.['2_5_chords_characters'] || 0;
+        debugLog(['CHORDS', '2_5_TRANSPOSE'], `PlayChordByType - Current progress: ${progress}, Root note: ${rootNote}, TransposeAmount: ${this.currentTransposeAmount || 0}`);
+      }
 
       if (!chordType) {
         debugLog('CHORDS_2_1_DEBUG', 'ERROR: Chord type is null or undefined! Stack trace:', new Error().stack);
@@ -634,6 +693,10 @@ export function chords() {
       
       // Save to localStorage
       localStorage.setItem('lalumo_chords_progress', JSON.stringify(this.progress));
+      
+      // CRITICAL: After a mistake, ensure we keep the same chord and transposition
+      // by setting currentChordChanged to false and not clearing currentChordType
+      this.currentChordChanged = false;
       
       // Update background and button visibility
       updateCharacterBackground(this);
@@ -970,28 +1033,61 @@ export function chords() {
         this.audioContext.resume();
       }
       
-      // Select a random chord type if none is set
-      if (!this.currentChordType) {
-        // Get the current progress for this activity
-        const progressData = localStorage.getItem('lalumo_chords_progress');
-        const progress = progressData ? 
-          JSON.parse(progressData)['2_5_chords_characters'] || 0 : 
-          this?.progress?.['2_5_chords_characters'] || 0;
-        
-        // Available chord types based on progress
-        let chordTypes;
-        if (progress <= 9) {
-          // Progress <= 9: Only happy (major) and sad (minor)
-          chordTypes = ['major', 'minor'];
-        } else if (progress <= 19) {
-          // Progress 10-19: happy, sad, and augmented
-          chordTypes = ['major', 'minor', 'augmented'];
-        } else {
-          // Progress >= 20: All types available
-          chordTypes = ['major', 'minor', 'diminished', 'augmented']; // happy, sad, mysterious, tense
-        }
-        
+      // Get the current progress for this activity
+      const progressData = localStorage.getItem('lalumo_chords_progress');
+      const progress = progressData ? 
+        JSON.parse(progressData)['2_5_chords_characters'] || 0 : 
+        this?.progress?.['2_5_chords_characters'] || 0;
+      
+      // Available chord types based on progress
+      let chordTypes;
+      
+      // Apply chord height variation at progress >= 30
+      let varyingPitch = false;
+      let transposeAmount = 0;
+      
+      if (progress >= 30) {
+        varyingPitch = true;
+        // Random transpose between -6 and +6 semitones
+        transposeAmount = Math.floor(Math.random() * 13) - 6; // -6 to +6
+        debugLog(['CHORDS', '2_5_TRANSPOSE'], `Applying transpose: ${transposeAmount} semitones`);
+      }
+
+      if (progress <= 9) {
+        // Progress <= 9: Only happy (major) and sad (minor)
+        chordTypes = ['major', 'minor'];
+      } else if (progress <= 19) {
+        // Progress 10-19: happy, sad, and augmented
+        chordTypes = ['major', 'minor', 'augmented'];
+      } else if (progress <= 29) {
+        // Progress 20-29: happy, sad, mysterious, and augmented
+        chordTypes = ['major', 'minor', 'diminished', 'augmented'];
+      } else if (progress <= 39) {
+        // Progress 30-39: only happy and sad with varying pitch
+        chordTypes = ['major', 'minor'];
+        // Log to confirm which chord types are available
+        debugLog(['CHORDS', '2_5_CHORD_TYPES'], 'Progress 30-39: Only major and minor chords available');
+      } else if (progress <= 59) {
+        // Progress 40-59: happy, sad and augmented (squirrel) with varying pitch
+        chordTypes = ['major', 'minor', 'augmented'];
+        debugLog(['CHORDS', '2_5_CHORD_TYPES'], 'Progress 40-59: Major, minor and augmented chords available');
+      } else {
+        // Progress >= 60: All types available
+        chordTypes = ['major', 'minor', 'diminished', 'augmented'];
+        debugLog(['CHORDS', '2_5_CHORD_TYPES'], 'Progress 60+: All chord types available');
+      }
+      
+      // Check if current chord type is valid for this progress level,
+      // or if we need to select a new one
+      if (!this.currentChordType || !chordTypes.includes(this.currentChordType)) {
+        const oldChordType = this.currentChordType;
         this.currentChordType = chordTypes[Math.floor(Math.random() * chordTypes.length)];
+        
+        // Log chord type changes for debugging
+        if (oldChordType) {
+          debugLog(['CHORDS', '2_5_CHORD_TYPES'], 
+            `Changed invalid chord type ${oldChordType} → ${this.currentChordType} based on progress ${progress}`);
+        }
       }
       
       // Get the chord definition
@@ -1001,8 +1097,27 @@ export function chords() {
       const availableIntervals = chord.intervals.slice(1); // Skip root note
       this.missingInterval = availableIntervals[Math.floor(Math.random() * availableIntervals.length)];
       
-      // Root note frequency
-      const rootFreq = this.baseNotes['C4'];
+      // Root note frequency with transposition if applicable
+      let rootNote = 'C4';
+      
+      // Apply transposition if needed
+      if (varyingPitch && transposeAmount !== 0) {
+        // Base note C4 is MIDI note 60
+        const baseNoteNumber = 60;
+        const newNoteNumber = baseNoteNumber + transposeAmount;
+        
+        // Convert MIDI note number back to note name with octave
+        const noteNames = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+        const noteName = noteNames[newNoteNumber % 12];
+        const octave = Math.floor(newNoteNumber / 12) - 1; // MIDI octaves start at -1
+        
+        rootNote = `${noteName}${octave}`;
+        debugLog(['CHORDS', '2_5_TRANSPOSE'], `Transposed root note: C4 -> ${rootNote} (Transpose: ${transposeAmount})`);
+      } else {
+        debugLog(['CHORDS', '2_5_TRANSPOSE'], `No transposition applied. varyingPitch=${varyingPitch}, transposeAmount=${transposeAmount}`);
+      }
+      
+      const rootFreq = this.baseNotes[rootNote] || this.baseNotes['C4'];
       
       // Play incomplete chord (all notes except the missing one)
       chord.intervals.forEach(interval => {
@@ -1039,7 +1154,30 @@ export function chords() {
         
         // Play the complete chord
         setTimeout(() => {
-          this.playChordByType(this.currentChordType);
+          // Check for transposition
+          const progress = this?.progress?.['2_5_chords_characters'] || 0;
+          const shouldTranspose = progress >= 30;
+          let rootNote = 'C4';
+          
+          // Apply transposition if needed
+          if (shouldTranspose && this.currentTransposeAmount !== 0) {
+            // Base note C4 is MIDI note 60
+            const baseNoteNumber = 60;
+            const newNoteNumber = baseNoteNumber + this.currentTransposeAmount;
+            
+            // Convert MIDI note number back to note name with octave
+            const noteNames = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+            const noteName = noteNames[newNoteNumber % 12];
+            const octave = Math.floor(newNoteNumber / 12) - 1;
+            
+            rootNote = `${noteName}${octave}`;
+            debugLog(['CHORDS', '2_5_TRANSPOSE'], `Using transposed root note: ${rootNote} for complete chord (Transpose: ${this.currentTransposeAmount})`);
+          } else {
+            debugLog(['CHORDS', '2_5_TRANSPOSE'], `Using default root note: C4 for complete chord (no transposition applied)`);
+          }
+          
+          // Pass the root note to playChordByType
+          this.playChordByType(this.currentChordType, rootNote);
         }, 500);
         
         // Set up a new chord after a delay
@@ -1102,6 +1240,12 @@ export function chords() {
     playCurrent2_5Chord() {
       debugLog('CHORDS', `[REPETITION] playCurrent2_5Chord called with currentChordType=${this.currentChordType}, previousChordType=${this.previousChordType}, consecutiveRepeats=${this.consecutiveRepeats}`);
       
+      // Get the progress to determine if we need to transpose
+      const progressData = localStorage.getItem('lalumo_chords_progress');
+      const progress = progressData ? 
+        JSON.parse(progressData)['2_5_chords_characters'] || 0 : 
+        this?.progress?.['2_5_chords_characters'] || 0;
+      
       if (!this.currentChordType) {
         // Need to generate a new chord type
         debugLog('CHORDS', '[REPETITION] No current chord type, generating a new one');
@@ -1135,11 +1279,29 @@ export function chords() {
           chordTypes = ['major', 'minor', 'augmented'];
           // The new chord at this progress level is augmented
           if (progressLevelChanged) newChordType = 'augmented';
-        } else {
-          // Progress >= 20: All types available
-          chordTypes = ['major', 'minor', 'diminished', 'augmented']; // happy, sad, mysterious, tense
+        } else if (progress <= 29) {
+          // Progress 20-29: happy, sad, mysterious, and augmented
+          chordTypes = ['major', 'minor', 'diminished', 'augmented'];
           // The new chord at this progress level is diminished
           if (progressLevelChanged) newChordType = 'diminished';
+        } else if (progress <= 39) {
+          // Progress 30-39: Only major and minor with varying pitch
+          chordTypes = ['major', 'minor'];
+          // For level changes, just use major as the new type
+          if (progressLevelChanged) newChordType = 'major';
+          debugLog(['CHORDS', '2_5_CHORD_TYPES'], 'Progress 30-39: Only major and minor chords available');
+        } else if (progress <= 59) {
+          // Progress 40-59: happy, sad and augmented (squirrel) with varying pitch
+          chordTypes = ['major', 'minor', 'augmented'];
+          // For level changes, use augmented as the new type
+          if (progressLevelChanged) newChordType = 'augmented';
+          debugLog(['CHORDS', '2_5_CHORD_TYPES'], 'Progress 40-59: Major, minor and augmented chords available');
+        } else {
+          // Progress >= 60: All types available
+          chordTypes = ['major', 'minor', 'diminished', 'augmented'];
+          // For level changes, use diminished as the new type
+          if (progressLevelChanged) newChordType = 'diminished';
+          debugLog(['CHORDS', '2_5_CHORD_TYPES'], 'Progress 60+: All chord types available');
         }
         
         debugLog('CHORDS', `[REPETITION] Available chord types: ${JSON.stringify(chordTypes)}, newChordType: ${newChordType}`);
@@ -1152,7 +1314,15 @@ export function chords() {
           // No progress level change, use weighted random selection
           
           // Apply repetition constraints based on progress
-          if ((progress >= 10 || this.consecutiveRepeats >= 2) && this.previousChordType && chordTypes.length > 1) {
+          // For progress < 10 OR 30-39, allow up to 3 consecutive repeats
+          // For all other progress levels, no repeats allowed (maxRepeats = 0)
+          let maxRepeats = 0; // Default: no repeats
+          
+          if ((progress < 10) || (progress >= 30 && progress <= 39)) {
+            maxRepeats = 3; // Allow up to 3 repeats for beginners and transposition phase
+          }
+          
+          if ((progress >= 10 || this.consecutiveRepeats >= maxRepeats) && this.previousChordType && chordTypes.length > 1) {
             // For progress ≥10 OR when we already had 2 consecutive repeats:
             // Filter out the previous chord type to avoid repetition
             const availableTypes = chordTypes.filter(type => type !== this.previousChordType);
@@ -1199,6 +1369,7 @@ export function chords() {
             } else {
               // Different chord type selected, reset counter
               this.consecutiveRepeats = 0;
+              this.currentChordChanged = true;
               debugLog('CHORDS', `[REPETITION] Selected different chord type, reset repeat counter`);
             }
           }
@@ -1209,12 +1380,34 @@ export function chords() {
         debugLog('CHORDS', `[REPETITION] New chord generated: ${this.currentChordType}, previousChordType set to: ${this.previousChordType}`);
       } else {
         // Using existing chord (persistence)
+        this.currentChordChanged = false;
         debugLog('CHORDS', `[REPETITION] Using existing chord type: ${this.currentChordType}, no counter changes`);
       }
       
       // Play the chord (either new or existing)
       debugLog('CHORDS', `[REPETITION] Playing chord type: ${this.currentChordType}, current repeats: ${this.consecutiveRepeats}`);
-      this.playChordByType(this.currentChordType);
+      
+      // Apply transposition for progress >= 30
+      if (progress >= 30) {
+        // Always generate new transpose value when starting a new question
+        // (when chord type changes or when starting a new session)
+        if (this.currentChordChanged || !this.currentTransposeRootNote || this.needsNewTranspose) {
+          // Extrahiere BEIDE Werte: rootNote UND transposeAmount
+          const { rootNote, transposeAmount } = this.generateTranspose();
+          this.currentTransposeRootNote = rootNote;
+          this.currentTransposeAmount = transposeAmount;
+          // Reset the flag since we've generated a new transpose
+          this.needsNewTranspose = false;
+          debugLog(['CHORDS', '2_5_TRANSPOSE'], `PlayCurrent2_5Chord - Generated new transposed root note: ${rootNote} (Transpose: ${transposeAmount})`);
+        }
+        
+        // Use stored transpose for consistent playback until answered correctly
+        debugLog(['CHORDS', '2_5_TRANSPOSE'], `PlayCurrent2_5Chord - Using stored transposed root note: ${this.currentTransposeRootNote}`);
+        this.playChordByType(this.currentChordType, this.currentTransposeRootNote);
+      } else {
+        // Normal playback without transposition
+        this.playChordByType(this.currentChordType, 'C4');
+      }
     },
     
     /**
@@ -1254,6 +1447,9 @@ export function chords() {
         // Speichere den Fortschritt in localStorage
         localStorage.setItem('lalumo_chords_progress', JSON.stringify(this.progress));
         
+        // Signal that we need a new transpose for the next chord
+        this.needsNewTranspose = true;
+        
         // Aktualisiere den Hintergrund basierend auf dem neuen Fortschritt
         updateCharacterBackground(this);
         
@@ -1279,6 +1475,10 @@ export function chords() {
       } else {
         this.feedbackMessage = this.$store.strings.error_message || 'Not quite right. Try again!';
         
+        // Make sure we keep the same chord and transposition after a mistake
+        this.currentChordChanged = false;
+        debugLog(['CHORDS', '2_5_TRANSPOSE'], `After wrong answer: keeping chord ${this.currentChordType} with transposition ${this.currentTransposeRootNote}`);
+        
         // Play error sound feedback
         audioEngine.playNote('try_again', 1.0);
         console.log('AUDIO: Playing try_again feedback sound for incorrect chord match');
@@ -1301,8 +1501,9 @@ export function chords() {
         setTimeout(() => {
           this.showFeedback = false;
           
-          // Repeat the same chord after incorrect answer (new requirement)
-          this.playChordByType(this.currentChordType);
+          // Repeat the same chord after incorrect answer with the same transposition
+          debugLog(['CHORDS', '2_5_TRANSPOSE'], `Replaying chord ${this.currentChordType} with the same transposition: ${this.currentTransposeRootNote}`);
+          this.playChordByType(this.currentChordType, this.currentTransposeRootNote);
         }, 1500);
       }
       

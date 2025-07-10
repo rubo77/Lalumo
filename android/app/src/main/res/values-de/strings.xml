@@ -93,9 +93,12 @@
     <string name="all_patterns_unlocked">Alle Muster freigeschaltet! 🎉</string>
     
     <!-- Chord Animals Unlocks -->
-    <string name="unlock_squirrel_message">Schaffe 10 richtige für das Eichhörnchen! 🐿️</string>
-    <string name="unlock_octopus_message">Schaffe 20 richtige für den Oktopus! 🐙</string>
+    <string name="unlock_squirrel_message">Erreiche 10 richtige Antworten, um das Eichhörnchen freizuschalten! 🐿️</string>
+    <string name="unlock_octopus_message">Erreiche 20 richtige Antworten, um den Oktopus freizuschalten! 🐙</string>
     <string name="all_animals_unlocked">Alle Tiere freigeschaltet! 🎉</string>
+    <string name="transpose_challenge">Höre gut zu! Die Akkorde ändern jetzt ihre Tonhöhe! 🎵</string>
+    <string name="squirrel_returns">Das Eichhörnchen ist zurück! Der Oktopus schläft noch. 🐿️</string>
+    <string name="all_friends_return">Alle Freunde sind zurück, um dir zu helfen! 🐿️🐙</string>
     
     <!-- Mascot Messages for Unlocks -->
     <string name="mascot_wave_unlocked">Toll! Du hast Wellen-Melodien freigeschaltet! 🌊</string>
