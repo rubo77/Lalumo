@@ -13,6 +13,9 @@
 - Discovered: mobile-build.sh deletes dist/app/ after build (lines 217-218), causing loss of app/images/backgrounds/ and other assets copied there by webpack.
 - Refactored mobile-build.sh to preserve dist/app/ and its assets after build (no deletion).
 - Refactored ios-build.sh to preserve dist/app/ and its assets after build (no deletion).
+- User requested to merge ios-build.sh logic into mobile-build.sh using a flag, since differences are minimal.
+- User noted that the sound asset check/copy in build scripts is redundant and has been removed, as the whole public directory is already synced.
+- ios-build.sh logic is being merged into mobile-build.sh; ios-build.sh will be deleted after migration is complete.
 
 ## Task List
 - [x] Confirm sound asset syncing for Android and iOS
@@ -25,9 +28,12 @@
 - [x] Refactor build process to ensure assets persist in dist/app/
 - [x] Verify that assets now persist in dist/app/ after build
 - [x] Confirm issue is resolved and close task
+- [x] Merge ios-build.sh logic into mobile-build.sh using a flag
+- [x] Remove redundant sound asset check/copy from build scripts
+- [ ] Delete ios-build.sh after successful migration
 
 ## Current Goal
-Task complete: asset sync/build issue resolved
+Delete ios-build.sh after migration
 
 # Multi-Touch Handling for Android Chrome
 
@@ -53,6 +59,8 @@ Task complete: asset sync/build issue resolved
 - Decided to eliminate the separate native-app-detector.js file and all related build handling (webpack, mobile-build.sh, ios-build.sh). Instead, set window.isNativeApp directly in main code (e.g., index.js or inline in index.html) for simpler, more robust native app detection.
 - Webpack CopyWebpackPlugin rule removed as it is no longer needed.
 - native-app-detector.js file and all related build handling have been removed. Inline native app detection is now used in index.html.
+- User requested to merge ios-build.sh logic into mobile-build.sh using a flag, since differences are minimal.
+- User noted that the sound asset check/copy in build scripts is redundant and has been removed, as the whole public directory is already synced.
 
 ## Task List
 - [x] Identify all relevant touch event handlers for buttons/interactions
@@ -70,6 +78,7 @@ Task complete: asset sync/build issue resolved
 - [x] Test and confirm correct localization for piano key label (H/B)
 - [x] Remove native-app-detector.js file and all related build handling (webpack.config.js, mobile-build.sh, ios-build.sh)
 - [x] Add inline native app detection (window.isNativeApp = (typeof window.Capacitor !== 'undefined')) in main code
+- [x] Merge ios-build.sh logic into mobile-build.sh using a flag
 
 ## Current Goal
 Task complete: multi-touch & native detection refactor complete

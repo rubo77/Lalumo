@@ -74,14 +74,29 @@ find_android_studio() {
   command -v studio.sh
 }
 
-echo "###### 1. set path to Android Studio"
-STUDIO_PATH=$(find_android_studio)
+# Set paths based on platform
+if [ "$PLATFORM" = "android" ] || [ -z "$PLATFORM" ]; then
+    echo "###### 1. set path to Android Studio"
+    STUDIO_PATH=$(find_android_studio)
 
-if [ -n "$STUDIO_PATH" ]; then
-  echo "Android Studio gefunden unter: $STUDIO_PATH"
-  export CAPACITOR_ANDROID_STUDIO_PATH="$STUDIO_PATH"
-else
-  echo "Warnung: Android Studio nicht gefunden. Das Öffnen des Android-Projekts könnte fehlschlagen."
+    if [ -n "$STUDIO_PATH" ]; then
+        echo "Android Studio found at: $STUDIO_PATH"
+    else
+        echo "Android Studio not found. Continuing anyway..."
+        STUDIO_PATH=""
+    fi
+fi
+
+if [ "$PLATFORM" = "ios" ]; then
+    echo "###### 1. set path to Xcode"
+    XCODE_PATH=$(xcode-select -p)
+
+    if [ -n "$XCODE_PATH" ]; then
+        echo "Xcode found at: $XCODE_PATH"
+    else
+        echo "Xcode not found. Continuing anyway..."
+        XCODE_PATH=""
+    fi
 fi
 
 # Update version in package.json and sync to build.gradle

@@ -171,18 +171,8 @@ mkdir -p dist/app/
 echo "Syncing with Capacitor..."
 npx cap sync ios
 
-# Ensure sound assets are properly copied
-echo "###### 7. Ensuring sound assets are properly synced..."
-
-# Check if sounds directory exists in dist
-if [ -d "public/sounds" ]; then
-  echo "Copying sound assets to iOS platform..."
-  mkdir -p "ios/App/App/public/sounds"
-  cp -r public/sounds/* ios/App/App/public/sounds/
-  echo "Sound assets copied successfully to iOS platform"
-else
-  echo "No sounds directory found in public/"
-fi
+# Sound assets are automatically synced by Capacitor sync
+# No need for separate handling
 
 echo "###### 8. Opening iOS project in Xcode..."
 npx cap open ios
