@@ -55,17 +55,17 @@ export function updateCharacterBackground(component) {
       
       // Preload next background when approaching transition point
       if (progress === 29) {
-        preloadBackgroundImage('./images/backgrounds/2_5_chords_dog_cat_owl_sleeping_squirrel_sleeping_octopus.png');
+        preloadBackgroundImage('./images/backgrounds/2_5_chords_dog_cat_owl_sleeping_squirrel_sleeping_octopus.jpg');
       }
     } else if (progress <= 39) { // At 30+: both squirrel and octopus sleeping
-      backgroundImage = './images/backgrounds/2_5_chords_dog_cat_owl_sleeping_squirrel_sleeping_octopus.png';
+      backgroundImage = './images/backgrounds/2_5_chords_dog_cat_owl_sleeping_squirrel_sleeping_octopus.jpg';
       
       // Preload next background when approaching transition point
       if (progress === 39) {
-        preloadBackgroundImage('./images/backgrounds/2_5_chords_dog_with_melodica_cat_kibitz_squirrel_octopus_sleeping.png');
+        preloadBackgroundImage('./images/backgrounds/2_5_chords_dog_cat_owl_squirrel_octopus_sleeping.jpg');
       }
-    } else if (progress <= 49) { // At 40+: squirrel awake, dog with melodica, octopus still sleeping
-      backgroundImage = './images/backgrounds/2_5_chords_dog_with_melodica_cat_kibitz_squirrel_octopus_sleeping.png';
+    } else if (progress <= 49) { // At 40+: squirrel awake, octopus still sleeping
+      backgroundImage = './images/backgrounds/2_5_chords_dog_cat_owl_squirrel_octopus_sleeping.jpg';
       
       // Preload next background when approaching transition point
       if (progress === 49) {
