@@ -1983,36 +1983,6 @@ export function app() {
     },
     
     /**
-     * Kopiert den Referral-Code in die Zwischenablage
-     */
-    copyReferralCode() {
-      if (!this.referralCode) {
-        console.error('Kein Referral-Code vorhanden!');
-        return;
-      }
-      
-      // Code in die Zwischenablage kopieren
-      navigator.clipboard.writeText(this.referralCode)
-        .then(() => {
-          console.log('Referral-Code in die Zwischenablage kopiert');
-          
-          // Visuelles Feedback (hier könnte eine UI-Benachrichtigung sein)
-          const button = document.querySelector('.referral-code-container .secondary-button');
-          if (button) {
-            const originalText = button.textContent;
-            button.textContent = this.$store.strings?.copied || 'Copied!';
-            
-            setTimeout(() => {
-              button.textContent = originalText;
-            }, 2000);
-          }
-        })
-        .catch(err => {
-          console.error('Fehler beim Kopieren des Referral-Codes:', err);
-        });
-    },
-    
-    /**
      * Teilt den Referral-Code über die native Share-API
      */
     shareReferralCode() {
