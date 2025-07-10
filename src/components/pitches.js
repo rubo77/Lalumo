@@ -3965,36 +3965,36 @@ export function pitches() {
     startSoundJudgmentGame(instrument = null) {
       console.log(`SOUND JUDGMENT: Starting game mode from practice mode with instrument: ${instrument || 'default'}`);
       
+      // Get the current language
+      const language = localStorage.getItem('lalumo_language') === 'german' ? 'de' : 'en';
+
       if (instrument) {
         // Practice mode with specific instrument - don't transition to game mode yet
         this.currentInstrument = instrument;
         
-        // Get the current language
-        const language = localStorage.getItem('lalumo_language') === 'german' ? 'de' : 'en';
-        
         // Show a message about which instrument is playing
-        let instrumentMessage = '';
+        // let instrumentMessage = '';
         
-        if (language === 'de') {
-          if (instrument === 'violin') {
-            instrumentMessage = 'Höre die Melodie auf der Geige!';
-          } else if (instrument === 'flute') {
-            instrumentMessage = 'Höre die Melodie auf der Flöte!';
-          } else if (instrument === 'doublebass') {
-            instrumentMessage = 'Höre die Melodie auf dem Kontrabass!';
-          }
-        } else {
-          if (instrument === 'violin') {
-            instrumentMessage = 'Listen to the melody on the violin!';
-          } else if (instrument === 'flute') {
-            instrumentMessage = 'Listen to the melody on the flute!';
-          } else if (instrument === 'doublebass') {
-            instrumentMessage = 'Listen to the melody on the double bass!';
-          }
-        }
+        // if (language === 'de') {
+        //   if (instrument === 'violin') {
+        //     instrumentMessage = 'Höre die Melodie auf der Geige!';
+        //   } else if (instrument === 'flute') {
+        //     instrumentMessage = 'Höre die Melodie auf der Flöte!';
+        //   } else if (instrument === 'doublebass') {
+        //     instrumentMessage = 'Höre die Melodie auf dem Kontrabass!';
+        //   }
+        // } else {
+        //   if (instrument === 'violin') {
+        //     instrumentMessage = 'Listen to the melody on the violin!';
+        //   } else if (instrument === 'flute') {
+        //     instrumentMessage = 'Listen to the melody on the flute!';
+        //   } else if (instrument === 'doublebass') {
+        //     instrumentMessage = 'Listen to the melody on the double bass!';
+        //   }
+        // }
         
-        // Show the instrument-specific message
-        this.showMascotMessage(instrumentMessage);
+        // // Show the instrument-specific message
+        // this.showMascotMessage(instrumentMessage);
         
         // Generate a melody without wrong notes for practice mode
         this.generatePracticeMelody();
@@ -4008,9 +4008,6 @@ export function pitches() {
         
         // Reset any selected instrument
         this.currentInstrument = null;
-        
-        // Get the current language
-        const language = localStorage.getItem('lalumo_language') === 'german' ? 'de' : 'en';
         
         // Show an introductory message for game mode
         const gameMessage = language === 'de' 

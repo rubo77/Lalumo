@@ -51,15 +51,18 @@
 - Fix applied: after a wrong answer, replay now uses the persisted transposed root note (currentTransposeRootNote) instead of defaulting to 'C4'; plan to verify with further testing.
 - Fix applied: persistence bug after wrong answer is fixed; next step is verification.
 - Verified: strict chord/transposition persistence after errors is now fully fixed and consistent (both play button and error replay use the same persisted values).
-- Confirmed: In CSS, only the absolute path `/app/images/backgrounds/` works for background images due to webpack output structure; relative or webpack-imported paths (e.g. `./images/...`, `~public/...`) do not resolve as expected.
-- Multiple troubleshooting steps (relative, absolute, webpack module paths) were attempted for CSS backgrounds; only `/app/images/backgrounds/` is reliable for menu backgrounds in the deployed app.
-- After extensive troubleshooting, confirmed that only absolute paths work for CSS background images due to how Webpack handles asset resolution.
-- CSS background image paths must be absolute (`/app/images/backgrounds/`) to ensure correct resolution in the deployed app.
-- Troubleshooting steps included testing relative paths, absolute paths, and Webpack module paths for CSS background images.
-- The solution was to use absolute paths for CSS background images, as this is the only approach that works reliably due to Webpack's output structure.
-- The final solution was to update the CSS to use absolute paths for background images, ensuring correct resolution in the deployed app.
-- Menu background CSS selectors were refactored to use section IDs (e.g., #credits_partial, #imprint_partial, #privacy_partial, #referral_code_partial) instead of x-show attribute selectors for improved maintainability and clarity.
-- Responsive padding (desktop/mobile) was added for all menu background sections (settings, credits, impressum, privacy) in CSS for consistent layout across devices.
+- Clarification: Chord repetition logic for all progress ranges should be:
+  - Progress <10: Up to 3 repeats allowed
+  - Progress 10-29: No repeats allowed
+  - Progress 30-39: Up to 3 repeats allowed, but no direct repeats (no two identical chords in a row)
+  - Progress 40-59: No repeats allowed
+  - Progress ≥60: Chord-type repeats allowed, but no direct repeats (no two identical chords in a row)
+- New requirement: For progress ≥60, chord-type repeats are allowed, but no direct repeats (no two identical chords in a row)
+- Chord repetition logic for progress ≥60 is now implemented: chord-type repeats allowed, but no direct repeats (no two identical chords in a row)
+- New bug: For progress 30-39, exact chord (type + transpose) can still repeat; logic only checks type, not transposition. Needs fix so that exact chord (type + transpose) is not repeated directly.
+- Bug fixed: For progress 30-39, exact chord (type + transpose) is now prevented from repeating directly; logic now persists and checks both type and transpose.
+- New requirement: When "chords" is clicked in the menu, and only one submenu item (with class="debug-element" and not disabled) is available, the navigation should close immediately.
+- Feature implemented: Auto-close of navigation if only one submenu (debug-element) is available after clicking "chords".
 
 ## Task List
 - [x] Add debug logging to show the actual transpose value used for playback
@@ -81,69 +84,11 @@
 - [x] Integrate impressum.jpg as background for impressum menu
 - [x] Integrate settings.jpg as background for settings menu
 - [x] Ensure responsive padding for all menu backgrounds (settings, credits, impressum, privacy)
+- [x] Fix chord repetition logic for progress 30-39 to allow up to 3 repeats of major or minor
+- [x] Update chord repetition logic for all progress ranges to match clarified requirements
+- [x] Implement chord repetition logic for progress ≥60: allow chord-type repeats, but no direct repeats
+- [x] Fix chord repetition logic for progress 30-39 to prevent exact chord (type + transpose) repeats
+- [x] Implement auto-close of navigation if only one submenu (debug-element) is available after clicking "chords"
 
 ## Current Goal
-Integrate new menu backgrounds (credits, impressum, settings)
-
-# Multi-Touch Handling for Android Chrome
-
-## Notes
-- User wants multi-touch handling: when multi-touch is detected, all other touches should be ignored and only the last touch should trigger the button.
-- Target: Chrome on Android 15 (mobile web, possibly PWA or hybrid app context).
-- Touch event handlers are found in index.html, app.js, pitches.js, chords.js, and other component files.
-- No global addEventListener("touch...") found, but touchstart is handled in various places (including AlpineJS inline handlers).
-- Debug logging is available via debugLog utility.
-- Multi-touch handler utility (touch-handler.js) implemented to process only the last touch on Android Chrome.
-- User wants multi-touch handler to run on all browsers, not just Android Chrome, and reports that browser detection may not be working as intended.
-- Multi-touch handler refactored to run on all browsers (browser detection removed).
-- Debug logging for multi-touch events improved and made consistent with app-wide debugLog usage.
-- App initialization and multi-touch handler are both being called twice (double initialization bug observed in logs).
-- Multi-touch handler throws an error when lastTouchTarget is null (needs null check). Null check implemented; error should be resolved.
-- Investigating root cause of double initialization by reviewing HTML/app structure and AlpineJS usage.
-- Alpine.js warning: "Alpine has already been initialized on this page. Calling Alpine.start() more than once can cause problems."
-- Double initialization may be related to errors loading native-app-detector.js, Alpine component structure, or multiple x-data/x-init usage on main elements.
-- New error: missing method `checkIOSAudio` ("is not a function") found in logs; may contribute to Alpine/app double initialization.
-- Alpine.js double initialization is now prevented by a global flag (`window._alpineInitialized`) in index.js; debug logging added for Alpine startup.
-- `checkIOSAudio` method implemented in app component to resolve missing function error.
-- Critical: native-app-detector.js is being served with the wrong MIME type (text/html instead of application/javascript), likely blocking proper app initialization and Alpine.js single initialization.
-- Decided to eliminate the separate native-app-detector.js file and all related build handling (webpack, mobile-build.sh, ios-build.sh). Instead, set window.isNativeApp directly in main code (e.g., index.js or inline in index.html) for simpler, more robust native app detection.
-- Webpack CopyWebpackPlugin rule removed as it is no longer needed.
-- native-app-detector.js file and all related build handling have been removed. Inline native app detection is now used in index.html.
-- User requested to merge ios-build.sh logic into mobile-build.sh using a flag, since differences are minimal.
-- User noted that the sound asset check/copy in build scripts is redundant and has been removed, as the whole public directory is already synced.
-
-## Task List
-- [x] Identify all relevant touch event handlers for buttons/interactions
-- [x] Implement logic to ignore all but the last touch when multi-touch is detected (Android Chrome)
-- [x] Integrate multi-touch handler utility into main app.js
-- [x] Refactor handler to run on all browsers and fix detection logic
-- [x] Add debug logging for multi-touch events (optional)
-- [x] Test on all browsers to confirm correct behavior
-- [x] Fix multi-touch handler crash when lastTouchTarget is null
-- [x] Fix double initialization of app and multi-touch handler
-  - [x] Analyze Alpine.js/component structure and resolve root cause
-  - [x] Fix missing checkIOSAudio method or its invocation
-- [x] Test and confirm Alpine.js/app single initialization (no warnings)
-- [x] Add translation/localization string keys for piano key label (H/B)
-- [x] Test and confirm correct localization for piano key label (H/B)
-- [x] Remove native-app-detector.js file and all related build handling (webpack.config.js, mobile-build.sh, ios-build.sh)
-- [x] Add inline native app detection (window.isNativeApp = (typeof window.Capacitor !== 'undefined')) in main code
-- [x] Merge ios-build.sh logic into mobile-build.sh using a flag
-
-## Current Goal
-Task complete: multi-touch & native detection refactor complete
-
-# Background Image Integration for Menus
-
-## Notes
-- User added new background images: credits.jpg, impressum.jpg, settings.jpg to public/images/backgrounds/.
-- User requested these images to be set as backgrounds for the respective menus (credits, impressum, settings).
-
-## Task List
-- [x] Integrate credits.jpg as background for credits menu
-- [x] Integrate impressum.jpg as background for impressum menu
-- [x] Integrate settings.jpg as background for settings menu
-- [x] Ensure responsive padding for all menu backgrounds (settings, credits, impressum, privacy)
-
-## Current Goal
-Task complete: all requested menu backgrounds integrated
+All planned requirements are complete

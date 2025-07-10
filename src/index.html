@@ -232,7 +232,13 @@
 
         <div class="menu-chapters" x-show="isChordChapterUnlocked">
           <!-- chords button (visible when unlocked through referrals) -->
-          <button @click="active = 'chords'; $dispatch('set-activity-mode', {component: 'chords', mode: '2_5_chords_characters'})" :class="{ 'active': active === 'chords' }">
+          <button 
+            @click="
+              active = 'chords'; 
+              $dispatch('set-activity-mode', {component: 'chords', mode: '2_5_chords_characters'});
+              checkAndAutoCloseMenu();
+            "
+            :class="{ 'active': active === 'chords' }">
             <span x-text="$store.strings?.menu_chords || 'Chords'"></span>
           </button>
         </div>
@@ -1026,7 +1032,35 @@
   </main>
 
 <script>
-  // Globale Funktionen für Lazy Loading und Back-Button-Handling
+  // Globale Funktionen für Lazy Loading, Back-Button-Handling und Menü-Interaktion
+  
+  // Funktion zum automatischen Schließen des Menüs, wenn genau ein normales Menüitem verfügbar ist
+  function checkAndAutoCloseMenu() {
+    console.log('[DEBUG] Checking if menu should auto-close');
+    // Gib dem DOM Zeit, sich zu aktualisieren
+    setTimeout(() => {
+      // Zähle normale (nicht debug-element) Buttons in den menu-activities
+      const normalItems = document.querySelectorAll('.menu-activities button:not(.debug-element):not([disabled])');
+      // Zähle debug-element Buttons
+      const debugItems = document.querySelectorAll('.menu-activities button.debug-element:not([disabled])');
+      // Zähle alle aktivierbaren Buttons
+      const allItems = document.querySelectorAll('.menu-activities button:not([disabled])');
+      
+      console.log(`[DEBUG] Found ${normalItems.length} normal and ${debugItems.length} debug menu items (total: ${allItems.length})`);
+      
+      // Wenn genau ein normales Item vorhanden ist, klicke es automatisch (unabhängig von Debug-Items)
+      if (normalItems.length === 1) {
+        console.log('[DEBUG] Auto-clicking the only normal menu item');
+        normalItems[0].click();
+      }
+      // Wenn keine normalen Items, aber genau ein Debug-Item vorhanden ist, klicke es automatisch
+      else if (normalItems.length === 0 && debugItems.length === 1) {
+        console.log('[DEBUG] No normal items found. Auto-clicking the only debug menu item');
+        debugItems[0].click();
+      }
+    }, 50);
+  }
+  
   function initLazyLoading() {
     // Initial alle Lazy-Load-Elemente laden
     loadBackgroundImages();

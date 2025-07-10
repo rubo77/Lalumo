@@ -201,9 +201,6 @@ reset-button:
   - # bereit zur veröffentlichung
 
 2_5_chords_color_matching:
-  - bei progress >=30 sollen die akkorde in der höhe durch einen transpose faktor von +-6 halbtönen variieren:
-    - bis 40 solen die buttons für das eichhörnchen und octopus wieder display:none, ab 50 nur der octopus display:none, ab 60 wieder alle
-    - die texte müssen werweitert werden 
   - # bereit zur veröffentlichung
   - es soll der erfolgssound kommen
   - wenn man während der regenbogen läuft drückt, soll schon der neue akkord abgespielt werden und nicht der letzte
