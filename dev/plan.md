@@ -79,6 +79,7 @@
 - Fix: Aggressive permanent focus style removal works for high/low buttons, but play button still shows opacity background after blur; need to diagnose and fix this specific case.
 - Update: blurElement now explicitly resets play button background color and transform after blur to address persistent opacity background on Android Chrome.
 - New bug: After 1s, blur occurs for a tenth of a second, but the border/focus ring reappears on the button (Android Chrome); need to diagnose why focus returns after blur.
+- New request: Remove assets/public/de/images/screenshots and English screenshots from the mobile app build; these are only used for the homepage, not part of the app.
 
 ## Task List
 - [x] Add debug logging to show the actual transpose value used for playback
@@ -112,6 +113,7 @@
 - [x] Update blurElement logic to blur after 1 second delay (per user request)
 - [ ] Diagnose and fix: After delayed blur, border/focus ring reappears briefly (Android Chrome)
   - [x] Diagnose and fix: Play button still shows opacity background after blur (Android Chrome)
+- [ ] Remove assets/public/de/images/screenshots and English screenshots from mobile app build
 
 ## Current Goal
 All planned requirements are complete

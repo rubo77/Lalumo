@@ -164,11 +164,12 @@ npm run build:fast
 echo "###### 4a. Building web application..."
 npm run build
 
-# Copy public directory contents to dist, excluding android directory (only needed for web dev server)
+# Copy public directory contents to dist, excluding android directory and screenshots
 # Note: The android/ directory in public/ contains XML files for the webpack dev server
 # The actual native Android app uses the XML files in the main android/ directory
-echo "Copying public assets to dist (excluding android XML files)..."
-rsync -av --exclude='android/' public/ dist/
+# Screenshots are only needed for the website/homepage, not for the mobile app
+echo "Copying public assets to dist (excluding android XML files and screenshots)..."
+rsync -av --exclude='android/' --exclude='de/images/screenshots/' --exclude='images/screenshots/' public/ dist/
 
 # Für die mobile App verwenden wir nur den app-Unterordner als Root
 # Das bedeutet, dass für die native App der "app"-Ordner der Hauptordner ist
