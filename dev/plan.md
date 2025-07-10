@@ -49,6 +49,8 @@ Task complete: asset sync/build issue resolved
 - New error: missing method `checkIOSAudio` ("is not a function") found in logs; may contribute to Alpine/app double initialization.
 - Alpine.js double initialization is now prevented by a global flag (`window._alpineInitialized`) in index.js; debug logging added for Alpine startup.
 - `checkIOSAudio` method implemented in app component to resolve missing function error.
+- Critical: native-app-detector.js is being served with the wrong MIME type (text/html instead of application/javascript), likely blocking proper app initialization and Alpine.js single initialization.
+- Webpack CopyWebpackPlugin rule added to explicitly copy src/native-app-detector.js to app/native-app-detector.js, which should resolve the MIME type issue.
 
 ## Task List
 - [x] Identify all relevant touch event handlers for buttons/interactions
@@ -56,13 +58,15 @@ Task complete: asset sync/build issue resolved
 - [x] Integrate multi-touch handler utility into main app.js
 - [x] Refactor handler to run on all browsers and fix detection logic
 - [x] Add debug logging for multi-touch events (optional)
-- [ ] Test on all browsers to confirm correct behavior
+- [x] Test on all browsers to confirm correct behavior
 - [x] Fix multi-touch handler crash when lastTouchTarget is null
 - [x] Fix double initialization of app and multi-touch handler
   - [x] Analyze Alpine.js/component structure and resolve root cause
   - [x] Fix missing checkIOSAudio method or its invocation
-- [ ] Test and confirm Alpine.js/app single initialization (no warnings)
+- [x] Test and confirm Alpine.js/app single initialization (no warnings)
 - [x] Add translation/localization string keys for piano key label (H/B)
+- [x] Test and confirm correct localization for piano key label (H/B)
+- [x] Investigate and resolve MIME type conflict for native-app-detector.js
 
 ## Current Goal
-Test and confirm correct localization for piano key label (H/B)
+Test on all browsers to confirm correct behavior

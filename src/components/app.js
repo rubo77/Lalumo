@@ -1479,28 +1479,6 @@ export function app() {
     isIpad() {
       return navigator.userAgent.match(/iPad/i) !== null;
     },
-    
-    /**
-     * Check if running in Android native app context
-     * @returns {boolean} True if Android app
-     */
-    isAndroidApp() {
-      const isAndroid = /Android/.test(navigator.userAgent);
-      // Zusätzliche Prüfung für Android App vs. Android Browser
-      // In der App ist typischerweise window.isNativeApp gesetzt
-      return isAndroid && (window.isNativeApp === true);
-    },
-    
-    /**
-     * Check if running in iOS native app context
-     * @returns {boolean} True if iOS app
-     */
-    isIOSApp() {
-      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-      // Zusätzliche Prüfung für iOS App vs. Safari Browser
-      // In der App ist typischerweise window.isNativeApp gesetzt
-      return isIOS && (window.isNativeApp === true);
-    },
   
     /**
      * Check if running in Android native app context
