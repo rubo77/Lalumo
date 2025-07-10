@@ -2210,26 +2210,6 @@ export function pitches() {
         console.log('ANIM: Animating card for', elementType);
         card.classList.add('active');
         
-        // Enhanced animation for Android
-        const isAndroid = /Android/.test(navigator.userAgent);
-        if (isAndroid) {
-          console.log('ANIM: Adding Android-specific animation');
-          // Add more visible animation effect
-          try {
-            card.style.transition = 'all 0.5s ease';
-            card.style.transform = 'scale(1.05)';
-            card.style.boxShadow = '0 0 20px rgba(52, 152, 219, 0.8)';
-            
-            // Reset after animation
-            setTimeout(() => {
-              card.style.transform = '';
-              card.style.boxShadow = '';
-            }, 1800);
-          } catch (err) {
-            console.error('ANIM: Error applying Android animation:', err);
-          }
-        }
-        
         setTimeout(() => {
           card.classList.remove('active');
         }, 2000);

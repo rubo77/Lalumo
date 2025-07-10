@@ -9,7 +9,12 @@
   <link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png" />
   <link rel="icon" type="image/png" sizes="512x512" href="./icons/icon-512.png" />
   <!-- Native App Detector - Setzt das window.isNativeApp Flag für zuverlässige App-Erkennung -->
-  <script src="native-app-detector.js"></script>
+  <script>
+    // In der nativen App wird capacitorJs geladen
+    // Dies ist ein zuverlässiger Indikator, dass wir in einer nativen App laufen
+    window.isNativeApp = (typeof window.Capacitor !== 'undefined');
+    console.log('Native app environment detected:', window.isNativeApp);
+  </script>
   <style>
     /* Critical CSS for initial rendering */
     body {

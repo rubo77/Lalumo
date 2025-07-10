@@ -198,7 +198,6 @@ module.exports = (env, argv) => {
           { from: 'homepage/icons', to: 'icons' },
           { from: 'homepage/icons', to: 'de/icons' },
           { from: 'homepage/icons', to: 'app/icons' },  // Auch für App-Verzeichnis kopieren
-          { from: 'src/native-app-detector.js', to: 'app/native-app-detector.js' },
           // Partials für Haupt-App und App-Verzeichnis kopieren
           { from: 'public/partials', to: 'partials' },
           { from: 'public/partials', to: 'app/partials' },

@@ -221,11 +221,6 @@ cp -r dist/app/* dist/
 # Ensure dist/app/ directory exists (it should, but let's be safe)
 mkdir -p dist/app/
 
-# Create our native-app-detector.js directly in both locations
-echo "Creating native-app-detector.js for the app..."
-cp src/native-app-detector.js dist/
-cp src/native-app-detector.js dist/app/
-
 # Jetzt mit der Standardkonfiguration synchronisieren (webDir ist bereits auf 'dist' eingestellt)
 echo "Synchronisiere mit Capacitor..."
 npx cap sync

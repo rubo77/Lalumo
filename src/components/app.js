@@ -1176,7 +1176,7 @@ export function app() {
      */
     async unlockAudio() {
       // Import debug utils for consistent logging
-      const { debugLog } = await import('../utils/debug');
+      // const { debugLog } = await import('../utils/debug');
       // debugLog('AUDIO', 'Attempting to unlock audio...');
       
       if (this.isAudioEnabled && this.audioContext && this.audioContext.state === 'running') {

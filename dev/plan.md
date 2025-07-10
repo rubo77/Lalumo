@@ -50,7 +50,9 @@ Task complete: asset sync/build issue resolved
 - Alpine.js double initialization is now prevented by a global flag (`window._alpineInitialized`) in index.js; debug logging added for Alpine startup.
 - `checkIOSAudio` method implemented in app component to resolve missing function error.
 - Critical: native-app-detector.js is being served with the wrong MIME type (text/html instead of application/javascript), likely blocking proper app initialization and Alpine.js single initialization.
-- Webpack CopyWebpackPlugin rule added to explicitly copy src/native-app-detector.js to app/native-app-detector.js, which should resolve the MIME type issue.
+- Decided to eliminate the separate native-app-detector.js file and all related build handling (webpack, mobile-build.sh, ios-build.sh). Instead, set window.isNativeApp directly in main code (e.g., index.js or inline in index.html) for simpler, more robust native app detection.
+- Webpack CopyWebpackPlugin rule removed as it is no longer needed.
+- native-app-detector.js file and all related build handling have been removed. Inline native app detection is now used in index.html.
 
 ## Task List
 - [x] Identify all relevant touch event handlers for buttons/interactions
@@ -66,7 +68,8 @@ Task complete: asset sync/build issue resolved
 - [x] Test and confirm Alpine.js/app single initialization (no warnings)
 - [x] Add translation/localization string keys for piano key label (H/B)
 - [x] Test and confirm correct localization for piano key label (H/B)
-- [x] Investigate and resolve MIME type conflict for native-app-detector.js
+- [x] Remove native-app-detector.js file and all related build handling (webpack.config.js, mobile-build.sh, ios-build.sh)
+- [x] Add inline native app detection (window.isNativeApp = (typeof window.Capacitor !== 'undefined')) in main code
 
 ## Current Goal
-Test on all browsers to confirm correct behavior
+Task complete: multi-touch & native detection refactor complete

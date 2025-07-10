@@ -167,11 +167,6 @@ cp -r dist/app/* dist/
 # Ensure dist/app/ directory exists (it should, but let's be safe)
 mkdir -p dist/app/
 
-# Create our native-app-detector.js directly in both locations
-echo "Creating native-app-detector.js for the app..."
-cp src/native-app-detector.js dist/
-cp src/native-app-detector.js dist/app/
-
 # Sync with Capacitor (webDir is already set to 'dist' in config)
 echo "Syncing with Capacitor..."
 npx cap sync ios
