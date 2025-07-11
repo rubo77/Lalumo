@@ -1,5 +1,5 @@
 /**
- * 2_2_chord_mood_landscapes.js - Module for the "Chord Mood Landscapes" activity
+ * 2_2_chord_chords_stable_instable.js - Module for the "Chord Stable Or Instable" activity
  */
 
 // Import debug utilities
@@ -17,17 +17,17 @@ import { showRainbowSuccess } from '../shared/feedback.js';
 /**
  * Test function to verify module import is working correctly
  * @returns {boolean} True if import successful
- * @activity 2_2_chord_mood_landscapes
+ * @activity 2_2_chord_chords_stable_instable
  */
 export function testChordMoodLandscapesModuleImport() {
-  debugLog('CHORDS', 'Chord Mood Landscapes module successfully imported');
+  debugLog('CHORDS', 'Chord Stable Or Instable module successfully imported');
   return true;
 }
 
 /**
  * Return the mapping of chord types to emotions and landscapes
  * @returns {Object} Object mapping chord types to emotions and landscapes
- * @activity 2_2_chord_mood_landscapes
+ * @activity 2_2_chord_chords_stable_instable
  */
 export function getMoodLandscapes() {
   return {
@@ -93,7 +93,7 @@ export function getMoodLandscapes() {
  * Update the landscape visualization based on the chord type
  * @param {Object} component - Reference to the Alpine.js component
  * @param {string} chordType - The chord type to visualize
- * @activity 2_2_chord_mood_landscapes
+ * @activity 2_2_chord_chords_stable_instable
  */
 export async function updateLandscape(component, chordType) {
   // Update the visual landscape and play the chord

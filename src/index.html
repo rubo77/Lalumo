@@ -97,7 +97,7 @@
   <!-- Cache busting wird durch webpack erledigt -->
   
 </head>
-<body>
+<body class="loading">
   <!-- Loading spinner overlay -->
   <div id="loading-overlay">
     <img id="loading-logo" src="./icons/icon-512.png" alt="Lalumo Logo">
@@ -105,15 +105,23 @@
   </div>
   
   <script>
+    // Set initial environment classes
+    document.body.classList.add(
+      window.isNativeApp ? 'native-app' : 'web-app',
+      window.isAndroid ? 'android' : (window.isiOS ? 'ios' : 'desktop'),
+      window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'dev-mode' : 'production'
+    );
+
     // Hide loading overlay when page is fully loaded
     window.addEventListener('load', function() {
       setTimeout(function() {
         document.getElementById('loading-overlay').classList.add('hidden');
+        document.body.classList.remove('loading');
       }, 50); // small delay for smoother transition
     });
   </script>
   <!-- app.js -->
-  <main id="app" x-data="app()" x-init="init(); initLazyLoading();" @click="unlockAudio()" @touchstart="unlockAudio()" class="container">
+  <main id="app" x-data="app()" x-init="init(); initLazyLoading(); updateEnvironmentClasses();" @click="unlockAudio()" @touchstart="unlockAudio()" class="container">
     
     <!-- Username Prompt Modal -->
     <div class="modal-overlay" x-show="showUsernamePrompt" x-transition
@@ -256,13 +264,13 @@
               🌈 <span x-text="$store.strings?.chord_color_matching || 'Color Matching'"></span>
             </button>
             <button id="nav_2_2"
-              @click="$dispatch('set-activity-mode', {component: 'chords', mode: '2_2_chords_mood-landscapes'}); window.innerWidth < 1024 ? menuOpen = false : null"
+              @click="$dispatch('set-activity-mode', {component: 'chords', mode: '2_2_chords_stable_instable'}); window.innerWidth < 1024 ? menuOpen = false : null"
               x-data="{ isActive: false }"
-              x-init="$watch('$store.currentActivityMode', value => isActive = value && value.component === 'chords' && value.mode === '2_2_chords_mood-landscapes')"
+              x-init="$watch('$store.currentActivityMode', value => isActive = value && value.component === 'chords' && value.mode === '2_2_chords_stable_instable')"
               :class="{ 'active': isActive }"
               class="debug-element"
             >
-              🏞️ <span x-text="$store.strings?.mood_landscapes || 'Mood Landscapes'"></span>
+              🏞️ <span x-text="$store.strings?.chords_stable_instable || 'Stable Or Instable'"></span>
             </button>
             <button id="nav_2_3"
               @click="$dispatch('set-activity-mode', {component: 'chords', mode: '2_3_chords_chord-building'}); window.innerWidth < 1024 ? menuOpen = false : null"
@@ -733,14 +741,14 @@
           </div>
         </div>
         
-        <!-- 2_2 Chords - Mood Landscapes Activity -->
-        <div x-show="mode === '2_2_chords_mood-landscapes'" class="chord-activity">
+        <!-- 2_2 Chords - Stable Or Instable Activity -->
+        <div x-show="mode === '2_2_chords_stable_instable'" class="chord-activity">
           
           <div class="chords-container">
-            <h2 x-text="$store.strings?.mood_landscapes_title || 'Chord Mood Landscapes'">Chord Mood Landscapes</h2>
+            <h2 x-text="$store.strings?.chords_stable_instable_title || 'Chord Stable Or Instable'">Chord Stable Or Instable</h2>
             
-            <div class="mood-landscapes-explanation">
-              <p x-text="$store.strings?.mood_landscapes_intro || 'Different chord types create different feelings and landscapes. Play each chord to see how the landscape changes!'">Different chord types create different feelings and landscapes. Play each chord to see how the landscape changes!</p>
+            <div class="chords-stable-instables-explanation">
+              <p x-text="$store.strings?.chords_stable_instable_intro || 'Different chord types create different feelings and landscapes. Play each chord to see how the landscape changes!'">Different chord types create different feelings and landscapes. Play each chord to see how the landscape changes!</p>
             </div>
             
             <div class="landscape-viewer">
@@ -1056,6 +1064,21 @@
 </script>
 
 <script>
+  // Update environment classes after Alpine.js is initialized
+  function updateEnvironmentClasses() {
+    const body = document.body;
+    
+    // Remove any existing environment classes
+    body.classList.remove('native-app', 'web-app', 'android', 'ios', 'desktop', 'dev', 'production');
+    
+    // Add current environment classes
+    body.classList.add(
+      window.isNativeApp ? 'native-app' : 'web-app',
+      window.isAndroid ? 'android' : (window.isiOS ? 'ios' : 'desktop'),
+      window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'dev' : 'production'
+    );
+  }
+  
   // Globale Funktionen für Lazy Loading, Back-Button-Handling und Menü-Interaktion
   
   // Funktion zum automatischen Schließen des Menüs, wenn genau ein normales Menüitem verfügbar ist

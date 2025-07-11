@@ -32,8 +32,8 @@ import {
   checkColorAnswer
 } from './2_chords/2_1_chord_color_matching.js';
 
-// 2_2 Chord Mood Landscapes Module
-import { testChordMoodLandscapesModuleImport } from './2_chords/2_2_chord_mood_landscapes.js';
+// 2_2 Chord Stable Or Instable Module
+import { testChordMoodLandscapesModuleImport } from './2_chords/2_2_chord_chords_stable_instable.js';
 
 // 2_3 Chord Building Module
 import { testChordBuildingModuleImport } from './2_chords/2_3_chord_building.js';
@@ -240,7 +240,7 @@ export function chords() {
           
           // Ensure all activity progress fields exist
           if (!this.progress['2_1_chords_color-matching']) this.progress['2_1_chords_color-matching'] = 0;
-          if (!this.progress['2_2_chords_mood-landscapes']) this.progress['2_2_chords_mood-landscapes'] = 0;
+          if (!this.progress['2_2_chords_stable_instable']) this.progress['2_2_chords_stable_instable'] = 0;
           if (!this.progress['2_3_chords_chord-building']) this.progress['2_3_chords_chord-building'] = 0;
           if (!this.progress['2_4_chords_missing-note']) this.progress['2_4_chords_missing-note'] = 0;
           if (!this.progress['2_5_chords_characters']) this.progress['2_5_chords_characters'] = 0;
@@ -255,7 +255,7 @@ export function chords() {
           // Initialize with empty progress object
           this.progress = {
             '2_1_chords_color-matching': 0,
-            '2_2_chords_mood-landscapes': 0,
+            '2_2_chords_stable_instable': 0,
             '2_3_chords_chord-building': 0,
             '2_4_chords_missing-note': 0,
             '2_5_chords_characters': 0,
@@ -636,9 +636,9 @@ export function chords() {
         this.startColorMatching();
         debugLog('CHORDS_2_1_DEBUG', `After startColorMatching: currentChordType=${this.currentChordType}`);
         debugLog('CHORDS', 'Initialized color matching activity with a new chord');
-      } else if (mode === '2_2_chords_mood-landscapes') {
-        // Initialisierung für Mood Landscapes
-        debugLog('CHORDS', 'Initializing mood landscapes activity');
+      } else if (mode === '2_2_chords_stable_instable') {
+        // Initialisierung für Stable Or Instable
+        debugLog('CHORDS', 'Initializing Stable Or Instable activity');
         // Hier den Init-Code für diese Aktivität einfügen
       } else if (mode === '2_3_chords_chord-building') {
         // Initialisierung für Chord Building
@@ -815,21 +815,21 @@ export function chords() {
     },
     
     /** *************************************************
-     * ******** 2_2_chord_mood_landscapes Activity Methods ********
+     * ******** 2_2_chord_chords_stable_instable Activity Methods ********
      * *************************************************** */
     
     /**
-     * Dynamic loader for the mood landscapes module
+     * Dynamic loader for the Stable Or Instable module
      * 
-     * @activity 2_2_chord_mood_landscapes
+     * @activity 2_2_chord_chords_stable_instable
      */
     async loadMoodLandscapesModule() {
       try {
-        const module = await import('./2_chords/2_2_chord_mood_landscapes.js');
+        const module = await import('./2_chords/2_2_chord_chords_stable_instable.js');
         return module;
       } catch (error) {
-        console.error('Failed to load mood landscapes module:', error);
-        debugLog('CHORDS', `Error loading mood landscapes module: ${error.message}`);
+        console.error('Failed to load Stable Or Instable module:', error);
+        debugLog('CHORDS', `Error loading Stable Or Instable module: ${error.message}`);
         return null;
       }
     },
@@ -837,7 +837,7 @@ export function chords() {
     /**
      * Wrapper to maintain backward compatibility
      * 
-     * @activity 2_2_chord_mood_landscapes
+     * @activity 2_2_chord_chords_stable_instable
      */
     async getMoodLandscapes() {
       const moodLandscapesModule = await this.loadMoodLandscapesModule();
@@ -853,7 +853,7 @@ export function chords() {
     /**
      * Dynamic wrapper for updateLandscape function from the module
      * 
-     * @activity 2_2_chord_mood_landscapes
+     * @activity 2_2_chord_chords_stable_instable
      */
     async updateLandscape(chordType) {
       // Import the module function dynamically and call it

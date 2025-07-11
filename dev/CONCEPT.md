@@ -25,7 +25,7 @@ The app playfully teaches preschool children a basic understanding of music – 
 - disabled: Chords Kapitel (2_chords):
 
  - Chord Color Matching: (2_1_chords_color-matching)
- - Mood Landscapes: (2_2_chords_mood-landscapes)
+ - Stable Or Instable: (2_2_chords_stable_instable)
  - Chord Building: (2_3_chords_chord-building)
  - Missing Note: (2_4_chords_missing-note)
  - Character Matching: (2_5_chords_characters)
@@ -144,9 +144,8 @@ Simple triads are translated into colors, moods, or figures. Children can guess,
   Major chords are represented by bright colors, minor chords by cooler or darker colors. Children listen to a chord and select which color best matches what they hear, developing emotional understanding of harmony.
     - sound geht noch nicht
 
-[ ] **Mood Landscapes: (2_2_chords_mood-landscapes)**
-  Different chord progressions create changing landscapes in a visual scene (sunny fields for major chords, misty forests for minor ones). Children explore how harmony affects mood and atmosphere.
-    - sound geht noch nicht
+[ ] **Stabile Instabile Akkorde: (2_2_chords_stable_instable)**
+  man hört entweder einen geraden wohlklingenden akkord oder einen sehr schief klingenden akkord mit viel dissonanzen, jeweils aus 6 Tönen bestehend
 
 [ ] **Chord Building: (2_3_chords_chord-building)**
   Children stack blocks representing different notes to build their own chords. As they add each note, the sound plays, teaching how chords are constructed from individual tones.

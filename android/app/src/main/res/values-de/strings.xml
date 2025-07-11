@@ -57,7 +57,7 @@
     
     <!-- Chords - Main Menu -->
     <string name="chord_color_matching">Akkord-Farben Zuordnung</string>
-    <string name="mood_landscapes">Stimmungslandschaften</string>
+    <string name="chords_stable_instable">Stimmungslandschaften</string>
     <string name="chord_building">Akkorde Bauen</string>
     <string name="missing_note">Rate die fehlende Note</string>
     <string name="chord_characters">Akkord-Charaktere</string>
@@ -68,9 +68,9 @@
     <string name="chord_color_matching_intro">Höre den Akkord und wähle die Farbe, die am besten dazu passt.</string>
     <string name="play_chord">Akkord spielen</string>
     
-    <!-- Chords - Mood Landscapes Activity -->
-    <string name="mood_landscapes_title">Akkord-Stimmungslandschaften</string>
-    <string name="mood_landscapes_intro">Verschiedene Akkordtypen erzeugen unterschiedliche Gefühle und Landschaften. Spiele jeden Akkord, um zu sehen, wie sich die Landschaft verändert!</string>
+    <!-- Chords - Stable Or Instable Activity -->
+    <string name="chords_stable_instable_title">Akkord-Stimmungslandschaften</string>
+    <string name="chords_stable_instable_intro">Verschiedene Akkordtypen erzeugen unterschiedliche Gefühle und Landschaften. Spiele jeden Akkord, um zu sehen, wie sich die Landschaft verändert!</string>
     
     <!-- Chords - Chord Building Activity -->
     <string name="chord_building_title">Baue deine eigenen Akkorde</string>

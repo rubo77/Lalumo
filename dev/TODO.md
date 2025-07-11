@@ -17,7 +17,7 @@ TODO
    - add a free play mode where the user can play any chord by clicking on the color
     
 
-  - **2_2_chords_mood-landscapes**:
+  - **2_2_chords_stable_instable**:
    - es spielt noch kein sound
     - Aktiviere Audio-Wiedergabe für Akkordprogressionen
     - schlage landschaften vor
@@ -161,9 +161,9 @@ reset-button:
 
 1_1 "High or Low?" (1_1_pitches_high_or_low) 
 - # bereit zur veröffentlichung
-- die tiefen töne sind eine oktave zu tief
 - im master level dürfen die töne maximal 3 halbtöne auseinander sein und der erste ton muss nicht mehr C5 sein, sondern kann jeder beliebige sein, es wird nur getestet, ob der 2. ton dann höher oder tiefer ist
 - die erfolgsmeldung muss sich ab level 3 aendern in "der ton war höher" anstatt "hoch" und "der ton war tiefer" anstatt "tief"
+- die tiefen töne sollen ab level 3 eine oktave höher
 - Die volle  bildschirmbreite Ausnutzen auf dem Handy
 
 1_2 "Match the Sounds":
