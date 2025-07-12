@@ -17,8 +17,9 @@ import {
   showCompleteError 
 } from '../shared/feedback.js';
 
-// Current chord type (stable or instable)
+// Current chord type (stable or instable) and frequencies
 let currentChordType = null;
+let currentChordFrequencies = [];
 
 // Level progression step
 const STABLE_INSTABLE_LEVEL_STEP = 10;
@@ -64,12 +65,12 @@ export function playStableInstableChord(component) {
     currentChordType = chordType;
     
     // Generate the appropriate chord
-    const frequencies = chordType === 'stable' 
+    currentChordFrequencies = chordType === 'stable' 
       ? generateStableChord() 
       : generateInstableChord();
     
     // Play the chord using the audio engine
-    audioEngine.playChord(frequencies, {
+    audioEngine.playChord(currentChordFrequencies, {
       duration: 2.0,
       volume: -12,
       type: 'sine',
@@ -135,10 +136,10 @@ export function checkStableInstableMatch(selectedType, component) {
       }
       
       debugLog(['CHORDS_2_2_DEBUG', '2_2_MATCH'], `Correct! It was a ${currentChordType} chord. Progress: ${progress['2_2_chords_stable_instable']}`);
-    } else {
-      // Show error feedback
-      showShakeError();
       
+      // Play success sound
+      audioEngine.playNote('success');
+    } else {
       // Reset progress to the beginning of the current level
       const currentProgress = progress['2_2_chords_stable_instable'];
       const currentLevel = Math.floor(currentProgress / STABLE_INSTABLE_LEVEL_STEP);
@@ -154,6 +155,24 @@ export function checkStableInstableMatch(selectedType, component) {
       }
       
       debugLog(['CHORDS_2_2_DEBUG', '2_2_MATCH'], `Incorrect. It was a ${currentChordType} chord. Progress reset to ${progress['2_2_chords_stable_instable']}`);
+
+      // Show error feedback
+      showShakeError();
+      audioEngine.playNote('try_again');
+      
+      // Replay the same chord after a delay
+      if (currentChordFrequencies.length > 0) {
+        setTimeout(() => {
+          audioEngine.playChord(currentChordFrequencies, {
+            duration: 2.0,
+            volume: -12,
+            type: 'sine',
+            attack: 0.1,
+            release: 1.5
+          });
+          debugLog(['CHORDS_2_2_DEBUG', '2_2_REPLAY'], `Replaying ${currentChordType} chord`);
+        }, 1000);
+      }
     }
     
     // Update the background based on progress

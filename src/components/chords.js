@@ -722,6 +722,8 @@ export function chords() {
     /**
      * Reset progress to the start of current level
      * For 2_5_chords_characters activity, levels progress in steps defined by LEVEL_STEP
+     * 
+     * @activity 2_5_chords_characters
      */
     resetProgressToCurrentLevel() {
       if (!this.progress || !this.progress['2_5_chords_characters']) return;
@@ -1551,7 +1553,7 @@ export function chords() {
         debugLog(['CHORDS', '2_5_TRANSPOSE'], `After wrong answer: keeping chord ${this.currentChordType} with transposition ${this.currentTransposeRootNote}`);
         
         // Play error sound feedback
-        audioEngine.playNote('try_again', 1.0);
+        audioEngine.playNote('try_again');
         console.log('AUDIO: Playing try_again feedback sound for incorrect chord match');
         
         // Reset progress to the beginning of the current level

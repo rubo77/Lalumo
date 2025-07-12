@@ -1114,7 +1114,7 @@ export function pitches() {
         console.log('Updated progress in localStorage:', this.highOrLowProgress);
         
         // Play success sound
-        audioEngine.playNote('success', 1.0);
+        audioEngine.playNote('success');
         console.log('AUDIO: Playing success feedback sound with audio engine');
         
         // Create and show rainbow success animation
@@ -3316,7 +3316,7 @@ export function pitches() {
           // TODO: play sound and rainbow exact after the painted melody is played (in case it is a longer melody)
           setTimeout(() => {
             // Play success sound
-            audioEngine.playNote('success', 1.0);
+            audioEngine.playNote('success');
             debugLog('AUDIO', '[1_3] Playing success feedback sound with audio engine. level: ' + this.levelSuccessCounter);
             
             // Always show rainbow for mastering all levels
@@ -3701,7 +3701,7 @@ export function pitches() {
       if (isCorrect) {
         // Add 1 second delay before playing success sound
         setTimeout(() => {
-          audioEngine.playNote('success', 1.0);
+          audioEngine.playNote('success');
           console.log('AUDIO: Playing success feedback sound with audio engine after 1s delay');
         }, 1000);
       } else {
