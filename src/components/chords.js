@@ -33,7 +33,12 @@ import {
 } from './2_chords/2_1_chord_color_matching.js';
 
 // 2_2 Chord Stable Or Instable Module
-import { testChordMoodLandscapesModuleImport } from './2_chords/2_2_chord_chords_stable_instable.js';
+import { 
+  playStableInstableChord,
+  checkStableInstableMatch,
+  updateStableInstableBackground,
+  reset_2_2_StableInstable_Progress
+} from './2_chords/2_2_chords_stable_instable.js';
 
 // 2_3 Chord Building Module
 import { testChordBuildingModuleImport } from './2_chords/2_3_chord_building.js';
@@ -43,7 +48,6 @@ import { testMissingNoteModuleImport } from './2_chords/2_4_missing_note.js';
 
 // 2_5 Chord Characters Module
 import { 
-  testChordCharactersModuleImport,
   updateCharacterBackground 
 } from './2_chords/2_5_chord_characters.js';
 
@@ -637,9 +641,21 @@ export function chords() {
         debugLog('CHORDS_2_1_DEBUG', `After startColorMatching: currentChordType=${this.currentChordType}`);
         debugLog('CHORDS', 'Initialized color matching activity with a new chord');
       } else if (mode === '2_2_chords_stable_instable') {
-        // Initialisierung für Stable Or Instable
-        debugLog('CHORDS', 'Initializing Stable Or Instable activity');
-        // Hier den Init-Code für diese Aktivität einfügen
+        // Initialize Stable Or Instable activity
+        debugLog('CHORDS_2_2_DEBUG', 'Initializing Stable Or Instable activity');
+        this.currentStableInstableChord = null;
+        this.showStableInstableFeedback = false;
+        this.stableInstableFeedback = '';
+        this.stableInstableCorrect = false;
+        
+        // Initialize progress if it doesn't exist
+        if (!this.progress) this.progress = {};
+        if (typeof this.progress['2_2_chords_stable_instable'] === 'undefined') {
+          this.progress['2_2_chords_stable_instable'] = 0;
+        }
+        
+        // Update the background based on current progress
+        updateStableInstableBackground(this);
       } else if (mode === '2_3_chords_chord-building') {
         // Initialisierung für Chord Building
         debugLog('CHORDS', 'Initializing chord building activity');
@@ -676,8 +692,15 @@ export function chords() {
       this.feedbackMessage = '';
       this.showFeedback = false;
       
+      // Reset for 2_2_chords_stable_instable activity
+      if (this.mode === '2_2_chords_stable_instable') {
+        reset_2_2_StableInstable_Progress();
+        this.showStableInstableFeedback = false;
+        this.stableInstableFeedback = '';
+        this.stableInstableCorrect = false;
+      }
       // Reset for 2_5_chords_characters activity
-      if (this.mode === '2_5_chords_color_matching') {
+      else if (this.mode === '2_5_chords_color_matching') {
         // Reset progress to 0 for this activity
         if (this.progress && this.progress['2_5_chords_characters']) {
           this.progress['2_5_chords_characters'] = 0;
@@ -819,51 +842,44 @@ export function chords() {
      * *************************************************** */
     
     /**
-     * Dynamic loader for the Stable Or Instable module
+     * Check if the user's answer matches the current chord type
      * 
+     * @param {boolean} isStable - Whether the user thinks the chord is stable
      * @activity 2_2_chord_chords_stable_instable
      */
-    async loadMoodLandscapesModule() {
-      try {
-        const module = await import('./2_chords/2_2_chord_chords_stable_instable.js');
-        return module;
-      } catch (error) {
-        console.error('Failed to load Stable Or Instable module:', error);
-        debugLog('CHORDS', `Error loading Stable Or Instable module: ${error.message}`);
-        return null;
+    checkStableInstableAnswer(isStable) {
+      // Make sure we have a current chord to check against
+      if (!this.currentStableInstableChord) {
+        this.showStableInstableFeedback = true;
+        this.stableInstableFeedback = 'Please play a chord first';
+        this.stableInstableCorrect = false;
+        return;
       }
-    },
-    
-    /**
-     * Wrapper to maintain backward compatibility
-     * 
-     * @activity 2_2_chord_chords_stable_instable
-     */
-    async getMoodLandscapes() {
-      const moodLandscapesModule = await this.loadMoodLandscapesModule();
-      if (moodLandscapesModule && typeof moodLandscapesModule.getMoodLandscapes === 'function') {
-        return moodLandscapesModule.getMoodLandscapes();
-      } else {
-        debugLog('CHORDS', 'Error: getMoodLandscapes function not found in module');
-        // Return empty object as fallback
-        return {};
-      }
-    },
-    
-    /**
-     * Dynamic wrapper for updateLandscape function from the module
-     * 
-     * @activity 2_2_chord_chords_stable_instable
-     */
-    async updateLandscape(chordType) {
-      // Import the module function dynamically and call it
-      const moodLandscapesModule = await this.loadMoodLandscapesModule();
       
-      if (moodLandscapesModule && typeof moodLandscapesModule.updateLandscape === 'function') {
-        // Call the module function, passing the component (this) and chordType
-        await moodLandscapesModule.updateLandscape(this, chordType);
-      } else {
-        debugLog('CHORDS', 'Error: updateLandscape function not found in module');
+      try {
+        // Check if the answer is correct
+        const isCorrect = checkStableInstableMatch(isStable, this.currentStableInstableChord);
+        
+        // Update feedback
+        this.showStableInstableFeedback = true;
+        this.stableInstableCorrect = isCorrect;
+        
+        // Update progress and get feedback message
+        const feedback = updateStableInstableBackground(this, isCorrect);
+        this.stableInstableFeedback = feedback;
+        
+        // Log the result
+        debugLog('CHORDS_2_2', `User selected ${isStable ? 'stable' : 'instable'}, ` +
+          `correct: ${isCorrect ? 'yes' : 'no'}, progress: ${this.progress['2_2_chords_stable_instable']}`);
+        
+        // Play the chord again for reference
+        playStableInstableChord(this);
+        
+      } catch (error) {
+        console.error('Error checking stable/instable answer:', error);
+        this.showStableInstableFeedback = true;
+        this.stableInstableFeedback = 'Error checking answer. Please try again.';
+        this.stableInstableCorrect = false;
       }
     },
     

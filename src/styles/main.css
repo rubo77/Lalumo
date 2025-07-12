@@ -425,113 +425,6 @@ html body.dev-mode .debug-element {
   margin-bottom: 15px;
   color: #ff3333;
   font-weight: bold;
-}
-
-.warning-button {
-  background-color: #ff9800;
-  color: white;
-  border: none;
-  padding: 10px 15px;
-  font-size: 1rem;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.warning-button:hover {
-  background-color: #e68a00;
-}
-
-.danger-button {
-  background-color: #f44336;
-  color: white;
-  border: none;
-  padding: 10px 15px;
-  font-size: 1rem;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background-color 0.2s;
-  margin-right: 10px;
-}
-
-.danger-button:hover {
-  background-color: #d32f2f;
-}
-
-/* Settings */
-.settings-section {
-  margin-top: 2rem;
-  position: relative;
-  z-index: 900; /* Higher z-index to ensure settings are visible */
-}
-
-/* Player Settings - ensure they're not overlapped */
-.settings-panel, 
-.player-settings, 
-.export-section {
-  position: relative;
-  z-index: 1000; /* Higher than menu */
-  margin-left: auto; /* Center content away from menu width */
-  margin-right: auto;
-  width: calc(100% - 240px); /* Leave space for menu width */
-  background: white;
-  border-radius: 8px;
-  padding: 15px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-}
-
-.sett.pitch-card {
-  background-color: white;
-  border-radius: 1rem;
-  padding: 1.5rem;
-  margin: 0.5rem;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  text-align: center;
-  transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
-  cursor: pointer;
-  user-select: none;
-  touch-action: manipulation;
-}
-
-.sett.pitch-card h3 {
-  margin-top: 0;
-  color: var(--primary-color);
-  font-size: 1.3rem;
-  margin-bottom: 1rem;
-}
-
-.profile-header {
-  display: flex;
-  align-items: center;
-  margin-bottom: 1.5rem;
-}
-
-.large-avatar {
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  background-color: var(--primary-color);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-right: 1rem;
-  color: white;
-  font-weight: bold;
-  font-size: 1.8rem;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-}
-
-.profile-name h4 {
-  margin: 0;
-  font-size: 1rem;
-  color: #666;
-}
-
-.profile-name p {
-  margin: 0.3rem 0 0 0;
-  font-size: 1.2rem;
   font-weight: bold;
 }
 
@@ -1355,6 +1248,75 @@ section h2 {
   height: 174vw !important;
   max-height: min(999px, 163vw);
 }
+
+/* #\32 _2_chords_characters Styles werden bei Bedarf hier definiert */
+
+.button_2_2_grid {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  width: 100%;
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 20px 0;
+}
+
+#button_2_2_stable,
+#button_2_2_instable {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  border-radius: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  border: none;
+  outline: none;
+  color: white;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+#button_2_2_stable {
+  background: linear-gradient(135deg, #4CAF50, #8BC34A);
+}
+
+#button_2_2_instable {
+  background: linear-gradient(135deg, #F44336, #FF9800);
+}
+
+#button_2_2_stable:hover,
+#button_2_2_instable:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+#button_2_2_stable:active,
+#button_2_2_instable:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .button_2_2_grid {
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  #button_2_2_stable,
+  #button_2_2_instable {
+    width: 80%;
+    max-width: 300px;
+    height: 150px;
+  }
+}
+
+
 
 /* #\32 _5_chords_characters Styles werden bei Bedarf hier definiert */
 

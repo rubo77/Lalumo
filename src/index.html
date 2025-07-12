@@ -742,7 +742,7 @@
         </div>
         
         <!-- 2_2 Chords - Stable Or Instable Activity -->
-        <div id="2_2_chords_stable_instable" x-show="mode === '2_2_chords_stable_instable'" class="chord-activity activity-container lazyload-bg" data-background-image="./images/backgrounds/2_5_chords_dog_cat_owl_no_squirrel_no_octopus.jpg">
+        <div id="2_2_chords_stable_instable" x-show="mode === '2_2_chords_stable_instable'" class="chord-activity activity-container lazyload-bg" data-background-image="./images/backgrounds/2_2_chords_stable_instable.png">
           
           <!-- Play button (shown in game mode) -->
           <button @click="playStableInstableChord()" class="play-button" :title="$store.strings?.play_chord || 'Play Chord'">▶️</button>
@@ -756,7 +756,7 @@
               <p x-show="(progress['2_2_chords_stable_instable'] || 0) >= 20" x-text="$store.strings?.stable_instable_level3 || 'You\'re a chord expert! 🎼'"></p>
             </div>
             
-            <div class="character-grid">
+            <div class="button_2_2_grid">
               <div id="button_2_2_stable" class="character" @click="checkStableInstableMatch('stable')">
                 <div title="Stable">Stable</div>
               </div>

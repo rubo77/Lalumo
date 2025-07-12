@@ -697,12 +697,12 @@ export class AudioEngine {
       if (parsedNote) {
         validNotes.push(parsedNote);
       } else {
-        console.warn(`Ungültige Note ignoriert: ${note}`);
+        console.warn(`Invalid Note ignored: ${note} (not in the format e.g. 'C4', 'D#4')`);
       }
     });
     
     if (validNotes.length === 0) {
-      console.warn('Keine gültigen Noten im Akkord');
+      console.warn('No valid notes in chord');
       return false;
     }
     
