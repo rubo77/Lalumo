@@ -279,6 +279,16 @@ module.exports = (env, argv) => {
           {
             from: 'homepage/icons',
             to: 'de/icons',
+          },
+          // Homepage images für Root-Version
+          {
+            from: 'homepage/images',
+            to: 'homepage/images',
+          },
+          // Homepage images für deutsche Version
+          {
+            from: 'homepage/images',
+            to: 'de/homepage/images',
           }
         ],
       }),
