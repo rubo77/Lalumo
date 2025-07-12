@@ -7,7 +7,7 @@
   <link rel="icon" href="./favicon.ico" sizes="any" />
   <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png" />
-  <link rel="icon" type="image/png" sizes="512x512" href="./icons/icon-512.png" />
+  <link rel="icon" type="image/png" sizes="512x512" href="./app/images/logo_bird_sings.jpg" />
   <!-- Native App Detector - Setzt das window.isNativeApp Flag für zuverlässige App-Erkennung -->
   <script>
     // In der nativen App wird capacitorJs geladen
@@ -201,13 +201,29 @@
             >
             🎵 <span x-text="$store.strings?.match_sounds || 'Match Sounds'"></span>
             </button>
-            <button id="nav_1_3"
+            <!-- Locked Draw a Melody button (visible when not unlocked) -->
+            <button id="nav_1_3_locked" x-show="!areAllActivitiesUnlocked"
+              @click="active = 'referral-code'; window.innerWidth < 1024 ? menuOpen = false : null"
+              class="locked-activity"
+            >
+              <span>🔒 ✏️ <span x-text="$store.strings?.draw_melody || 'Draw a Melody'"></span></span>
+            </button>
+            
+            <!-- Unlocked Draw a Melody button (visible when unlocked through referrals) -->
+            <button id="nav_1_3" x-show="areAllActivitiesUnlocked"
               @click="$dispatch('set-activity-mode', {component: 'pitches', mode: '1_3_pitches_draw-melody'}); window.innerWidth < 1024 ? menuOpen = false : null"
               x-data="{ isActive: false }"
               x-init="$watch('$store.currentActivityMode', value => isActive = value && value.component === 'pitches' && value.mode === '1_3_pitches_draw-melody')"
               :class="{ 'active': isActive }"
             >
               ✏️ <span x-text="$store.strings?.draw_melody || 'Draw a Melody'"></span>
+            </button>
+            
+            <!-- Debug button for Draw a Melody (always visible) -->
+            <button id="nav_1_3_debug" class="debug-element"
+              @click="$dispatch('set-activity-mode', {component: 'pitches', mode: '1_3_pitches_draw-melody'}); window.innerWidth < 1024 ? menuOpen = false : null"
+            >
+              🔓 ✏️ <span x-text="$store.strings?.draw_melody || 'Draw a Melody'"></span>
             </button>
             <button id="nav_1_4"
               @click="$dispatch('set-activity-mode', {component: 'pitches', mode: '1_4_pitches_does-it-sound-right'}); window.innerWidth < 1024 ? menuOpen = false : null"
@@ -216,34 +232,39 @@
               :class="{ 'active': isActive }">
               👉 <span x-text="$store.strings?.does_it_sound_right || 'Does It Sound Right?'"></span>
             </button>
-            <button id="nav_1_5"
+            <!-- Locked Memory Game button (visible when not unlocked) -->
+            <button id="nav_1_5_locked" x-show="!areAllActivitiesUnlocked"
+              @click="active = 'referral-code'; window.innerWidth < 1024 ? menuOpen = false : null"
+              class="locked-activity"
+            >
+              <span>🔒 🎹 <span x-text="$store.strings?.memory_game || 'Memory Game'"></span></span>
+            </button>
+            
+            <!-- Unlocked Memory Game button (visible when unlocked through referrals) -->
+            <button id="nav_1_5" x-show="areAllActivitiesUnlocked"
               @click="$dispatch('set-activity-mode', {component: 'pitches', mode: '1_5_pitches_memory-game'}); window.innerWidth < 1024 ? menuOpen = false : null"
               x-data="{ isActive: false }"
               x-init="$watch('$store.currentActivityMode', value => isActive = value && value.component === 'pitches' && value.mode === '1_5_pitches_memory-game')"
               :class="{ 'active': isActive }"
             >
-            🎹 <span x-text="$store.strings?.memory_game || 'Memory Game'"></span>
+              🎹 <span x-text="$store.strings?.memory_game || 'Memory Game'"></span>
+            </button>
+            
+            <!-- Debug button for Memory Game (always visible) -->
+            <button id="nav_1_5_debug" class="debug-element"
+              @click="$dispatch('set-activity-mode', {component: 'pitches', mode: '1_5_pitches_memory-game'}); window.innerWidth < 1024 ? menuOpen = false : null"
+            >
+              🔓 🎹 <span x-text="$store.strings?.memory_game || 'Memory Game'"></span>
             </button>
           </div>
         </template>
 
-        <div class="menu-chapters" x-show="!isChordChapterUnlocked">
-          <!-- locked chords button with padlock (visible when not unlocked) -->
-          <button @click="active = 'referral-code'; window.innerWidth < 1024 ? menuOpen = false : null" :class="{ 'active': active === 'referral-code' }" class="locked-chapter">
-            <span>🔒 <span x-text="$store.strings?.menu_chords || 'Chords'"></span></span>
-          </button>
-          <!-- extra button always visible for debug-->
-          <button class="debug-element" @click="active = 'chords'; $dispatch('set-activity-mode', {component: 'chords', mode: '2_5_chords_characters'})" :class="{ 'active': active === 'chords' }">
-            <span x-text="$store.strings?.menu_chords || 'Chords'"></span>
-          </button>
-        </div>
-
-        <div class="menu-chapters" x-show="isChordChapterUnlocked">
-          <!-- chords button (visible when unlocked through referrals) -->
+        <div class="menu-chapters">
+          <!-- Regular chords button -->
           <button 
             @click="
               active = 'chords'; 
-              $dispatch('set-activity-mode', {component: 'chords', mode: '2_5_chords_characters'});
+              $dispatch('set-activity-mode', {component: 'chords', mode: '2_2_chords_stable_instable'});
               checkAndAutoCloseMenu();
             "
             :class="{ 'active': active === 'chords' }">
@@ -289,13 +310,35 @@
             >
               🎼 <span x-text="$store.strings?.missing_note || 'Missing Note'"></span>
             </button>
+            <!-- Locked version of Chord Story Characters (visible when not unlocked) -->
+            <button id="nav_2_5_locked"
+              x-show="!areAllActivitiesUnlocked"
+              @click="active = 'referral-code'; window.innerWidth < 1024 ? menuOpen = false : null"
+              class="locked-activity"
+            >
+              🔒 🎭 <span x-text="$store.strings?.chord_characters || 'Character Matching'"></span>
+            </button>
+            
+            <!-- Unlocked version of Chord Story Characters (visible when unlocked through referrals) -->
             <button id="nav_2_5"
+              x-show="areAllActivitiesUnlocked"
               @click="$dispatch('set-activity-mode', {component: 'chords', mode: '2_5_chords_characters'}); window.innerWidth < 1024 ? menuOpen = false : null"
               x-data="{ isActive: false }"
               x-init="$watch('$store.currentActivityMode', value => isActive = value && value.component === 'chords' && value.mode === '2_5_chords_characters')"
               :class="{ 'active': isActive }"
             >
               🎭 <span x-text="$store.strings?.chord_characters || 'Character Matching'"></span>
+            </button>
+            
+            <!-- Debug button for Chord Story Characters (always available) -->
+            <button id="nav_2_5_debug"
+              class="debug-element"
+              @click="$dispatch('set-activity-mode', {component: 'chords', mode: '2_5_chords_characters'}); window.innerWidth < 1024 ? menuOpen = false : null"
+              x-data="{ isActive: false }"
+              x-init="$watch('$store.currentActivityMode', value => isActive = value && value.component === 'chords' && value.mode === '2_5_chords_characters')"
+              :class="{ 'active': isActive }"
+            >
+              Debug 🎭 <span x-text="$store.strings?.chord_characters || 'Character Matching'"></span>
             </button>
             <button id="nav_2_6"
               @click="$dispatch('set-activity-mode', {component: 'chords', mode: '2_6_chords_harmony-gardens'}); window.innerWidth < 1024 ? menuOpen = false : null"

@@ -12,6 +12,11 @@
   pointer-events: none !important; /* Verhindert jegliche Klick-Interaktion */
 }
 
+/* Locked activity styling */
+.locked-activity {
+  opacity: 0.7;
+}
+
 /* Wenn die Entwicklungsumgebung aktiv ist (über body-Klasse steuerbar) */
 html body.dev-mode .debug-element {
   /* Für Entwicklungsmodus anpassen */

@@ -106,9 +106,9 @@
     <string name="mascot_all_unlocked">Großartig! Alle Melodie-Muster sind jetzt verfügbar! 🎉</string>
     
     <!-- Referrals Page Strings -->
-    <string name="unlock_chords">Akkorde-Kapitel freischalten</string>
-    <string name="referral_instruction">Teile Lalumo mit deinen Freunden, um das Akkorde-Kapitel freizuschalten!</string>
-    <string name="referrals_premium">erfolgreiche Empfehlungen: Akkorde-Kapitel freischalten</string>
+    <string name="unlock_chords">Spezielle Aktivitäten freischalten</string>
+    <string name="referral_instruction">Teile Lalumo mit deinen Freunden, um spezielle Aktivitäten freizuschalten: Melodie zeichnen, Memory-Spiel und Akkord-Charaktere!</string>
+    <string name="referrals_premium">erfolgreiche Empfehlungen: Spezielle Aktivitäten freischalten</string>
     <string name="referrals_future">erfolgreiche Empfehlungen: Erhalte zukünftige Updates kostenlos</string>
     <string name="register_username">Registriere deinen Benutzernamen</string>
     <string name="username_lock_warning">Nach der Registrierung kannst du deinen Benutzernamen nicht mehr ändern.</string>

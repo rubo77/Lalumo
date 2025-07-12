@@ -127,9 +127,9 @@
     <string name="help_messages_on">Show Help Messages</string>
     
     <!-- Referrals Page Strings -->
-    <string name="unlock_chords">Unlock Chords Chapter</string>
-    <string name="referral_instruction">Share Lalumo with your friends to unlock the Chords Chapter!</string>
-    <string name="referrals_premium">successful referrals: Unlock Chords Chapter</string>
+    <string name="unlock_chords">Unlock Special Activities</string>
+    <string name="referral_instruction">Share Lalumo with your friends to unlock special activities: Draw a Melody, Memory Game, and Chord Story Characters!</string>
+    <string name="referrals_premium">successful referrals: Unlock Special Activities</string>
     <string name="referrals_future">successful referrals: Get future updates for free</string>
     <string name="register_username">Register Your Username</string>
     <string name="username_lock_warning">After registering, you will no longer be able to change your username.</string>

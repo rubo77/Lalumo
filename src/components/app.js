@@ -41,7 +41,7 @@ export function app() {
     friendCode: '',              // Friend code input by user
     referredBy: '',              // Code/username of who referred this user (from deep link)
     referrerUsername: '',         // Username of the person who referred this user
-    isChordChapterUnlocked: false, // Whether chord chapter is unlocked
+    areAllActivitiesUnlocked: false, // Whether chord chapter is unlocked
     
     /**
      * Mapping of chapters and activities to new ID format
@@ -251,8 +251,8 @@ export function app() {
           this.saveReferralData();
           
           // Check if the chapter should be unlocked
-          if (this.referralCount >= 3 && !this.isChordChapterUnlocked) {
-            this.isChordChapterUnlocked = true;
+          if (this.referralCount >= 3 && !this.areAllActivitiesUnlocked) {
+            this.areAllActivitiesUnlocked = true;
             this.saveReferralData();
           }
         } else if (data.error) {
@@ -724,7 +724,7 @@ export function app() {
             this.referralCode = referralData.referralCode || '';
             this.referralCount = referralData.referralCount || 0;
             this.referralClickCount = referralData.referralClickCount || 0;
-            this.isChordChapterUnlocked = referralData.isChordChapterUnlocked || false;
+            this.areAllActivitiesUnlocked = referralData.areAllActivitiesUnlocked || false;
             this.referredBy = referralData.referredBy || '';
             this.referrerUsername = referralData.referrerUsername || '';
             console.log('Referral data loaded:', { 
@@ -733,7 +733,7 @@ export function app() {
               referralCode: this.referralCode,
               referralCount: this.referralCount,
               referralClickCount: this.referralClickCount,
-              isChordChapterUnlocked: this.isChordChapterUnlocked,
+              areAllActivitiesUnlocked: this.areAllActivitiesUnlocked,
               referredBy: this.referredBy,
               referrerUsername: this.referrerUsername
             });
@@ -1713,7 +1713,7 @@ export function app() {
       
       // Prüfen, ob die Bedingungen erfüllt sind
       if (this.referralCount >= minReferrals) {
-        this.isChordChapterUnlocked = true;
+        this.areAllActivitiesUnlocked = true;
         this.saveReferralData(); // Freischaltung speichern
       }
     },
@@ -1735,7 +1735,7 @@ export function app() {
           referralCount: this.referralCount,
           referralClickCount: this.referralClickCount || 0,
           referralLink: this.referralLink || '',
-          isChordChapterUnlocked: this.isChordChapterUnlocked,
+          areAllActivitiesUnlocked: this.areAllActivitiesUnlocked,
           // Wichtig: referredBy und referrerUsername speichern
           referredBy: this.referredBy || '',
           referrerUsername: this.referrerUsername || ''
@@ -2115,7 +2115,7 @@ export function app() {
           
           // Akkorde-Kapitel freischalten, wenn 3 oder mehr Referrals erreicht
           if (this.referralCount >= 3) {
-            this.isChordChapterUnlocked = true;
+            this.areAllActivitiesUnlocked = true;
           }
           
           // Daten speichern

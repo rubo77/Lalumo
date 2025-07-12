@@ -72,6 +72,10 @@ Das Lalumo Referral-System ermöglicht es Benutzern, ihre Freunde zur App einzul
    - Beim App-Start ruft `loadUserData()` die Funktion `fetchReferralCount()` auf
    - Diese sendet GET-Request an `/referral.php` mit Benutzernamen
    - Alpine-State und localStorage werden mit aktuellen Werten aktualisiert
+   - Wenn der status unlocked ist, dann wird die variable `areAllActivitiesUnlocked` auf true gesetzt und
+   - Diese Variable wird nun verwendet, um drei spezifische Aktivitäten freizuschalten, statt dem gesamten Chords-Kapitel:
+     - In Pitches-Kapitel: "Draw a Melody" und "Memory Game" Aktivitäten
+     - In Chords-Kapitel: Nur die "Chord Story Characters" (2_5_chords_characters) Aktivität
 
 2. **Backend (referral.php)**:
    - Empfängt Statistik-Request via GET mit `username`-Parameter
