@@ -2263,6 +2263,18 @@ export function app() {
             if (secondaryKey && secondaryValue !== null) {
               debugLog(['CHEATCODE'], ` Activity ${activityId} does not support secondary values`);
             }
+          } 
+          // Special handling for 2_2 activity
+          else if (activityId === '2_2' || activityId === '2_2_chords_stable_instable') {
+            // Always update the 2_2_chords_stable_instable key for this activity
+            chordsProgressData['2_2_chords_stable_instable'] = progressValue;
+            debugLog(['CHEATCODE'], `: Setting 2_2_chords_stable_instable progress to ${progressValue}`);
+            debugLog(['CHEATCODE', '2_2_PROGRESS'], `Setting 2_2_chords_stable_instable progress to ${progressValue}`);
+            
+            // Handle secondary value if present
+            if (secondaryKey && secondaryValue !== null) {
+              debugLog(['CHEATCODE'], ` Activity ${activityId} does not support secondary values`);
+            }
           } else {
             // Generic chord activity
             chordsProgressData[activityId] = progressValue;

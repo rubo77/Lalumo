@@ -148,9 +148,9 @@ Simple triads are translated into colors, moods, or figures. Children can guess,
   This activity helps children develop their ear for consonance and dissonance by distinguishing between stable (consonant) and unstable (dissonant) chords. 
   
   **Activity Flow:**
-  1. The app plays either a stable or unstable 6-note chord
-  2. Stable chords use harmonious intervals (major 3rds, perfect 5ths, major 7ths)
-  3. Unstable chords contain dissonant intervals (minor 2nds, tritones, major 7ths)
+  1. The app plays either a stable or unstable chord that includes a prominent base note and additional chord tones (total of 6-7 notes)
+  2. Stable chords use harmonious intervals based on the base note (major/minor 3rds, perfect 5ths, consonant extensions) creating a sense of resolution
+  3. Unstable chords contain dissonant intervals against the base note (minor 2nds, tritones, clashing 7ths) creating tension
   4. The child identifies whether the chord sounds "stable" (pleasant/at rest) or "unstable" (tense/needing resolution)
   5. Visual feedback reinforces the learning with appropriate imagery (e.g., calm landscapes for stable, stormy for unstable)
   
@@ -160,8 +160,12 @@ Simple triads are translated into colors, moods, or figures. Children can guess,
   - Helps children articulate their emotional responses to different harmonic qualities
   
   **Progression:**
-  - Early levels: Clear contrast between very consonant and very dissonant chords
-  - Later levels: More subtle distinctions with extended harmonies
+  - **Level 1 (0-10 points):** Clear contrast between highly consonant major/minor triads and extremely dissonant clusters with base note
+  - **Level 2 (11-20 points):** Introduction of seventh chords (stable) vs. altered dominants with dissonances (unstable)
+  - **Level 3 (21-30 points):** Extended harmonies (9th, 11th chords) vs. polytonal chords with conflicting base notes
+  - **Level 4 (31-40 points):** Jazz voicings with controlled dissonance vs. atonal clusters with irregular spacing
+  - **Level 5 (41-50 points):** Impressionistic harmonies with color tones vs. microtonal variations and quarter-tone dissonances
+  - **Level 6 (51+ points):** Complex extended harmonies with subtle tensions vs. highly sophisticated dissonances requiring nuanced listening
 
 [ ] **Chord Building: (2_3_chords_chord-building)**
   Children stack blocks representing different notes to build their own chords. As they add each note, the sound plays, teaching how chords are constructed from individual tones.

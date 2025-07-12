@@ -266,6 +266,11 @@ export function checkStableInstableMatch(selectedType, component) {
       progress['2_2_chords_stable_instable'] = 0;
     }
     
+    debugLog(['CHORDS_2_2_DEBUG', '2_2_PROGRESS'], 
+      `Current progress before check: ${progress['2_2_chords_stable_instable']}, ` +
+      `Selection: ${selectedType}, Actual: ${currentChordType}`);
+    
+    
     // Update progress if the answer is correct
     if (isCorrect) {
       // Increment progress
@@ -277,6 +282,11 @@ export function checkStableInstableMatch(selectedType, component) {
       // Update component's progress state
       if (component && component.progress) {
         component.progress['2_2_chords_stable_instable'] = progress['2_2_chords_stable_instable'];
+        debugLog(['CHORDS_2_2_DEBUG', '2_2_PROGRESS'], 
+          `Progress updated after correct answer: ${progress['2_2_chords_stable_instable']}`);
+      } else {
+        debugLog(['CHORDS_2_2_DEBUG', '2_2_PROGRESS', 'ERROR'], 
+          'Component or component.progress not available, progress UI may not update');
       }
       
       // Show success feedback
@@ -323,13 +333,21 @@ export function checkStableInstableMatch(selectedType, component) {
       
       debugLog(['CHORDS_2_2_DEBUG', '2_2_MATCH'], `Incorrect. It was a ${currentChordType} chord. Progress reset to ${progress['2_2_chords_stable_instable']}`);
       
-      // Force UI update for progress
+      // Save updated progress to localStorage
+      localStorage.setItem('lalumo_chords_progress', JSON.stringify(progress));
+      
+      // Update component's progress state
       if (component && component.progress) {
         component.progress['2_2_chords_stable_instable'] = progress['2_2_chords_stable_instable'];
         // Trigger Alpine.js update
         component.$nextTick();
+        debugLog(['CHORDS_2_2_DEBUG', '2_2_PROGRESS'], 
+          `Progress updated after incorrect answer: ${progress['2_2_chords_stable_instable']}`);
+      } else {
+        debugLog(['CHORDS_2_2_DEBUG', '2_2_PROGRESS', 'ERROR'], 
+          'Component or component.progress not available, progress UI may not update');
       }
-
+      
       // Show error feedback
       showShakeError();
       audioEngine.playNote('try_again');
