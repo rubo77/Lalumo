@@ -25,6 +25,11 @@
 - Next steps: Fix navigation selectors and ensure correct element IDs/selectors in both test and app.
 - Duplicate variable declarations for playButton in the Playwright test script have now been fixed.
 - When an incorrect answer is given in 2_2_chords_stable_instable, the same chord should be replayed (not a new random chord). This requires tracking and replaying the current chord, not just calling playStableInstableChord().
+- User reports three new issues: (1) transposition is not kept when replaying via the play button, (2) automatic play of next note after success does not work, (3) progress logging always shows zero.
+- Rearrangement of homepage download buttons requested for responsive layout; F-Droid icon to be downloaded locally and used.
+- User wants download buttons to always show 2 per row using flex, and 1 per row on small screens; grid is not desired. Continue with 2_2 after fixing this.
+- "Play again" in 2_2_chords_stable_instable must keep the current chord and transposition, not just the type.
+- Free play mode in 2_2 must generate a random stable or instable chord on each button before the first play, exactly like 2_5 logic.
 
 ## Task List
 - [x] Review the structure and code of 2_5_chord_characters.js
@@ -36,12 +41,17 @@
 - [x] Integrate playStableInstableChord and checkStableInstableMatch with chords component
 - [x] Implement level-based reset system for 2_2 activity (reset progress to start of current level on error)
 - [x] Test and polish the full 2_2_chords_stable_instable activity (manual and script-based)
+- [x] Investigate 2_2 and 2_5 JS modules for free play/replay logic
 - [ ] Ensure dev server is running and stable before test
 - [ ] Run automated Playwright tests for 2_2_chords_stable_instable
 - [ ] Analyze test results and finalize polish/fixes as needed
 - [ ] Fix navigation selectors and ensure correct element IDs/selectors in test and app (use id="nav_2_2" for Stable Or Instable navigation button)
 - [x] Fix duplicate variable declarations for playButton in Playwright test script
-- [ ] Refactor 2_2_chords_stable_instable so that after an incorrect answer, the same chord (not a new random one) is replayed. Track and replay the current chord and type.
+- [x] Refactor 2_2_chords_stable_instable so that after an incorrect answer, the same chord (not a new random one) is replayed. Track and replay the current chord and type.
+- [x] Update homepage download buttons to always show 2 per row with flex (fallback to 1 per row on small screens)
+- [ ] Rearrange homepage download buttons for responsive layout and use local F-Droid badge
+- [ ] Fix 2_2_chords_stable_instable so play again keeps current chord and transposition
+- [ ] Implement free play mode for 2_2_chords_stable_instable: generate random stable/instable chord on each button before first play (match 2_5 logic)
 
 ## Current Goal
-Fix navigation and selectors in test and app for reliable Playwright testing
+Implement and test 2_2 free play and replay logic

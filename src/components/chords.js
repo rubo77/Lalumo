@@ -1147,6 +1147,7 @@ export function chords() {
         const baseNoteNumber = 60;
         const newNoteNumber = baseNoteNumber + transposeAmount;
         
+        // TODO: use transposeNote() function from 2_2_chords_stable_instable.js
         // Convert MIDI note number back to note name with octave
         const noteNames = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
         const noteName = noteNames[newNoteNumber % 12];
