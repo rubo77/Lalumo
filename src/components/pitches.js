@@ -1114,7 +1114,7 @@ export function pitches() {
         console.log('Updated progress in localStorage:', this.highOrLowProgress);
         
         // Play success sound
-        audioEngine.playNote('success');
+        audioEngine.playNote('success', 1, undefined, 0.4);
         console.log('AUDIO: Playing success feedback sound with audio engine');
         
         // Create and show rainbow success animation
@@ -3701,7 +3701,7 @@ export function pitches() {
       if (isCorrect) {
         // Add 1 second delay before playing success sound
         setTimeout(() => {
-          audioEngine.playNote('success');
+          audioEngine.playNote('success', 1, undefined, 0.3);
           console.log('AUDIO: Playing success feedback sound with audio engine after 1s delay');
         }, 1000);
       } else {

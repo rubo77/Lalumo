@@ -390,7 +390,7 @@ export function checkStableInstableMatch(selectedType, component) {
       debugLog(['CHORDS_2_2_DEBUG', '2_2_MATCH'], `Correct! It was a ${currentChordType} chord. Progress: ${progress['2_2_chords_stable_instable']}`);
       
       // Play success sound and schedule next chord
-      audioEngine.playNote('success', 1, undefined, 0.1);
+      audioEngine.playNote('success', 1, undefined, 0.5);
       
       // Clear any existing timeout to prevent multiple auto-plays
       if (autoPlayTimeout) {

@@ -418,11 +418,11 @@ export class AudioEngine {
    * @param {string} noteName - Name der Note (C4, D#3, etc.) oder 'success' oder 'try_again'
    * @param {number} duration - Dauer in Sekunden
    * @param {number} time - Zeitpunkt für den Start der Note (Optional)
-   * @param {number} volume - Lautstärke (0.0 - 1.0)
+   * @param {number} velocity - Lautstärke (0.0 - 1.0)
    * @param {string} instrument - Instrument to use ('violin', 'flute', 'tuba', 'default')
    * @param {Object} options - Zusätzliche Optionen (NICHT mehr für Instrument verwenden!)
    */
-  playNote(noteName, duration = 0.5, time, volume = 0.75, instrument = 'default', options = {}) {
+  playNote(noteName, duration = 0.5, time, velocity = 0.75, instrument = 'default', options = {}) {
     if (!this._isInitialized) {
       console.warn('Audio-Engine wurde noch nicht initialisiert!');
       return;
@@ -430,7 +430,6 @@ export class AudioEngine {
     
     // Prüfen, ob es sich um einen speziellen Sound handelt
     if (this._specialSounds[noteName]) {
-      let velocity = 0.5;
       console.log(`AUDIO: Spiele speziellen Sound-Effekt: ${noteName}`);
       this._playSpecialSound(noteName, velocity);
       return;
@@ -469,19 +468,19 @@ export class AudioEngine {
     // Use the right instrument type from toneJsSampler
     switch(instrument.toLowerCase()) {
       case 'piano':
-        played = playToneNote(parsedNote, durationInSeconds, volume);
+        played = playToneNote(parsedNote, durationInSeconds, velocity);
         break;
       case 'violin':
-        played = playViolinNote(parsedNote, durationInSeconds, volume);
+        played = playViolinNote(parsedNote, durationInSeconds, velocity);
         break;
       case 'doublebass':
-        played = playDoubleBassNote(parsedNote, durationInSeconds, volume);
+        played = playDoubleBassNote(parsedNote, durationInSeconds, velocity);
         break;
       case 'flute':
-        played = playFluteNote(parsedNote, durationInSeconds, volume);
+        played = playFluteNote(parsedNote, durationInSeconds, velocity);
         break;
       case 'brass': // Used as replacement for 'tuba' in the free mode
-        played = playBrassNote(parsedNote, durationInSeconds, volume);
+        played = playBrassNote(parsedNote, durationInSeconds, velocity);
         break;
       default:
         // For backwards compatibility, use the internal synth for non-matched instruments
@@ -490,7 +489,7 @@ export class AudioEngine {
           this.useInstrument(instrument);
           
           // Note spielen mit musikalischer Zeitnotation
-          this._synth.triggerAttackRelease(parsedNote, duration, time, volume);
+          this._synth.triggerAttackRelease(parsedNote, duration, time, velocity);
           
           // Note als aktiv markieren
           this._notesPlaying.add(parsedNote);
@@ -845,21 +844,20 @@ export class AudioEngine {
     // Alle Noten der Sequenz nacheinander abspielen
     sound.notes.forEach((note, index) => {
       const duration = sound.durations[index] || 0.25;
-      const noteVelocity = sound.velocity || velocity;
       
       // Note zum richtigen Zeitpunkt abspielen
       this._synth.triggerAttackRelease(
         note, 
         duration, 
         currentTime, 
-        noteVelocity
+        velocity
       );
       
       // Zeit für nächste Note berechnen
       currentTime += duration;
     });
     
-    console.log(`AUDIO: Speziellen Sound '${soundName}' abgespielt`);
+    console.log(`AUDIO: Speziellen Sound '${soundName}' abgespielt mit Lautstärke ${velocity}`);
   }
   
   /**
