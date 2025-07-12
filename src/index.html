@@ -742,43 +742,31 @@
         </div>
         
         <!-- 2_2 Chords - Stable Or Instable Activity -->
-        <div x-show="mode === '2_2_chords_stable_instable'" class="chord-activity">
+        <div id="2_2_chords_stable_instable" x-show="mode === '2_2_chords_stable_instable'" class="chord-activity activity-container lazyload-bg" data-background-image="./images/backgrounds/2_5_chords_dog_cat_owl_no_squirrel_no_octopus.jpg">
           
-          <div class="chords-container">
-            <h2 x-text="$store.strings?.chords_stable_instable_title || 'Chord Stable Or Instable'">Chord Stable Or Instable</h2>
-            
-            <div class="chords-stable-instables-explanation">
-              <p x-text="$store.strings?.chords_stable_instable_intro || 'Different chord types create different feelings and landscapes. Play each chord to see how the landscape changes!'">Different chord types create different feelings and landscapes. Play each chord to see how the landscape changes!</p>
+          <!-- Play button (shown in game mode) -->
+          <button @click="playStableInstableChord()" class="play-button" :title="$store.strings?.play_chord || 'Play Chord'">▶️</button>
+
+          <div class="chords-container">            
+            <!-- Progress display -->
+            <div class="progress-display progress_2_2">
+              <p x-text="($store.strings?.correct_answers_count || 'Correct answers: {0}').replace('{0}', progress['2_2_chords_stable_instable'] || 0)"></p>
+              <p x-show="(progress['2_2_chords_stable_instable'] || 0) < 10" x-text="$store.strings?.stable_instable_level1 || 'Can you hear the difference?'"></p>
+              <p x-show="(progress['2_2_chords_stable_instable'] || 0) >= 10 && (progress['2_2_chords_stable_instable'] || 0) < 20" x-text="$store.strings?.stable_instable_level2 || 'Great job! Keep going! 🎵'"></p>
+              <p x-show="(progress['2_2_chords_stable_instable'] || 0) >= 20" x-text="$store.strings?.stable_instable_level3 || 'You\'re a chord expert! 🎼'"></p>
             </div>
             
-            <div class="landscape-viewer">
-              <!-- Landscape image will change based on selected chord -->
-              <div class="landscape-image">
-                <!--<img src="./images/landscapes/sunny-field.jpg" alt="Landscape scene" id="landscape-image" />-->
+            <div class="character-grid">
+              <div id="button_2_2_stable" class="character" @click="checkStableInstableMatch('stable')">
+                <div title="Stable">Stable</div>
+              </div>
+              
+              <div id="button_2_2_instable" class="character" @click="checkStableInstableMatch('instable')">
+                <div title="Instable">Instable</div>
               </div>
             </div>
             
-            <div class="chord-selector">
-              <button @click="playChordByType('major'); updateLandscape('major')" class="chord-button">
-                <span>🌞</span>
-                <span>Major</span>
-              </button>
-              
-              <button @click="playChordByType('minor'); updateLandscape('minor')" class="chord-button">
-                <span>☁️</span>
-                <span>Minor</span>
-              </button>
-              
-              <button @click="playChordByType('diminished'); updateLandscape('diminished')" class="chord-button">
-                <span>🌫️</span>
-                <span>Diminished</span>
-              </button>
-              
-              <button @click="playChordByType('augmented'); updateLandscape('augmented')" class="chord-button">
-                <span>⚡</span>
-                <span>Augmented</span>
-              </button>
-            </div>
+            <div class="feedback-message" x-show="showStableInstableFeedback" x-text="stableInstableFeedback" :class="{'correct': stableInstableCorrect, 'incorrect': !stableInstableCorrect}"></div>
           </div>
         </div>
         

@@ -144,8 +144,24 @@ Simple triads are translated into colors, moods, or figures. Children can guess,
   Major chords are represented by bright colors, minor chords by cooler or darker colors. Children listen to a chord and select which color best matches what they hear, developing emotional understanding of harmony.
     - sound geht noch nicht
 
-[ ] **Stabile Instabile Akkorde: (2_2_chords_stable_instable)**
-  man hört entweder einen geraden wohlklingenden akkord oder einen sehr schief klingenden akkord mit viel dissonanzen, jeweils aus 6 Tönen bestehend
+[ ] **Stable or Instable Chords: (2_2_chords_stable_instable)**
+  This activity helps children develop their ear for consonance and dissonance by distinguishing between stable (consonant) and unstable (dissonant) chords. 
+  
+  **Activity Flow:**
+  1. The app plays either a stable or unstable 6-note chord
+  2. Stable chords use harmonious intervals (major 3rds, perfect 5ths, major 7ths)
+  3. Unstable chords contain dissonant intervals (minor 2nds, tritones, major 7ths)
+  4. The child identifies whether the chord sounds "stable" (pleasant/at rest) or "unstable" (tense/needing resolution)
+  5. Visual feedback reinforces the learning with appropriate imagery (e.g., calm landscapes for stable, stormy for unstable)
+  
+  **Educational Value:**
+  - Develops aural recognition of harmonic tension and resolution
+  - Builds the foundation for understanding musical phrases and cadences
+  - Helps children articulate their emotional responses to different harmonic qualities
+  
+  **Progression:**
+  - Early levels: Clear contrast between very consonant and very dissonant chords
+  - Later levels: More subtle distinctions with extended harmonies
 
 [ ] **Chord Building: (2_3_chords_chord-building)**
   Children stack blocks representing different notes to build their own chords. As they add each note, the sound plays, teaching how chords are constructed from individual tones.
