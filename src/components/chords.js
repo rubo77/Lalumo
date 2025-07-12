@@ -33,8 +33,8 @@ import {
 } from './2_chords/2_1_chord_color_matching.js';
 
 // 2_2 Chord Stable Or Instable Module
-import { 
-  playStableInstableChord,
+import {
+  playStableInstableChord, 
   checkStableInstableMatch,
   updateStableInstableBackground,
   reset_2_2_StableInstable_Progress
@@ -692,12 +692,15 @@ export function chords() {
       this.feedbackMessage = '';
       this.showFeedback = false;
       
-      // Reset for 2_2_chords_stable_instable activity
+      // Reset UI state for 2_2_chords_stable_instable activity, but keep the progress
       if (this.mode === '2_2_chords_stable_instable') {
-        reset_2_2_StableInstable_Progress();
+        // Only reset UI state, not the progress
         this.showStableInstableFeedback = false;
         this.stableInstableFeedback = '';
         this.stableInstableCorrect = false;
+        
+        // Update background based on current progress
+        updateStableInstableBackground(this);
       }
       // Reset for 2_5_chords_characters activity
       else if (this.mode === '2_5_chords_color_matching') {

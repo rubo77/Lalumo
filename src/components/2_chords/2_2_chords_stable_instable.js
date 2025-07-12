@@ -49,20 +49,100 @@ export function testStableInstableModuleImport() {
 
 
 /**
- * Generates an unstable (dissonant) chord with 6 notes
- * @returns {Array} Array of note frequencies
+ * Generates an unstable (dissonant) chord based on the current progress level
+ * @param {number} progressLevel - Current progress level (0-5 for levels 1-6)
+ * @returns {Array} Array of note names in Tone.js format
  */
-export function generateInstableChord() {
-  // Cluster of minor 2nds and tritones for maximum dissonance
-  const root = 60; // Middle C
-  return [
-    midiToNoteName(root),           // Root (C4)
-    midiToNoteName(root + 1),       // Minor 2nd (very dissonant) (C#4)
-    midiToNoteName(root + 6),       // Tritone (the "devil's interval") (F#4)
-    midiToNoteName(root + 7),       // Perfect 5th (but clashes with tritone) (G4)
-    midiToNoteName(root + 8),       // Minor 6th (clashes with 5th) (G#4)
-    midiToNoteName(root + 10)       // Major 7th (clashes with root) (B4)
-  ];
+export function generateInstableChord(progressLevel = 0) {
+  // Base note that will be prominent in all chord types
+  const root = 48; // C2 as a prominent low base note
+  const baseNote = midiToNoteName(root);
+  
+  // Get current progress from localStorage if not provided
+  if (progressLevel === undefined) {
+    const progressData = localStorage.getItem('lalumo_chords_progress');
+    if (progressData) {
+      const progress = JSON.parse(progressData);
+      progressLevel = progress['2_2_chords_stable_instable'] || 0;
+    } else {
+      progressLevel = 0;
+    }
+  }
+  
+  // Calculate the level (0-5) based on progress points
+  const level = Math.min(5, Math.floor(progressLevel / STABLE_INSTABLE_LEVEL_STEP));
+  
+  debugLog(['CHORDS_2_2_DEBUG', 'LEVEL'], `Generating unstable chord for level ${level+1} (progress: ${progressLevel})`);
+  
+  // Different chord types based on level
+  switch(level) {
+    case 0: // Level 1: Clearly dissonant clusters
+      return [
+        baseNote,                   // Base note (C2)
+        midiToNoteName(root + 12),  // Root an octave up (C3)
+        midiToNoteName(root + 13),  // Minor 2nd (C#3) - very dissonant
+        midiToNoteName(root + 18),  // Tritone (F#3) - the "devil's interval"
+        midiToNoteName(root + 24),  // Octave (C4)
+        midiToNoteName(root + 25)   // Minor 2nd (C#4) - dissonant octave higher
+      ];
+      
+    case 1: // Level 2: Altered dominants with dissonances
+      return [
+        baseNote,                   // Base note (C2)
+        midiToNoteName(root + 12),  // Root (C3)
+        midiToNoteName(root + 17),  // Augmented 5th (F3) - creates tension
+        midiToNoteName(root + 21),  // Minor 7th (Bb3) - dominant quality
+        midiToNoteName(root + 24),  // Octave (C4)
+        midiToNoteName(root + 26),  // Flat 9th (D4) - dissonant against C
+        midiToNoteName(root + 32)   // Augmented 5th (G#4) - clash with root
+      ];
+      
+    case 2: // Level 3: Polytonal chords with conflicting base notes
+      return [
+        baseNote,                   // Base note (C2)
+        midiToNoteName(root + 13),  // C#3 - conflicting base note
+        midiToNoteName(root + 16),  // E3 - suggesting C major
+        midiToNoteName(root + 20),  // G#3 - suggesting C# major
+        midiToNoteName(root + 24),  // C4 - reinforcing C
+        midiToNoteName(root + 27),  // D#4 - reinforcing C#
+        midiToNoteName(root + 30)   // F#4 - suggesting D dominant
+      ];
+      
+    case 3: // Level 4: Atonal clusters with irregular spacing
+      return [
+        baseNote,                   // Base note (C2)
+        midiToNoteName(root + 12),  // Root (C3)
+        midiToNoteName(root + 15),  // Minor 3rd (Eb3)
+        midiToNoteName(root + 16),  // Major 3rd (E3) - direct clash with minor 3rd
+        midiToNoteName(root + 18),  // Tritone (F#3)
+        midiToNoteName(root + 23),  // Major 7th (B3) - dissonant against root
+        midiToNoteName(root + 25)   // Minor 9th (C#4) - dissonant against root
+      ];
+      
+    case 4: // Level 5: Microtonal variations (approximated with standard tuning)
+      return [
+        baseNote,                   // Base note (C2)
+        midiToNoteName(root + 12),  // Root (C3)
+        midiToNoteName(root + 13),  // Minor 2nd (C#3) - approximating quarter-tone
+        midiToNoteName(root + 18),  // Tritone (F#3) 
+        midiToNoteName(root + 19),  // Perfect 5th (G3) - direct clash with tritone
+        midiToNoteName(root + 23),  // Major 7th (B3) - tension against root
+        midiToNoteName(root + 25)   // Minor 9th (C#4) - more dissonance
+      ];
+      
+    case 5: // Level 6: Highly sophisticated dissonances
+    default:
+      return [
+        baseNote,                   // Base note (C2)
+        midiToNoteName(root + 12),  // Root (C3)
+        midiToNoteName(root + 13),  // Minor 2nd (C#3)
+        midiToNoteName(root + 18),  // Tritone (F#3)
+        midiToNoteName(root + 23),  // Major 7th (B3)
+        midiToNoteName(root + 25),  // Minor 9th (C#4)
+        midiToNoteName(root + 29),  // Augmented 11th (F#4)
+        midiToNoteName(root + 34)   // Augmented 13th (A#4) - extreme dissonance
+      ];
+  }
 }
 
 /**
@@ -78,9 +158,9 @@ function initializeFreePlayMode() {
   freePlayChords = [];
   isFreeModeActive = true;
   
-  // Generate one stable and one instable chord for the buttons
-  const stableChord = generateStableChord();
-  const instableChord = generateInstableChord();
+  // Always use level 1 chords for free play mode to make them easily distinguishable
+  const stableChord = generateStableChord(0);  // Level 1 (simple stable chord)
+  const instableChord = generateInstableChord(0);  // Level 1 (simple unstable chord)
   
   // Randomly assign to buttons (50/50 which is which)
   if (Math.random() < 0.5) {
@@ -109,53 +189,53 @@ export function playStableInstableChord(component, isReplay = false) {
     }
     
     debugLog(['CHORDS_2_2_DEBUG', 'PLAY'], 
-      `Play button pressed with isReplay=${isReplay}, isFreeModeActive=${isFreeModeActive}`);
+      `playStableInstableChord called: isFreeModeActive=${isFreeModeActive}, isReplay=${isReplay}`);
     
-    // The play button transitions from free mode to game mode
+    // If this is a replay request and we have a current chord, just replay it
+    if (isReplay && currentChordType) {
+      playCurrentChord();
+      debugLog(['CHORDS_2_2_DEBUG', '2_2_REPLAY'], 
+        `Replaying ${currentChordType} chord ` +
+        `(transposed ${currentTransposeSemitones > 0 ? '+' : ''}${currentTransposeSemitones} semitones)`);
+      return currentChordType;
+    }
+    
+    // If free mode is active, keep it active but switch to game mode on play button
+    // The play button should start the game
     if (isFreeModeActive) {
-      // Switch from free play to game mode
       isFreeModeActive = false;
-      debugLog(['CHORDS_2_2_DEBUG', 'MODE_CHANGE'], 'Switching from FREE PLAY to GAME MODE');
-      
-      // Generate a new random chord (not from free play)
-      // Randomly choose between stable and unstable (50/50 chance)
-      currentChordType = Math.random() < 0.5 ? 'stable' : 'instable';
-      
-      // Generate the appropriate chord
-      currentBaseChord = currentChordType === 'stable' 
-        ? generateStableChord() 
-        : generateInstableChord();
-      
-      // Apply random transposition between -6 and +6 semitones
-      currentTransposeSemitones = Math.floor(Math.random() * 13) - 6; // -6 to +6
-      
-      debugLog(['CHORDS_2_2_DEBUG', 'GAME_MODE'], 
-        `First game chord: ${currentChordType} with transposition ${currentTransposeSemitones}`);
+      debugLog(['CHORDS_2_2_DEBUG', 'MODE'], `Switching from free play mode to game mode`);
+    }
+    
+    // Get current progress level to generate appropriate difficulty
+    let progressLevel = 0;
+    if (component && component.progress) {
+      progressLevel = component.progress['2_2_chords_stable_instable'] || 0;
     } else {
-      // Already in game mode
-      if (isReplay) {
-        // For replay, use the existing chord and transposition
-        debugLog(['CHORDS_2_2_DEBUG', 'REPLAY'], 
-          `Replaying ${currentChordType} chord with transposition ${currentTransposeSemitones}`);
-        
-        // Note: No need to regenerate the chord or transposition, just play the current one
-      } else {
-        // This is a new chord request in game mode
-        // Randomly choose between stable and unstable (50/50 chance)
-        currentChordType = Math.random() < 0.5 ? 'stable' : 'instable';
-        
-        // Generate the appropriate chord
-        currentBaseChord = currentChordType === 'stable' 
-          ? generateStableChord() 
-          : generateInstableChord();
-        
-        // Apply random transposition between -6 and +6 semitones
-        currentTransposeSemitones = Math.floor(Math.random() * 13) - 6; // -6 to +6
-        
-        debugLog(['CHORDS_2_2_DEBUG', 'NEW_CHORD'], 
-          `Generated new ${currentChordType} chord with transposition ${currentTransposeSemitones}`);
+      // Try to get from localStorage if component not available
+      const progressData = localStorage.getItem('lalumo_chords_progress');
+      if (progressData) {
+        const progress = JSON.parse(progressData);
+        progressLevel = progress['2_2_chords_stable_instable'] || 0;
       }
     }
+    
+    // For game mode, randomly choose a chord type and generate it
+    const isStable = Math.random() < 0.5;
+    currentChordType = isStable ? 'stable' : 'instable';
+    
+    // Generate a new chord based on type and current progress level
+    if (currentChordType === 'stable') {
+      currentBaseChord = generateStableChord(progressLevel);
+    } else {
+      currentBaseChord = generateInstableChord(progressLevel);
+    }
+    
+    // Apply random transposition (-6 to +6 semitones)
+    // Higher levels get more extreme transpositions
+    const level = Math.min(5, Math.floor(progressLevel / STABLE_INSTABLE_LEVEL_STEP));
+    const transpositionRange = 3 + Math.floor(level * 0.8); // Level 1: ±3, Level 6: ±7
+    currentTransposeSemitones = Math.floor(Math.random() * (transpositionRange*2+1)) - transpositionRange;
     
     // Apply transposition to the base chord
     currentChordFrequencies = currentBaseChord.map(note => 
@@ -165,10 +245,20 @@ export function playStableInstableChord(component, isReplay = false) {
     // Play the chord using the audio engine
     playCurrentChord();
     
-    debugLog(['CHORDS_2_2_DEBUG', '2_2_PLAY'], 
-      `Playing ${isReplay ? 'replayed ' : ''}${currentChordType} chord ` +
-      `(transposed ${currentTransposeSemitones > 0 ? '+' : ''}${currentTransposeSemitones} semitones)`
-    );
+    // Display level info in logs
+    if (component && component.progress) {
+      const progressLevel = component.progress['2_2_chords_stable_instable'] || 0;
+      const level = Math.min(5, Math.floor(progressLevel / STABLE_INSTABLE_LEVEL_STEP));
+      const level6Display = level + 1; // Convert to 1-based for display
+      
+      debugLog(['CHORDS_2_2_DEBUG', '2_2_PLAY'], 
+        `Playing ${isReplay ? 'replayed ' : ''}${currentChordType} chord (Level ${level6Display}) ` +
+        `(transposed ${currentTransposeSemitones > 0 ? '+' : ''}${currentTransposeSemitones} semitones)`);
+    } else {
+      debugLog(['CHORDS_2_2_DEBUG', '2_2_PLAY'], 
+        `Playing ${isReplay ? 'replayed ' : ''}${currentChordType} chord ` +
+        `(transposed ${currentTransposeSemitones > 0 ? '+' : ''}${currentTransposeSemitones} semitones)`);
+    }
     
     return currentChordType;
   } catch (error) {
@@ -300,7 +390,7 @@ export function checkStableInstableMatch(selectedType, component) {
       debugLog(['CHORDS_2_2_DEBUG', '2_2_MATCH'], `Correct! It was a ${currentChordType} chord. Progress: ${progress['2_2_chords_stable_instable']}`);
       
       // Play success sound and schedule next chord
-      audioEngine.playNote('success');
+      audioEngine.playNote('success', 1, undefined, 0.1);
       
       // Clear any existing timeout to prevent multiple auto-plays
       if (autoPlayTimeout) {
@@ -322,13 +412,22 @@ export function checkStableInstableMatch(selectedType, component) {
       const currentLevel = Math.floor(currentProgress / STABLE_INSTABLE_LEVEL_STEP);
       const newProgress = currentLevel * STABLE_INSTABLE_LEVEL_STEP;
       
-      // Only reset if we're not already at the start of a level
-      if (currentProgress > newProgress) {
+      // We're already at the start of a level or exactly at a level threshold (10, 20, etc.)
+      if (currentProgress === newProgress) {
+        // Don't reduce progress if we're exactly at a level threshold (10, 20, 30, etc.)
+        // Keep the current progress unchanged
+        debugLog(['CHORDS_2_2_DEBUG', '2_2_RESET'], `Progress unchanged at level threshold: ${currentProgress}`);
+      } 
+      // We're past the start of a level, so reset to the start of this level
+      else if (currentProgress > newProgress) {
         progress['2_2_chords_stable_instable'] = newProgress;
         debugLog(['CHORDS_2_2_DEBUG', '2_2_RESET'], `Progress reset to ${newProgress} (level ${currentLevel})`);
-      } else {
-        // Don't go below 0
-        progress['2_2_chords_stable_instable'] = Math.max(0, currentProgress - 1);
+      } 
+      // We're not at a level threshold and not past it (should never happen, but just in case)
+      else {
+        // Don't go below current level threshold
+        progress['2_2_chords_stable_instable'] = newProgress;
+        debugLog(['CHORDS_2_2_DEBUG', '2_2_RESET'], `Progress adjusted to level threshold: ${newProgress}`);
       }
       
       debugLog(['CHORDS_2_2_DEBUG', '2_2_MATCH'], `Incorrect. It was a ${currentChordType} chord. Progress reset to ${progress['2_2_chords_stable_instable']}`);
@@ -383,13 +482,32 @@ export function checkStableInstableMatch(selectedType, component) {
  */
 function playCurrentChord() {
   if (currentChordFrequencies.length > 0) {
-    audioEngine.playChord(currentChordFrequencies, {
-      duration: 2.0,
-      volume: -12,
+    // Get the base note and the rest of the chord
+    const baseNote = currentChordFrequencies[0];
+    const restOfChord = currentChordFrequencies.slice(1);
+    
+    // Debug to check that we have the base note
+    debugLog(['CHORDS_2_2_DEBUG', 'PLAY_CHORD'], 
+      `Playing chord: base note ${baseNote}, with ${restOfChord.length} additional notes`);
+    
+    // Play the base note with longer duration and higher volume
+    // Format: playNote(noteName, duration, time, volume, instrument, options)
+    audioEngine.playNote(baseNote, 2.5, undefined, 0.9, 'default', {
       type: 'sine',
-      attack: 0.1,
-      release: 1.5
+      attack: 0.05,
+      release: 2.0
     });
+    
+    // Play the rest of the chord simultaneously
+    if (restOfChord.length > 0) {
+      audioEngine.playChord(restOfChord, {
+        duration: 2.0,
+        volume: 0.5,  // Lower volume for the rest of the chord
+        type: 'sine',
+        attack: 0.1,
+        release: 1.5
+      });
+    }
   } else {
     debugLog(['CHORDS_2_2_DEBUG', 'WARNING'], 'No chord frequencies to play');
   }
@@ -528,19 +646,99 @@ function transposeNote(note, semitones) {
 }
 
 /**
- * Generates a stable (consonant) chord with 6 notes
+ * Generates a stable (consonant) chord based on the current progress level
+ * @param {number} progressLevel - Current progress level (0-5 for levels 1-6)
  * @returns {Array} Array of note names in Tone.js format (e.g., ['C4', 'E4', 'G4'])
  */
-export function generateStableChord() {
-  // Major 7th chord with added 9th and 13th for richness
-  const root = 60; // Middle C (C4)
-  return [
-    midiToNoteName(root),           // Root (C4)
-    midiToNoteName(root + 4),       // Major 3rd (E4)
-    midiToNoteName(root + 7),       // Perfect 5th (G4)
-    midiToNoteName(root + 11),      // Major 7th (B4)
-    midiToNoteName(root + 14),      // 9th (D5)
-    midiToNoteName(root + 21)       // 13th (A5)
-  ];
+export function generateStableChord(progressLevel = 0) {
+  // Base note that will be prominent in all chord types
+  const root = 48; // C2 as a prominent low base note
+  const baseNote = midiToNoteName(root);
+  
+  // Get current progress from localStorage if not provided
+  if (progressLevel === undefined) {
+    const progressData = localStorage.getItem('lalumo_chords_progress');
+    if (progressData) {
+      const progress = JSON.parse(progressData);
+      progressLevel = progress['2_2_chords_stable_instable'] || 0;
+    } else {
+      progressLevel = 0;
+    }
+  }
+  
+  // Calculate the level (0-5) based on progress points
+  const level = Math.min(5, Math.floor(progressLevel / STABLE_INSTABLE_LEVEL_STEP));
+  
+  debugLog(['CHORDS_2_2_DEBUG', 'LEVEL'], `Generating stable chord for level ${level+1} (progress: ${progressLevel})`);
+  
+  // Different chord types based on level
+  switch(level) {
+    case 0: // Level 1: Simple major/minor triads with perfect consonance
+      return [
+        baseNote,                   // Base note (C2)
+        midiToNoteName(root + 12),  // Root an octave up (C3)
+        midiToNoteName(root + 16),  // Major 3rd (E3)
+        midiToNoteName(root + 19),  // Perfect 5th (G3)
+        midiToNoteName(root + 24),  // Octave (C4)
+        midiToNoteName(root + 28)   // Major 3rd (E4)
+      ];
+      
+    case 1: // Level 2: Add seventh chords (major 7th, dominant 7th)
+      return [
+        baseNote,                   // Base note (C2)
+        midiToNoteName(root + 12),  // Root (C3)
+        midiToNoteName(root + 16),  // Major 3rd (E3)
+        midiToNoteName(root + 19),  // Perfect 5th (G3)
+        midiToNoteName(root + 23),  // Major 7th (B3)
+        midiToNoteName(root + 28),  // Major 3rd (E4)
+        midiToNoteName(root + 31)   // Perfect 5th (G4)
+      ];
+      
+    case 2: // Level 3: Extended harmonies (9th, 11th chords)
+      return [
+        baseNote,                   // Base note (C2)
+        midiToNoteName(root + 12),  // Root (C3)
+        midiToNoteName(root + 16),  // Major 3rd (E3)
+        midiToNoteName(root + 19),  // Perfect 5th (G3)
+        midiToNoteName(root + 23),  // Major 7th (B3)
+        midiToNoteName(root + 26),  // 9th (D4)
+        midiToNoteName(root + 33)   // 11th (F4)
+      ];
+      
+    case 3: // Level 4: Jazz voicings with controlled dissonance
+      return [
+        baseNote,                   // Base note (C2)
+        midiToNoteName(root + 12),  // Root (C3)
+        midiToNoteName(root + 17),  // Augmented 3rd (F3) - creates tension but still works
+        midiToNoteName(root + 19),  // Perfect 5th (G3)
+        midiToNoteName(root + 23),  // Major 7th (B3)
+        midiToNoteName(root + 26),  // 9th (D4)
+        midiToNoteName(root + 29)   // Sharp 11 (F#4) - jazz flavor
+      ];
+      
+    case 4: // Level 5: Impressionistic harmonies with color tones
+      return [
+        baseNote,                   // Base note (C2)
+        midiToNoteName(root + 12),  // Root (C3)
+        midiToNoteName(root + 16),  // Major 3rd (E3)
+        midiToNoteName(root + 21),  // Flat 7th (Bb3) - creates impressionistic color
+        midiToNoteName(root + 26),  // 9th (D4) 
+        midiToNoteName(root + 30),  // #5 (G#4) - adds color
+        midiToNoteName(root + 33)   // 11th (F4) - impressionistic sound
+      ];
+      
+    case 5: // Level 6: Complex extended harmonies with subtle tensions
+    default:
+      return [
+        baseNote,                   // Base note (C2)
+        midiToNoteName(root + 12),  // Root (C3)
+        midiToNoteName(root + 16),  // Major 3rd (E3)
+        midiToNoteName(root + 19),  // Perfect 5th (G3)
+        midiToNoteName(root + 23),  // Major 7th (B3) 
+        midiToNoteName(root + 26),  // 9th (D4)
+        midiToNoteName(root + 33),  // 11th (F4)
+        midiToNoteName(root + 38)   // 13th (A4) - creates a complete extended harmony
+      ];
+  }
 }
 

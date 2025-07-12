@@ -422,7 +422,7 @@ export class AudioEngine {
    * @param {string} instrument - Instrument to use ('violin', 'flute', 'tuba', 'default')
    * @param {Object} options - Zusätzliche Optionen (NICHT mehr für Instrument verwenden!)
    */
-  playNote(noteName, duration = 0.5, time, velocity = 0.75, instrument = 'default', options = {}) {
+  playNote(noteName, duration = 0.5, time, volume = 0.75, instrument = 'default', options = {}) {
     if (!this._isInitialized) {
       console.warn('Audio-Engine wurde noch nicht initialisiert!');
       return;
@@ -430,6 +430,7 @@ export class AudioEngine {
     
     // Prüfen, ob es sich um einen speziellen Sound handelt
     if (this._specialSounds[noteName]) {
+      let velocity = 0.5;
       console.log(`AUDIO: Spiele speziellen Sound-Effekt: ${noteName}`);
       this._playSpecialSound(noteName, velocity);
       return;
@@ -468,19 +469,19 @@ export class AudioEngine {
     // Use the right instrument type from toneJsSampler
     switch(instrument.toLowerCase()) {
       case 'piano':
-        played = playToneNote(parsedNote, durationInSeconds, velocity);
+        played = playToneNote(parsedNote, durationInSeconds, volume);
         break;
       case 'violin':
-        played = playViolinNote(parsedNote, durationInSeconds, velocity);
+        played = playViolinNote(parsedNote, durationInSeconds, volume);
         break;
       case 'doublebass':
-        played = playDoubleBassNote(parsedNote, durationInSeconds, velocity);
+        played = playDoubleBassNote(parsedNote, durationInSeconds, volume);
         break;
       case 'flute':
-        played = playFluteNote(parsedNote, durationInSeconds, velocity);
+        played = playFluteNote(parsedNote, durationInSeconds, volume);
         break;
       case 'brass': // Used as replacement for 'tuba' in the free mode
-        played = playBrassNote(parsedNote, durationInSeconds, velocity);
+        played = playBrassNote(parsedNote, durationInSeconds, volume);
         break;
       default:
         // For backwards compatibility, use the internal synth for non-matched instruments
@@ -489,7 +490,7 @@ export class AudioEngine {
           this.useInstrument(instrument);
           
           // Note spielen mit musikalischer Zeitnotation
-          this._synth.triggerAttackRelease(parsedNote, duration, time, velocity);
+          this._synth.triggerAttackRelease(parsedNote, duration, time, volume);
           
           // Note als aktiv markieren
           this._notesPlaying.add(parsedNote);
