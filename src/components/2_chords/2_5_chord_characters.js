@@ -4,6 +4,7 @@
 
 // Import debug utilities
 import { debugLog } from '../../utils/debug.js';
+import { preloadBackgroundImage } from '../shared/image-utils.js';
 
 /**
  * Test function to verify module import is working correctly
@@ -26,11 +27,7 @@ export function updateCharacterBackground(component) {
       JSON.parse(progressData)['2_5_chords_characters'] || 0 : 
       component?.progress?.['2_5_chords_characters'] || 0;
     
-    // Preload function for smoother transitions
-    const preloadBackgroundImage = (src) => {
-      const img = new Image();
-      img.src = src;
-    };
+
     
     // Determine background image based on progress
     let backgroundImage;
