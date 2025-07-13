@@ -682,8 +682,9 @@ export function pitches() {
       console.log('Generating High or Low tone for stage:', stage);
       
       // Define tone ranges for different stages (according to CONCEPT.md)
+      // Fixed: High tones should be C6–B6 as specified in CONCEPT.md
       const lowTones = {
-        1: ['C4', 'C#4', 'D4', 'D#4', 'E4', 'F4'], // Stage 1: Basic low tones (C3-F3)
+        1: ['C4', 'C#4', 'D4', 'D#4', 'E4', 'F4'], // Stage 1: Basic low tones C4-F4
         2: ['C4', 'C#4', 'D4', 'D#4', 'E4', 'F4', 'F#4', 'G4'], // Stage 2: Expanded low tones
         3: ['C4', 'C#4', 'D4', 'D#4', 'E4', 'F4', 'F#4', 'G4'], // Stage 3: Same as stage 2
         4: ['F#4', 'G4', 'G#4', 'A4'], // Stage 4: Higher low tones
@@ -691,11 +692,11 @@ export function pitches() {
       };
       
       const highTones = {
-        1: ['C6', 'C#6', 'D6', 'D#6', 'E6', 'F6', 'F#6', 'G6', 'G#6', 'A6', 'A#6', 'B6', 'C7'], // Stage 1: Basic high tones (C5-C7)
-        2: ['C5', 'C#5', 'D5', 'D#5', 'E5', 'F5', 'F#5', 'G5', 'G#5', 'A5', 'A#5', 'B5', 'C6'], // Stage 2: Expanded high tones
-        3: ['C5', 'C#5', 'D5', 'D#5', 'E5', 'F5', 'F#5', 'G5', 'G#5', 'A5', 'A#5', 'B5', 'C6'], // Stage 3: Same as stage 2
-        4: ['E5', 'F5', 'F#5'], // Stage 4: Lower high tones
-        5: ['C#5', 'D5', 'D#5', 'E5']  // Stage 5: Lowest high tones
+        1: ['C6', 'C#6', 'D6', 'D#6', 'E6', 'F6', 'F#6', 'G6', 'G#6', 'A6', 'A#6', 'B6'], // Stage 1: Basic high tones C6-B6
+        2: ['C6', 'C#6', 'D6', 'D#6', 'E6', 'F6', 'F#6', 'G6', 'G#6', 'A6', 'A#6', 'B6'], // Stage 2: High tones C6-B6
+        3: ['C6', 'C#6', 'D6', 'D#6', 'E6', 'F6', 'F#6', 'G6', 'G#6', 'A6', 'A#6', 'B6'], // Stage 3: High tones C6-B6
+        4: ['C6', 'C#6', 'D6', 'D#6', 'E6', 'F6'], // Stage 4: Reduced high tones
+        5: ['C6', 'C#6', 'D6', 'D#6']  // Stage 5: Further reduced high tones
       };
       
       // Don't play the same tone twice in a row
@@ -746,21 +747,22 @@ export function pitches() {
      */
     getTonesForStage(stage) {
       // Define tone ranges for different stages (according to CONCEPT.md)
-      // Fixed: Corrected low tones to be one octave higher to match generateHighOrLowTone()
+      // Fixed: Low tones should be C4–B4 as specified in CONCEPT.md, not C3–B3
       const lowTones = {
-        1: ['C4', 'C#4', 'D4', 'D#4', 'E4', 'F4'], // Fixed: C3->C4, etc.
-        2: ['C4', 'C#4', 'D4', 'D#4', 'E4', 'F4', 'F#4', 'G4'], // Fixed: C3->C4, etc.
-        3: ['C4', 'C#4', 'D4', 'D#4', 'E4', 'F4', 'F#4', 'G4'], // Fixed: C3->C4, etc.
-        4: ['D4', 'D#4', 'E4', 'F4', 'F#4', 'G4', 'G#4', 'A4'], // Fixed: D3->D4, etc.
-        5: ['E4', 'F4', 'F#4', 'G4', 'G#4', 'A4', 'A#4', 'B4'] // Fixed: E3->E4, etc.
+        1: ['C4', 'C#4', 'D4', 'D#4', 'E4', 'F4'],
+        2: ['C4', 'C#4', 'D4', 'D#4', 'E4', 'F4', 'F#4', 'G4'],
+        3: ['C4', 'C#4', 'D4', 'D#4', 'E4', 'F4', 'F#4', 'G4'],
+        4: ['D4', 'D#4', 'E4', 'F4', 'F#4', 'G4', 'G#4', 'A4'],
+        5: ['E4', 'F4', 'F#4', 'G4', 'G#4', 'A4', 'A#4', 'B4']
       };
       
+      // Fixed: High tones should be C6–B6 as specified in CONCEPT.md
       const highTones = {
-        1: ['C5', 'C#5', 'D5', 'D#5', 'E5', 'F5', 'F#5', 'G5', 'G#5', 'A5', 'A#5', 'B5', 'C6'],
-        2: ['C5', 'C#5', 'D5', 'D#5', 'E5', 'F5', 'F#5', 'G5', 'G#5', 'A5', 'A#5', 'B5', 'C6'],
-        3: ['C5', 'C#5', 'D5', 'D#5', 'E5', 'F5', 'F#5', 'G5', 'G#5', 'A5', 'A#5', 'B5', 'C6'],
-        4: ['B4', 'C5', 'C#5', 'D5', 'D#5', 'E5', 'F5', 'F#5'],
-        5: ['A4', 'A#4', 'B4', 'C5', 'C#5', 'D5', 'D#5', 'E5']
+        1: ['C6', 'C#6', 'D6', 'D#6', 'E6', 'F6', 'F#6', 'G6', 'G#6', 'A6', 'A#6', 'B6'],
+        2: ['C6', 'C#6', 'D6', 'D#6', 'E6', 'F6', 'F#6', 'G6', 'G#6', 'A6', 'A#6', 'B6'],
+        3: ['C6', 'C#6', 'D6', 'D#6', 'E6', 'F6', 'F#6', 'G6', 'G#6', 'A6', 'A#6', 'B6'],
+        4: ['C6', 'C#6', 'D6', 'D#6', 'E6', 'F6', 'F#6', 'G6'],
+        5: ['C6', 'C#6', 'D6', 'D#6', 'E6', 'F6', 'F#6', 'G6']
       };
       
       // Get appropriate tone arrays based on current stage
