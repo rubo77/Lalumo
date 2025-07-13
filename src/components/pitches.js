@@ -746,12 +746,13 @@ export function pitches() {
      */
     getTonesForStage(stage) {
       // Define tone ranges for different stages (according to CONCEPT.md)
+      // Fixed: Corrected low tones to be one octave higher to match generateHighOrLowTone()
       const lowTones = {
-        1: ['C3', 'C#3', 'D3', 'D#3', 'E3', 'F3'],
-        2: ['C3', 'C#3', 'D3', 'D#3', 'E3', 'F3', 'F#3', 'G3'],
-        3: ['C3', 'C#3', 'D3', 'D#3', 'E3', 'F3', 'F#3', 'G3'],
-        4: ['D3', 'D#3', 'E3', 'F3', 'F#3', 'G3', 'G#3', 'A3'],
-        5: ['E3', 'F3', 'F#3', 'G3', 'G#3', 'A3', 'A#3', 'B3']
+        1: ['C4', 'C#4', 'D4', 'D#4', 'E4', 'F4'], // Fixed: C3->C4, etc.
+        2: ['C4', 'C#4', 'D4', 'D#4', 'E4', 'F4', 'F#4', 'G4'], // Fixed: C3->C4, etc.
+        3: ['C4', 'C#4', 'D4', 'D#4', 'E4', 'F4', 'F#4', 'G4'], // Fixed: C3->C4, etc.
+        4: ['D4', 'D#4', 'E4', 'F4', 'F#4', 'G4', 'G#4', 'A4'], // Fixed: D3->D4, etc.
+        5: ['E4', 'F4', 'F#4', 'G4', 'G#4', 'A4', 'A#4', 'B4'] // Fixed: E3->E4, etc.
       };
       
       const highTones = {
