@@ -5,6 +5,7 @@
 // Import debug utilities
 import { debugLog } from '../../utils/debug.js';
 import { preloadBackgroundImage } from '../shared/image-utils.js';
+import { getActivityProgress } from '../shared/progress-utils.js';
 
 /**
  * Test function to verify module import is working correctly
@@ -22,10 +23,7 @@ export function testChordCharactersModuleImport() {
 export function updateCharacterBackground(component) {
   try {
     // Get progress from localStorage or component state
-    const progressData = localStorage.getItem('lalumo_chords_progress');
-    const progress = progressData ? 
-      JSON.parse(progressData)['2_5_chords_characters'] || 0 : 
-      component?.progress?.['2_5_chords_characters'] || 0;
+    const progress = getActivityProgress('2_5_chords_characters', component);
     
 
     

@@ -27,10 +27,10 @@ import {
 import { update_progress_display as sharedUpdateProgressDisplay } from '../components/shared/ui-helpers.js';
 
 
-// Importiere Test-Funktionen aus den Modulen
-// Direct imports from individual modules
+// Import shared utilities
 import { testCommonModuleImport, resetCurrentActivity, resetAllProgress, showResetFeedback } 
-  from "./pitches/common.js";
+  from './pitches/common.js';
+import { extractAnimalName } from './shared/ui-helpers.js';
 
 import { setupHighOrLowMode_1_1, reset_1_1_HighOrLow_Progress, currentHighOrLowStage } 
   from "./pitches/1_1_high_or_low.js";
@@ -3856,7 +3856,7 @@ export function pitches() {
       if (goodAnimalImg && this.currentGoodAnimalImage) {
         goodAnimalImg.src = this.currentGoodAnimalImage;
         // Extract animal name from filename for better accessibility
-        const goodAnimalName = this.currentGoodAnimalImage.split('_').pop().split('.')[0];
+        const goodAnimalName = extractAnimalName(this.currentGoodAnimalImage);
         goodAnimalImg.alt = `Happy ${goodAnimalName}`;
         console.log('ANIMALS: Updated good animal image in DOM with ' + goodAnimalName);
       } else {
@@ -3866,7 +3866,7 @@ export function pitches() {
       if (badAnimalImg && this.currentBadAnimalImage) {
         badAnimalImg.src = this.currentBadAnimalImage;
         // Extract animal name from filename for better accessibility
-        const badAnimalName = this.currentBadAnimalImage.split('_').pop().split('.')[0];
+        const badAnimalName = extractAnimalName(this.currentBadAnimalImage);
         badAnimalImg.alt = `Unhappy ${badAnimalName}`;
         console.log('ANIMALS: Updated bad animal image in DOM with ' + badAnimalName);
       } else {

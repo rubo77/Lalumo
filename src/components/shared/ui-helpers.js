@@ -7,6 +7,30 @@
 import { debugLog } from '../../utils/debug.js';
 
 /**
+ * Gets the chord buttons (diminished and augmented) from the DOM
+ * @returns {Object} Object with diminishedBtn and augmentedBtn properties, or null if not found
+ */
+export function getChordButtons() {
+  const diminishedBtn = document.getElementById('button_2_5_1_diminished');
+  const augmentedBtn = document.getElementById('button_2_5_1_augmented');
+  
+  if (!diminishedBtn || !augmentedBtn) {
+    return null;
+  }
+  
+  return { diminishedBtn, augmentedBtn };
+}
+
+/**
+ * Extracts animal name from filename
+ * @param {string} filename - The image filename (e.g., 'happy_cat.png')
+ * @returns {string} The animal name (e.g., 'cat')
+ */
+export function extractAnimalName(filename) {
+  return filename.split('_').pop().split('.')[0];
+}
+
+/**
  * Aktualisiert eine Fortschrittsanzeige im UI oder erstellt eine neue, falls nicht vorhanden
  * @param {Object} options - Optionen für die Fortschrittsanzeige
  * @param {string} options.selector - CSS-Selektor für das Container-Element (z.B. '.sound-judgment-level')

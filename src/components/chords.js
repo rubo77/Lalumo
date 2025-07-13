@@ -8,6 +8,7 @@ import * as Tone from 'tone';
 
 // Import shared utilities
 import { NOTE_NAMES, midiToNoteName } from './shared/music-utils.js';
+import { getChordButtons } from './shared/ui-helpers.js';
 
 // Export specific functions from each module
 // Common Module
@@ -98,14 +99,15 @@ export function chords() {
         this?.progress?.['2_5_chords_characters'] || 0;
       
       // Get chord buttons
-      const diminishedBtn = document.getElementById('button_2_5_1_diminished');
-      const augmentedBtn = document.getElementById('button_2_5_1_augmented');
+      const chordButtons = getChordButtons();
       
-      if (!diminishedBtn || !augmentedBtn) {
+      if (!chordButtons) {
         // Buttons not found in DOM yet, will try again when activity is shown
         debugLog('CHORDS', 'Chord buttons not found in DOM yet');
         return;
       }
+      
+      const { diminishedBtn, augmentedBtn } = chordButtons;
       
       // Apply visibility rules based on progress
       if (progress < 10) {
@@ -211,10 +213,9 @@ export function chords() {
           // Check if any of the mutations added our target elements
           for (const mutation of mutations) {
             if (mutation.type === 'childList' && mutation.addedNodes.length) {
-              const dimnishedBtn = document.getElementById('button_2_5_1_diminished');
-              const augmentedBtn = document.getElementById('button_2_5_1_augmented');
+              const chordButtons = getChordButtons();
               
-              if (dimnishedBtn && augmentedBtn) {
+              if (chordButtons) {
                 debugLog('CHORDS', 'Chord buttons found in DOM, updating visibility');
                 this.updateChordButtonsVisibility();
                 // No need to observe further once we've found our elements
