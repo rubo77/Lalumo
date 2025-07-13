@@ -88,15 +88,7 @@ export function updateCharacterBackground(component) {
   }
 }
 
-/**
- * Preloads a background image for smoother transitions
- * @param {string} imageUrl - The URL of the image to preload
- */
-function preloadBackgroundImage(imageUrl) {
-  const img = new Image();
-  img.src = imageUrl;
-  debugLog(['CHORDS', '2_5_BACKGROUND'], `Preloading background image: ${imageUrl}`);
-}
+
 
 /**
  * Reset progress for Chord Types activity (2_5)
