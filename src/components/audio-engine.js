@@ -33,6 +33,11 @@ export class AudioEngine {
       }
     };
     
+    // Add cleanup on page unload as additional safety measure
+    if (typeof window !== 'undefined') {
+      window.addEventListener('beforeunload', () => this.cleanup());
+    }
+    
     // Instrument-Typen, die verwendet werden können
     this._instrumentTypes = {
       default: () => new Tone.PolySynth(Tone.Synth),
@@ -251,9 +256,30 @@ export class AudioEngine {
             return this;
           },
           dispose: function() {
-            sampler.dispose();
-            tempSynth.dispose();
-            reverb.dispose();
+            // Properly dispose of all audio nodes to prevent memory leaks
+            try {
+              if (sampler && typeof sampler.dispose === 'function') {
+                sampler.dispose();
+              }
+            } catch (err) {
+              console.warn('[PIANO] Error disposing sampler:', err);
+            }
+            
+            try {
+              if (tempSynth && typeof tempSynth.dispose === 'function') {
+                tempSynth.dispose();
+              }
+            } catch (err) {
+              console.warn('[PIANO] Error disposing tempSynth:', err);
+            }
+            
+            try {
+              if (reverb && typeof reverb.dispose === 'function') {
+                reverb.dispose();
+              }
+            } catch (err) {
+              console.warn('[PIANO] Error disposing reverb:', err);
+            }
           },
           releaseAll: function(time) {
             if (samplesLoaded) {
@@ -402,8 +428,17 @@ export class AudioEngine {
     }
     
     // Bisherigen Synth entfernen und neuen erstellen
+    // FIXED: Properly dispose of old synth to prevent memory leaks
     if (this._synth) {
-      this._synth.disconnect();
+      try {
+        this._synth.disconnect();
+        // Dispose of the synthesizer to free audio resources
+        if (typeof this._synth.dispose === 'function') {
+          this._synth.dispose();
+        }
+      } catch (err) {
+        console.warn('[AUDIO-ENGINE] Error disposing old synth:', err);
+      }
     }
     
     this._synth = this._instrumentTypes[instrumentType]();
@@ -737,8 +772,12 @@ export class AudioEngine {
   stopAll() {
     // Alle aktiven Sequenzen stoppen
     this._activeSequences.forEach((sequenceData, id) => {
-      sequenceData.sequence.stop();
-      sequenceData.sequence.dispose();
+      try {
+        sequenceData.sequence.stop();
+        sequenceData.sequence.dispose();
+      } catch (err) {
+        console.warn(`[AUDIO-ENGINE] Error stopping sequence ${id}:`, err);
+      }
       console.log(`Sequenz ${id} gestoppt`);
     });
     
@@ -746,11 +785,41 @@ export class AudioEngine {
     
     // Alle aktiven Noten stoppen
     if (this._notesPlaying.size > 0) {
-      this._synth.releaseAll();
+      try {
+        this._synth.releaseAll();
+      } catch (err) {
+        console.warn('[AUDIO-ENGINE] Error releasing all notes:', err);
+      }
       this._notesPlaying.clear();
     }
     
     console.log('Alle Audiowiedergaben gestoppt');
+  }
+  
+  /**
+   * Disposes of all audio resources to free memory
+   * Should be called when the app is backgrounded or before major activity changes
+   */
+  cleanup() {
+    console.log('[AUDIO-ENGINE] Starting cleanup of audio resources...');
+    
+    // Stop all active audio first
+    this.stopAll();
+    
+    // Dispose of current synth
+    if (this._synth) {
+      try {
+        this._synth.disconnect();
+        if (typeof this._synth.dispose === 'function') {
+          this._synth.dispose();
+        }
+      } catch (err) {
+        console.warn('[AUDIO-ENGINE] Error disposing main synth:', err);
+      }
+      this._synth = null;
+    }
+    
+    console.log('[AUDIO-ENGINE] Audio cleanup completed');
   }
   
   /**
@@ -895,6 +964,16 @@ export class AudioEngine {
 
 // Singleton-Instanz der Audio-Engine
 const audioEngine = new AudioEngine();
+
+// Global cleanup function that can be called when app is backgrounded or on activity changes
+export function cleanupAudioResources() {
+  audioEngine.cleanup();
+}
+
+// Make cleanup function available globally for manual calls
+if (typeof window !== 'undefined') {
+  window.cleanupAudioResources = cleanupAudioResources;
+}
 
 // Exportiere die Audio-Engine-Instanz als Standard
 export default audioEngine;
