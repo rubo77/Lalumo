@@ -1,4 +1,4 @@
-play store entry
+playstore entry
 =====
 
 
@@ -8,7 +8,7 @@ Musik lernen mit Tierbildern, Melodien und Rätseln - spielerisch und bunt!
 
 ## Vollständige Beschreibung
 
-Lalumo - Entdecke Musik mit Herz und Ohr
+Lalumo - Kinder entdecken Musik mit Herz und Ohr
 
 Mit Lalumo tauchen kleine Kinder in die bunte Welt der Musik ein! Auf spielerische Weise und mit liebevoll gestalteten Tierfiguren lernen sie Tonhöhe, Melodie, Klangfarbe und Rhythmus kennen - alles ohne Vorkenntnisse - Musikalische Konzepte intuitiv erfassen.
 
@@ -38,11 +38,11 @@ Perfekt für Kinder im Vorschulalter, Eltern, die das frühe musikalische Lernen
 
 ## Kurze Beschreibung
 
-Learn music with animal friends, melodies, and puzzles - playful and colorful!
+Kids learn music with animal friends, melodies, and puzzles - playful and colorful!
 
 ## Vollständige Beschreibung
 
-Lalumo - Discover Music with Heart and Ear
+Lalumo - Children Discover Music with Heart and Ear
 
 With Lalumo, young children dive into the colorful world of music! In a playful way and with lovingly designed animal characters, they explore pitch, melody, timbre, and rhythm - no prior knowledge needed. Musical concepts are experienced intuitively.
 
@@ -66,3 +66,9 @@ The scenes resemble hand-painted picture books: warm, calm and full of charm.
 Fully usable offline, distraction-free - just music, play, and joy.
 
 Perfect for preschoolers, parents who want to support early musical learning, and educators who want to introduce children to worlds of sound.
+
+# Tags
+
+bei https://www.youtube.com/shorts/X_dZkhKx1SI und https://youtube.com/shorts/PfL3MWhs7YU
+
+LalumoApp,MusikLernen,MusicForKids,KinderApp,MusikfürKinder,ChildrensMusicApp,EarlyMusicalEducation,NoAds,OpenSource,MusikSpiel,MusicGame,PädagogischeApp,EducationalApp,Vorschulkinder,Preschoolers,MusikErkunden,MusicalExploration,KinderliedApp,SpielenundLernen,PlayAndLearn,OfflineApp,BunteApp,ColorfulApp,FrühkindlicheBildung,EarlyChildhoodEducation,MusikUnterricht,MusicLessons,TonhöheErkennen,PitchRecognition,MelodieSpiel,MelodyGame,Lernapp,AkkordeLernen,Musiclearnapp,education

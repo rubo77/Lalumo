@@ -1,0 +1,50 @@
+Categories:
+  - Education
+  - Multimedia
+License: GPL-3.0-or-later
+AuthorName: Ruben Barkow-Kuder
+WebSite: https://lalumo.eu
+SourceCode: https://github.com/Eastcoast-Laboratories/Lalumo
+IssueTracker: https://github.com/Eastcoast-Laboratories/Lalumo/issues
+Changelog: https://github.com/Eastcoast-Laboratories/Lalumo/releases
+
+AutoName: Lalumo
+
+RepoType: git
+Repo: https://github.com/Eastcoast-Laboratories/Lalumo
+
+Builds:
+  - versionName: "3.0"
+    versionCode: 26
+    commit: "02c52693905cf3c2a8d4fc2c65d6ae8f84cc7a9d"
+    subdir: android
+    gradle:
+      - yes
+
+AutoUpdateMode: Version
+UpdateCheckMode: Tags
+CurrentVersion: "3.0"
+CurrentVersionCode: 26
+
+Summary: Kids learn music with animal friends, melodies, and puzzles - playful and colorful!
+Description: |-
+  Lalumo - Children Discover Music with Heart and Ear
+
+  With Lalumo, young children dive into the colorful world of music! In a playful way and with
+  lovingly designed animal characters, they explore pitch, melody, timbre, and rhythm - no prior
+  knowledge needed. Musical concepts are experienced intuitively.
+
+  Features:
+  * Children recognize pitches by listening and pressing the right animal
+  * Child-friendly activities
+  * Listen to familiar children's songs and decide if they sound right or "wrong"
+  * Choose animals that match pleasant or strange-sounding melodies
+  * Explore rising, falling or jumping melodies
+  * No ads, no in-app purchases
+  * Child lock mode and screen protection
+  * Palm rejection for multitouch
+  * Beautiful illustrations resembling hand-painted picture books
+  * Fully usable offline, distraction-free
+
+  Perfect for preschoolers, parents who want to support early musical learning, and educators
+  who want to introduce children to worlds of sound.

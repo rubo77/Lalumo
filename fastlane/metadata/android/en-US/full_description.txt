@@ -1,13 +1,24 @@
-An Android-based application like the board game "Ricochet Robots ©". It includes an artificial intelligence capable of solving the puzzles.
+Lalumo - Discover Music with Heart and Ear
 
-A simple but challenging puzzle game.
+With Lalumo, young children dive into the colorful world of music! In a playful way and with lovingly designed animal characters, they explore pitch, melody, timbre, and rhythm - no prior knowledge needed. Musical concepts are experienced intuitively.
 
-You control four robots in a yard full of hedges, that block their way. The goal is to guide a particular robot to its destination. The robots move until they either hit a hedge or another robot.
+What can your child expect in Lalumo?
+- Children recognize pitches by listening and pressing the right animal.
+- Child-friendly activities
+- Listen to familiar children's songs and decide if they sound right or “wrong”
+- Choose animals that match pleasant or strange-sounding melodies
+- Explore rising, falling or jumping melodies
 
-The special feature of this app is the automatic solution finding algorithm, which can show you hints and also the optimal solution.
+What parents can expect
+- No ads, no in-app purchases, open source
+- You can lock the screen to the current activity, full screen and so that you can't press on any other element on the screen
 
-Can you find the solution with the fewest moves?
+Intuitive navigation
+- Picture-based interface with a bird as a play button and animals to press as answers.
 
-This game is open source and shipped without adds. 
+Beautiful illustrations
+The scenes resemble hand-painted picture books: warm, calm and full of charm.
 
-Source code: https://roboyard.z11.de/
+Fully usable offline, distraction-free - just music, play, and joy.
+
+Perfect for preschoolers, parents who want to support early musical learning, and educators who want to introduce children to worlds of sound.
