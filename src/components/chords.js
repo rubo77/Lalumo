@@ -6,6 +6,10 @@
 // External library imports
 import * as Tone from 'tone';
 
+// Import shared utilities
+import { NOTE_NAMES, midiToNoteName } from './shared/music-utils.js';
+import { getChordButtons } from './shared/ui-helpers.js';
+
 // Export specific functions from each module
 // Common Module
 export { testCommonModuleImport } from './2_chords/common.js';
@@ -95,14 +99,15 @@ export function chords() {
         this?.progress?.['2_5_chords_characters'] || 0;
       
       // Get chord buttons
-      const diminishedBtn = document.getElementById('button_2_5_1_diminished');
-      const augmentedBtn = document.getElementById('button_2_5_1_augmented');
+      const chordButtons = getChordButtons();
       
-      if (!diminishedBtn || !augmentedBtn) {
+      if (!chordButtons) {
         // Buttons not found in DOM yet, will try again when activity is shown
         debugLog('CHORDS', 'Chord buttons not found in DOM yet');
         return;
       }
+      
+      const { diminishedBtn, augmentedBtn } = chordButtons;
       
       // Apply visibility rules based on progress
       if (progress < 10) {
@@ -208,10 +213,9 @@ export function chords() {
           // Check if any of the mutations added our target elements
           for (const mutation of mutations) {
             if (mutation.type === 'childList' && mutation.addedNodes.length) {
-              const dimnishedBtn = document.getElementById('button_2_5_1_diminished');
-              const augmentedBtn = document.getElementById('button_2_5_1_augmented');
+              const chordButtons = getChordButtons();
               
-              if (dimnishedBtn && augmentedBtn) {
+              if (chordButtons) {
                 debugLog('CHORDS', 'Chord buttons found in DOM, updating visibility');
                 this.updateChordButtonsVisibility();
                 // No need to observe further once we've found our elements
@@ -386,8 +390,7 @@ export function chords() {
           const newNoteNumber = baseNoteNumber + transposeAmount;
           
           // Convert MIDI note number back to note name with octave
-          const noteNames = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
-          const noteName = noteNames[newNoteNumber % 12];
+          const noteName = NOTE_NAMES[newNoteNumber % 12];
           const octave = Math.floor(newNoteNumber / 12) - 1; // MIDI octaves start at -1
           
           rootNote = `${noteName}${octave}`;
@@ -564,8 +567,7 @@ export function chords() {
         // Convert MIDI note to note name
         // MIDI notes: C-1 = 0, C0 = 12, C1 = 24, ... C4 = 60, A4 = 69
         const octave = Math.floor((midiNoteNumber - 12) / 12);
-        const noteNames = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
-        const noteName = noteNames[midiNoteNumber % 12];
+        const noteName = NOTE_NAMES[midiNoteNumber % 12];
         const fullNoteName = `${noteName}${octave}`;
         
         // Schedule note with delay
@@ -1150,10 +1152,9 @@ export function chords() {
         const baseNoteNumber = 60;
         const newNoteNumber = baseNoteNumber + transposeAmount;
         
-        // TODO: use transposeNote() function from 2_2_chords_stable_instable.js
+        // TODO: use transposeNote() function from shared music-utils.js
         // Convert MIDI note number back to note name with octave
-        const noteNames = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
-        const noteName = noteNames[newNoteNumber % 12];
+        const noteName = NOTE_NAMES[newNoteNumber % 12];
         const octave = Math.floor(newNoteNumber / 12) - 1; // MIDI octaves start at -1
         
         rootNote = `${noteName}${octave}`;
@@ -1211,8 +1212,7 @@ export function chords() {
             const newNoteNumber = baseNoteNumber + this.currentTransposeAmount;
             
             // Convert MIDI note number back to note name with octave
-            const noteNames = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
-            const noteName = noteNames[newNoteNumber % 12];
+            const noteName = NOTE_NAMES[newNoteNumber % 12];
             const octave = Math.floor(newNoteNumber / 12) - 1;
             
             rootNote = `${noteName}${octave}`;

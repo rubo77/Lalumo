@@ -4,6 +4,8 @@
 
 // Import debug utilities
 import { debugLog } from '../../utils/debug.js';
+import { preloadBackgroundImage } from '../shared/image-utils.js';
+import { midiToNoteName, transposeNote, NOTE_NAMES } from '../shared/music-utils.js';
 
 // Import audio engine
 import audioEngine from '../audio-engine.js';
@@ -529,11 +531,7 @@ export function updateStableInstableBackground(component) {
       JSON.parse(progressData)['2_2_chords_stable_instable'] || 0 : 
       component?.progress?.['2_2_chords_stable_instable'] || 0;
     
-    // Preload function for smoother transitions
-    const preloadBackgroundImage = (src) => {
-      const img = new Image();
-      img.src = src;
-    };
+
     
     // Background image changes based on progress thresholds
     let backgroundImage = './images/backgrounds/2_2_chords_stable_instable.png';
@@ -603,47 +601,7 @@ export function reset_2_2_StableInstable_Progress() {
   debugLog(['CHORDS_2_2_DEBUG', 'RESET'], '2_2_chords_stable_instable progress reset complete');
 }
 
-/**
- * Converts a MIDI note number to a note name in the format 'C4', 'D#4', etc.
- * @param {number} midiNote - MIDI note number (e.g., 60 for middle C)
- * @returns {string} Note name in Tone.js format
- */
-function midiToNoteName(midiNote) {
-  const noteNames = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
-  const octave = Math.floor(midiNote / 12) - 1;
-  const noteName = noteNames[midiNote % 12];
-  return `${noteName}${octave}`;
-}
 
-/**
- * Transposes a note by the specified number of semitones
- * @param {string} note - The note to transpose (e.g., 'C4')
- * @param {number} semitones - Number of semitones to transpose (can be positive or negative)
- * @returns {string} Transposed note
- */
-function transposeNote(note, semitones) {
-  if (semitones === 0) return note;
-  
-  // Parse the note name and octave
-  const noteMatch = note.match(/^([A-G]#?)(-?\d+)$/);
-  if (!noteMatch) return note; // Return original if format is invalid
-  
-  const [, noteName, octave] = noteMatch;
-  const noteNames = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
-  
-  // Find the index of the note in the chromatic scale
-  let noteIndex = noteNames.indexOf(noteName);
-  if (noteIndex === -1) return note; // Return original if note name is invalid
-  
-  // Calculate new note index and octave
-  let newNoteIndex = (noteIndex + semitones) % 12;
-  if (newNoteIndex < 0) newNoteIndex += 12;
-  
-  const octaveOffset = Math.floor((noteIndex + semitones) / 12);
-  const newOctave = parseInt(octave, 10) + octaveOffset;
-  
-  return `${noteNames[newNoteIndex]}${newOctave}`;
-}
 
 /**
  * Generates a stable (consonant) chord based on the current progress level

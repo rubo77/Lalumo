@@ -21,6 +21,27 @@ export function testCommonModuleImport() {
 }
 
 /**
+ * Get user-friendly activity names for different languages
+ * @param {boolean} isGerman - Whether to return German names
+ * @returns {Object} Object mapping activity modes to user-friendly names
+ */
+function getActivityNames(isGerman) {
+  return {
+    '1_1_pitches_high_or_low': isGerman ? 'Hoch oder Tief' : 'High or Low',
+    '1_2_pitches_match-sounds': isGerman ? 'Klänge zuordnen' : 'Match Sounds',
+    '1_3_pitches_draw-melody': isGerman ? 'Melodie zeichnen' : 'Draw Melody',
+    '1_4_pitches_does-it-sound-right': isGerman ? 'Klingt das richtig?' : 'Does It Sound Right?',
+    '1_5_pitches_memory-game': isGerman ? 'Memory-Spiel' : 'Memory Game',
+    '2_1_chords_color-matching': isGerman ? 'Akkord-Farb Zuordnung' : 'Chord Color Matching',
+    '2_2_chords_stable_instable': isGerman ? 'Stabile Instabile Akkorde' : 'Stable Instable Chords',
+    '2_3_chords_chord-building': isGerman ? 'Akkord-Bau' : 'Chord Building',
+    '2_4_chords_missing-note': isGerman ? 'Fehlende Noten' : 'Missing Note',
+    '2_5_chords_characters': isGerman ? 'Akkord-Charaktere' : 'Chord Characters',
+    '2_6_chords_harmony-gardens': isGerman ? 'Harmonie Garten' : 'Harmony Gardens'
+  };
+}
+
+/**
  * Reset dispatcher - determines current activity and calls appropriate reset method
  * @param {string} currentMode - The current activity mode (optional - will use the unified store if not provided)
  */
@@ -77,21 +98,8 @@ export function resetCurrentActivity(currentMode) {
   
   const isGerman = document.documentElement.lang === 'de';
   
-  // TODO: doppelter block, der muss nur einmal existieren
-  // Map activity modes to user-friendly names
-  const activityNames = {
-    '1_1_pitches_high_or_low': isGerman ? 'Hoch oder Tief' : 'High or Low',
-    '1_2_pitches_match-sounds': isGerman ? 'Klänge zuordnen' : 'Match Sounds',
-    '1_3_pitches_draw-melody': isGerman ? 'Melodie zeichnen' : 'Draw Melody',
-    '1_4_pitches_does-it-sound-right': isGerman ? 'Klingt das richtig?' : 'Does It Sound Right?',
-    '1_5_pitches_memory-game': isGerman ? 'Memory-Spiel' : 'Memory Game',
-    '2_1_chords_color-matching': isGerman ? 'Akkord-Farb Zuordnung' : 'Chord Color Matching',
-    '2_2_chords_stable_instable': isGerman ? 'Stabile Instabile Akkorde' : 'Stable Instable Chords',
-    '2_3_chords_chord-building': isGerman ? 'Akkord-Bau' : 'Chord Building',
-    '2_4_chords_missing-note': isGerman ? 'Fehlende Noten' : 'Missing Note',
-    '2_5_chords_characters': isGerman ? 'Akkord-Charaktere' : 'Chord Characters',
-    '2_6_chords_harmony-gardens': isGerman ? 'Harmonie Garten' : 'Harmony Gardens'
-  };
+  // Use shared function to get activity names
+  const activityNames = getActivityNames(isGerman);
   
   console.log('RESET_CURRENT: Available activity names:', Object.keys(activityNames));
   console.log('RESET_CURRENT: Mode match found for activity ' + currentMode + ':', activityNames[currentMode] ? 'YES' : 'NO');
@@ -160,16 +168,8 @@ export function resetCurrentActivity(currentMode) {
 export function showResetFeedback(activityMode) {
   const isGerman = document.documentElement.lang === 'de';
   
-  // TODO: doppelter block, der muss nur einmal existieren
-  // Map activity modes to user-friendly names
-  const activityNames = {
-    '1_1_pitches_high_or_low': isGerman ? 'Hoch oder Tief' : 'High or Low',
-    '1_2_pitches_match-sounds': isGerman ? 'Klänge zuordnen' : 'Match Sounds',
-    '1_3_pitches_draw-melody': isGerman ? 'Melodie zeichnen' : 'Draw Melody',
-    '1_4_pitches_does-it-sound-right': isGerman ? 'Klingt das richtig?' : 'Does It Sound Right?',
-    '1_5_pitches_memory-game': isGerman ? 'Memory-Spiel' : 'Memory Game',
-    '2_1_chords_color-matching': isGerman ? 'Akkord-Farb Zuordnung' : 'Chord Color Matching'
-  };
+  // Use shared function to get activity names
+  const activityNames = getActivityNames(isGerman);
   
   const activityName = activityNames[activityMode] || activityMode;
   const message = isGerman ? 
