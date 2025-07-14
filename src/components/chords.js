@@ -41,7 +41,8 @@ import {
   playStableInstableChord, 
   checkStableInstableMatch,
   updateStableInstableBackground,
-  reset_2_2_StableInstable_Progress
+  reset_2_2_StableInstable_Progress,
+  reset2_2ToFreePlayMode
 } from './2_chords/2_2_chords_stable_instable.js';
 
 // 2_3 Chord Building Module
@@ -655,6 +656,11 @@ export function chords() {
         if (typeof this.progress['2_2_chords_stable_instable'] === 'undefined') {
           this.progress['2_2_chords_stable_instable'] = 0;
         }
+        
+        // Reset to free play mode when entering from navigation
+        // This ensures the activity always starts in free play mode
+        reset2_2ToFreePlayMode();
+        debugLog('CHORDS_2_2_DEBUG', 'Reset to free play mode when entering from navigation');
         
         // Update the background based on current progress
         updateStableInstableBackground(this);

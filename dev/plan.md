@@ -17,6 +17,7 @@
 - User requested to generate metadata/com.lalumo.app.yml for F-Droid submission with current version info (3.0, versionCode 26).
 - New bug/feature: In 2_5 chord characters, after entering from nav, activity should always start in free mode; first time play is hit, it switches to game mode.
 - Cleaning up audio resources on window blur deletes the synth when window loses focus, which is not desired. Only clean up on appropriate lifecycle events (e.g. visibilitychange, beforeunload), not blur.
+- New bug/feature: In 2_2 chords stable/instable, after entering from nav, activity should always start in free mode; first time play is hit, it switches to game mode. Play button should reliably switch to game mode, and activity should reset to free mode when re-entered from nav.
 
 ## Task List
 - [x] Update concept documentation to specify single-flag/multi-activity unlock
@@ -35,6 +36,9 @@
 - [x] Generate metadata/com.lalumo.app.yml for F-Droid submission
 - [x] Fix 2_5 chord characters: always start in free mode when entered from nav; switch to game mode on first play
 - [ ] Refine audio cleanup lifecycle logic to avoid deleting synth on window blur
+- [ ] Fix 2_2 chords stable/instable: always start in free mode when entered from nav; reliably switch to game mode on play button, and reset to free mode when re-entered from nav
+  - [ ] Update play button in HTML to call playStableInstableChord($data, false) to reliably start game mode
+  - [ ] Test that entering from nav always starts in free mode, and play button switches to game mode
 
 ## Current Goal
-Refine audio cleanup lifecycle logic
+Fix 2_2 chords stable/instable free/game mode logic

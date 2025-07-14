@@ -49,6 +49,22 @@ export function testStableInstableModuleImport() {
   return true;
 }
 
+/**
+ * Resets the activity to free play mode when entered from navigation
+ * Should be called when the activity is entered
+ */
+export function reset2_2ToFreePlayMode() {
+  debugLog(['CHORDS_2_2_DEBUG', 'RESET'], 'Resetting to free play mode');
+  
+  // Reset to free play mode
+  isFreeModeActive = true;
+  
+  // Re-initialize free play mode
+  initializeFreePlayMode();
+  
+  debugLog(['CHORDS_2_2_DEBUG', 'RESET'], 'Reset complete, free play mode activated');
+}
+
 
 /**
  * Generates an unstable (dissonant) chord based on the current progress level
