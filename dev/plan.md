@@ -21,6 +21,12 @@
 - User reports: 2_2_chords_stable_instable progress is always reset to 0 when re-entering from nav. Investigate if progress is stored in localStorage and if it is part of the reset logic.
   - Progress is stored in localStorage and updated in checkStableInstableMatch, but may not be loaded correctly when re-entering activity; likely cause of reset to 0.
   - Progress is now loaded from localStorage on activity entry to prevent reset to 0.
+- User requested improved XML minification in webpack config for strings-*.xml: remove leading spaces/tabs.
+- User does not want XML files copied to the root directory; only in app/.
+- Webpack config for XML minification is being debugged due to syntax error.
+- XML minification is now verified to work for all output locations (including public/), with no leading whitespace in lines.
+- Progression messages for 2_2_chords_stable_instable (levels 1-6) have been added to HTML and both English and German resource files.
+- New feature: In 2_2_chords_stable_instable, when the play button is pressed again, the same chord should repeat until the user gets it right.
 
 ## Task List
 - [x] Update concept documentation to specify single-flag/multi-activity unlock
@@ -38,11 +44,21 @@
 - [x] Add license information to AndroidManifest.xml for F-Droid
 - [x] Generate metadata/com.lalumo.app.yml for F-Droid submission
 - [x] Fix 2_5 chord characters: always start in free mode when entered from nav; switch to game mode on first play
+- [x] Move getChordButtons and update2_5ButtonsVisibility to 2_5_chord_characters.js; remove related TODO/import from chords.js
 - [ ] Refine audio cleanup lifecycle logic to avoid deleting synth on window blur
-- [ ] Fix 2_2 chords stable/instable: always start in free mode when entered from nav; reliably switch to game mode on play button, and reset to free mode when re-entered from nav
-  - [ ] Update play button in HTML to call playStableInstableChord($data, false) to reliably start game mode
-  - [ ] Test that entering from nav always starts in free mode, and play button switches to game mode
+- [x] Fix 2_2 chords stable/instable: always start in free mode when entered from nav; reliably switch to game mode on play button, and reset to free mode when re-entered from nav
+  - [x] Move update2_5ButtonsVisibility to 2_5_chord_characters.js and remove related TODO/import from chords.js
+  - [x] Update play button in HTML to call playStableInstableChord($data, false) to reliably start game mode
+  - [x] Test that entering from nav always starts in free mode, and play button switches to game mode
   - [x] Ensure progress is loaded from localStorage and not reset to 0 when re-entering activity
+  - [x] Refactor 2_2_chords_stable_instable background logic to use dynamic images based on progress
+- [x] Update webpack config to minify XML files (remove leading whitespace)
+  - [x] Ensure minification applies to all output locations including public/
+- [x] Add progression messages for 2_2_chords_stable_instable to HTML and resource files
+  - [x] Add English and German strings for levels 1-6 (CONCEPT.md#L162-168)
+  - [x] Insert correct message binding in index.html at lines 794-799
+  - [x] Test correct display and translation of progression messages
+- [ ] Update 2_2 chords stable/instable: Play button should repeat the same chord until the user gets it right
 
 ## Current Goal
-Fix 2_2 chords stable/instable free/game mode logic
+Refine audio cleanup lifecycle logic to avoid deleting synth on window blur

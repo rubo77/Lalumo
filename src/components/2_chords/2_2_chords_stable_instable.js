@@ -238,15 +238,52 @@ export function playStableInstableChord(component, isReplay = false) {
       }
     }
     
-    // For game mode, randomly choose a chord type and generate it
-    const isStable = Math.random() < 0.5;
-    currentChordType = isStable ? 'stable' : 'instable';
-    
-    // Generate a new chord based on type and current progress level
-    if (currentChordType === 'stable') {
-      currentBaseChord = generateStableChord(progressLevel);
+        // If this is a replay or we're in the middle of an attempt, keep the current chord
+    if (isReplay || window.currentAttemptInProgress) {
+      debugLog(['CHORDS_2_2_DEBUG', 'REPLAY'], 'Replaying current chord');
     } else {
-      currentBaseChord = generateInstableChord(progressLevel);
+      // Mark that we're starting a new attempt
+      window.currentAttemptInProgress = true;
+      
+      // Store the previous chord for comparison
+      const previousChordType = currentChordType;
+      const previousChord = currentBaseChord ? [...currentBaseChord] : null;
+      
+      // Keep generating new chords until we get one that's different from the previous
+      let attempts = 0;
+      const maxAttempts = 10; // Safety net to prevent infinite loops
+      
+      do {
+        // For game mode, randomly choose a chord type and generate it
+        const isStable = Math.random() < 0.5;
+        currentChordType = isStable ? 'stable' : 'instable';
+        
+        // Generate a new chord based on type and current progress level
+        if (currentChordType === 'stable') {
+          currentBaseChord = generateStableChord(progressLevel);
+        } else {
+          currentBaseChord = generateInstableChord(progressLevel);
+        }
+        
+        attempts++;
+        
+        // If we've tried too many times, just keep the last chord to prevent infinite loops
+        if (attempts >= maxAttempts) {
+          debugLog(['CHORDS_2_2_DEBUG', 'DUPLICATE'], 'Max attempts reached, allowing potential duplicate chord');
+          break;
+        }
+        
+        // If this is the first chord, no need to check for duplicates
+        if (!previousChord || !previousChordType) break;
+        
+        // If the chord type is different, we're good to go
+        if (currentChordType !== previousChordType) break;
+        
+        // If the chord notes are different, we're good to go
+        if (JSON.stringify(currentBaseChord) !== JSON.stringify(previousChord)) break;
+        
+        debugLog(['CHORDS_2_2_DEBUG', 'DUPLICATE'], 'Regenerating chord to avoid duplicate');
+      } while (true);
     }
     
     // Apply random transposition (-6 to +6 semitones)
@@ -414,6 +451,9 @@ export function checkStableInstableMatch(selectedType, component) {
       if (autoPlayTimeout) {
         clearTimeout(autoPlayTimeout);
       }
+      
+      // Reset the attempt flag since we got it right
+      window.currentAttemptInProgress = false;
       
       // Schedule next chord after 2 seconds
       autoPlayTimeout = setTimeout(() => {
