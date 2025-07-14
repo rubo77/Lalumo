@@ -547,17 +547,16 @@ export function updateStableInstableBackground(component) {
       JSON.parse(progressData)['2_2_chords_stable_instable'] || 0 : 
       component?.progress?.['2_2_chords_stable_instable'] || 0;
     
-
+    // Dynamically select background image based on progress
+    // Progress 0-9: image-1, 10-19: image-2, 20-29: image-3, etc.
+    // Max image is 5
     
-    // Background image changes based on progress thresholds
-    let backgroundImage = './images/backgrounds/2_2_chords_stable_instable.png';
+    // Calculate which image to use (integer division by 10, then add 1)
+    // Minimum image index is 1, maximum is 5
+    const imageIndex = Math.min(5, Math.max(1, Math.floor(progress / 10) + 1));
     
-    // Add more background variations as needed based on progress
-    if (progress >= 10 && progress < 20) {
-      backgroundImage = './images/backgrounds/2_2_chords_stable_instable.png';
-    } else if (progress >= 20) {
-      backgroundImage = './images/backgrounds/2_2_chords_stable_instable.png';
-    }
+    // Use the JPG images with proper naming
+    const backgroundImage = `./images/backgrounds/2_2_chords_stable_instable-${imageIndex}.jpg`;
     
     // Update the background in the DOM
     const activityElement = document.querySelector('[x-show="mode === \'2_2_chords_stable_instable\'"]');
