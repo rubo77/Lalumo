@@ -68,7 +68,7 @@ const debugLog = (module, message, data) => {
     if (Array.isArray(module)) {
       // If module is an array, join all tags with brackets
       tagPrefix = module.map(tag => `[${tag}]`).join(' ');
-    } else {
+    } else { // TODO: else if message is empty, use tag [DEBUG] and use module as massage
       // If module is a string, use the original format
       tagPrefix = `[${module}]`;
     }

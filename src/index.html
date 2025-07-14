@@ -808,7 +808,7 @@
               </div>
             </div>
             
-            <div class="feedback-message" x-show="showStableInstableFeedback" x-text="stableInstableFeedback" :class="{'correct': stableInstableCorrect, 'incorrect': !stableInstableCorrect}"></div>
+            <div class="feedback-message" x-show="showStableInstableFeedback" x-text="stableInstableFeedback" :class="{'correct': $data.stableInstableCorrect !== undefined ? $data.stableInstableCorrect : false, 'incorrect': $data.stableInstableCorrect !== undefined ? !$data.stableInstableCorrect : false}"></div>
           </div>
         </div>
         
@@ -873,7 +873,7 @@
         <div id="2_5_chords_characters" x-show="mode === '2_5_chords_characters'" class="chord-activity activity-container lazyload-bg" data-background-image="./images/backgrounds/2_5_chords_dog_cat_owl_no_squirrel_no_octopus.jpg">
           
           <!-- start-button, shown in free play mode -->
-          <button id="play-chord-2_5" @click="start2_5GameMode()" class="play-button" x-show="is2_5FreePlayMode" style="font-size: 2em; cursor: pointer;" :title="$store.strings?.start_game || 'Start Game Mode'">🦉</button>
+          <button id="start-game-mode-2_5" @click="start2_5GameMode(); $event.stopPropagation();" class="play-button" x-show="is2_5FreePlayMode" style="font-size: 2em; cursor: pointer;" :title="$store.strings?.start_game || 'Start Game Mode'">🦉</button>
           
           <!-- Play button (shown in game mode) -->
           <button id="play-chord-2_5" @click="playCurrent2_5Chord()" class="play-button" x-show="!is2_5FreePlayMode" :title="$store.strings?.play_chord || 'Play Chord'">▶️</button>

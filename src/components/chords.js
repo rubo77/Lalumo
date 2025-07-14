@@ -669,6 +669,14 @@ export function chords() {
       } else if (mode === '2_5_chords_characters') {
         // Initialisierung für Character Matching
         debugLog('CHORDS', 'Initializing character matching activity');
+        
+        // Always ensure we start in free play mode when entering the activity
+        this.is2_5FreePlayMode = true;
+        debugLog('CHORDS', '[2_5] Reset to free play mode on activity entry');
+        
+        // Reset current chord type to ensure fresh start
+        this.currentChordType = null;
+        
         // Hintergrundänderung basierend auf Fortschritt
         updateCharacterBackground(this);
         
@@ -1270,11 +1278,21 @@ export function chords() {
      * @activity 2_5_chord_characters
      */
     start2_5GameMode() {
-      debugLog('CHORDS', `[2_5] Switching to game mode`);
+      debugLog('CHORDS', `[2_5] Switching to game mode - Button clicked`);
+      debugLog('CHORDS', `[2_5] Before mode switch: is2_5FreePlayMode=${this.is2_5FreePlayMode}, currentChordType=${this.currentChordType}`);
+      
+      // Explicitly set to false to switch to game mode
       this.is2_5FreePlayMode = false;
+      
+      // Reset chord to force new chord generation
+      this.currentChordType = null;
+      
+      debugLog('CHORDS', `[2_5] After mode switch: is2_5FreePlayMode=${this.is2_5FreePlayMode}, now calling playCurrent2_5Chord`);
+      
       // Play first chord in game mode
-      this.currentChordType = null; // Reset to generate a new chord
       this.playCurrent2_5Chord();
+      
+      debugLog('CHORDS', `[2_5] Completed start2_5GameMode, current chord type: ${this.currentChordType}`);
     },
     
     /**
@@ -1293,7 +1311,8 @@ export function chords() {
      * @activity 2_5_chord_characters
      */
     playCurrent2_5Chord() {
-      debugLog('CHORDS', `[REPETITION] playCurrent2_5Chord called with currentChordType=${this.currentChordType}, previousChordType=${this.previousChordType}, consecutiveRepeats=${this.consecutiveRepeats}`);
+      debugLog('CHORDS', `[2_5_PLAY] playCurrent2_5Chord called with currentChordType=${this.currentChordType}, previousChordType=${this.previousChordType}`);
+      debugLog('CHORDS', `[2_5_MODE] Current mode: ${this.is2_5FreePlayMode ? 'FREE PLAY' : 'GAME MODE'}, activity mode: ${this.mode}`);
       
       // Get the progress to determine if we need to transpose
       const progressData = localStorage.getItem('lalumo_chords_progress');
