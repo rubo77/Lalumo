@@ -98,7 +98,8 @@
     <string name="all_animals_unlocked">Alle Tiere freigeschaltet! 🎉</string>
     <string name="transpose_challenge">Höre gut zu! Die Akkorde ändern jetzt ihre Tonhöhe! 🎵</string>
     <string name="squirrel_returns">Das Eichhörnchen ist zurück! Der Oktopus schläft noch. 🐿️</string>
-    <string name="all_friends_return">Alle Freunde sind zurück, um dir zu helfen! 🐿️🐙</string>
+    <string name="all_friends_return">Alle Freunde sind zurück! 🐶🐱🐿️🐙</string>
+    <string name="chords_2_5_master">Du bist Akkordmeister! 🎉</string>
     
     <!-- Mascot Messages for Unlocks -->
     <string name="mascot_wave_unlocked">Toll! Du hast Wellen-Melodien freigeschaltet! 🌊</string>

@@ -98,7 +98,9 @@
     <string name="all_animals_unlocked">All animals unlocked! 🎉</string>
     <string name="transpose_challenge">Listen carefully! Chords are now changing pitch! 🎵</string>
     <string name="squirrel_returns">The squirrel is back to help! Octopus still sleeping. 🐿️</string>
-    <string name="all_friends_return">All friends are back to help you! 🐿️🐙</string>
+    <string name="all_friends_return">All friends are back to help you! 🐶🐱🐿️🐙</string>
+    <string name="chords_2_5_master">You are Chords Master! 🎉</string>
+
     
     <!-- Mascot Messages for Unlocks -->
     <string name="mascot_wave_unlocked">Great! You unlocked wavy melodies! 🌊</string>
