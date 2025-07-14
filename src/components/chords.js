@@ -653,8 +653,22 @@ export function chords() {
         
         // Initialize progress if it doesn't exist
         if (!this.progress) this.progress = {};
+        
+        // Load progress from localStorage if available
+        const savedProgress = localStorage.getItem('lalumo_chords_progress');
+        if (savedProgress) {
+          const progressData = JSON.parse(savedProgress);
+          if (progressData && typeof progressData['2_2_chords_stable_instable'] !== 'undefined') {
+            // Use the saved progress from localStorage
+            this.progress['2_2_chords_stable_instable'] = progressData['2_2_chords_stable_instable'];
+            debugLog('CHORDS_2_2_DEBUG', `Loaded progress from localStorage: ${this.progress['2_2_chords_stable_instable']}`);
+          }
+        }
+        
+        // If still undefined, initialize to 0
         if (typeof this.progress['2_2_chords_stable_instable'] === 'undefined') {
           this.progress['2_2_chords_stable_instable'] = 0;
+          debugLog('CHORDS_2_2_DEBUG', 'Initialized progress to 0');
         }
         
         // Reset to free play mode when entering from navigation
