@@ -57,7 +57,7 @@
     
     <!-- Chords - Main Menu -->
     <string name="chord_color_matching">Akkord-Farben Zuordnung</string>
-    <string name="chords_stable_instable">Stimmungslandschaften</string>
+    <string name="chords_stable_instable">Stabil oder Instabil</string>
     <string name="chord_building">Akkorde Bauen</string>
     <string name="missing_note">Rate die fehlende Note</string>
     <string name="chord_characters">Akkord-Charaktere</string>
@@ -69,8 +69,7 @@
     <string name="play_chord">Akkord spielen</string>
     
     <!-- Chords - Stable Or Instable Activity -->
-    <string name="chords_stable_instable_title">Akkord-Stimmungslandschaften</string>
-    <string name="chords_stable_instable_intro">Verschiedene Akkordtypen erzeugen unterschiedliche Gefühle und Landschaften. Spiele jeden Akkord, um zu sehen, wie sich die Landschaft verändert!</string>
+    <string name="chords_stable_instable_intro">Einige Akkorde sind harmonisch und ruhig, während andere Akkorde unharmonisch und unruhig klingen.</string>
     
     <!-- Chords - Chord Building Activity -->
     <string name="chord_building_title">Baue deine eigenen Akkorde</string>
@@ -99,6 +98,14 @@
     <string name="transpose_challenge">Höre gut zu! Die Akkorde ändern jetzt ihre Tonhöhe! 🎵</string>
     <string name="squirrel_returns">Das Eichhörnchen ist zurück! Der Oktopus schläft noch. 🐿️</string>
     <string name="all_friends_return">Alle Freunde sind zurück! 🐶🐱🐿️🐙</string>
+    
+    <!-- Stable/Instable Chord Progression Messages -->
+    <string name="stable_instable_level1">Kannst du den Unterschied zwischen stabilen und instabilen Akkorden hören?</string>
+    <string name="stable_instable_level2">Gut gemacht! Jetzt hörst du Septakkorde und alterierte Dominanten! 🎵</string>
+    <string name="stable_instable_level3">Stufe 3: Erweiterte Harmonien vs. polytonale Akkorde! 🎼</string>
+    <string name="stable_instable_level4">Stufe 4: Jazz-Voicings vs. atonale Cluster! 🎹</string>
+    <string name="stable_instable_level5">Stufe 5: Impressionistische Harmonien vs. mikrotonale Variationen! 🎶</string>
+    <string name="stable_instable_level6">Meisterstufe: Komplexe erweiterte Harmonien und raffinierte Dissonanzen! 🏆</string>
     <string name="chords_2_5_master">Du bist Akkordmeister! 🎉</string>
     
     <!-- Mascot Messages for Unlocks -->

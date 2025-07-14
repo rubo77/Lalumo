@@ -69,8 +69,7 @@
     <string name="play_chord">Play Chord</string>
     
     <!-- Chords - Stable Or Instable Activity -->
-    <string name="chords_stable_instable_title">Chord Stable Or Instable</string>
-    <string name="chords_stable_instable_intro">Different chord types create different feelings and landscapes. Play each chord to see how the landscape changes!</string>
+    <string name="chords_stable_instable_intro">Some chords are stable and peaceful, while others are unstable and restless.</string>
     
     <!-- Chords - Chord Building Activity -->
     <string name="chord_building_title">Build Your Own Chords</string>
@@ -98,6 +97,14 @@
     <string name="all_animals_unlocked">All animals unlocked! 🎉</string>
     <string name="transpose_challenge">Listen carefully! Chords are now changing pitch! 🎵</string>
     <string name="squirrel_returns">The squirrel is back to help! Octopus still sleeping. 🐿️</string>
+    
+    <!-- Stable/Instable Chord Progression Messages -->
+    <string name="stable_instable_level1">Can you hear the difference between stable and unstable chords?</string>
+    <string name="stable_instable_level2">Great job! Now listening for seventh chords and altered dominants! 🎵</string>
+    <string name="stable_instable_level3">Level 3: Extended harmonies vs. polytonal chords! 🎼</string>
+    <string name="stable_instable_level4">Level 4: Jazz voicings vs. atonal clusters! 🎹</string>
+    <string name="stable_instable_level5">Level 5: Impressionistic harmonies vs. microtonal variations! 🎶</string>
+    <string name="stable_instable_level6">Master Level: Complex extended harmonies and sophisticated dissonances! 🏆</string>
     <string name="all_friends_return">All friends are back to help you! 🐶🐱🐿️🐙</string>
     <string name="chords_2_5_master">You are Chords Master! 🎉</string>
 

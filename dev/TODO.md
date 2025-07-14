@@ -196,7 +196,9 @@ reset-button:
   - # bereit zur veröffentlichung
 
 2_2_chords_stable_instable:
- - es darf nicht 2x hintereinander haargenauderselbe akkord kommen
+  - es darf nicht 2x hintereinander haargenauderselbe akkord kommen
+  - # bereit zur veröffentlichung
+ 
 2_5_chords_color_matching:
  -  from 30 progress on, in free mode the chords should be on with variing transposition too each time you click on a chord-animal-button, exactly like in game mode
   - # bereit zur veröffentlichung
