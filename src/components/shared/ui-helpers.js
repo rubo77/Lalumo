@@ -6,20 +6,6 @@
 // Importiere Debug-Utilities
 import { debugLog } from '../../utils/debug.js';
 
-/**
- * Gets the chord buttons (diminished and augmented) from the DOM
- * @returns {Object} Object with diminishedBtn and augmentedBtn properties, or null if not found
- */
-export function getChordButtons() {
-  const diminishedBtn = document.getElementById('button_2_5_1_diminished');
-  const augmentedBtn = document.getElementById('button_2_5_1_augmented');
-  
-  if (!diminishedBtn || !augmentedBtn) {
-    return null;
-  }
-  
-  return { diminishedBtn, augmentedBtn };
-}
 
 /**
  * Extracts animal name from filename

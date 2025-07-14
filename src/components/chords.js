@@ -8,7 +8,7 @@ import * as Tone from 'tone';
 
 // Import shared utilities
 import { NOTE_NAMES, midiToNoteName } from './shared/music-utils.js';
-import { getChordButtons } from './shared/ui-helpers.js';
+import { getChordButtons } from './2_chords/2_5_chord_characters.js';
 
 // Export specific functions from each module
 // Common Module
@@ -91,6 +91,7 @@ export function chords() {
     /**
      * Update chord buttons visibility based on user progress
      * Controls which chord type buttons are shown in 2_5_chords_characters activity
+     * @todo: move to component 2_5_chord_characters.js
      */
     updateChordButtonsVisibility() {
       // Get the current progress for chord characters activity

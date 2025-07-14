@@ -8,6 +8,21 @@ import { preloadBackgroundImage } from '../shared/image-utils.js';
 import { getActivityProgress } from '../shared/progress-utils.js';
 
 /**
+ * Gets the chord buttons (diminished and augmented) from the DOM
+ * @returns {Object} Object with diminishedBtn and augmentedBtn properties, or null if not found
+ */
+export function getChordButtons() {
+  const diminishedBtn = document.getElementById('button_2_5_1_diminished');
+  const augmentedBtn = document.getElementById('button_2_5_1_augmented');
+  
+  if (!diminishedBtn || !augmentedBtn) {
+    return null;
+  }
+  
+  return { diminishedBtn, augmentedBtn };
+}
+
+/**
  * Test function to verify module import is working correctly
  * @returns {boolean} True if import successful
  */
