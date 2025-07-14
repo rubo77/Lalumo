@@ -4,6 +4,16 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const fs = require('fs');
 
+// Helper function to minify XML content
+function minifyXML(content) {
+  return content.toString()
+    .replace(/^[ \t]+/gm, '')  // Remove leading whitespace from each line
+    .replace(/\r?\n\s*/g, '')    // Remove all line breaks and following whitespace
+    .replace(/>\s+</g, '><')    // Remove whitespace between tags
+    .replace(/\s+\/>/g, '/>')  // Remove whitespace before self-closing tags
+    .trim();
+}
+
 // Funktion zum Finden der Template-Dateien
 function findHomepageTemplates() {
   const templatesDir = path.join(__dirname, 'homepage');
@@ -221,9 +231,48 @@ module.exports = (env, argv) => {
             from: 'src/favicon.ico',
             to: 'de/favicon.ico'
           },
-          { 
-            from: 'public/strings-*.xml',
-            to: 'app/[name][ext]'
+          // Process and minify XML files from source and copy to multiple locations
+          {
+            from: 'android/app/src/main/res/values/strings.xml',
+            to: 'app/strings-en.xml',
+            transform: minifyXML
+          },
+          {
+            from: 'android/app/src/main/res/values/strings.xml',
+            to: 'strings-en.xml',
+            transform: minifyXML
+          },
+          // Minify the source files in the public directory
+          {
+            from: 'android/app/src/main/res/values/strings.xml',
+            to: '../public/strings-en.xml',
+            transform: minifyXML
+          },
+          {
+            from: 'android/app/src/main/res/values/strings.xml',
+            to: 'public/strings-en.xml',
+            transform: minifyXML
+          },
+          {
+            from: 'android/app/src/main/res/values-de/strings.xml',
+            to: 'app/strings-de.xml',
+            transform: minifyXML
+          },
+          {
+            from: 'android/app/src/main/res/values-de/strings.xml',
+            to: 'strings-de.xml',
+            transform: minifyXML
+          },
+          // Minify the source files in the public directory
+          {
+            from: 'android/app/src/main/res/values-de/strings.xml',
+            to: '../public/strings-de.xml',
+            transform: minifyXML
+          },
+          {
+            from: 'android/app/src/main/res/values-de/strings.xml',
+            to: 'public/strings-de.xml',
+            transform: minifyXML
           },
           {
             from: 'public/images',
