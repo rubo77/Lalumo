@@ -552,8 +552,8 @@ export function updateStableInstableBackground(component) {
     // Max image is 5
     
     // Calculate which image to use (integer division by 10, then add 1)
-    // Minimum image index is 1, maximum is 5
-    const imageIndex = Math.min(5, Math.max(1, Math.floor(progress / 10) + 1));
+    // Minimum image index is 1, maximum is 6
+    const imageIndex = Math.min(6, Math.max(1, Math.floor(progress / 10) + 1));
     
     // Use the JPG images with proper naming
     const backgroundImage = `./images/backgrounds/2_2_chords_stable_instable-${imageIndex}.jpg`;
