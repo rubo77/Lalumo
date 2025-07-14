@@ -35,8 +35,8 @@ export function initCapacitor() {
     // Handle visibility change (when app goes to background/foreground)
     document.addEventListener('visibilitychange', () => {
       if (document.hidden) {
-        console.log('[LIFECYCLE] App going to background, cleaning up audio resources');
-        cleanupAudioResources();
+        console.log('[LIFECYCLE] App going to background, not cleaning up audio resources');
+        //cleanupAudioResources();
       }
     });
     
@@ -46,8 +46,12 @@ export function initCapacitor() {
       cleanupAudioResources();
     });
     
-    // Removed window blur event handler as it was too aggressive
-    // We don't want to clean up audio when user just clicks outside the window
+    // Handle focus events for web platform
+    window.addEventListener('blur', () => {
+      console.log('[LIFECYCLE] Window lost focus, not cleaning up audio resources');
+      // We don't want to clean up audio when user just clicks outside the window
+      // cleanupAudioResources();
+    });
   }
 
   return {

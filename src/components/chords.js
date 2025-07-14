@@ -8,7 +8,7 @@ import * as Tone from 'tone';
 
 // Import shared utilities
 import { NOTE_NAMES, midiToNoteName } from './shared/music-utils.js';
-import { getChordButtons } from './2_chords/2_5_chord_characters.js';
+import { getChordButtons, update2_5ButtonsVisibility } from './2_chords/2_5_chord_characters.js';
 
 // Export specific functions from each module
 // Common Module
@@ -53,7 +53,7 @@ import { testMissingNoteModuleImport } from './2_chords/2_4_missing_note.js';
 
 // 2_5 Chord Characters Module
 import { 
-  updateCharacterBackground 
+  update_2_5Background 
 } from './2_chords/2_5_chord_characters.js';
 
 // 2_6 Chord Characters Module
@@ -88,62 +88,7 @@ export function chords() {
     // Constants for activity configuration
     LEVEL_STEP: CHORD_CHARACTERS_LEVEL_STEP,
     
-    /**
-     * Update chord buttons visibility based on user progress
-     * Controls which chord type buttons are shown in 2_5_chords_characters activity
-     * @todo: move to component 2_5_chord_characters.js
-     */
-    updateChordButtonsVisibility() {
-      // Get the current progress for chord characters activity
-      const progressData = localStorage.getItem('lalumo_chords_progress');
-      const progress = progressData ? 
-        JSON.parse(progressData)['2_5_chords_characters'] || 0 : 
-        this?.progress?.['2_5_chords_characters'] || 0;
-      
-      // Get chord buttons
-      const chordButtons = getChordButtons();
-      
-      if (!chordButtons) {
-        // Buttons not found in DOM yet, will try again when activity is shown
-        debugLog('CHORDS', 'Chord buttons not found in DOM yet');
-        return;
-      }
-      
-      const { diminishedBtn, augmentedBtn } = chordButtons;
-      
-      // Apply visibility rules based on progress
-      if (progress < 10) {
-        // Progress < 10: Hide mysterious (diminished) and surprised (augmented)
-        diminishedBtn.style.display = 'none';
-        augmentedBtn.style.display = 'none';
-        debugLog(['CHORDS', 'BUTTONS'], 'Progress < 10: Hiding mysterious and surprised buttons');
-      } else if (progress < 20) {
-        // Progress 10-19: hide mysterious octopus (diminished), show surprised squirrel (augmented)
-        augmentedBtn.style.display = '';
-        diminishedBtn.style.display = 'none';
-        debugLog(['CHORDS', 'BUTTONS'], 'Progress 10-19: Showing surprised, hiding mysterious button');
-      } else if (progress < 30) {
-        // Progress 20-29: show all
-        augmentedBtn.style.display = '';
-        diminishedBtn.style.display = '';
-        debugLog(['CHORDS', 'BUTTONS'], 'Progress 20-29: Showing all buttons');
-      } else if (progress < 40) {
-        // Progress 20-39: Show basic buttons, but hide squirrel and octopus (diminished and augmented)
-        augmentedBtn.style.display = 'none';
-        diminishedBtn.style.display = 'none';
-        debugLog(['CHORDS', 'BUTTONS'], 'Progress 20-39: Hiding octopus and squirrel (transposition phase)');
-      } else if (progress < 50) {
-        // Progress 40-59: Show all buttons except octopus (diminished)
-        augmentedBtn.style.display = '';
-        diminishedBtn.style.display = 'none';
-        debugLog(['CHORDS', 'BUTTONS'], 'Progress 40-59: Hiding octopus, showing squirrel');
-      } else {
-        // Progress >= 50: Show all buttons
-        augmentedBtn.style.display = '';
-        diminishedBtn.style.display = '';
-        debugLog(['CHORDS', 'BUTTONS'], 'Progress >= 60: Showing all chord buttons and animals');
-      }
-    },
+    // Chord buttons visibility is now managed by imported update2_5ButtonsVisibility function,
     
     // Chord sequence for harmony gardens
     chordSequence: [],
@@ -219,7 +164,7 @@ export function chords() {
               
               if (chordButtons) {
                 debugLog('CHORDS', 'Chord buttons found in DOM, updating visibility');
-                this.updateChordButtonsVisibility();
+                update2_5ButtonsVisibility(this);
                 // No need to observe further once we've found our elements
                 observer.disconnect();
                 break;
@@ -233,7 +178,7 @@ export function chords() {
       }
       
       // Also attempt direct initialization after a delay as fallback
-      setTimeout(() => this.updateChordButtonsVisibility(), 1500);
+      setTimeout(() => update2_5ButtonsVisibility(this), 1500);
       
       // Set up audio context when user interacts
       document.addEventListener('click', this.initAudio.bind(this), { once: true });
@@ -620,7 +565,7 @@ export function chords() {
         this.progress[this.mode] = this.totalQuestions;
         localStorage.setItem('lalumo_chords_progress', JSON.stringify(this.progress));
         debugLog('CHORDS', `Saved progress for ${this.mode}: ${this.totalQuestions}`);
-        this.updateChordButtonsVisibility();
+        update2_5ButtonsVisibility(this);
       }
       
       this.mode = mode;
@@ -630,7 +575,7 @@ export function chords() {
       if (mode !== 'main' && this.progress && this.progress[mode] !== undefined) {
         this.totalQuestions = this.progress[mode];
         debugLog('CHORDS', `Loaded progress for ${mode}: ${this.totalQuestions}`);
-        this.updateChordButtonsVisibility();
+        update2_5ButtonsVisibility(this);
       }
       
       // Update Alpine store
@@ -699,7 +644,7 @@ export function chords() {
         this.currentChordType = null;
         
         // Hintergrundänderung basierend auf Fortschritt
-        updateCharacterBackground(this);
+        update_2_5Background(this);
         
         // Alpine.js übernimmt die Anzeige der Fortschrittsnachrichten über die x-text-Bindungen
       } else if (mode === '2_6_chords_harmony-gardens') {
@@ -743,10 +688,10 @@ export function chords() {
           localStorage.setItem('lalumo_chords_progress', JSON.stringify(this.progress));
           
           // Update background to reflect reset progress
-          updateCharacterBackground(this);
+          update_2_5Background(this);
           
           // Update button visibility
-          this.updateChordButtonsVisibility();
+          update2_5ButtonsVisibility(this);
           
           console.log('CHORDS: Reset progress for 2_5_chords_characters activity');
         }
@@ -781,8 +726,8 @@ export function chords() {
       this.currentChordChanged = false;
       
       // Update background and button visibility
-      updateCharacterBackground(this);
-      this.updateChordButtonsVisibility();
+      update_2_5Background(this);
+      update2_5ButtonsVisibility(this);
     },
     
     /**
@@ -1565,10 +1510,10 @@ export function chords() {
         this.needsNewTranspose = true;
         
         // Aktualisiere den Hintergrund basierend auf dem neuen Fortschritt
-        updateCharacterBackground(this);
+        update_2_5Background(this);
         
         // Update chord buttons visibility based on new progress
-        this.updateChordButtonsVisibility();
+        update2_5ButtonsVisibility(this);
         
         // Alpine.js übernimmt die Anzeige der Fortschrittsnachrichten über die x-text-Bindungen
         
