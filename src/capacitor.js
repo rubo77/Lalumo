@@ -1,6 +1,16 @@
 /**
  * Capacitor integration for Lalumo app
- * This file handles initializing Capacitor plugins and native functionality
+ * 
+ * This file handles initializing Capacitor plugins and native functionality for both
+ * mobile and web platforms. While Capacitor primarily bridges web code to native
+ * mobile platforms (iOS/Android), this module also provides web-specific handling
+ * for application lifecycle events.
+ * 
+ * For mobile: Initializes native plugins and handles platform-specific features
+ * For web: Manages resource cleanup and lifecycle events (page visibility, unload)
+ * 
+ * Both environments import and use this module, which is why the lifecycle event 
+ * handlers affect both mobile and web applications.
  */
 import { Capacitor } from '@capacitor/core';
 import { SplashScreen } from '@capacitor/splash-screen';
@@ -36,11 +46,8 @@ export function initCapacitor() {
       cleanupAudioResources();
     });
     
-    // Handle focus events for web platform
-    window.addEventListener('blur', () => {
-      console.log('[LIFECYCLE] Window lost focus, cleaning up audio resources');
-      cleanupAudioResources();
-    });
+    // Removed window blur event handler as it was too aggressive
+    // We don't want to clean up audio when user just clicks outside the window
   }
 
   return {
