@@ -1437,7 +1437,7 @@ section h2 {
   top: 0;
 }
 
-#play-chord-2_5{
+#play-chord-2_5, #start-game-mode-2_5{
   opacity: 0;
   width: 60%;
   height: min(48vw, 320px);
@@ -1448,7 +1448,7 @@ section h2 {
   margin-left: 40%;
 }
 
-#play-chord-2_5:hover{
+#play-chord-2_5:hover, #start-game-mode-2_5:hover{
   opacity: 0.05;
 }
 
