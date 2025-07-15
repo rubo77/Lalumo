@@ -17,6 +17,7 @@
 - User requested to generate metadata/com.lalumo.app.yml for F-Droid submission with current version info (3.0, versionCode 26).
 - New bug/feature: In 2_5 chord characters, after entering from nav, activity should always start in free mode; first time play is hit, it switches to game mode.
 - Cleaning up audio resources on window blur deletes the synth when window loses focus, which is not desired. Only clean up on appropriate lifecycle events (e.g. visibilitychange, beforeunload), not blur.
+  - This is already handled: cleanupAudioResources is only called on beforeunload; blur and visibilitychange handlers do not clean up audio.
 - New bug/feature: In 2_2 chords stable/instable, after entering from nav, activity should always start in free mode; first time play is hit, it switches to game mode. Play button should reliably switch to game mode, and activity should reset to free mode when re-entered from nav.
 - User reports: 2_2_chords_stable_instable progress is always reset to 0 when re-entering from nav. Investigate if progress is stored in localStorage and if it is part of the reset logic.
   - Progress is stored in localStorage and updated in checkStableInstableMatch, but may not be loaded correctly when re-entering activity; likely cause of reset to 0.
@@ -27,6 +28,7 @@
 - XML minification is now verified to work for all output locations (including public/), with no leading whitespace in lines.
 - Progression messages for 2_2_chords_stable_instable (levels 1-6) have been added to HTML and both English and German resource files.
 - New feature: In 2_2_chords_stable_instable, when the play button is pressed again, the same chord should repeat until the user gets it right.
+  - Feature is now fully implemented: play button repeats the same chord until correct, and Alpine.js feedback variables are properly initialized and updated for correct/incorrect answer feedback.
 
 ## Task List
 - [x] Update concept documentation to specify single-flag/multi-activity unlock
@@ -45,7 +47,7 @@
 - [x] Generate metadata/com.lalumo.app.yml for F-Droid submission
 - [x] Fix 2_5 chord characters: always start in free mode when entered from nav; switch to game mode on first play
 - [x] Move getChordButtons and update2_5ButtonsVisibility to 2_5_chord_characters.js; remove related TODO/import from chords.js
-- [ ] Refine audio cleanup lifecycle logic to avoid deleting synth on window blur
+- [x] Refine audio cleanup lifecycle logic to avoid deleting synth on window blur
 - [x] Fix 2_2 chords stable/instable: always start in free mode when entered from nav; reliably switch to game mode on play button, and reset to free mode when re-entered from nav
   - [x] Move update2_5ButtonsVisibility to 2_5_chord_characters.js and remove related TODO/import from chords.js
   - [x] Update play button in HTML to call playStableInstableChord($data, false) to reliably start game mode
@@ -58,7 +60,9 @@
   - [x] Add English and German strings for levels 1-6 (CONCEPT.md#L162-168)
   - [x] Insert correct message binding in index.html at lines 794-799
   - [x] Test correct display and translation of progression messages
-- [ ] Update 2_2 chords stable/instable: Play button should repeat the same chord until the user gets it right
+- [x] Update 2_2 chords stable/instable: Play button should repeat the same chord until the user gets it right
+  - [x] Define and initialize Alpine.js feedback variables (showStableInstableFeedback, stableInstableFeedback) in chords component
+  - [x] Fix Alpine.js feedback variable errors for correct/incorrect answer feedback
 
 ## Current Goal
-Refine audio cleanup lifecycle logic to avoid deleting synth on window blur
+Test and verify 2_2 chords stable/instable feedback and repetition

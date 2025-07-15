@@ -288,7 +288,7 @@
     <!-- High or Low Stage Messages -->
     <string name="high_low_stage1">Schaffe 10 richtige für nähere Töne!</string>
     <string name="high_low_stage2">Schaffe 20 richtige für zwei Töne!</string>
-    <string name="high_low_stage3">Schaffe 30 richtige für mehr Schwierigkeit!</string>
+    <string name="high_low_stage3">Schaffe 30 richtige um die Schwierigkeit zu erhöhen!</string>
     <string name="high_low_stage4">Schaffe 40 richtige für die ultimative Herausforderung!</string>
     <string name="high_low_master">Meisterstufe erreicht! 🎉</string>
     

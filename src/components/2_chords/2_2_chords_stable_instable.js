@@ -19,6 +19,12 @@ import {
   showCompleteError 
 } from '../shared/feedback.js';
 
+// Initialize global Alpine.js feedback variables
+// These need to be defined globally for Alpine.js to access them during startup
+window.showStableInstableFeedback = false;
+window.stableInstableFeedback = '';
+window.stableInstableCorrect = false;
+
 // Current chord state
 let currentChordType = null;
 let currentBaseChord = [];      // Store the base chord (before transposition)
@@ -327,6 +333,17 @@ export function playStableInstableChord(component, isReplay = false) {
 window.playStableInstableChord = playStableInstableChord;
 window.checkStableInstableMatch = checkStableInstableMatch;
 
+// Ensure feedback variables are globally available for Alpine.js
+if (typeof window.showStableInstableFeedback === 'undefined') {
+  window.showStableInstableFeedback = false;
+}
+if (typeof window.stableInstableFeedback === 'undefined') {
+  window.stableInstableFeedback = '';
+}
+if (typeof window.stableInstableCorrect === 'undefined') {
+  window.stableInstableCorrect = false;
+}
+
 /**
  * Handles the user's selection in free play mode
  * @param {number} buttonIndex - The index of the button that was clicked (0 or 1)
@@ -508,6 +525,13 @@ export function checkStableInstableMatch(selectedType, component) {
       // Show error feedback
       showShakeError();
       audioEngine.playNote('try_again');
+      
+      // Update Alpine.js feedback variables
+      if (component) {
+        component.showStableInstableFeedback = true;
+        component.stableInstableFeedback = `Incorrect. It was a ${currentChordType} chord.`;
+        component.stableInstableCorrect = false;
+      }
       
       // Replay the same chord after a delay (with same transposition)
       if (currentBaseChord.length > 0) {
