@@ -67,4 +67,4 @@
 - [x] Fix: Auto-hide feedback message after a few seconds in 2_2_chords_stable_instable
 
 ## Current Goal
-- [ ] Test and verify feedback auto-hide in 2_2 chords stable/instable
+No outstanding urgent tasks

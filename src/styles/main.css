@@ -1617,7 +1617,7 @@ section h2 {
   margin: 0 auto;
 }
 
-.feedback-message, .melody-name {
+.melody-name {
   position: relative;
   color: var(--text-color);
   padding: 0.5rem 1rem 1.5rem;
@@ -1631,6 +1631,30 @@ section h2 {
   opacity: 0.7;
   text-shadow: 0 2px 0 rgba(255, 255, 255, 0.5);
   /* SVG-Biegeeffekt wird durch JS hinzugefügt */
+}
+
+.feedback-message {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  color: var(--text-color);
+  padding: 0.8rem 1.5rem;
+  background-color: rgba(255, 255, 255, 0.35);
+  border-radius: 0 0 1rem 1rem;
+  text-align: center;
+  width: auto;
+  min-width: 50%;
+  max-width: 90%;
+  font-weight: bold;
+  animation: fade-in 0.3s ease;
+  z-index: 9999; /* well above mascot message */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateX(-50%) translateY(-10px); }
+  to { opacity: 1; transform: translateX(-50%) translateY(0); }
 }
 
 .melody-name {
