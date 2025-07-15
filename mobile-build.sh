@@ -158,6 +158,10 @@ else
   echo "###### 3. Skipping version update as requested..."
 fi
 
+# Lösche Android-Ordner für sauberen Build
+echo "###### 3.5. Lösche Android-Ordner für sauberen Build..."
+rm -rf android/
+
 # Build the web app
 echo "###### 4. Building web application fast..."
 npm run build:fast
@@ -191,6 +195,10 @@ cp -r dist/app/* dist/
 
 # Ensure dist/app/ directory exists (it should, but let's be safe)
 mkdir -p dist/app/
+
+# Telemetrie deaktivieren
+echo "Deaktiviere Capacitor Telemetrie..."
+npx cap telemetry off
 
 # Jetzt mit der Standardkonfiguration synchronisieren (webDir ist bereits auf 'dist' eingestellt)
 echo "Synchronisiere mit Capacitor..."
