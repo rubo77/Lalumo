@@ -88,7 +88,7 @@ test.describe('Lalumo Home Button Navigation', () => {
         });
       }
     } catch (e) {
-      console.log('Error clicking home button:', e);
+      console.log('[Error] while clicking home button:', e);
       // Letzte Chance: Direkter JS-Aufruf
       await page.evaluate(() => {
         if (window.Alpine) {

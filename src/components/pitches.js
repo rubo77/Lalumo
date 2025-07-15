@@ -4958,7 +4958,7 @@ export function pitches() {
         matchingActivity.style.backgroundImage = `url(${backgroundImage})`;
         console.log(`Updated background based on progress (${progress}): ${backgroundImage}`);
       } else {
-        console.log('error updating background: div not found')
+        console.log('[Error] while updating background: div not found')
       }
     },
     

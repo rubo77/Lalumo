@@ -90,7 +90,7 @@ async function handleUsernameModal(page) {
       console.log('No username modal found, continuing...');
     }
   } catch (e) {
-    console.log('Error handling username modal:', e);
+    console.log('[Error] while handling username modal:', e);
   }
 }
 

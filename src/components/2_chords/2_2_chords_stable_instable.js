@@ -25,6 +25,9 @@ window.showStableInstableFeedback = false;
 window.stableInstableFeedback = '';
 window.stableInstableCorrect = false;
 
+// Store feedback timeout reference
+let feedbackTimeout = null;
+
 // Current chord state
 let currentChordType = null;
 let currentBaseChord = [];      // Store the base chord (before transposition)
@@ -461,6 +464,24 @@ export function checkStableInstableMatch(selectedType, component) {
       
       debugLog(['CHORDS_2_2_DEBUG', '2_2_MATCH'], `Correct! It was a ${currentChordType} chord. Progress: ${progress['2_2_chords_stable_instable']}`);
       
+      // Update Alpine.js feedback variables for correct answer
+      if (component) {
+        // Clear any existing feedback timeout
+        if (feedbackTimeout) {
+          clearTimeout(feedbackTimeout);
+        }
+        
+        component.showStableInstableFeedback = true;
+        component.stableInstableFeedback = `Correct! It was a ${currentChordType} chord.`;
+        component.stableInstableCorrect = true;
+        
+        // Auto-hide feedback after 3 seconds
+        feedbackTimeout = setTimeout(() => {
+          component.showStableInstableFeedback = false;
+          debugLog(['CHORDS_2_2_DEBUG', 'FEEDBACK'], 'Auto-hiding correct feedback');
+        }, 3000);
+      }
+      
       // Play success sound and schedule next chord
       audioEngine.playNote('success', 1, undefined, 0.5);
       
@@ -528,9 +549,20 @@ export function checkStableInstableMatch(selectedType, component) {
       
       // Update Alpine.js feedback variables
       if (component) {
+        // Clear any existing feedback timeout
+        if (feedbackTimeout) {
+          clearTimeout(feedbackTimeout);
+        }
+        
         component.showStableInstableFeedback = true;
         component.stableInstableFeedback = `Incorrect. It was a ${currentChordType} chord.`;
         component.stableInstableCorrect = false;
+        
+        // Auto-hide feedback after 3 seconds
+        feedbackTimeout = setTimeout(() => {
+          component.showStableInstableFeedback = false;
+          debugLog(['CHORDS_2_2_DEBUG', 'FEEDBACK'], 'Auto-hiding incorrect feedback');
+        }, 3000);
       }
       
       // Replay the same chord after a delay (with same transposition)

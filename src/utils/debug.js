@@ -57,31 +57,45 @@ const initDebugMode = (forceDebug = false) => {
 /**
  * Log a message only if in debug mode
  * @param {string|string[]} module - Module or component name, or array of module names/tags
- * @param {string} message - The message to log
- * @param {any} data - Optional data to log
+ * @param {string} [message=''] - The message to log (if empty, module is used as message)
+ * @param {...any} args - Any additional arguments to pass to console.log/console.error
  */
-const debugLog = (module, message, data) => {
+const debugLog = (module, message = '', ...args) => {
   if (isDebugMode) {
+    // Determine if this is an error message
+    let isError = false;
+    
     // Format the tag prefix based on whether module is a string or array
     let tagPrefix;
     
     if (Array.isArray(module)) {
       // If module is an array, join all tags with brackets
       tagPrefix = module.map(tag => `[${tag}]`).join(' ');
+      // Check if ERROR is one of the tags
+      if (module.includes('ERROR')) {
+        isError = true;
+      }
     } else if (message === '') { 
-      // If message is empty, use tag [DEBUG] and use module as massage
+      // If message is empty, use tag [DEBUG] and use module as message
       tagPrefix = `[DEBUG]`;
       message = module;
     } else {
       // If module is a string, use the original format
       tagPrefix = `[${module}]`;
+      // Check if module is ERROR
+      if (module === 'ERROR') {
+        isError = true;
+      }
     }
     
-    // Log with the formatted tag prefix
-    if (data) {
-      console.log(`${tagPrefix} ${message}`, data);
+    // Choose the appropriate console method based on isError flag
+    const logMethod = isError ? console.error : console.log;
+    
+    // Log with the formatted tag prefix and all additional arguments
+    if (args.length > 0) {
+      logMethod(`${tagPrefix} ${message}`, ...args);
     } else {
-      console.log(`${tagPrefix} ${message}`);
+      logMethod(`${tagPrefix} ${message}`);
     }
   }
 };

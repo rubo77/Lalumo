@@ -791,11 +791,11 @@ export function app() {
             window.AndroidMenuLock.setMenuLockState(this.menuLocked);
             console.log('Android notified about menu lock state:', this.menuLocked);
           } catch (androidError) {
-            console.log('Error notifying Android about menu lock state', androidError);
+            console.log('[Error] while notifying Android about menu lock state', androidError);
           }
         }
       } catch (e) {
-        console.log('Error saving menu lock state', e);
+        console.log('[Error] while saving menu lock state', e);
       }
     },
     
@@ -917,7 +917,7 @@ export function app() {
           : `Your name is ${this.username}. You can change this in the settings.`;
         this.showToast(message, 5000);
       } catch (e) {
-        console.log('Error saving username', e);
+        console.log('[Error] while saving username', e);
       }
       
       this.showUsernamePrompt = false;
@@ -940,7 +940,7 @@ export function app() {
             : `Your name is ${this.username}. You can change this in the settings.`;
           this.showToast(message, 5000);
         } catch (e) {
-          console.log('Error saving custom username', e);
+          console.log('[Error] while saving custom username', e);
         }
       } else {
         // If empty, revert to current username

@@ -29,6 +29,7 @@
 - Progression messages for 2_2_chords_stable_instable (levels 1-6) have been added to HTML and both English and German resource files.
 - New feature: In 2_2_chords_stable_instable, when the play button is pressed again, the same chord should repeat until the user gets it right.
   - Feature is now fully implemented: play button repeats the same chord until correct, and Alpine.js feedback variables are properly initialized and updated for correct/incorrect answer feedback.
+- BUG: In 2_2_chords_stable_instable, the feedback message (e.g., "Incorrect. It was a stable chord.") is not cleared after a few seconds; needs auto-hide/timeout logic.
 
 ## Task List
 - [x] Update concept documentation to specify single-flag/multi-activity unlock
@@ -63,6 +64,7 @@
 - [x] Update 2_2 chords stable/instable: Play button should repeat the same chord until the user gets it right
   - [x] Define and initialize Alpine.js feedback variables (showStableInstableFeedback, stableInstableFeedback) in chords component
   - [x] Fix Alpine.js feedback variable errors for correct/incorrect answer feedback
+- [x] Fix: Auto-hide feedback message after a few seconds in 2_2_chords_stable_instable
 
 ## Current Goal
-Test and verify 2_2 chords stable/instable feedback and repetition
+- [ ] Test and verify feedback auto-hide in 2_2 chords stable/instable

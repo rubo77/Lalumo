@@ -42,7 +42,7 @@ test.describe('Lalumo Hash Navigation', () => {
           await page.mouse.click(100, 100);
         }
       } catch (e) {
-        console.log('Error waiting for pitch-landing:', e);
+        console.log('[Error] while waiting for pitch-landing:', e);
       }
     } catch (e) {
       console.log('Error during page initialization:', e);

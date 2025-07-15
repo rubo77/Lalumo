@@ -88,7 +88,7 @@ test.describe('Lalumo Match Sounds Activity', () => {
         console.log('Username dialog not visible, continuing with test');
       }
     } catch (e) {
-      console.log('Error handling username dialog:', e);
+      console.log('[Error] while handling username dialog:', e);
     }
     
     // Navigate to Pitches section

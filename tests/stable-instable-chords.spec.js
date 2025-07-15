@@ -328,7 +328,7 @@ test.describe('Lalumo Stable/Instable Chords Activity', () => {
         return progress['2_2_chords_stable_instable'] || 0;
       });
     } catch (error) {
-      console.log('Error checking reset progress:', error.message);
+      console.log('[Error] while checking reset progress:', error.message);
     }
     
     console.log(`Progress after incorrect answer: ${resetProgress}`);
