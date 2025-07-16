@@ -528,6 +528,13 @@ export function checkStableInstableMatch(selectedType, component) {
       
       debugLog(['CHORDS_2_2_DEBUG', '2_2_MATCH'], `Incorrect. It was a ${currentChordType} chord. Progress reset to ${progress['2_2_chords_stable_instable']}`);
       
+      // Show feedback using translation system
+      const chordTypeKey = currentChordType === 'stable' ? 'stable' : 'unstable';
+      const translationKey = `feedback_${chordTypeKey}_chord`;
+      const message = Alpine.store('strings')?.[translationKey] || 
+                    `Incorrect. It was a ${chordTypeKey} chord.`;
+      window.showMascotMessage(message, '2_2_chords_stable_instable', 2, component);
+      
       // Save updated progress to localStorage
       localStorage.setItem('lalumo_chords_progress', JSON.stringify(progress));
       

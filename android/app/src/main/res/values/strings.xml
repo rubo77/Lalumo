@@ -306,6 +306,10 @@
     <string name="memory_practice">Press keys freely to practice. Press ▶️ for the game!</string>
     <string name="memory_game_intro">Listen to the melody, then tap the colored buttons in the same order!</string>
 
+    <!-- Chord Feedback Messages -->
+    <string name="feedback_stable_chord" comment="feedback_${chordTypeKey}_chord">Incorrect. It was a stable chord.</string>
+    <string name="feedback_unstable_chord" comment="feedback_${chordTypeKey}_chord">Incorrect. It was an unstable chord.</string>
+    
     <!-- Back Button Messages -->
     <string name="back_button_confirm_exit">Do you really want to leave this page? Your session progress might be lost.</string>
 

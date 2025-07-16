@@ -1662,7 +1662,7 @@ export function pitches() {
         
         unlocked = true;
         const message = window.Alpine?.store('strings')?.mascot_wave_unlocked || 'Great! You unlocked wavy melodies! :wave:';
-        this.showMascotMessage(message);
+        window.showMascotMessage(message, null, 2, this);
       }
       
       // Unlock jump pattern at 20 correct answers  
@@ -1672,7 +1672,7 @@ export function pitches() {
         
         unlocked = true;
         const message = window.Alpine?.store('strings')?.mascot_jump_unlocked || 'Amazing! You unlocked random jump melodies! :frog:';
-        this.showMascotMessage(message);
+        window.showMascotMessage(message, null, 2, this);
       }
       
       // Wenn ein neues Pattern freigeschaltet wurde und wir im Match-Sounds-Modus sind,
@@ -1796,7 +1796,7 @@ export function pitches() {
       
       // Show the message using the existing function
       if (message) {
-        this.showMascotMessage(message, this.mode, 0.5);
+        window.showMascotMessage(message, this.mode, 0.5, this);
       }
     },
     
@@ -1965,83 +1965,12 @@ export function pitches() {
     },
     
     /**
-      * Show a help message and speak it if text-to-speech is available
-      * @param {string} message - The message to display and speak
-      * @param {string} activityId - Optional ID of the current activity to prevent duplicate messages
-      */
+     * @deprecated Use window.showMascotMessage() instead
+     * This method is kept for backward compatibility but now forwards to the global function
+     */
     showMascotMessage(message, activityId = null, delaySeconds = 2) {
-
-      // check if message is empty, and if so, show a log entry error with traceback:
-      if (!message || message.trim() === '' || message === 'undefined' || message === 'null') {
-        console.error('HELP_MESSAGE: showMascotMessage called with empty message', new Error().stack);
-        return;
-      }
-      
-      // Check if we should show help messages based on user settings
-      if (!this.$store.mascotSettings.showHelpMessages) {
-        console.log('HELP_MESSAGE: Skipping help message - user has disabled help messages');
-        return;
-      }
-      
-      // Check if we've already shown a message for this activity
-      if (activityId && this.$store.mascotSettings.seenActivityMessages[activityId]) {
-        console.log(`HELP_MESSAGE: Skipping help message for ${activityId} - already shown once`);
-        return;
-      }
-      
-      // Mark this activity as having shown a message
-      if (activityId) {
-        this.$store.mascotSettings.seenActivityMessages[activityId] = true;
-        // Save settings
-        try {
-          localStorage.setItem('lalumo_mascot_settings', JSON.stringify(this.mascotSettings));
-        } catch (error) {
-          console.error('HELP_MESSAGE: Error saving help message settings:', error);
-        }
-      }
-      
-      // Clear any existing feedback timers
-      if (this.feedbackTimer) {
-        clearTimeout(this.feedbackTimer);
-        this.feedbackTimer = null;
-      }
-      
-      // Store message in helpMessage variable
-      this.helpMessage = message;
-      
-      // Display message in the unified feedback system using global store
-      Alpine.store('feedback').feedbackMessage = message;
-      Alpine.store('feedback').showFeedback = true;
-      
-      console.log(`HELP_MESSAGE: Showing after ${delaySeconds}s delay:`, message);
-      
-      // Auto-hide after 10 seconds with ease transition
-      this.feedbackTimer = setTimeout(() => {
-        Alpine.store('feedback').showFeedback = false;
-        console.log("HELP_MESSAGE: Auto-hiding after 10s");
-      }, 10000);
-      
-      console.log('HELP_MESSAGE: Showing help message:', message, 'TTS available:', this.ttsAvailable, 'Using native TTS:', this.usingNativeAndroidTTS);
-      
-      // Check TTS settings before attempting speech
-      console.log('HELP_TTS: TTS disabled:', this.$store.mascotSettings.disableTTS);
-      if (!this.$store.mascotSettings.disableTTS) {
-        // Check if we can use the native Android TTS bridge
-        if (this.usingNativeAndroidTTS && window.AndroidTTS) {
-          try {
-            console.log('HELP_TTS: Using native Android TTS bridge to speak:', message);
-            window.AndroidTTS.speak(message);
-          } catch (error) {
-            console.error('HELP_TTS: Error using native Android TTS:', error);
-            this.tryWebSpeechAPI(message);
-          }
-        } else {
-          // Fallback to Web Speech API
-          this.tryWebSpeechAPI(message);
-        }
-      } else {
-        console.log('HELP_TTS: TTS disabled, skipping speech for:', message);
-      }
+      console.warn('DEPRECATED: showMascotMessage is deprecated. Use window.showMascotMessage() instead');
+      window.showMascotMessage(message, activityId, delaySeconds, this);
     },
     
     /**
@@ -2083,7 +2012,7 @@ export function pitches() {
       // Show the message with activity ID to prevent duplication
       // Generate a unique ID for this activity using the current mode
       const activityId = '1_' + this.mode;
-      this.showMascotMessage(message, activityId);
+      window.showMascotMessage(message, activityId, 2, this);
     },
     
     /**
@@ -3951,7 +3880,7 @@ export function pitches() {
       }
       
       // Show mascot message first (moved from playback completion)
-      this.showMascotMessage(introMessage);
+      window.showMascotMessage(introMessage, null, 2, this);
       
       // Generate a melody in preparation for game mode
       this.generateSoundHighOrLowMelody();
@@ -4000,7 +3929,7 @@ export function pitches() {
         // }
         
         // // Show the instrument-specific message
-        // this.showMascotMessage(instrumentMessage);
+        // window.showMascotMessage(instrumentMessage, null, 2, this);
         
         // Generate a melody without wrong notes for practice mode
         this.generatePracticeMelody();
@@ -4021,7 +3950,7 @@ export function pitches() {
           : 'Listen to the melody! Does it sound right? Or is there a wrong note?';
         
         // Show the game mode message
-        this.showMascotMessage(gameMessage);
+        window.showMascotMessage(gameMessage, null, 2, this);
         
         // Update the progress display now that we're in game mode
         this.update_progress_display();
@@ -4884,7 +4813,7 @@ export function pitches() {
           }
           
           // Show mascot message for level up
-          this.showMascotMessage(levelUpMessage);
+          window.showMascotMessage(levelUpMessage, null, 2, this);
           
           // Special animation for level up (bigger rainbow)
           showBigRainbowSuccess();

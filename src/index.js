@@ -38,6 +38,9 @@ import { freeplay } from './components/freeplay';
 // Import UI enhancements
 import './components/ui-enhancements';
 
+// Import feedback utilities
+import './components/shared/feedback';
+
 // Log application startup in debug mode
 debugLog('App', 'Application initializing');
 

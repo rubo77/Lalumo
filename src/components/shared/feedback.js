@@ -6,6 +6,73 @@
  */
 
 /**
+ * Show a mascot message and speak it if text-to-speech is available
+ * @param {string} message - The message to display and speak
+ * @param {string} activityId - Optional ID of the current activity to prevent duplicate messages
+ * @param {number} delaySeconds - Delay in seconds before hiding the message (default: 2)
+ * @param {Object} component - The Alpine.js component instance (optional)
+ */
+export function showMascotMessage(message, activityId = null, delaySeconds = 2, component = null) {
+  // Check for empty message
+  if (!message || message.trim() === '' || message === 'undefined' || message === 'null') {
+    console.error('HELP_MESSAGE: showMascotMessage called with empty message', new Error().stack);
+    return;
+  }
+  
+  // Get the Alpine store
+  const store = window.Alpine.store;
+  
+  // Check if help messages are enabled in user settings
+  if (store && store.mascotSettings && !store.mascotSettings.showHelpMessages) {
+    console.log('HELP_MESSAGE: Skipping help message - user has disabled help messages');
+    return;
+  }
+  
+  // Show the message using the global feedback store
+  if (store && store.feedback) {
+    store.feedback.feedbackMessage = message;
+    store.feedback.showFeedback = true;
+    
+    // Auto-hide after delay if specified
+    if (delaySeconds > 0) {
+      setTimeout(() => {
+        if (store && store.feedback) {
+          store.feedback.showFeedback = false;
+        }
+      }, delaySeconds * 1000);
+    }
+  }
+  
+  // Log the message
+  console.log(`HELP_MESSAGE: ${message}`);
+  
+  // If a component is provided and it has a speak method, use it
+  if (component && typeof component.speak === 'function') {
+    component.speak(message);
+  } 
+  // Otherwise use the global speech synthesis if available
+  else if (window.speechSynthesis && store && store.mascotSettings && store.mascotSettings.enableSpeech) {
+    const utterance = new SpeechSynthesisUtterance(message);
+    utterance.lang = store.language || 'en';
+    window.speechSynthesis.speak(utterance);
+  }
+}
+
+// Initialize the feedback functionality when Alpine is ready
+document.addEventListener('alpine:init', () => {
+  // Initialize the feedback store if it doesn't exist
+  if (!window.Alpine.store('feedback')) {
+    window.Alpine.store('feedback', {
+      showFeedback: false,
+      feedbackMessage: ''
+    });
+  }
+  
+  // Make showMascotMessage available globally
+  window.showMascotMessage = showMascotMessage;
+});
+
+/**
  * Show rainbow success animation
  * Creates a full-screen rainbow arc animation for successful completion
  */

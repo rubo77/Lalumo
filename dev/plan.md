@@ -17,6 +17,8 @@
 - In 1_2 activity, `checkMatch` sets `this.feedback = ''` for both correct and incorrect answers, leading to empty feedback messages on false button presses. This needs to be updated to provide a meaningful message.
 - User clarified: On success in 1_2, show no feedback message; on incorrect, show a context-specific message ("No, the melody was going up/down/wave/jumpy somehow") in both English and German.
 - German translations for feedback messages are required and must be implemented alongside English.
+- For 2_2 stable/instable chords, feedback messages should use strings.xml for translation, using "unstable chord" (EN) and "instabiler Akkord" (DE); debug logs should remain unchanged.
+- `showMascotMessage` has been moved to a global utility (src/components/shared/feedback.js) and all calls in chords and pitches components now use the global function. The global import in index.js has been updated.
 
 ## Task List
 - [x] Locate Alpine.js `pitches` component definition
@@ -30,10 +32,13 @@
   - [x] Refactor chords component feedback triggers to use the global store
 - [x] Remove unused mascot message function from app.js
 - [x] Check for remaining mascot message usages and confirm migration
+- [x] Refactor mascot message calls in pitches.js and chords.js to use the global utility
+- [x] Move showMascotMessage from utils/feedback.js to components/shared/feedback.js and update global import
 - [ ] Optionally rename showMascotMessage in pitches.js for clarity
 - [ ] Document the unified feedback refactor
 - [ ] Implement context-specific feedback messages for incorrect answers in 1_2 (English & German); ensure no message on success
   - [ ] Implement and test German translations for 1_2 feedback messages
+- [ ] Refactor 2_2 stable/instable chord feedback messages to use strings.xml for translation (not in debug logs)
 
 ## Current Goal
 Implement and test German translations for 1_2 feedback
