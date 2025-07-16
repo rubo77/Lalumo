@@ -1161,20 +1161,9 @@ export function pitches() {
           // Show stage progression message
           this.feedback = stageMessage;
         } else {
-          // Regular correct answer feedback
-          if (stage >= 3) {
-            // For comparison stages
-            this.feedback = (this.$store.strings?.high_or_low_correct_comparison || 'Correct! The second tone was {0}!')
-              .replace('{0}', correctHiOrLowAnswer === 'high' ? 
-                (this.$store.strings?.high_choice || 'higher') : 
-                (this.$store.strings?.low_choice || 'lower'));
-          } else {
-            // For single tone stages
-            this.feedback = (this.$store.strings?.high_or_low_correct_single || 'Correct! The tone was {0}!')
-              .replace('{0}', correctHiOrLowAnswer === 'high' ? 
-                (this.$store.strings?.high_choice || 'high') : 
-                (this.$store.strings?.low_choice || 'low'));
-          }
+          // No feedback message on success - just generate the next tone
+          this.generateHighOrLowTone();
+          return; // Exit early to prevent any feedback from showing
         }
       } else {
         // Wrong answer
@@ -1984,19 +1973,19 @@ export function pitches() {
 
       // check if message is empty, and if so, show a log entry error with traceback:
       if (!message || message.trim() === '' || message === 'undefined' || message === 'null') {
-        console.error('showMascotMessage called with empty message', new Error().stack);
+        console.error('HELP_MESSAGE: showMascotMessage called with empty message', new Error().stack);
         return;
       }
       
       // Check if we should show help messages based on user settings
       if (!this.$store.mascotSettings.showHelpMessages) {
-        console.log('Skipping help message - user has disabled help messages');
+        console.log('HELP_MESSAGE: Skipping help message - user has disabled help messages');
         return;
       }
       
       // Check if we've already shown a message for this activity
       if (activityId && this.$store.mascotSettings.seenActivityMessages[activityId]) {
-        console.log(`Skipping help message for ${activityId} - already shown once`);
+        console.log(`HELP_MESSAGE: Skipping help message for ${activityId} - already shown once`);
         return;
       }
       
@@ -2007,7 +1996,7 @@ export function pitches() {
         try {
           localStorage.setItem('lalumo_mascot_settings', JSON.stringify(this.mascotSettings));
         } catch (error) {
-          console.error('Error saving help message settings:', error);
+          console.error('HELP_MESSAGE: Error saving help message settings:', error);
         }
       }
       

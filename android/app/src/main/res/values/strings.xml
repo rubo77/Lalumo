@@ -276,8 +276,6 @@
     <string name="play_tone_a11y">Play tone</string>
     
     <!-- High or Low Feedback Messages -->
-    <string name="high_or_low_correct_single">Correct! The tone was {0}!</string>
-    <string name="high_or_low_correct_comparison">Correct! The second tone was {0}!</string>
     <string name="high_or_low_wrong_single">Try again. The tone was {0}.</string>
     <string name="high_or_low_wrong_comparison">Try again. The second tone was {0}.</string>
     
