@@ -16,6 +16,7 @@
 - Investigating empty feedback/help message in 1_2 activity (false button).
 - In 1_2 activity, `checkMatch` sets `this.feedback = ''` for both correct and incorrect answers, leading to empty feedback messages on false button presses. This needs to be updated to provide a meaningful message.
 - User clarified: On success in 1_2, show no feedback message; on incorrect, show a context-specific message ("No, the melody was going up/down/wave/jumpy somehow") in both English and German.
+- German translations for feedback messages are required and must be implemented alongside English.
 
 ## Task List
 - [x] Locate Alpine.js `pitches` component definition
@@ -32,6 +33,7 @@
 - [ ] Optionally rename showMascotMessage in pitches.js for clarity
 - [ ] Document the unified feedback refactor
 - [ ] Implement context-specific feedback messages for incorrect answers in 1_2 (English & German); ensure no message on success
+  - [ ] Implement and test German translations for 1_2 feedback messages
 
 ## Current Goal
-Implement context-specific feedback messages for 1_2 incorrect answers
+Implement and test German translations for 1_2 feedback

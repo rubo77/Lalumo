@@ -1529,11 +1529,55 @@ export function pitches() {
       // Game mode: check if answer is correct
       const isCorrect = selected === this.correctAnswer;
       
-      // Use global feedback store for messages
-      if (isCorrect) {
-        Alpine.store('feedback').showMessage(this.$store.strings?.match_sounds_correct || 'Great job! That\'s correct!');
-      } else {
-        Alpine.store('feedback').showMessage(this.$store.strings?.match_sounds_incorrect || 'Not quite. Let\'s try again!');
+      // Only show feedback for incorrect answers
+      if (!isCorrect) {
+        // TODO: migrate to strings.xml
+        // Get the current language from the store or default to English
+        const currentLang = this.preferredLanguage === 'german' ? 'de' : 'en';
+        
+        // Determine the correct pattern direction for the feedback message
+        let message = '';
+        
+        if (currentLang === 'de') {
+          // German messages
+          switch(this.correctAnswer) {
+            case 'up':
+              message = 'Hör mal genauer hin - die Melodie ging nach oben';
+              break;
+            case 'down':
+              message = 'Hör mal genauer hin - die Melodie ging nach unten';
+              break;
+            case 'wave':
+              message = 'Hör mal genauer hin - die Melodie war wellig';
+              break;
+            case 'jumpy':
+              message = 'Hör mal genauer hin - die Melodie war hüpfend';
+              break;
+            default:
+              message = 'Hör mal genauer hin';
+          }
+        } else {
+          // English messages
+          switch(this.correctAnswer) {
+            case 'up':
+              message = 'Listen more closely - the melody was going up';
+              break;
+            case 'down':
+              message = 'Listen more closely - the melody was going down';
+              break;
+            case 'wave':
+              message = 'Listen more closely - the melody was wavy';
+              break;
+            case 'jumpy':
+              message = 'Listen more closely - the melody was jumpy';
+              break;
+            default:
+              message = 'Listen more closely';
+          }
+        }
+        
+        // Show the feedback message
+        Alpine.store('feedback').showMessage(message);
       }
       
       // Trigger sound feedback using the central audio engine
