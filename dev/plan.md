@@ -9,6 +9,7 @@
 - Message box not showing because components are not updating the global feedback store; they are still setting local variables.
 - The pitches component now updates the global feedback store for help messages.
 - The chords component also contains local feedback assignments that must be refactored to use the global store.
+- Chords component feedback triggers are being refactored to use the global store.
 
 ## Task List
 - [x] Locate Alpine.js `pitches` component definition
@@ -18,8 +19,8 @@
 - [x] Update the unified feedback message container in `index.html` to reference the global store (e.g. `$store.feedback.showFeedback`)
 - [x] Test that feedback messages now display without JS errors
 - [x] Refactor pitches component feedback triggers to use the global store
-- [ ] Refactor all other feedback message triggers to use `Alpine.store('feedback').showMessage()` or set the global store variables directly
-  - [ ] Refactor chords component feedback triggers to use the global store
+- [x] Refactor all other feedback message triggers to use `Alpine.store('feedback').showMessage()` or set the global store variables directly
+  - [x] Refactor chords component feedback triggers to use the global store
 
 ## Current Goal
 Refactor other feedback triggers to use the global store

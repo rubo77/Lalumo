@@ -665,8 +665,8 @@ export function chords() {
       this.selectedColors = [];
       this.correctAnswers = 0;
       this.totalQuestions = 0;
-      this.feedbackMessage = '';
-      this.showFeedback = false;
+      Alpine.store('feedback').feedbackMessage = '';
+      Alpine.store('feedback').showFeedback = false;
       
       // Reset UI state for 2_2_chords_stable_instable activity, but keep the progress
       if (this.mode === '2_2_chords_stable_instable') {
@@ -1019,14 +1019,14 @@ export function chords() {
       
       // Add play button if we built a recognized chord
       if (recognizedChord) {
-        this.showFeedback = true;
-        this.feedbackMessage = `You built a ${this.chords[recognizedChord].name} chord!`;
+        Alpine.store('feedback').showFeedback = true;
+        Alpine.store('feedback').feedbackMessage = `You built a ${this.chords[recognizedChord].name} chord!`;
         this.recognizedChordType = recognizedChord; // Store for play button
         
         // Show rainbow success effect for 2_3_chord_building
         showCompleteSuccess();
         
-        setTimeout(() => this.showFeedback = false, 3000);
+        setTimeout(() => Alpine.store('feedback').showFeedback = false, 3000);
       }
     },
     
@@ -1166,7 +1166,7 @@ export function chords() {
       
       this.showFeedback = true;
       if (isCorrect) {
-        this.feedbackMessage = this.$store.strings.success_message || 'Great job! That\'s correct!';
+        Alpine.store('feedback').feedbackMessage = this.$store.strings.success_message || 'Great job! That\'s correct!';
         this.correctAnswers++;
         
         // Show rainbow success effect
@@ -1203,15 +1203,15 @@ export function chords() {
         setTimeout(() => {
           // Don't reset currentChordType to null here
           // Instead, playIncompleteChord will ensure it's properly set
-          this.showFeedback = false;
+          Alpine.store('feedback').showFeedback = false;
           this.playIncompleteChord();
         }, 2000);
       } else {
-        this.feedbackMessage = this.$store.strings.error_message || 'Not quite right. Try again!';
+        Alpine.store('feedback').feedbackMessage = this.$store.strings.error_message || 'Not quite right. Try again!';
         
         // Hide feedback after delay
         setTimeout(() => {
-          this.showFeedback = false;
+          Alpine.store('feedback').showFeedback = false;
         }, 1500);
       }
       
@@ -1496,7 +1496,7 @@ export function chords() {
       this.showFeedback = true;
       if (isCorrect) {
         debugLog('CHORDS', `[REPETITION] Correct answer for chord type: ${this.currentChordType}`);
-        this.feedbackMessage = this.$store.strings.success_message || 'Great job! That\'s correct!';
+        Alpine.store('feedback').feedbackMessage = this.$store.strings.success_message || 'Great job! That\'s correct!';
         this.correctAnswers++;
         
         // Erhöhe den 2_5_chord_characters Fortschritt bei korrekter Antwort
@@ -1529,13 +1529,13 @@ export function chords() {
           // Update previousTransposeAmount to avoid direct repeats in next chord
           this.previousTransposeAmount = this.currentTransposeAmount;
           debugLog('CHORDS', `[TRANSPOSE] After correct answer: updated previousTransposeAmount to ${this.previousTransposeAmount}`);
-          this.showFeedback = false;
+          Alpine.store('feedback').showFeedback = false;
           
           // Automatically play the next chord after correct answer (new requirement)
           this.playCurrent2_5Chord();
         }, 1500);
       } else {
-        this.feedbackMessage = this.$store.strings.error_message || 'Not quite right. Try again!';
+        Alpine.store('feedback').feedbackMessage = this.$store.strings.error_message || 'Not quite right. Try again!';
         
         // Make sure we keep the same chord and transposition after a mistake
         this.currentChordChanged = false;
@@ -1561,7 +1561,7 @@ export function chords() {
         
         // Hide feedback after delay
         setTimeout(() => {
-          this.showFeedback = false;
+          Alpine.store('feedback').showFeedback = false;
           
           // Repeat the same chord after incorrect answer with the same transposition
           debugLog(['CHORDS', '2_5_TRANSPOSE'], `Replaying chord ${this.currentChordType} with the same transposition: ${this.currentTransposeRootNote}`);
@@ -1602,9 +1602,9 @@ export function chords() {
     plantChordInGarden(chordType) {
       if (this.selectedSlotIndex === null) {
         // No slot selected yet
-        this.showFeedback = true;
-        this.feedbackMessage = this.$store.strings.select_slot_first || 'Please select a slot first';
-        setTimeout(() => this.showFeedback = false, 2000);
+        Alpine.store('feedback').showFeedback = true;
+        Alpine.store('feedback').feedbackMessage = this.$store.strings.select_slot_first || 'Please select a slot first';
+        setTimeout(() => Alpine.store('feedback').showFeedback = false, 2000);
         return;
       }
       
@@ -1674,9 +1674,9 @@ export function chords() {
      */
     playChordSequence() {
       if (!this.chordSequence || !this.chordSequence.filter(chord => chord).length) {
-        this.showFeedback = true;
-        this.feedbackMessage = this.$store.strings.no_chords_in_sequence || 'Add some chords to your sequence first';
-        setTimeout(() => this.showFeedback = false, 2000);
+        Alpine.store('feedback').showFeedback = true;
+        Alpine.store('feedback').feedbackMessage = this.$store.strings.no_chords_in_sequence || 'Add some chords to your sequence first';
+        setTimeout(() => Alpine.store('feedback').showFeedback = false, 2000);
         return;
       }
       
