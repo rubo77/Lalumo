@@ -4,7 +4,7 @@ playstore entry
 
 ## Kurze Beschreibung
 
-Musik lernen mit Tierbildern, Melodien und Rätseln - spielerisch und bunt!
+Kinder lernen Musik mit Tierbildern und Melodien - spielerisch und bunt!
 
 ## Vollständige Beschreibung
 
@@ -38,7 +38,7 @@ Perfekt für Kinder im Vorschulalter, Eltern, die das frühe musikalische Lernen
 
 ## Kurze Beschreibung
 
-Kids learn music with animal friends, melodies, and puzzles - playful and colorful!
+Music Education for Kids with animal friends and melodies - playful and colorful
 
 ## Vollständige Beschreibung
 
