@@ -1317,17 +1317,7 @@ export function app() {
       }
     },
     
-    /**
-     * Show a message from the mascot character
-     * @param {string} message - The message to show
-     */
-    showMascotMessage(message) {
-      // Dispatch event to the mascot component
-      window.dispatchEvent(new CustomEvent('lalumo:mascot-message', {
-        detail: { message }
-      }));
-    },
-    
+
     /**
      * Play a rhythm beat sound
      * @param {string} type - The type of beat (high or low)

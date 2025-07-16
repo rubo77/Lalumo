@@ -1529,8 +1529,12 @@ export function pitches() {
       // Game mode: check if answer is correct
       const isCorrect = selected === this.correctAnswer;
       
-      this.showFeedback = true;
-      this.feedback = ''; //isCorrect ? 'Great job! That\'s correct!' : 'Not quite. Let\'s try again!';
+      // Use global feedback store for messages
+      if (isCorrect) {
+        Alpine.store('feedback').showMessage(this.$store.strings?.match_sounds_correct || 'Great job! That\'s correct!');
+      } else {
+        Alpine.store('feedback').showMessage(this.$store.strings?.match_sounds_incorrect || 'Not quite. Let\'s try again!');
+      }
       
       // Trigger sound feedback using the central audio engine
       audioEngine.playNote(isCorrect ? 'success' : 'try_again', 1.0);
@@ -1933,6 +1937,13 @@ export function pitches() {
       * @param {string} activityId - Optional ID of the current activity to prevent duplicate messages
       */
     showMascotMessage(message, activityId = null, delaySeconds = 2) {
+
+      // check if message is empty, and if so, show a log entry error with traceback:
+      if (!message || message.trim() === '' || message === 'undefined' || message === 'null') {
+        console.error('showMascotMessage called with empty message', new Error().stack);
+        return;
+      }
+      
       // Check if we should show help messages based on user settings
       if (!this.$store.mascotSettings.showHelpMessages) {
         console.log('Skipping help message - user has disabled help messages');
