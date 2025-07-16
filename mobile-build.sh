@@ -158,9 +158,14 @@ else
   echo "###### 3. Skipping version update as requested..."
 fi
 
-# Lösche Android-Ordner für sauberen Build
-echo "###### 3.5. Lösche Android-Ordner für sauberen Build..."
-rm -rf android/
+# Clean Android app directory while preserving essential files
+echo "###### 3.5. Cleaning Android app directory..."
+if [ -d "android/app" ]; then
+    # Use rsync to keep only the files we want
+    rsync -av --delete --exclude='*' --include='.gitignore' --include='build.gradle' --include='proguard-rules.pro' --include='src/' --include='src/**' --exclude='src/*/build/' --exclude='src/*/generated/' /dev/null android/app/
+else
+    echo "Android app directory not found, skipping cleanup."
+fi
 
 # Build the web app
 echo "###### 4. Building web application fast..."
