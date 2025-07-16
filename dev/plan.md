@@ -30,6 +30,10 @@
 - New feature: In 2_2_chords_stable_instable, when the play button is pressed again, the same chord should repeat until the user gets it right.
   - Feature is now fully implemented: play button repeats the same chord until correct, and Alpine.js feedback variables are properly initialized and updated for correct/incorrect answer feedback.
 - BUG: In 2_2_chords_stable_instable, the feedback message (e.g., "Incorrect. It was a stable chord.") is not cleared after a few seconds; needs auto-hide/timeout logic.
+- UI bug: Feedback message in 2_2_chords_stable_instable was sometimes shown below the mascot message due to stacking context issues. Solution: feedback message is now rendered at the root level of the document as a global overlay, not nested inside activity containers; JavaScript logic is being updated to use this global element for all feedback display.
+- Further UI fix attempt: The global feedback message was moved to the very top of the <body> to ensure it appears above all other overlays, including the mascot message.
+- Mascot overlay z-index was explicitly reduced to ensure the feedback message is always above it.
+- NEW: Feedback message in 2_2_chords_stable_instable is now implemented as a modal overlay (not toast or alert), guaranteeing it always appears above all overlays, including the mascot message.
 
 ## Task List
 - [x] Update concept documentation to specify single-flag/multi-activity unlock

@@ -90,7 +90,6 @@
     
     /* Activity elements */
     .activity-container { padding: 12px; }
-    .mascot { max-width: 80px; height: auto; }
     .mascot-welcome { display: flex; align-items: center; margin: 10px 0; }
   </style>
   <!-- Scripts and more styles will be injected by webpack -->
@@ -416,17 +415,6 @@
     <!-- Chapter: Pitch Chapters View -->
     <section class="chapters-view" x-show="active === 'pitches'" x-transition>
       <div x-data="pitches()" x-init="init()">
-        
-        <!-- Mascot Message Overlay -->
-        <div class="mascot-message-overlay" x-show="showMascot" x-transition>
-          <div class="mascot-message-container">
-            <img src="images/logo_bird_sings.jpg" alt="Lalumo Mascot" class="mascot-image" width="0" />
-            <div class="mascot-speech-bubble">
-              <p x-text="mascotMessage || ''"></p>
-            </div>
-            <button class="close-mascot-button" @click="console.log('MASCOT: Close button clicked'); showMascot = false; mascotSettings.showHelpMessages = false">&times;</button>
-          </div>
-        </div>
         
         <!-- Main landing with clickable image -->
         <div x-show="!mode || mode === 'main'" class="pitch-landing">
@@ -773,9 +761,7 @@
               </div>
             </div>
             
-            <div class="feedback-message" x-show="showFeedback">
-              <p x-text="feedbackMessage"></p>
-            </div>
+            <!-- Individual feedback-message div removed - now using unified div -->
             
             <div class="score-display">
               <span x-text="`${correctAnswers} / ${totalQuestions}`"></span>
@@ -866,9 +852,7 @@
               <button @click="checkMissingNote(6)" class="note-option-button">Diminished 5th</button>
             </div>
             
-            <div class="feedback-message" x-show="showFeedback">
-              <p x-text="feedbackMessage"></p>
-            </div>
+            <!-- Individual feedback-message div removed - now using unified div -->
           </div>
         </div>
         
@@ -913,9 +897,7 @@
               </div>
             </div>
             
-            <div class="feedback-message" x-show="showFeedback">
-              <p x-text="feedbackMessage"></p>
-            </div>
+            <!-- Individual feedback-message div removed - now using unified div -->
           </div>
         </div>
         
@@ -1011,6 +993,11 @@
     <div data-include="partials/settings.html"></div>
                
 
+    <!-- Unified Feedback Message Container -->
+    <div class="feedback-message" id="unified-feedback-message" x-show="showFeedback">
+      <p x-text="feedbackMessage"></p>
+    </div>
+    
     <!-- Global footer for all activities with an invers edge
     <div class="bottom_round_edge">
       <div class="footer_inner"></div>

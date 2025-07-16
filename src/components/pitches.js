@@ -65,7 +65,7 @@ export function pitches() {
     choices: [],
     feedback: '',
     showFeedback: false,
-    mascotMessage: '',
+    helpMessage: '',
     showMascot: false,
     melodyTimeouts: [], // Array für Timeout-IDs der Melodiesequenzen
     mascotSettings: {
@@ -453,7 +453,7 @@ export function pitches() {
         }
         
         // Always set the message, even if fallback is used
-        this.mascotMessage = helpText;
+        this.helpMessage = helpText;
         // Use debug logging instead of direct console.log
         import('../utils/debug').then(({ debugLog }) => {
           debugLog('TOUCH', `Showing mascot message: ${helpText}`);
@@ -527,7 +527,7 @@ export function pitches() {
         }
         
         // Always set the message, even if a fallback is used
-        this.mascotMessage = helpText;
+        this.helpMessage = helpText;
         console.log('Mascot message set to:', helpText);
         
         // Use TTS if available
@@ -1927,20 +1927,20 @@ export function pitches() {
     },
     
     /**
-     * Show a mascot message and speak it if text-to-speech is available
-     * @param {string} message - The message to display and speak
-     * @param {string} activityId - Optional ID of the current activity to prevent duplicate messages
-     */
+      * Show a help message and speak it if text-to-speech is available
+      * @param {string} message - The message to display and speak
+      * @param {string} activityId - Optional ID of the current activity to prevent duplicate messages
+      */
     showMascotMessage(message, activityId = null, delaySeconds = 2) {
-      // Check if we should show mascot messages based on user settings
+      // Check if we should show help messages based on user settings
       if (!this.$store.mascotSettings.showHelpMessages) {
-        console.log('Skipping mascot message - user has disabled help messages');
+        console.log('Skipping help message - user has disabled help messages');
         return;
       }
       
       // Check if we've already shown a message for this activity
       if (activityId && this.$store.mascotSettings.seenActivityMessages[activityId]) {
-        console.log(`Skipping mascot message for ${activityId} - already shown once`);
+        console.log(`Skipping help message for ${activityId} - already shown once`);
         return;
       }
       
@@ -1951,66 +1951,43 @@ export function pitches() {
         try {
           localStorage.setItem('lalumo_mascot_settings', JSON.stringify(this.mascotSettings));
         } catch (error) {
-          console.error('Error saving mascot settings:', error);
+          console.error('Error saving help message settings:', error);
         }
       }
       
-      // Clear any existing mascot timers and force hide current message
-      if (this.mascotShowTimer) {
-        clearTimeout(this.mascotShowTimer);
-        this.mascotShowTimer = null;
-      }
-      if (this.mascotHideTimer) {
-        clearTimeout(this.mascotHideTimer);
-        this.mascotHideTimer = null;
+      // Clear any existing feedback timers
+      if (this.feedbackTimer) {
+        clearTimeout(this.feedbackTimer);
+        this.feedbackTimer = null;
       }
       
-      // Force hide any currently visible mascot message
-      this.showMascot = false;
+      // Store message in helpMessage variable
+      this.helpMessage = message;
       
-      // Store message and show mascot after configurable delay
-      this.mascotMessage = message;
+      // Display message in the unified feedback system
+      this.feedbackMessage = message;
+      this.showFeedback = true;
       
-      this.mascotShowTimer = setTimeout(() => {
-        this.showMascot = true;
-        console.log(`MASCOT_DISPLAY: Showing after ${delaySeconds}s delay:`, message);
-        
-        // Give Alpine.js 100ms to react, then check if DOM fallback needed
-        setTimeout(() => {
-          const mascotOverlay = document.querySelector(".mascot-message-overlay");
-          if (mascotOverlay && window.getComputedStyle(mascotOverlay).display === "none") {
-            console.log("MASCOT_DEBUG: Alpine failed after 100ms, forcing display via DOM");
-            mascotOverlay.style.display = "block";
-          }
-        }, 100);
-        
-        // Auto-hide after 10 seconds with ease transition
-        this.mascotHideTimer = setTimeout(() => {
-          this.showMascot = false;
-          console.log("MASCOT_DISPLAY: Auto-hiding after 10s");
-          
-          // Give Alpine.js 100ms to react, then force hide via DOM if needed
-          setTimeout(() => {
-            const mascotOverlay = document.querySelector(".mascot-message-overlay");
-            if (mascotOverlay && window.getComputedStyle(mascotOverlay).display !== "none") {
-              console.log("MASCOT_DEBUG: Alpine failed to hide, forcing hide via DOM");
-              mascotOverlay.style.display = "none";
-            }
-          }, 100);
-        }, 10000);
-      }, delaySeconds * 1000);
-      console.log('MASCOT_DISPLAY: Showing mascot message:', message, 'TTS available:', this.ttsAvailable, 'Using native TTS:', this.usingNativeAndroidTTS);
+      console.log(`HELP_MESSAGE: Showing after ${delaySeconds}s delay:`, message);
+      
+      // Auto-hide after 10 seconds with ease transition
+      this.feedbackTimer = setTimeout(() => {
+        this.showFeedback = false;
+        console.log("HELP_MESSAGE: Auto-hiding after 10s");
+      }, 10000);
+      
+      console.log('HELP_MESSAGE: Showing help message:', message, 'TTS available:', this.ttsAvailable, 'Using native TTS:', this.usingNativeAndroidTTS);
       
       // Check TTS settings before attempting speech
-      console.log('MASCOT_TTS: TTS disabled:', this.$store.mascotSettings.disableTTS);
+      console.log('HELP_TTS: TTS disabled:', this.$store.mascotSettings.disableTTS);
       if (!this.$store.mascotSettings.disableTTS) {
         // Check if we can use the native Android TTS bridge
         if (this.usingNativeAndroidTTS && window.AndroidTTS) {
           try {
-            console.log('MASCOT_TTS: Using native Android TTS bridge to speak:', message);
+            console.log('HELP_TTS: Using native Android TTS bridge to speak:', message);
             window.AndroidTTS.speak(message);
           } catch (error) {
-            console.error('MASCOT_TTS: Error using native Android TTS:', error);
+            console.error('HELP_TTS: Error using native Android TTS:', error);
             this.tryWebSpeechAPI(message);
           }
         } else {
@@ -2018,7 +1995,7 @@ export function pitches() {
           this.tryWebSpeechAPI(message);
         }
       } else {
-        console.log('MASCOT_TTS: TTS disabled, skipping speech for:', message);
+        console.log('HELP_TTS: TTS disabled, skipping speech for:', message);
       }
     },
     
