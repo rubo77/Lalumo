@@ -64,7 +64,8 @@ export function pitches() {
     currentMelodyName: '', // Display name of currently playing melody
     choices: [],
     feedback: '',
-    showFeedback: false,
+    showFeedback: false, // Controls visibility of the unified feedback message
+    feedbackMessage: '', // The message to show in the unified feedback system
     helpMessage: '',
     showMascot: false,
     melodyTimeouts: [], // Array für Timeout-IDs der Melodiesequenzen
@@ -1964,15 +1965,15 @@ export function pitches() {
       // Store message in helpMessage variable
       this.helpMessage = message;
       
-      // Display message in the unified feedback system
-      this.feedbackMessage = message;
-      this.showFeedback = true;
+      // Display message in the unified feedback system using global store
+      Alpine.store('feedback').feedbackMessage = message;
+      Alpine.store('feedback').showFeedback = true;
       
       console.log(`HELP_MESSAGE: Showing after ${delaySeconds}s delay:`, message);
       
       // Auto-hide after 10 seconds with ease transition
       this.feedbackTimer = setTimeout(() => {
-        this.showFeedback = false;
+        Alpine.store('feedback').showFeedback = false;
         console.log("HELP_MESSAGE: Auto-hiding after 10s");
       }, 10000);
       

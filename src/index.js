@@ -44,6 +44,23 @@ debugLog('App', 'Application initializing');
 // Initialize Alpine store for state management
 Alpine.store('pitchMode', 'main'); // Default is the main selection screen with clickable image
 
+// Initialize global unified feedback system store
+Alpine.store('feedback', {
+  showFeedback: false,
+  feedbackMessage: '',
+  
+  // Show a feedback message with auto-hide
+  showMessage(message, duration = 2000) {
+    this.feedbackMessage = message;
+    this.showFeedback = true;
+    
+    // Auto-hide after specified duration
+    setTimeout(() => {
+      this.showFeedback = false;
+    }, duration);
+  }
+});
+
 // Initialize global mascot settings store
 Alpine.store('mascotSettings', {
   showHelpMessages: true,

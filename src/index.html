@@ -994,8 +994,8 @@
                
 
     <!-- Unified Feedback Message Container -->
-    <div class="feedback-message" id="unified-feedback-message" x-show="showFeedback">
-      <p x-text="feedbackMessage"></p>
+    <div class="feedback-message" id="unified-feedback-message" x-show="$store.feedback.showFeedback">
+      <p x-text="$store.feedback.feedbackMessage"></p>
     </div>
     
     <!-- Global footer for all activities with an invers edge
