@@ -35,6 +35,7 @@ let currentChordFrequencies = []; // Store the transposed chord
 let currentTransposeSemitones = 0; // Current transposition in semitones
 let autoPlayTimeout = null;     // Store the auto-play timeout reference
 let isFreeModeActive = true;    // Track if we're in free play mode
+window.freeModeActive = isFreeModeActive; // Make free mode active globally available
 let isInitialized = false;      // Track if the module has been initialized
 let freePlayChords = [];        // Store the pre-generated chords for free play mode
 let lastPlayTime = 0;           // Track when the chord was last played
@@ -186,6 +187,13 @@ export function generateUnstableChord(progressLevel = 0) {
 function initializeFreePlayMode() {
   freePlayChords = [];
   isFreeModeActive = true;
+  
+  // Update button visibility
+  const startButton = document.getElementById('start-game-2_2');
+  const replayButton = document.getElementById('replay-button-2_2');
+  
+  if (startButton) startButton.style.display = 'block';
+  if (replayButton) replayButton.style.display = 'none';
   
   // Always use level 1 chords for free play mode to make them easily distinguishable
   const stableChord = generateStableChord(0);  // Level 1 (simple stable chord)
@@ -396,9 +404,51 @@ export function playStableUnstableChord(component, isReplay = false) {
 }
 
 
+/**
+ * Starts the game mode by exiting free play mode and playing a new chord
+ * @param {Object} component - The Alpine component instance
+ */
+function startGameMode(component) {
+  debugLog(['CHORDS_2_2_DEBUG', 'MODE'], 'Starting game mode from free play');
+  
+  // Exit free play mode
+  isFreeModeActive = false;
+  
+  // Update button visibility
+  const startButton = document.getElementById('start-game-button');
+  const replayButton = document.getElementById('replay-button');
+  
+  if (startButton) startButton.style.display = 'none';
+  if (replayButton) replayButton.style.display = 'block';
+  
+  // Play a new chord (not a replay)
+  playStableUnstableChord(component, false);
+}
+
+// Add click handlers when the document is ready
+document.addEventListener('DOMContentLoaded', () => {
+  const startButton = document.getElementById('start-game-button');
+  const replayButton = document.getElementById('replay-button');
+  
+  if (startButton) {
+    startButton.addEventListener('click', (e) => {
+      startGameMode(window.alpineComponent);
+      blurElement(e);
+    });
+  }
+  
+  if (replayButton) {
+    replayButton.addEventListener('click', (e) => {
+      playStableUnstableChord(window.alpineComponent, true);
+      blurElement(e);
+    });
+  }
+});
+
 // Make functions globally available for calls in alpine HTML-tags
 window.playStableUnstableChord = playStableUnstableChord;
 window.checkStableUnstableMatch = checkStableUnstableMatch;
+window.startGameMode = startGameMode;
 
 // Ensure feedback variables are globally available for Alpine.js
 if (typeof window.showStableUnstableFeedback === 'undefined') {

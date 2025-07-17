@@ -1290,17 +1290,18 @@ section h2 {
 #\32 _5_chords_characters 
 */
 
-.play-chord-2_2 {
-  opacity: 0;
+.play-button_2_2 {
+  opacity: 0.1;
   width: 100%;
   height: min(48vw, 320px);
   background-color: #fff;
   border-radius: 20%;
   position:absolute;
   top: 0px;
+  z-index: 101;
 }
 
-.play-chord-2_2:hover {
+.play-button_2_2:hover {
   opacity: 0.05;
 }
 

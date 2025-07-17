@@ -772,8 +772,23 @@
         <!-- 2_2 Chords - Stable or Unstable Activity -->
         <div id="2_2_chords_stable_unstable" x-show="mode === '2_2_chords_stable_unstable'" class="chord-activity activity-container lazyload-bg" data-background-image="./images/backgrounds/2_2_chords_stable_unstable-1.jpg">
           
-          <!-- Play button (shown in game mode) -->
-          <button @click="playStableUnstableChord($data, true); blurElement($event)" class="play-chord-2_2" :title="$store.strings?.play_chord || 'Play Chord'" x-ref="playButton">▶️</button>
+          <!-- Play buttons -->
+          <div class="play-buttons-container-2_2">
+            <!-- Start Game button (shown in free mode) -->
+            <button id="start-game-2_2"
+                    class="play-button_2_2" 
+                    :title="$store.strings?.start_game || 'Start Game'">
+              ▶️ Start Game
+            </button>
+            
+            <!-- Replay button (shown in game mode) -->
+            <button id="replay-button-2_2"
+                    class="play-button_2_2" 
+                    :title="$store.strings?.replay_chord || 'Replay Chord'"
+                    style="display: none;">
+              🔄
+            </button>
+          </div>
 
           <div class="chords-container">            
             <!-- Progress display -->

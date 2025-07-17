@@ -1,5 +1,58 @@
 /* Chords module styles */
 
+/* Play buttons container */
+.play-buttons-container-2_2 {
+  position: absolute;
+  top: 0px;
+  z-index: 100;
+  width: 100%;
+}
+
+/* Start Game button */
+.start-game-button {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  transition: all 0.3s ease;
+}
+
+.start-game-button:hover {
+  background-color: #45a049;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+/* Replay button */
+.replay-chord-button {
+  background-color: #2196F3;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  transition: all 0.3s ease;
+}
+
+.replay-chord-button:hover {
+  background-color: #0b7dda;
+  transform: scale(1.1);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
 /* Full-height containers for all chord activities */
 .chord-activity-container, 
 .color-matching-container,
