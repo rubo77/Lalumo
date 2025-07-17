@@ -453,7 +453,7 @@ export function playToneNoteWithBufferCheck(note, duration = 0.8, velocity = 0.8
   
   // If in 1_5 activity and note buffer isn't specifically ready, don't play
   if (is1_5Activity && !specificNoteReady) {
-    console.log(`[PIANO] [1_5] Skipping note ${note} - specific buffer not ready yet`);
+    debugLog(['PIANO', '1_5'], `Skipping note ${note} - specific buffer not ready yet`);
     return false;
   }
   
@@ -465,17 +465,17 @@ export function playToneNoteWithBufferCheck(note, duration = 0.8, velocity = 0.8
           pianoState.sampler.buffers && 
           pianoState.sampler.buffers.has(note)) {
         
-        console.log(`[PIANO] 🔈 Playing note: ${note} (dur: ${duration}, vel: ${velocity})`);
+        debugLog('PIANO', `🔈 Playing note: ${note} (dur: ${duration}, vel: ${velocity})`);
         pianoState.sampler.triggerAttackRelease(note, duration, Tone.now(), velocity);
         return true;
       } else {
-        console.log(`[PIANO] ❌ Buffer definitely not ready for note ${note}`);
+        debugLog('PIANO', `❌ Buffer definitely not ready for note ${note}`);
         return false;
       }
     }
     return false;
   } catch (err) {
-    console.error("[PIANO] Error playing note:", err);
+    debugLog(['PIANO', 'ERROR'], `Error playing note: ${err.message || err}`);
     return false;
   }
 }

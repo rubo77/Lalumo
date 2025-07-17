@@ -5,6 +5,7 @@
  * Verwendet Tone.js für qualitativ hochwertige Audiowiedergabe.
  */
 import * as Tone from 'tone';
+import { debugLog } from '../utils/debug';
 import { playToneNote, playViolinNote, playFluteNote, playBrassNote, playDoubleBassNote, isInstrumentReady } from '../utils/toneJsSampler.js';
 
 // Audio-Engine Hauptklasse
@@ -58,7 +59,7 @@ export class AudioEngine {
         return synth;
       },
       piano: () => {
-        console.log("[PIANO] Creating piano with MP3 samples");
+        debugLog('PIANO', 'Creating piano with MP3 samples');
         
         // Create a temporary synth for use while samples load
         const tempSynth = new Tone.PolySynth(Tone.Synth, {
@@ -94,12 +95,12 @@ export class AudioEngine {
         let samplesLoaded = window._pianoSamplesLoaded;
         
         // Create loading diagnostic display
-        console.log("[PIANO] Attempting to load piano samples from ./sounds/piano/");
-        console.log("[PIANO] Global samples loaded state:", samplesLoaded ? "LOADED" : "NOT LOADED");
+        debugLog('PIANO', 'Attempting to load piano samples from ./sounds/piano/');
+        debugLog('PIANO', `Global samples loaded state: ${samplesLoaded ? 'LOADED' : 'NOT LOADED'}`);
         
         // Force preload samples immediately when instrument is created
         if (!samplesLoaded) {
-          // Try preloading common note files directly to warm up browser cache
+          // Try preloading common note files directly to warm browser cache
           const preloadUrls = ['C4.mp3', 'D4.mp3', 'E4.mp3', 'G4.mp3', 'A4.mp3'];
           preloadUrls.forEach(url => {
             const audio = new Audio(`./sounds/piano/${url}`);
@@ -107,19 +108,17 @@ export class AudioEngine {
             audio.load();
           });
           
-          console.log("[PIANO] Preloaded sample URLs to warm browser cache");
+          debugLog('PIANO', 'Preloaded sample URLs to warm browser cache');
         }
         
         // Progressive status updates during loading
         if (!samplesLoaded) {
           setTimeout(() => {
-            console.log("[PIANO] Loading status check 1: ", 
-                      window._pianoSamplesLoaded ? "✅ LOADED" : "⏳ STILL LOADING");
+            debugLog('PIANO', `Loading status check 1: ${window._pianoSamplesLoaded ? '✅ LOADED' : '⏳ STILL LOADING'}`);
           }, 500);
           
           setTimeout(() => {
-            console.log("[PIANO] Loading status check 2: ", 
-                      window._pianoSamplesLoaded ? "✅ LOADED" : "⏳ STILL LOADING");
+            debugLog('PIANO', `Loading status check 2: ${window._pianoSamplesLoaded ? '✅ LOADED' : '⏳ STILL LOADING'}`);
           }, 1000);
         }
         
@@ -158,7 +157,7 @@ export class AudioEngine {
                 const audio = new Audio(`${basePath}${url}`);
                 audio.preload = 'auto';
                 audio.load();
-                console.log(`[PIANO] Force preloading ${basePath}${url}`);
+                debugLog('PIANO', `Force preloading ${basePath}${url}`);
               });
             });
           }
@@ -203,18 +202,18 @@ export class AudioEngine {
               if (is1_5Activity) {
                 // In 1_5 activity: Only play if samples are ACTUALLY ready, otherwise silent
                 if (samplesReady && window._pianoSamplesActuallyReady) {
-                  console.log(`[PIANO] [1_5] Playing sampled note: ${note} (dur: ${duration}, vel: ${velocity})`);
+                  debugLog(['PIANO', '1_5'], `Playing sampled note: ${note} (dur: ${duration}, vel: ${velocity})`);
                   const scheduledTime = time || Tone.now();
                   sampler.triggerAttackRelease(note, duration, scheduledTime, velocity);
                 } else {
-                  console.log(`[PIANO] [1_5] ⚠️ SKIPPING playback - samples not fully ready yet. NO FALLBACK USED.`);
+                  debugLog(['PIANO', '1_5'], '⚠️ SKIPPING playback - samples not fully ready yet. NO FALLBACK USED.');
                   // Try preloading again if needed
                   if (!window._pianoPreloadAttempted) {
                     window._pianoPreloadAttempted = true;
-                    console.log("[PIANO] Making one more attempt to preload samples");
+                    debugLog('PIANO', 'Making one more attempt to preload samples');
                     const audio = new Audio(`./sounds/piano/C4.mp3`);
                     audio.addEventListener('canplaythrough', () => {
-                      console.log("[PIANO] Preload success!");
+                      debugLog('PIANO', 'Preload success!');
                     });
                     audio.load();
                   }
@@ -222,24 +221,24 @@ export class AudioEngine {
               } else {
                 // Normal behavior for other activities - use fallback if needed
                 if (samplesReady && window._pianoSamplesActuallyReady) {
-                  console.log(`[PIANO] Playing sampled note: ${note} (dur: ${duration}, vel: ${velocity})`);
+                  debugLog('PIANO', `Playing sampled note: ${note} (dur: ${duration}, vel: ${velocity})`);
                   const scheduledTime = time || Tone.now();
                   sampler.triggerAttackRelease(note, duration, scheduledTime, velocity);
                 } else {
-                  console.log(`[PIANO] Samples not ready yet (global: ${window._pianoSamplesLoaded}, actual: ${window._pianoSamplesActuallyReady}), using temp synth`);
+                  debugLog('PIANO', `Samples not ready yet (global: ${window._pianoSamplesLoaded}, actual: ${window._pianoSamplesActuallyReady}), using temp synth`);
                   tempSynth.triggerAttackRelease(note, duration, time, velocity);
                 }
               }
             } catch (err) {
-              console.error("[PIANO] Error in piano playback:", err);
+              debugLog(['PIANO', 'ERROR'], `Error in piano playback: ${err.message || err}`);
               
               // Only use fallback if NOT in 1_5 activity
               if (!is1_5Activity) {
                 try {
-                  console.log("[PIANO] Using fallback synth (non-1_5 activity)");
+                  debugLog('PIANO', 'Using fallback synth (non-1_5 activity)');
                   tempSynth.triggerAttackRelease(note || "C4", duration || 0.5, time, velocity || 0.8);
                 } catch (finalErr) {
-                  console.error("[PIANO] Even fallback failed:", finalErr);
+                  debugLog(['PIANO', 'ERROR'], `Even fallback failed: ${finalErr.message || finalErr}`);
                 }
               }
             }
@@ -262,7 +261,7 @@ export class AudioEngine {
                 sampler.dispose();
               }
             } catch (err) {
-              console.warn('[PIANO] Error disposing sampler:', err);
+              debugLog(['PIANO', 'WARN'], `Error disposing sampler: ${err.message || err}`);
             }
             
             try {
@@ -270,7 +269,7 @@ export class AudioEngine {
                 tempSynth.dispose();
               }
             } catch (err) {
-              console.warn('[PIANO] Error disposing tempSynth:', err);
+              debugLog(['PIANO', 'WARN'], `Error disposing tempSynth: ${err.message || err}`);
             }
             
             try {
@@ -278,7 +277,7 @@ export class AudioEngine {
                 reverb.dispose();
               }
             } catch (err) {
-              console.warn('[PIANO] Error disposing reverb:', err);
+              debugLog(['PIANO', 'WARN'], `Error disposing reverb: ${err.message || err}`);
             }
           },
           releaseAll: function(time) {
@@ -313,12 +312,12 @@ export class AudioEngine {
       },
       violin: () => {
         // This is now handled by toneJsSampler.js
-        console.log("[AUDIO ENGINE] Using global violin from toneJsSampler.js");
+        debugLog('AUDIO_ENGINE', 'Using global violin from toneJsSampler.js');
         return null; // We should never reach this point as playNote() will call toneJsSampler directly
       },
       flute: () => {
         // This is now handled by toneJsSampler.js
-        console.log("[AUDIO ENGINE] Using global flute from toneJsSampler.js");
+        debugLog('AUDIO_ENGINE', 'Using global flute from toneJsSampler.js');
         return null; // We should never reach this point as playNote() will call toneJsSampler directly
       },
       tuba: () => {

@@ -85,11 +85,11 @@ Alpine.store('mascotSettings', {
         });
         // Reset seen messages on app start
         this.seenActivityMessages = {};
-        console.log('MASCOT_STORE: Loaded settings and reset seen messages:', this);
+        debugLog('MASCOT_STORE', 'Loaded settings and reset seen messages', this);
       }
       this.save();
     } catch (error) {
-      console.error('MASCOT_STORE: Error loading settings:', error);
+      debugLog(['MASCOT_STORE', 'ERROR'], `Error loading settings: ${error.message || error}`);
     }
   },
   
@@ -101,9 +101,9 @@ Alpine.store('mascotSettings', {
         seenActivityMessages: this.seenActivityMessages,
         disableTTS: this.disableTTS
       }));
-      console.log('MASCOT_STORE: Settings saved');
+      debugLog('MASCOT_STORE', 'Settings saved');
     } catch (error) {
-      console.error('MASCOT_STORE: Error saving settings:', error);
+      debugLog(['MASCOT_STORE', 'ERROR'], `Error saving settings: ${error.message || error}`);
     }
   },
   
@@ -111,14 +111,14 @@ Alpine.store('mascotSettings', {
   toggleHelpMessages() {
     this.showHelpMessages = !this.showHelpMessages;
     this.save();
-    console.log('MASCOT_STORE: Help messages toggled:', this.showHelpMessages);
+    debugLog('MASCOT_STORE', `Help messages toggled: ${this.showHelpMessages}`);
   },
   
   // Hide help messages (called by close button)
   hideHelpMessages() {
     this.showHelpMessages = false;
     this.save();
-    console.log('MASCOT_STORE: Help messages disabled via close button');
+    debugLog('MASCOT_STORE', 'Help messages disabled via close button');
   }
 });
 
@@ -141,7 +141,7 @@ document.addEventListener('DOMContentLoaded', () => {
     type: capacitor.getPlatform()
   });
   
-  console.log('Lalumo app running on platform:', capacitor.getPlatform());
+  debugLog('APP', `Lalumo app running on platform: ${capacitor.getPlatform()}`);
 });
 
 // Start Alpine, but only if it hasn't been started already

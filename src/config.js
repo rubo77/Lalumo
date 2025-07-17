@@ -1,3 +1,5 @@
+import { debugLog } from './utils/debug';
+
 /**
  * Central configuration for Lalumo App
  * Contains environment-specific settings from central YAML config
@@ -32,7 +34,7 @@ const useProductionConfig = isProduction || isMobile;
 let configOverride = {};
 if (isProduction && typeof window !== 'undefined' && window.LALUMO_CONFIG_OVERRIDE) {
   configOverride = window.LALUMO_CONFIG_OVERRIDE;
-  console.log('[CONFIG] Using configuration override from HTML');
+  debugLog('CONFIG', 'Using configuration override from HTML');
 }
 
 // Select config based on environment
@@ -40,16 +42,16 @@ let currentConfig = useProductionConfig ? configData.production : configData.dev
 
 // Log if we're in mobile environment
 if (isMobile) {
-  console.log('[CONFIG] Running in MOBILE environment, using production API endpoints');
+  debugLog('CONFIG', 'Running in MOBILE environment, using production API endpoints');
 }
 
 // Apply any overrides
 currentConfig = { ...currentConfig, ...configOverride };
 
 // Debug log the detected environment
-console.log(`[CONFIG] Running in ${isProduction ? 'PRODUCTION' : 'DEVELOPMENT'} environment`);
-console.log(`[CONFIG] API_BASE_URL: ${currentConfig.API_BASE_URL}`);
-console.log(`[CONFIG] APP_BASE_URL: ${currentConfig.APP_BASE_URL}`);
-console.log(`[CONFIG] APP_BASE_PATH: ${currentConfig.APP_BASE_PATH}`);
+debugLog('CONFIG', `Running in ${isProduction ? 'PRODUCTION' : 'DEVELOPMENT'} environment`);
+debugLog('CONFIG', `API_BASE_URL: ${currentConfig.API_BASE_URL}`);
+debugLog('CONFIG', `APP_BASE_URL: ${currentConfig.APP_BASE_URL}`);
+debugLog('CONFIG', `APP_BASE_PATH: ${currentConfig.APP_BASE_PATH}`);
 
 export default currentConfig;

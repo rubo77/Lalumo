@@ -1,3 +1,5 @@
+import { debugLog } from './utils/debug';
+
 /**
  * Native App Detector
  * Sets a global flag to identify native app environment
@@ -9,5 +11,5 @@
   // Dies ist ein zuverlässiger Indikator, dass wir in einer nativen App laufen
   window.isNativeApp = (typeof window.Capacitor !== 'undefined');
   
-  console.log('Native app environment detected:', window.isNativeApp);
+  debugLog('NATIVE_APP_DETECTOR', `Native app environment detected: ${window.isNativeApp}`);
 })();

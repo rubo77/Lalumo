@@ -1,3 +1,5 @@
+import { debugLog } from './debug';
+
 /**
  * HTML Include Utility
  * Processes elements with data-include attributes to load content from HTML partials
@@ -28,12 +30,12 @@ export function loadHtmlPartials() {
     // Detect if we're in the app subfolder and adjust path accordingly
     const inAppSubfolder = window.location.pathname.includes('/app/');
     if (inAppSubfolder && !basePath && file.startsWith('partials/')) {
-      console.log('Detected app subfolder, adjusting partial path');
+      debugLog('HTML_INCLUDE', 'Detected app subfolder, adjusting partial path');
       basePath = '../';
     }
     const fullPath = basePath + file;
     
-    console.log('Attempting to load HTML partial:', fullPath);
+    debugLog('HTML_INCLUDE', `Attempting to load HTML partial: ${fullPath}`);
     
     // Make an AJAX request to fetch the partial
     fetch(fullPath)
@@ -53,7 +55,7 @@ export function loadHtmlPartials() {
         }
       })
       .catch(error => {
-        console.error('HTML partial loading error:', error);
+        debugLog(['HTML_INCLUDE', 'ERROR'], `HTML partial loading error: ${error.message || error}`);
         element.innerHTML = `<div class="error-message">Error loading content</div>`;
       });
   });

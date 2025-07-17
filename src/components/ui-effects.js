@@ -1,3 +1,5 @@
+import { debugLog } from '../utils/debug';
+
 /**
  * UI-Effekte für die Lalumo App
  */
@@ -7,24 +9,24 @@
  * @param {NodeListOf<Element>} elements - Die DOM-Elemente, deren Text gebogen werden soll
  */
 export function createCurvedText(elements) {
-  console.log(`UI-EFFECTS: createCurvedText aufgerufen mit ${elements.length} Elementen`);
+  debugLog('UI_EFFECTS', `createCurvedText aufgerufen mit ${elements.length} Elementen`);
   
   elements.forEach(element => {
     if (!element) {
-      console.log('UI-EFFECTS: Element ist null oder undefined');
+      debugLog('UI_EFFECTS', 'Element ist null oder undefined');
       return;
     }
     
-    console.log(`UI-EFFECTS: Verarbeite Element mit Klassen: ${element.className}`);
+    debugLog('UI_EFFECTS', `Verarbeite Element mit Klassen: ${element.className}`);
     
     // Original-Text speichern
     const originalText = element.textContent;
     if (!originalText || originalText.trim() === '') {
-      console.log('UI-EFFECTS: Element hat keinen Text');
+      debugLog('UI_EFFECTS', 'Element hat keinen Text');
       return;
     }
     
-    console.log(`UI-EFFECTS: Text zum Biegen: "${originalText}"`);
+    debugLog('UI_EFFECTS', `Text zum Biegen: "${originalText}"`);
     
     // Element-ID für SVG erzeugen
     const id = 'curve-' + Math.random().toString(36).substring(2, 9);
@@ -66,7 +68,7 @@ export function createCurvedText(elements) {
     element.textContent = '';
     element.appendChild(svg);
     
-    console.log('UI-EFFECTS: Created curved text for element:', element);
+    debugLog('UI_EFFECTS', 'Created curved text for element', element);
   });
 }
 
@@ -74,19 +76,19 @@ export function createCurvedText(elements) {
  * Initialisiert alle UI-Effekte
  */
 export function initUIEffects() {
-  console.log('UI-EFFECTS: Initialisiere UI-Effekte');
+  debugLog('UI_EFFECTS', 'Initialisiere UI-Effekte');
   
   // Gebogenen Text für Feedback-Nachrichten erstellen
   const observeTextElements = () => {
-    console.log('UI-EFFECTS: Starte Beobachtung von Textelementen');
+    debugLog('UI_EFFECTS', 'Starte Beobachtung von Textelementen');
     
     // MutationObserver erstellen, um neue Textelemente zu beobachten
     const observer = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
         if (mutation.type === 'childList' || mutation.type === 'characterData') {
-          console.log('UI-EFFECTS: DOM-Änderung erkannt, suche nach Textelementen');
+          debugLog('UI_EFFECTS', 'DOM-Änderung erkannt, suche nach Textelementen');
           const feedbackMessages = document.querySelectorAll('.feedback-message, .melody-name');
-          console.log('UI-EFFECTS: Gefundene Textelemente:', feedbackMessages.length);
+          debugLog('UI_EFFECTS', `Gefundene Textelemente: ${feedbackMessages.length}`);
           createCurvedText(feedbackMessages);
         }
       });

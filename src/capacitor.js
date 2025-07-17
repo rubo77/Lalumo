@@ -15,12 +15,13 @@
 import { Capacitor } from '@capacitor/core';
 import { SplashScreen } from '@capacitor/splash-screen';
 import { cleanupAudioResources } from './components/audio-engine.js';
+import { debugLog } from './utils/debug';
 
 // Function to initialize Capacitor and its plugins
 export function initCapacitor() {
   // Check if running on a native platform
   const isNative = Capacitor.isNativePlatform();
-  console.log(`Running on ${isNative ? 'native' : 'web'} platform`);
+  debugLog('CAPACITOR', `Running on ${isNative ? 'native' : 'web'} platform`);
 
   // Hide splash screen after app is ready
   if (isNative) {
@@ -35,14 +36,14 @@ export function initCapacitor() {
     // Handle visibility change (when app goes to background/foreground)
     document.addEventListener('visibilitychange', () => {
       if (document.hidden) {
-        console.log('[LIFECYCLE] App going to background, not cleaning up audio resources');
+        debugLog('LIFECYCLE', 'App going to background, not cleaning up audio resources');
         //cleanupAudioResources();
       }
     });
     
     // Handle page unload
     window.addEventListener('beforeunload', () => {
-      console.log('[LIFECYCLE] Page unloading, cleaning up audio resources');
+      debugLog('LIFECYCLE', 'Page unloading, cleaning up audio resources');
       cleanupAudioResources();
     });
     
