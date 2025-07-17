@@ -22,7 +22,10 @@ Was kann Ihr Kind in Lalumo erwarten?
 
 Was können die Eltern erwarten
 - Keine Werbung, keine In-App-Käufe, Open-Source
-- Man kann den Bildschirm auf die aktuelle Aktivität fixieren, Fullscreen und so dass man auf kein anderes Element mehr auf dem Bildschirm drücken kann
+- Kindersicherung: Man kann den Bildschirm auf die aktuelle Aktivität fixieren, im Fullscreen und so dass man auf kein anderes Element mehr auf dem Bildschirm drücken kann
+- Rück-Button-Schutz: Verhindert unbeabsichtigtes Verlassen der App
+- Ungenaue Eingaben wie Wischbewegungen werden erkannt und versehentliche zusätzliche Berührungen werden zuverlässig ignoriert – ideal für kleine Finger
+- Bildschirmfixierung: Die aktuelle Aktivität wird im Vollbild angezeigt, ohne dass andere Elemente bedient werden können
 
 Intuitive Navigation
 - Bildbasierte Oberfläche mit einem Vogel als Spieltaste und Tieren zum drücken als Antworten.
@@ -55,7 +58,9 @@ What can your child expect in Lalumo?
 
 What parents can expect
 - No ads, no in-app purchases, open source
-- You can lock the screen to the current activity, full screen and so that you can't press on any other element on the screen
+- Child safety function & back button protection: Prevents accidental app exits
+- Imprecise inputs like swipes are correctly processed and accidental touches are reliably ignored - perfect for little fingers
+- Screen lock: The current activity is displayed in full screen without the ability to interact with other elements
 
 Intuitive navigation
 - Picture-based interface with a bird as a play button and animals to press as answers.

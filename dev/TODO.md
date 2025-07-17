@@ -130,8 +130,6 @@ Dies soll in allen aktionen:
 
 - übersetze Credits, ... @index.html#L912-935 dies und @index.html#L973 und @index.html#L963-964 @index.html#L883-893 @index.html#L896-908 @pitches.js#L3356-3359 
 
-- in the activities game buttons: when pressed on a button, the finger moves and is released, it should also trigger the buttons click event
-
 - überall den border-shadow focus nach dem click entfernen
 
 reset-button:
