@@ -2,6 +2,9 @@
  * Tone Colors component
  * Implements different sound timbres for children to explore
  */
+
+import { debugLog } from '../utils/debug';
+
 export function tonecolors() {
   return {
     selected: null,
@@ -10,7 +13,7 @@ export function tonecolors() {
      * Initialize the component
      */
     init() {
-      console.log('Tone Colors component initialized');
+      debugLog('TONECOLORS', 'Tone Colors component initialized');
     },
     
     /**
@@ -25,9 +28,9 @@ export function tonecolors() {
         window.dispatchEvent(new CustomEvent('lalumo:play-sound', {
           detail: { sound: `tonecolor_${sound}` }
         }));
-        console.log(`Dispatched sound event for: tonecolor_${sound}`);
+        debugLog('TONECOLORS', `Dispatched sound event for: tonecolor_${sound}`);
       } catch (error) {
-        console.error('Error dispatching sound event:', error);
+        debugLog(['TONECOLORS', 'ERROR'], `Error dispatching sound event: ${error.message || error}`);
       }
     }
   };

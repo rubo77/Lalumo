@@ -1,7 +1,12 @@
 const { parse } = require('node-html-parser');
 
+// Build-time console logging (webpack loader)
+const debugLog = (module, message, ...args) => {
+  console.log(`[${module}] ${message}`, ...args);
+};
+
 module.exports = function(source) {
-  console.log('Language Loader called for resource:', this.resource);
+  debugLog('LANGUAGE_LOADER', 'Language Loader called for resource:', this.resource);
   
   // Versuche die Sprachparameter aus verschiedenen Quellen zu erhalten
   const options = this.getOptions();

@@ -301,12 +301,12 @@ export function pitches() {
             };
             // Reset seenActivityMessages on every app start
             this.$store.mascotSettings.seenActivityMessages = {};
-            console.log('Loaded mascot settings and reset seen messages:', this.mascotSettings);
+            debugLog('PITCHES', 'Loaded mascot settings and reset seen messages', this.mascotSettings);
           }
           // Always save back to localStorage to persist any new default flags
           localStorage.setItem('lalumo_mascot_settings', JSON.stringify(this.mascotSettings));
         } catch (error) {
-          console.error('Error loading mascot settings:', error);
+          debugLog(['PITCHES', 'ERROR'], `Error loading mascot settings: ${error.message || error}`);
           // Keep default settings
         }
         
@@ -494,7 +494,7 @@ export function pitches() {
         } else {
           // Fallback if pattern not found
           helpText = Alpine.store('app').getStringResource('play_melody', 'Play melody', 'Melodie abspielen');
-          console.warn(`Pattern '${pattern}' not defined in helpTexts. Using fallback text.`);
+          debugLog(['PITCHES', 'WARN'], `Pattern '${pattern}' not defined in helpTexts. Using fallback text.`);
         }
         
         // Always set the message, even if fallback is used
