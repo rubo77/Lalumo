@@ -59,9 +59,6 @@ import {
 // 2_6 Chord Characters Module
 import { test2_6_harmmony_gardenModuleImport } from './2_chords/2_6_harmmony_garden.js';
 
-// Import debug utilities
-import { debugLog } from '../utils/debug.js';
-
 // Import the audio engine
 import audioEngine from './audio-engine.js';
 
