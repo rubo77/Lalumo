@@ -2525,14 +2525,6 @@ export function pitches() {
       this.melodyChallengeMode = false;
       this.stopReferencePlayback(); this.referenceSequence = null;
       
-      // If saved progress exists, automatically activate challenge mode
-      if (this.drawMelodyLevel > 0 || this.levelSuccessCounter > 0) {
-        console.log('MELODY_SETUP: Activating challenge mode due to existing progress');
-        this.melodyChallengeMode = true;
-        // Generate a reference melody when we are in challenge mode
-        this.generateReferenceSequence_1_3();
-      }
-      
       // Show intro message when entering the activity
       this.showActivityIntroMessage('draw');
       

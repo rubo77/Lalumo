@@ -14,7 +14,7 @@
 
 /* Locked activity styling */
 .locked-activity {
-  opacity: 0.7;
+  opacity: 0.2;
 }
 
 /* Wenn die Entwicklungsumgebung aktiv ist (über body-Klasse steuerbar) */
@@ -1548,7 +1548,8 @@ section h2 {
 }
 
 .melody-name {
-  position: relative;
+  position: absolute;
+  top: min(371px, 58vw);
   color: var(--text-color);
   padding: 0.5rem 1rem 1.5rem;
   border-radius: 0.8rem;
@@ -1561,6 +1562,7 @@ section h2 {
   opacity: 0.7;
   text-shadow: 0 2px 0 rgba(255, 255, 255, 0.5);
   /* SVG-Biegeeffekt wird durch JS hinzugefügt */
+  font-size: min(3vw, 18px);
 }
 
 .feedback-message {
@@ -1585,11 +1587,6 @@ section h2 {
 @keyframes fade-in {
   from { opacity: 0; transform: translateX(-50%) translateY(-10px); }
   to { opacity: 1; transform: translateX(-50%) translateY(0); }
-}
-
-.melody-name {
-  position: relative;
-  top: max(-61px, -8vw);
 }
 
 /* Sound Judgment Level Display - Spezialisierte Anzeige für Sound Judgment Level und Streak */

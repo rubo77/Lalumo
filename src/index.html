@@ -196,6 +196,15 @@
             >
             🎵 <span x-text="$store.strings?.match_sounds || 'Match Sounds'"></span>
             </button>
+            
+            <button id="nav_1_4"
+              @click="$dispatch('set-activity-mode', {component: 'pitches', mode: '1_4_pitches_does-it-sound-right'}); window.innerWidth < 1024 ? menuOpen = false : null"
+              x-data="{ isActive: false }"
+              x-init="$watch('$store.currentActivityMode', value => isActive = value && value.component === 'pitches' && value.mode === '1_4_pitches_does-it-sound-right')"
+              :class="{ 'active': isActive }">
+              👉 <span x-text="$store.strings?.does_it_sound_right || 'Does It Sound Right?'"></span>
+            </button>
+            
             <!-- Locked Draw a Melody button (visible when not unlocked) -->
             <button id="nav_1_3_locked" x-show="!areAllActivitiesUnlocked"
               @click="active = 'referral-code'; window.innerWidth < 1024 ? menuOpen = false : null"
@@ -220,13 +229,7 @@
             >
               🔓 ✏️ <span x-text="$store.strings?.draw_melody || 'Draw a Melody'"></span>
             </button>
-            <button id="nav_1_4"
-              @click="$dispatch('set-activity-mode', {component: 'pitches', mode: '1_4_pitches_does-it-sound-right'}); window.innerWidth < 1024 ? menuOpen = false : null"
-              x-data="{ isActive: false }"
-              x-init="$watch('$store.currentActivityMode', value => isActive = value && value.component === 'pitches' && value.mode === '1_4_pitches_does-it-sound-right')"
-              :class="{ 'active': isActive }">
-              👉 <span x-text="$store.strings?.does_it_sound_right || 'Does It Sound Right?'"></span>
-            </button>
+            
             <!-- Locked Memory Game button (visible when not unlocked) -->
             <button id="nav_1_5_locked" x-show="!areAllActivitiesUnlocked"
               @click="active = 'referral-code'; window.innerWidth < 1024 ? menuOpen = false : null"

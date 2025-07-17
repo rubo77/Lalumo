@@ -168,30 +168,25 @@ reset-button:
 - der reset button in der navi muss auch den hintergrund und die anzeige unten triggern, dass die refresht wird, im moment wird der dann noch einfach weiss
 
 1_3 Draw a Melody:
-- beim abspielen der gemalten töne, soll immer der rote punkt aufleuchten, der geraade gespielt wid auf der linie
 - # bereit zur veröffentlichung
 - Zeichnen geht nicht mehr auf den Handy, man schiebt den bildschirm hin und her, anstatt zu malen. könnte helfen: overflow hiddern
 - play sound and rainbow exact after the painted melody is played (in case it is a longer melody)
-- reset all progress geht noch nicht
 - wenn der zeichenpfad spitze ecken hat, dann sollen noten, die nahe der spitze sind ganz in die spitze rutschen
-- wenn man beim malen den rand des canvas überschreitet, sollte der strich weiter im canvas gemalt werden, an der kante entlang
 - Wenn man einen Ton trifft, die Note aufleuchten verbessern, vielieicht den strich an der stelle dick machen oder so
 
 1_4 Does It Sound Right:
+- baue die lieder im TODO block im pitches.js
 - # bereit zur veröffentlichung
 - when the "next melody" button is pressed in the "Does It Sound Right?" activity, the animal images should NOT change
 - fix gebogenen text
 - es kommt mehrmals in log "Generated sound judgment melody:..."
-- baue die lieder im TODO block im pitches.js
-- auch erst einen Modus, wo man nur drauf drückt, ohne die good or bad Tiere unten.
-- jede der drei Tiere mit einem anderen Instrument
-- Und dann im Game Modus alle drei instrumente zusammen
+- im Game Modus alle drei instrumente zusammen
 - eigene melodien hochladen
 
 1_5 memory game:
   - # bereit zur veröffentlichung
 
-2_2_chords_stable_unstable: es wird leider nicht mehr  transponiert, bei jeder richtigen antwort soll die feste transponierung gelöscht werden und es soll in einer neuen zufälligen der nächste akkord kommen
+2_2_chords_stable_unstable:
   - # bereit zur veröffentlichung
  
 2_5_chords_color_matching:
