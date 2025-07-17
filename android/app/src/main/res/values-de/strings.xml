@@ -267,10 +267,6 @@
     <string name="privacy_username_item">Benutzername</string>
     <string name="privacy_progress_item">Lernfortschritte</string>
     
-    <!-- Chord Feedback Messages -->
-    <string name="feedback_stable_chord">Falsch. Es war ein stabiler Akkord.</string>
-    <string name="feedback_unstable_chord">Falsch. Es war ein instabiler Akkord.</string>
-    
     <!-- Back Button Messages -->
     <string name="back_button_confirm_exit">Möchtest du die Seite wirklich verlassen? Dein Fortschritt dieser Sitzung könnte verloren gehen.</string>
 
