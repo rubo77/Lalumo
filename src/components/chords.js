@@ -41,7 +41,6 @@ import {
   playStableUnstableChord, 
   checkStableUnstableMatch,
   updateStableUnstableBackground,
-  reset_2_2_StableUnstable_Progress,
   reset2_2ToFreePlayMode
 } from './2_chords/2_2_chords_stable_unstable.js';
 

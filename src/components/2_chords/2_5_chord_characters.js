@@ -161,7 +161,7 @@ export function update_2_5Background(component) {
  * Reset progress for Chord Types activity (2_5)
  * Used by the resetCurrentActivity function
  */
-export function reset_2_5_ChordTypes_Progress() {
+export function resetProgress_2_5() {
   debugLog(['CHORDS', 'RESET'], 'Resetting 2_5_chords_characters progress...');
   
   // Get the chordsComponent from window global

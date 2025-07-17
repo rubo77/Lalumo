@@ -746,15 +746,8 @@ export function updateStableUnstableBackground(component) {
  * Reset progress for Stable or Unstable Chords activity (2_2)
  * Used by the resetCurrentActivity function
  */
-export function reset_2_2_StableUnstable_Progress() {
+export function resetProgress_2_2() {
   debugLog(['CHORDS_2_2_DEBUG', 'RESET'], 'Resetting 2_2_chords_stable_unstable progress...');
-  
-  // Get the chordsComponent from window global
-  const chordsComponent = window.chordsComponent;
-  if (!chordsComponent) {
-    console.error('Cannot reset 2_2_chords_stable_unstable: chordsComponent not found');
-    return;
-  }
   
   // Get existing progress from localStorage
   let progressData = localStorage.getItem('lalumo_chords_progress');
