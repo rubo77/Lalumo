@@ -39,6 +39,8 @@
 - Main code imports and function references in `chords.js` have been updated to use `stable_unstable`. Next: check and update any remaining references elsewhere in the codebase.
 - HTML template references in `index.html` have been updated to use the new `stable_unstable` naming convention.
 - Test files referencing `stable_unstable` have been identified for update to `stable_unstable`.
+- User requested: In activities, game buttons should trigger click on touchend even if finger moves outside (mobile usability improvement).
+- User confirmed touch improvement works and requested to extend to all game and select buttons across the app.
 
 ## Task List
 - [x] Locate Alpine.js `pitches` component definition
@@ -74,6 +76,8 @@
 - [x] Update all code references and imports to use stable_unstable instead of stable_unstable
 - [x] Update HTML template references in index.html to use stable_unstable
 - [ ] Update test files to use stable_unstable naming
+- [x] Ensure activity game buttons trigger click on touchend (mobile usability)
+- [x] Extend touchend-to-click improvement to all game and select buttons across the app
 
 ## Current Goal
-Update test files to use stable_unstable naming
+Extend touchend-to-click improvement to all game/select buttons

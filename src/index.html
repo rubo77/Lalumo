@@ -439,6 +439,7 @@
           <!-- Play button - bird in background -->
           <button class="circular-play-button" 
                   @click="playHighOrLowTone(); blurElement($event)" 
+                  @touchstart.prevent @touchend.prevent="$el.click();"
                   :aria-label="$store.strings?.play_tone_a11y || 'Play tone'" 
                   :title="$store.strings?.play_tone_a11y || 'Play tone'">
           </button>
@@ -491,38 +492,43 @@
           
           <!-- Play button - only show when not in game mode -->
           <button x-show="!gameMode" class="circular-play-button" 
-          @click="playCurrentMelody(); blurElement($event)" aria-label="Start Game" title="Play">
+          @click="playCurrentMelody(); blurElement($event)" 
+          @touchstart.prevent @touchend.prevent="$el.click();"
+          aria-label="Start Game" title="Play">
           </button>
           
           <!-- Game mode play button - only show when in game mode -->
-          <button x-show="gameMode" class="circular-play-button" @click="playCurrentMelody(); blurElement($event)" aria-label="Play Melody" title="Play">
+          <button x-show="gameMode" class="circular-play-button" 
+          @click="playCurrentMelody(); blurElement($event)" 
+          @touchstart.prevent @touchend.prevent="$el.click();"
+          aria-label="Play Melody" title="Play">
           </button>
 
           <!-- Grid-Container für Match-Sounds mit richtigem rowspan-Verhalten -->
           <div class="match-sounds-container">
             <!-- Up pattern (immer sichtbar) - oben links -->
-            <div class="pitch-card up-card" @click="checkMatch('up'); blurElement($event)" @mousedown="startLongPress('up')" @mouseup="cancelLongPress()" @mouseleave="cancelLongPress()">
+            <div class="pitch-card up-card" @click="checkMatch('up'); blurElement($event)" @mousedown="startLongPress('up')" @mouseup="cancelLongPress()" @mouseleave="cancelLongPress()" @touchstart.prevent @touchend.prevent="$el.click();">
               <div class="pitch-icon up">
                 <img src="images/1x1.gif" alt="Rocket going up" />
               </div>
             </div>
             
             <!-- Down pattern (immer sichtbar) - rechts mit möglichem rowspan -->
-            <div class="pitch-card down-card" @click="checkMatch('down'); blurElement($event)" @mousedown="startLongPress('down')" @mouseup="cancelLongPress()" @mouseleave="cancelLongPress()">
+            <div class="pitch-card down-card" @click="checkMatch('down'); blurElement($event)" @mousedown="startLongPress('down')" @mouseup="cancelLongPress()" @mouseleave="cancelLongPress()" @touchstart.prevent @touchend.prevent="$el.click();">
               <div class="pitch-icon down">
                 <img src="images/1x1.gif" alt="Slide going down" />
               </div>
             </div>
             
             <!-- Wave pattern (wenn freigeschaltet) - unten links -->
-            <div x-show="unlockedPatterns.includes('wave')" class="pitch-card wave-card" @click="checkMatch('wave'); blurElement($event)" @mousedown="startLongPress('wave')" @mouseup="cancelLongPress()" @mouseleave="cancelLongPress()">
+            <div x-show="unlockedPatterns.includes('wave')" class="pitch-card wave-card" @click="checkMatch('wave'); blurElement($event)" @mousedown="startLongPress('wave')" @mouseup="cancelLongPress()" @mouseleave="cancelLongPress()" @touchstart.prevent @touchend.prevent="$el.click();">
               <div class="pitch-icon wave">
                 <img src="images/1x1.gif" alt="Wave pattern" />
               </div>
             </div>
             
             <!-- Jump pattern (wenn freigeschaltet) - unten rechts -->
-            <div x-show="unlockedPatterns.includes('jump')" class="pitch-card jump-card" @click="checkMatch('jump'); blurElement($event)" @mousedown="startLongPress('jump')" @mouseup="cancelLongPress()" @mouseleave="cancelLongPress()">
+            <div x-show="unlockedPatterns.includes('jump')" class="pitch-card jump-card" @click="checkMatch('jump'); blurElement($event)" @mousedown="startLongPress('jump')" @mouseup="cancelLongPress()" @mouseleave="cancelLongPress()" @touchstart.prevent @touchend.prevent="$el.click();">
               <div class="pitch-icon jump">
                 <img src="images/1x1.gif" alt="Jumping frog" />
               </div>
@@ -609,12 +615,12 @@
 
             <!-- Animal choice buttons -->
             <div class="sound-judgment-options">
-              <div class="pitch-card animal-card happy" @click="checkSoundHighOrLow(true); blurElement($event)" aria-label="Sounds good" title="Sounds good">
+              <div class="pitch-card animal-card happy" @click="checkSoundHighOrLow(true); blurElement($event)" @touchstart.prevent @touchend.prevent="$el.click();" aria-label="Sounds good" title="Sounds good">
                 <div class="pitch-icon animal-icon" title="Sounds good!">
                   <img src="images/1_5_pitches_good_cat.png" alt="Happy cat">
                 </div>
               </div>
-              <div class="pitch-card animal-card unhappy" @click="checkSoundHighOrLow(false); blurElement($event)" aria-label="Sounds wrong" title="Sounds wrong">
+              <div class="pitch-card animal-card unhappy" @click="checkSoundHighOrLow(false); blurElement($event)" @touchstart.prevent @touchend.prevent="$el.click();" aria-label="Sounds wrong" title="Sounds wrong">
                 <div class="pitch-icon animal-icon" title="Sounds wrong!">
                   <img src="images/1_5_pitches_bad_snake.png" alt="Unhappy snake">
                 </div>
@@ -634,16 +640,16 @@
           
           <div class="piano-keyboard">
             <!-- White keys C, D, E, G, A with black key indicators -->
-            <button class="piano-key white c4" @click="addToSequence('C4')" :class="{ 'active': currentHighlightedNote === 'C4' }">C</button>
+            <button class="piano-key white c4" @click="addToSequence('C4')" @touchstart.prevent @touchend.prevent="$el.click();" :class="{ 'active': currentHighlightedNote === 'C4' }">C</button>
             <div class="piano-key black" aria-hidden="true"></div>
-            <button class="piano-key white d4" @click="addToSequence('D4')" :class="{ 'active': currentHighlightedNote === 'D4' }">D</button>
+            <button class="piano-key white d4" @click="addToSequence('D4')" @touchstart.prevent @touchend.prevent="$el.click();" :class="{ 'active': currentHighlightedNote === 'D4' }">D</button>
             <div class="piano-key black" aria-hidden="true"></div>
-            <button class="piano-key white e4" @click="addToSequence('E4')" :class="{ 'active': currentHighlightedNote === 'E4' }">E</button>
+            <button class="piano-key white e4" @click="addToSequence('E4')" @touchstart.prevent @touchend.prevent="$el.click();" :class="{ 'active': currentHighlightedNote === 'E4' }">E</button>
             <div class="piano-key inactive f4" aria-hidden="true">F</div>
             <div class="piano-key black" aria-hidden="true"></div>
-            <button class="piano-key white g4" @click="addToSequence('G4')" :class="{ 'active': currentHighlightedNote === 'G4' }">G</button>
+            <button class="piano-key white g4" @click="addToSequence('G4')" @touchstart.prevent @touchend.prevent="$el.click();" :class="{ 'active': currentHighlightedNote === 'G4' }">G</button>
             <div class="piano-key black" aria-hidden="true"></div>
-            <button class="piano-key white a4" @click="addToSequence('A4')" :class="{ 'active': currentHighlightedNote === 'A4' }">A</button>
+            <button class="piano-key white a4" @click="addToSequence('A4')" @touchstart.prevent @touchend.prevent="$el.click();" :class="{ 'active': currentHighlightedNote === 'A4' }">A</button>
             <div class="piano-key black" aria-hidden="true"></div>
             <div class="piano-key inactive b4" aria-hidden="true" x-text="$store.strings?.piano_key_b || 'B'"></div>
           </div>
@@ -782,11 +788,17 @@
             </div>
             
             <div class="button_2_2_grid">
-              <div id="button_2_2_stable" class="character" @click="checkStableUnstableMatch('stable', $data); blurElement($event)">
+              <div id="button_2_2_stable" class="character" 
+                   @click="checkStableUnstableMatch('stable', $data); blurElement($event)"
+                   @touchstart.prevent
+                   @touchend.prevent="$el.click();">
                 <div title="Stable"></div>
               </div>
               
-              <div id="button_2_2_unstable" class="character" @click="checkStableUnstableMatch('unstable', $data); blurElement($event)">
+              <div id="button_2_2_unstable" class="character" 
+                   @click="checkStableUnstableMatch('unstable', $data); blurElement($event)"
+                   @touchstart.prevent
+                   @touchend.prevent="$el.click();">
                 <div title="Unstable"></div>
               </div>
             </div>
@@ -854,10 +866,10 @@
         <div id="2_5_chords_characters" x-show="mode === '2_5_chords_characters'" class="chord-activity activity-container lazyload-bg" data-background-image="./images/backgrounds/2_5_chords_dog_cat_owl_no_squirrel_no_octopus.jpg">
           
           <!-- start-button, shown in free play mode -->
-          <button id="start-game-mode-2_5" @click="start2_5GameMode(); $event.stopPropagation();" class="play-button" x-show="is2_5FreePlayMode" style="font-size: 2em; cursor: pointer;" :title="$store.strings?.start_game || 'Start Game Mode'">🦉</button>
+          <button id="start-game-mode-2_5" @click="start2_5GameMode(); $event.stopPropagation();" @touchstart.prevent @touchend.prevent="$el.click();" class="play-button" x-show="is2_5FreePlayMode" style="font-size: 2em; cursor: pointer;" :title="$store.strings?.start_game || 'Start Game Mode'">🦉</button>
           
           <!-- Play button (shown in game mode) -->
-          <button id="play-chord-2_5" @click="playCurrent2_5Chord()" class="play-button" x-show="!is2_5FreePlayMode" :title="$store.strings?.play_chord || 'Play Chord'">▶️</button>
+          <button id="play-chord-2_5" @click="playCurrent2_5Chord()" @touchstart.prevent @touchend.prevent="$el.click();" class="play-button" x-show="!is2_5FreePlayMode" :title="$store.strings?.play_chord || 'Play Chord'">▶️</button>
 
           <div class="chords-container">            
             <!-- Progress display -->
@@ -874,19 +886,19 @@
             
             
             <div class="character-grid">
-              <div id="button_2_5_1_major" class="character" @click="checkCharacterMatch('major')">
+              <div id="button_2_5_1_major" class="character" @click="checkCharacterMatch('major')" @touchstart.prevent @touchend.prevent="$el.click();">
                 <div title="Happy">Happy</div>
               </div>
               
-              <div id="button_2_5_1_minor" class="character" @click="checkCharacterMatch('minor')">
+              <div id="button_2_5_1_minor" class="character" @click="checkCharacterMatch('minor')" @touchstart.prevent @touchend.prevent="$el.click();">
                 <div title="Sad">Sad</div>
               </div>
               
-              <div id="button_2_5_1_augmented" @click="checkCharacterMatch('augmented')" :class="(progress['2_5_chords_characters'] || 0) >= 10 && (progress['2_5_chords_characters'] || 0) < 20 ? 'character progress2' : 'character'">
+              <div id="button_2_5_1_augmented" @click="checkCharacterMatch('augmented')" :class="(progress['2_5_chords_characters'] || 0) >= 10 && (progress['2_5_chords_characters'] || 0) < 20 ? 'character progress2' : 'character'" @touchstart.prevent @touchend.prevent="$el.click();">
                 <div title="Surprised">Surprised</div>
               </div>
               
-              <div id="button_2_5_1_diminished" class="character" @click="checkCharacterMatch('diminished')">
+              <div id="button_2_5_1_diminished" class="character" @click="checkCharacterMatch('diminished')" @touchstart.prevent @touchend.prevent="$el.click();">
                 <div title="Mysterious">Mysterious</div>
               </div>
             </div>
