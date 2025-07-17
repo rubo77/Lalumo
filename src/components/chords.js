@@ -315,8 +315,7 @@ export function chords() {
           // Avoid using the same transpose value as the previous chord
           let attempts = 0;
           do {
-            // transposeAmount = Math.floor(Math.random() * 13) - 6; // -6 to +6
-            transposeAmount = Math.floor(Math.random() * 5) - 2; // -2 to +2 (debug)
+            transposeAmount = Math.floor(Math.random() * 13) - 6; // -6 to +6
             attempts++;
           } while (transposeAmount === this.previousTransposeAmount && attempts < 10);
           

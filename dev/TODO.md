@@ -184,6 +184,7 @@ reset-button:
 - eigene melodien hochladen
 
 1_5 memory game:
+  -  Klavier weiter runter auf kleinen bildschirmen
   - # bereit zur veröffentlichung
 
 2_2_chords_stable_unstable:
