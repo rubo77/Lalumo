@@ -1,7 +1,7 @@
 {
   "name": "lalumo",
-  "version": "3.0",
-  "versionCode": 26,
+  "version": "4.0",
+  "versionCode": 27,
   "description": "Child-friendly music understanding app",
   "main": "index.js",
   "scripts": {

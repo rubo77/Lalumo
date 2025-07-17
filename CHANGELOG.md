@@ -2,6 +2,13 @@
 =========
 
 
+## Version 4.0 (2025-07-17)
+- new chord game: "Stable/Unstable Chords" with motivating feedback.
+- child-friendly interface:
+ - reactions to swipe movements and accidental touches (e.g. balling).
+ - buttons react also on release after swipe.
+- unified visual feedback
+
 ## Version 3.0 (2025-07-10)
 - New Chords games with transposition, free play and dynamic progress
 - different sounds: Contrabass, Violin, Flute and Piano

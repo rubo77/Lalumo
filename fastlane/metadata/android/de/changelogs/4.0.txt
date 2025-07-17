@@ -1,0 +1,5 @@
+- Neues Chord-Spiel: "Stabil/Instable Akkorde" mit motivierendem Feedback.
+- Kindgerechte Bedienung:
+ - Reaktionen auf Wischbewegungen und versehentliche Berührungen (z. B. Handballen).
+ - Buttons reagieren auch beim Loslassen nach Ziehbewegung.
+- Einheitliches visuelles Feedback

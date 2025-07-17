@@ -1,0 +1,16 @@
+# Play Store Changelogs für Version 4.0
+
+<en-GB>
+- new chord game: "Stable/Unstable Chords" with motivating feedback.
+- child-friendly interface:
+ - reactions to swipe movements and accidental touches (e.g. balling).
+ - buttons react also on release after swipe.
+- unified visual feedback
+</en-GB>
+<de-DE>
+- Neues Chord-Spiel: "Stabil/Instable Akkorde" mit motivierendem Feedback.
+- Kindgerechte Bedienung:
+ - Reaktionen auf Wischbewegungen und versehentliche Berührungen (z. B. Handballen).
+ - Buttons reagieren auch beim Loslassen nach Ziehbewegung.
+- Einheitliches visuelles Feedback
+</de-DE>

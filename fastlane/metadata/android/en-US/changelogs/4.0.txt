@@ -1,0 +1,5 @@
+- new chord game: "Stable/Unstable Chords" with motivating feedback.
+- child-friendly interface:
+ - reactions to swipe movements and accidental touches (e.g. balling).
+ - buttons react also on release after swipe.
+- unified visual feedback

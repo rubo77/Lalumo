@@ -2,6 +2,13 @@
 =========
 
 
+## Version 4.0 (2025-07-17)
+- Neues Chord-Spiel: "Stabil/Instable Akkorde" mit motivierendem Feedback.
+- Kindgerechte Bedienung:
+ - Reaktionen auf Wischbewegungen und versehentliche Berührungen (z. B. Handballen).
+ - Buttons reagieren auch beim Loslassen nach Ziehbewegung.
+- Einheitliches visuelles Feedback
+
 ## Version 3.0 (2025-07-10)
 - Neue Akkordspiele mit Transponierung, freiem Spiel und dynamischem Fortschritt
 - verschiedene Klänge: Kontrabass, Violine, Flöte und Klavier

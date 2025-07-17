@@ -10,7 +10,7 @@ CHANGELOG_DE_MD="CHANGELOG_de.md"
 PLAYSTORE_DIR="fastlane/metadata/android/playstore"
 
 # Get version from build.gradle
-VERSION_NAME=3.0
+VERSION_NAME=4.0
 # Get current date
 CURRENT_DATE=$(date +"%Y-%m-%d")
 
@@ -41,25 +41,21 @@ check_length() {
 
 # German Changelog
 DE_CHANGES=$(cat << EOF
-- Neue Akkordspiele mit Transponierung, freiem Spiel und dynamischem Fortschritt
-- verschiedene Klänge: Kontrabass, Violine, Flöte und Klavier
-- verbesserte Ton-Merkspiele: Farb-Hilfen nur bei Fehlern
-- Alle Texte auf Deutsch und Englisch
-- Neue Bilder und verbesserte Darstellung in Menüs und Einstellungen
-- Fortschritt kann nun vollständig exportiert und importiert werden
-- Multi-Touch erkennung verbessert um Kinderbedienung zu verbessern
+- Neues Chord-Spiel: "Stabil/Instable Akkorde" mit motivierendem Feedback.
+- Kindgerechte Bedienung:
+ - Reaktionen auf Wischbewegungen und versehentliche Berührungen (z. B. Handballen).
+ - Buttons reagieren auch beim Loslassen nach Ziehbewegung.
+- Einheitliches visuelles Feedback
 EOF
 )
 
 # English Changelog
 EN_CHANGES=$(cat << EOF
-- New Chords games with transposition, free play and dynamic progress
-- different sounds: Contrabass, Violin, Flute and Piano
-- improved tone memory games: color hints only on errors
-- All texts in German and English
-- New images and improved menu and settings display
-- Progress can now be fully exported and imported
-- Multi-Touch recognition improved to tolerate children's clumsy handling
+- new chord game: "Stable/Unstable Chords" with motivating feedback.
+- child-friendly interface:
+ - reactions to swipe movements and accidental touches (e.g. balling).
+ - buttons react also on release after swipe.
+- unified visual feedback
 EOF
 )
 
