@@ -129,7 +129,7 @@
         <p x-text="$store.strings?.create_name_message || 'Let\'s create a special name just for you!'"></p>
         <button class="primary-button" @click="setUsername()" x-text="$store.strings?.button_generate_name || 'Generate Random Name'"></button>
         <div class="modal-footer">
-          <p class="note">Your progress will be saved automatically</p>
+          <p class="note" x-text="$store.strings?.progress_saved_message || 'Your progress will be saved automatically'"></p>
         </div>
       </div>
     </div>
@@ -374,7 +374,7 @@
         <div class="menu-settings">
           
           <!-- Reset Current Activity Button -->
-          <button @click="resetCurrentActivity()" class="menu-reset-btn" title="Reset current activity progress">
+          <button @click="resetCurrentActivity()" class="menu-reset-btn" :title="$store.strings?.reset_current_activity || 'Reset Current Activity'">
             🔄 <span x-text="$store.strings?.reset_current_activity || 'Reset Current Activity'"></span>
           </button>
           
@@ -785,11 +785,11 @@
             
             <div class="button_2_2_grid">
               <div id="button_2_2_stable" class="character" @click="checkStableInstableMatch('stable', $data)">
-                <div title="Stable">Stable</div>
+                <div title="Stable"></div>
               </div>
               
               <div id="button_2_2_instable" class="character" @click="checkStableInstableMatch('instable', $data)">
-                <div title="Instable">Instable</div>
+                <div title="Unstable"></div>
               </div>
             </div>
             

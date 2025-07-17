@@ -323,6 +323,19 @@
     <string name="doublebass">Kontrabass</string>
     <string name="start_game">Spiel starten</string>
     
+    <!-- Chord Feedback Messages -->
+    <string name="feedback_correct_chord">Richtig! Es war ein {0}.</string>
+    <string name="feedback_incorrect_chord">Falsch. Es war ein {0}.</string>
+    <string name="stable_chord">stabiler Akkord</string>
+    <string name="unstable_chord">instabiler Akkord</string>
+    
+    <!-- UI Messages -->
+    <string name="welcome_message">Willkommen bei Lalumo!</string>
+    <string name="create_name_message">Lass uns einen besonderen Namen nur für dich erstellen!</string>
+    <string name="reset_activity">Aktivität zurücksetzen</string>
+    <string name="reset_current_activity">Aktuelle Aktivität zurücksetzen</string>
+    <string name="progress_saved_message">Dein Fortschritt wird automatisch gespeichert</string>
+    
     <!-- 1_2 Activity Feedback Messages (German) -->
     <string name="feedback_1_2_generic">Hör mal genauer hin</string>
     <string name="feedback_1_2_up">Hör mal genauer hin - die Melodie ging nach oben</string>

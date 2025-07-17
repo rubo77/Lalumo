@@ -704,14 +704,26 @@ export function app() {
           this.showUsernamePrompt = true;
         }
         
-        // Load language preference from localStorage
+        // Load language preference from localStorage or detect from browser
         const savedLanguage = localStorage.getItem('lalumo_language');
         if (savedLanguage) {
           this.preferredLanguage = savedLanguage;
-          console.log('Language preference loaded:', this.preferredLanguage);
-          // Update the HTML lang attribute immediately
-          document.documentElement.lang = this.preferredLanguage === 'german' ? 'de' : 'en';
+          console.log('Language preference loaded from storage:', this.preferredLanguage);
+        } else {
+          // Detect browser language on first visit
+          const browserLanguage = navigator.language || navigator.userLanguage;
+          if (browserLanguage.startsWith('de')) {
+            this.preferredLanguage = 'german';
+            console.log('Browser language detected as German, setting as default');
+          } else {
+            this.preferredLanguage = 'english'; // Default to English for other languages
+            console.log('Browser language not German, defaulting to English');
+          }
+          // Save the detected language preference
+          localStorage.setItem('lalumo_language', this.preferredLanguage);
         }
+        // Update the HTML lang attribute
+        document.documentElement.lang = this.preferredLanguage === 'german' ? 'de' : 'en';
         
         // Load referral system data from localStorage
         const savedReferralData = localStorage.getItem('lalumo_referral');

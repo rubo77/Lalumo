@@ -57,7 +57,7 @@
     
     <!-- Chords - Main Menu -->
     <string name="chord_color_matching">Chord Color Matching</string>
-    <string name="chords_stable_instable">Stable Or Instable</string>
+    <string name="chords_stable_instable">Stable Or Unstable</string>
     <string name="chord_building">Chord Building</string>
     <string name="missing_note">Guess the Missing Note</string>
     <string name="chord_characters">Chord Story Characters</string>
@@ -307,8 +307,10 @@
     <string name="memory_game_intro">Listen to the melody, then tap the colored buttons in the same order!</string>
 
     <!-- Chord Feedback Messages -->
-    <string name="feedback_stable_chord" comment="feedback_${chordTypeKey}_chord">Incorrect. It was a stable chord.</string>
-    <string name="feedback_unstable_chord" comment="feedback_${chordTypeKey}_chord">Incorrect. It was an unstable chord.</string>
+    <string name="feedback_correct_chord">Correct! It was a {0}.</string>
+    <string name="feedback_incorrect_chord">Incorrect. It was a {0}.</string>
+    <string name="stable_chord">stable chord</string>
+    <string name="unstable_chord">unstable chord</string>
     
     <!-- Back Button Messages -->
     <string name="back_button_confirm_exit">Do you really want to leave this page? Your session progress might be lost.</string>
@@ -321,6 +323,13 @@
     <string name="flute">Flute</string>
     <string name="doublebass">Double Bass</string>
     <string name="start_game">Start Game</string>
+    
+    <!-- UI Messages -->
+    <string name="welcome_message">Welcome to Lalumo!</string>
+    <string name="create_name_message">Let\'s create a special name just for you!</string>
+    <string name="reset_activity">Reset Activity</string>
+    <string name="reset_current_activity">Reset Current Activity</string>
+    <string name="progress_saved_message">Your progress will be saved automatically</string>
     
     <!-- 1_2 Activity Feedback Messages (English) -->
     <string name="feedback_1_2_generic">Listen more closely</string>

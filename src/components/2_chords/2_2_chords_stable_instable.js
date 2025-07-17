@@ -472,7 +472,9 @@ export function checkStableInstableMatch(selectedType, component) {
         }
         
         component.showStableInstableFeedback = true;
-        component.stableInstableFeedback = `Correct! It was a ${currentChordType} chord.`;
+        const chordTypeKey = currentChordType === 'stable' ? 'stable' : 'unstable';
+        const chordTypeText = Alpine.store('strings')?.[`${chordTypeKey}_chord`] || `${currentChordType} chord`;
+        component.stableInstableFeedback = Alpine.store('strings')?.feedback_correct_chord?.replace('{0}', chordTypeText) || `Correct! It was a ${chordTypeText}.`;
         component.stableInstableCorrect = true;
         
         // Auto-hide feedback after 3 seconds
@@ -562,7 +564,9 @@ export function checkStableInstableMatch(selectedType, component) {
         }
         
         component.showStableInstableFeedback = true;
-        component.stableInstableFeedback = `Incorrect. It was a ${currentChordType} chord.`;
+        const chordTypeKey = currentChordType === 'stable' ? 'stable' : 'unstable';
+        const chordTypeText = Alpine.store('strings')?.[`${chordTypeKey}_chord`] || `${currentChordType} chord`;
+        component.stableInstableFeedback = Alpine.store('strings')?.feedback_incorrect_chord?.replace('{0}', chordTypeText) || `Incorrect. It was a ${chordTypeText}.`;
         component.stableInstableCorrect = false;
         
         // Auto-hide feedback after 3 seconds
