@@ -1262,12 +1262,26 @@ export function chords() {
     
     /**
      * Play a specific chord type directly (for free play mode)
+     * Applies transposition when progress is 30 or higher, matching game mode behavior
      * 
      * @activity 2_5_chord_characters
      */
     play2_5ChordByType(chordType) {
-      debugLog('CHORDS', `[2_5] Playing chord in free play mode: ${chordType}`);
-      this.playChordByType(chordType);
+      // Get progress to determine if we should apply transposition
+      const progressData = localStorage.getItem('lalumo_chords_progress');
+      const progress = progressData ? 
+        JSON.parse(progressData)['2_5_chords_characters'] || 0 : 
+        this?.progress?.['2_5_chords_characters'] || 0;
+      
+      // Apply transposition only if progress is 30 or higher (same as game mode)
+      if (progress >= 30) {
+        debugLog('CHORDS', `[2_5] Playing transposed chord in free play mode: ${chordType} (progress: ${progress})`);
+        const { rootNote } = this.generateTranspose();
+        this.playChordByType(chordType, rootNote);
+      } else {
+        debugLog('CHORDS', `[2_5] Playing chord in free play mode without transposition: ${chordType} (progress: ${progress})`);
+        this.playChordByType(chordType);
+      }
     },
     
     /**

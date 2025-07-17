@@ -213,3 +213,11 @@ reset-button:
 
 # most important
 
+in android             android:theme="@style/AppTheme.NoActionBarLaunch"
+ shows:
+    android:android:background = @drawable/splash
+
+ 
+480×320 px (480×320 dp @ mdpi)    android:android:windowContentOverlay = @null
+
+which is a wrong ic_launcher icon
