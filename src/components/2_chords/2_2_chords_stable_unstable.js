@@ -415,8 +415,8 @@ function startGameMode(component) {
   isFreeModeActive = false;
   
   // Update button visibility
-  const startButton = document.getElementById('start-game-button');
-  const replayButton = document.getElementById('replay-button');
+  const startButton = document.getElementById('start-game-2_2');
+  const replayButton = document.getElementById('replay-button-2_2');
   
   if (startButton) startButton.style.display = 'none';
   if (replayButton) replayButton.style.display = 'block';
@@ -427,8 +427,8 @@ function startGameMode(component) {
 
 // Add click handlers when the document is ready
 document.addEventListener('DOMContentLoaded', () => {
-  const startButton = document.getElementById('start-game-button');
-  const replayButton = document.getElementById('replay-button');
+  const startButton = document.getElementById('start-game-2_2');
+  const replayButton = document.getElementById('replay-button-2_2');
   
   if (startButton) {
     startButton.addEventListener('click', (e) => {

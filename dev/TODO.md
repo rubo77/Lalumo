@@ -190,8 +190,7 @@ reset-button:
 1_5 memory game:
   - # bereit zur veröffentlichung
 
-2_2_chords_stable_unstable:
-  - bei wiederholtem play button soll nicht nur die akkord art wiederholt werden sondern auch die transposition
+2_2_chords_stable_unstable: es wird leider nicht mehr  transponiert, bei jeder richtigen antwort soll die feste transponierung gelöscht werden und es soll in einer neuen zufälligen der nächste akkord kommen
   - # bereit zur veröffentlichung
  
 2_5_chords_color_matching:
