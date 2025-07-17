@@ -223,19 +223,31 @@ export function pitches() {
         ]
       },
 
-      // TODO:
-      // Hey ho spann den wagen an
-      // 'bunny-foo': {
-      //   en: 'Bunny Foo',
-      //   de: 'Häschen Hüpf',
-      //   quarterNoteDuration: 550,
-      //   notes: [
-      //     'G', 'E4', 'G4', 'E4', 'C4', 'E4', 'G4:h', // Häschen in der Grube
-      //     'G4', 'E4', 'G4', 'E4', 'C4', 'E4', 'G4:h', // sass und weinte
-      //     'F4', 'F4', 'F4', 'F4', 'E4', 'E4', 'E4:h', // Armes Häschen bist du krank
-      //     'F4', 'F4', 'F4', 'F4', 'E4', 'E4', 'E4:h'  // dass du nicht mehr hüpfen kannst
-      //   ]
-      // },
+      'haenschen-huepf': {
+        en: 'Bunny Hop',
+        de: 'Häschen Hüpf',
+        quarterNoteDuration: 550,
+        notes: [
+          'C', 'D', 'E', 'F', 'G4:h','G4:h', // Häschen in der Grube
+          'A', 'F', 'C', 'A', 'G:h', 'A', 'F', 'C', 'A', 'G:h', // sass und schlief
+          'G4', 'F4', 'F4', 'F4', 'F4', 'E4', 'E4:h', // Armes Häschen bist du krank
+          'E4', 'D4', 'E4', 'D4', 'C4', 'E4', 'G4:h',   // dass du nicht mehr hüpfen kannst
+          'C4', 'D4', 'G4:q', 'C4', 'D4', 'G4:q',        // Häschen hüpf, Häschen hüpf
+          'G4:h', 'G4:h', 'C4:w'                        // Häschen hüpf, Häschen hüpf
+        ]
+      },
+      'hey-ho-spann-den-wagen': {
+        en: 'Hey Ho, Pull the Wagon',
+        de: 'Hey Ho, Spann den Wagen an',
+        quarterNoteDuration: 500,
+        notes: [
+          'A4', 'G4', 'A4', 'A4', 'A4', 'A4', 'E4', 'A4', 'A4', // Hey ho, spann den Wagen an,
+          'B4', 'B4', 'C4', 'C4', 'C4', 'C4', // denn der Wind reibt
+          'B4', 'E4', 'E4', 'E4', 'E4', 'E4', 'E4', 'E4', 'E4', 'E4', 'D4', 'C4', 'B4' // Regen übers Land...
+          // Note: The rest of the lyrics should be added with their corresponding notes
+        ]
+
+      },
       // Old McDonald Had a Farm
       'old-mcdonald': {
         en: 'Old McDonald Had a Farm',

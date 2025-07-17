@@ -34,8 +34,14 @@ android {
 }
 
 repositories {
-    flatDir{
-        dirs '../capacitor-cordova-android-plugins/src/main/libs', 'libs'
+    // Local Maven repository for Capacitor Cordova plugins
+    maven {
+        url "${project(':capacitor-cordova-android-plugins').projectDir}/src/main/libs"
+    }
+    
+    // Local libs directory
+    maven {
+        url "libs"
     }
 }
 
