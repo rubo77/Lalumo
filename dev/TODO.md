@@ -168,6 +168,7 @@ reset-button:
 - der reset button in der navi muss auch den hintergrund und die anzeige unten triggern, dass die refresht wird, im moment wird der dann noch einfach weiss
 
 1_3 Draw a Melody:
+- beim abspielen der gemalten töne, soll immer der rote punkt aufleuchten, der geraade gespielt wid auf der linie
 - # bereit zur veröffentlichung
 - Zeichnen geht nicht mehr auf den Handy, man schiebt den bildschirm hin und her, anstatt zu malen. könnte helfen: overflow hiddern
 - play sound and rainbow exact after the painted melody is played (in case it is a longer melody)
