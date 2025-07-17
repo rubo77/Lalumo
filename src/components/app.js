@@ -70,7 +70,7 @@ export function app() {
         name: 'Feeling Chords',
         activities: {
           '2_1_chords_color-matching': 'Chord Color Matching',
-          '2_2_chords_stable_instable': 'Stable Or Instable',
+          '2_2_chords_stable_unstable': 'Stable or Unstable',
           '2_3_chords_chord-building': 'Chord Building',
           '2_4_chords_missing-note': 'Missing Note',
           '2_5_chords_characters': 'Chord Characters',
@@ -2165,7 +2165,7 @@ export function app() {
      *    - 1_4:XX - Sets sound judgment progress to XX (stored in lalumo_soundJudgmentLevel)
      *    - 1_5:XX - Sets memory game progress to XX (stored in lalumo_memory_level)
      *    - 2_1:XX - Sets chord color matching progress to XX (stored in lalumo_chords_progress JSON)
-     *    - 2_2:XX - Sets chord Stable Or Instable progress to XX (stored in lalumo_chords_progress JSON)
+     *    - 2_2:XX - Sets chord Stable or Unstable progress to XX (stored in lalumo_chords_progress JSON)
      *    - 2_3:XX - Sets chord building progress to XX (stored in lalumo_chords_progress JSON)
      *    - 2_4:XX - Sets chord missing note progress to XX (stored in lalumo_chords_progress JSON)
      *    - 2_5:XX - Sets chord character matching progress to XX (stored in lalumo_chords_progress JSON)
@@ -2267,11 +2267,11 @@ export function app() {
             }
           } 
           // Special handling for 2_2 activity
-          else if (activityId === '2_2' || activityId === '2_2_chords_stable_instable') {
-            // Always update the 2_2_chords_stable_instable key for this activity
-            chordsProgressData['2_2_chords_stable_instable'] = progressValue;
-            debugLog(['CHEATCODE'], `: Setting 2_2_chords_stable_instable progress to ${progressValue}`);
-            debugLog(['CHEATCODE', '2_2_PROGRESS'], `Setting 2_2_chords_stable_instable progress to ${progressValue}`);
+          else if (activityId === '2_2' || activityId === '2_2_chords_stable_unstable') {
+            // Always update the 2_2_chords_stable_unstable key for this activity
+            chordsProgressData['2_2_chords_stable_unstable'] = progressValue;
+            debugLog(['CHEATCODE'], `: Setting 2_2_chords_stable_unstable progress to ${progressValue}`);
+            debugLog(['CHEATCODE', '2_2_PROGRESS'], `Setting 2_2_chords_stable_unstable progress to ${progressValue}`);
             
             // Handle secondary value if present
             if (secondaryKey && secondaryValue !== null) {

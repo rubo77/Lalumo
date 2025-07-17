@@ -20,12 +20,12 @@
 - Feedback messages for 1_2 activity are already present in both English and German in the code, but are currently hardcoded and need to be migrated to strings.xml for proper localization.
 - 1_2 feedback messages (English & German) have been added to strings.xml and the code now uses the global store for localization.
 - Next: Migrate 1_2 feedback messages in checkMatch to use strings.xml/global store.
-- For 2_2 stable/instable chords, feedback messages should use strings.xml for translation, using "unstable chord" (EN) and "instabiler Akkord" (DE); debug logs should remain unchanged.
+- For 2_2 stable/unstable chords, feedback messages should use strings.xml for translation, using "unstable chord" (EN) and "instabiler Akkord" (DE); debug logs should remain unchanged.
 - `showMascotMessage` has been moved to a global utility (src/components/shared/feedback.js) and all calls in chords and pitches components now use the global function. The global import in index.js has been updated.
 - Searching for and cleaning up remnants of the old mascot system is complete.
-- Let me check the code in `2_2_chords_stable_instable.js` to find where the feedback messages are being set.
-- Locations where stable/instable chord feedback messages are set have been identified in the code.
-- Relevant feedback strings for stable/instable chords already exist in strings.xml (EN & DE).
+- Let me check the code in `2_2_chords_stable_unstable.js` to find where the feedback messages are being set.
+- Locations where stable/unstable chord feedback messages are set have been identified in the code.
+- Relevant feedback strings for stable/unstable chords already exist in strings.xml (EN & DE).
 - Bug: Feedback message for 2_2 activity shows a mix of languages (e.g., "Incorrect. It was Falsch. Es war ein instabiler Akkord.."). Need to use placeholder-based feedback strings for proper localization.
 - Bug: Browser language detection does not default to German for first-time users; should set language to de if browser prefers German and no prior language is stored.
 - In progress: Searching for hardcoded UI strings (welcome message, name prompt, reset activity) and preparing to add them to strings.xml and update code references.
@@ -33,6 +33,12 @@
 - User requested to also localize "Your progress will be saved automatically" and "Reset Current Activity" (including @/var/www/Musici/src/index.html:L132).
 - The strings for "Your progress will be saved automatically" and "Reset Current Activity" have now been added to both English and German string files.
 - The UI code in index.html now uses the new localized strings for both the progress saved message and the reset current activity button/title.
+- User requested a global rename of "Stable or Unstable" to "stable or unstable" throughout the codebase.
+- String resources and some references have been updated from "instable" to "unstable"; next step is to update filenames and code references.
+- The main JS module file has been copied and updated from `2_2_chords_stable_unstable.js` to `2_2_chords_stable_unstable.js` with internal references changed.
+- Main code imports and function references in `chords.js` have been updated to use `stable_unstable`. Next: check and update any remaining references elsewhere in the codebase.
+- HTML template references in `index.html` have been updated to use the new `stable_unstable` naming convention.
+- Test files referencing `stable_unstable` have been identified for update to `stable_unstable`.
 
 ## Task List
 - [x] Locate Alpine.js `pitches` component definition
@@ -54,7 +60,7 @@
   - [x] Migrate 1_2 feedback messages (English & German) to strings.xml and update code to use the global store for localization; ensure no message on success
     - [x] Add 1_2 feedback messages to strings.xml (EN & DE)
     - [x] Update checkMatch to use $store.strings for feedback
-- [x] Refactor 2_2 stable/instable chord feedback messages to use strings.xml for translation with correct localization and placeholders
+- [x] Refactor 2_2 stable/unstable chord feedback messages to use strings.xml for translation with correct localization and placeholders
 - [x] Add/fix placeholder-based feedback strings (e.g., feedback_correct_chord, feedback_incorrect_chord, stable_chord, unstable_chord) in strings.xml (EN & DE)
 - [ ] Fix browser language detection to default to German for new users
 - [ ] Localize remaining English UI strings (welcome message, name prompt, reset activity) in strings.xml (EN & DE) and update code to use them
@@ -63,6 +69,11 @@
   - [x] Add "Your progress will be saved automatically" and "Reset Current Activity" to strings.xml (EN & DE)
   - [x] Update index.html and code to use $store.strings for these new UI strings
 - [x] Search for and remove remnants of the old mascot system
+- [x] Update string resources and UI to use "stable or unstable" instead of "Stable or Unstable"
+- [x] Copy and update main JS module file from stable_unstable to stable_unstable
+- [x] Update all code references and imports to use stable_unstable instead of stable_unstable
+- [x] Update HTML template references in index.html to use stable_unstable
+- [ ] Update test files to use stable_unstable naming
 
 ## Current Goal
-Add missing UI strings to strings.xml and update code
+Update test files to use stable_unstable naming

@@ -147,8 +147,8 @@ test.describe('Lalumo Stable/Instable Chords Activity', () => {
     // Take a screenshot after menu update
     await page.screenshot({ path: 'test-results/after-chords-click.png' });
     
-    // Now find and click the Stable or Instable button
-    console.log('Looking for Stable or Instable button...');
+    // Now find and click the Stable or Unstable button
+    console.log('Looking for Stable or Unstable button...');
     const stableInstableButton = page.locator('button#nav_2_2').first();
     await expect(stableInstableButton).toBeVisible({ timeout: 15000 });
     console.log('Found Stable/Instable button with ID nav_2_2');
@@ -157,18 +157,18 @@ test.describe('Lalumo Stable/Instable Chords Activity', () => {
     await page.screenshot({ path: 'test-results/before-stable-instable-click.png' });
     
     // Click the button
-    console.log('Clicking Stable or Instable button...');
+    console.log('Clicking Stable or Unstable button...');
     await stableInstableButton.click({ timeout: 10000 });
-    console.log('Clicked Stable or Instable button');
+    console.log('Clicked Stable or Unstable button');
     
     // Wait for the activity to load
     console.log('Waiting for activity to load...');
     await page.waitForLoadState('networkidle');
     await page.waitForTimeout(2000); // Additional wait for the activity to initialize
     
-    // Check for the activity container - it should have ID 2_2_chords_stable_instable and be visible
+    // Check for the activity container - it should have ID 2_2_chords_stable_unstable and be visible
     console.log('Looking for activity container...');
-    const activityContainer = page.locator('div#2_2_chords_stable_instable').first();
+    const activityContainer = page.locator('div#2_2_chords_stable_unstable').first();
     await expect(activityContainer).toBeVisible({ timeout: 15000 });
     console.log('Activity container is visible');
     
@@ -179,7 +179,7 @@ test.describe('Lalumo Stable/Instable Chords Activity', () => {
     const playButtonSelectors = [
       'button.play-button',
       '//button[contains(@class, "play-button")]',
-      '#2_2_chords_stable_instable .play-button',
+      '#2_2_chords_stable_unstable .play-button',
       'button:has-text("Play")',
       'button:has-text("▶️")'
     ];
@@ -281,7 +281,7 @@ test.describe('Lalumo Stable/Instable Chords Activity', () => {
     
     // Set up a mock progress value in the middle of a level (e.g., 12)
     await page.evaluate(() => {
-      const progress = { '2_2_chords_stable_instable': 12 };
+      const progress = { '2_2_chords_stable_unstable': 12 };
       localStorage.setItem('lalumo_chords_progress', JSON.stringify(progress));
       // The component should pick up the progress from localStorage
     });
@@ -293,7 +293,7 @@ test.describe('Lalumo Stable/Instable Chords Activity', () => {
     // Get the current progress with a default value
     const initialProgress = await page.evaluate(() => {
       const progress = JSON.parse(localStorage.getItem('lalumo_chords_progress') || '{}');
-      return progress['2_2_chords_stable_instable'] || 0;
+      return progress['2_2_chords_stable_unstable'] || 0;
     });
     
     console.log(`Initial progress set to: ${initialProgress}`);
@@ -325,7 +325,7 @@ test.describe('Lalumo Stable/Instable Chords Activity', () => {
     try {
       resetProgress = await page.evaluate(() => {
         const progress = JSON.parse(localStorage.getItem('lalumo_chords_progress') || '{}');
-        return progress['2_2_chords_stable_instable'] || 0;
+        return progress['2_2_chords_stable_unstable'] || 0;
       });
     } catch (error) {
       console.log('[Error] while checking reset progress:', error.message);

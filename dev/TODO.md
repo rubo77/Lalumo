@@ -17,7 +17,7 @@ TODO
    - add a free play mode where the user can play any chord by clicking on the color
     
 
-  - **2_2_chords_stable_instable**:
+  - **2_2_chords_stable_unstable**:
    - es spielt noch kein sound
     - Aktiviere Audio-Wiedergabe für Akkordprogressionen
     - schlage landschaften vor
@@ -191,11 +191,12 @@ reset-button:
 - Und dann im Game Modus alle drei instrumente zusammen
 - eigene melodien hochladen
 
+- statt "reset current activity" soll dort "
 
 1_5 memory game:
   - # bereit zur veröffentlichung
 
-2_2_chords_stable_instable:
+2_2_chords_stable_unstable:
   - es darf nicht 2x hintereinander haargenauderselbe akkord kommen
   - # bereit zur veröffentlichung
  

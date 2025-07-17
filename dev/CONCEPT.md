@@ -25,7 +25,7 @@ The app playfully teaches preschool children a basic understanding of music – 
 - disabled: Chords Kapitel (2_chords):
 
  - Chord Color Matching: (2_1_chords_color-matching)
- - Stable Or Instable: (2_2_chords_stable_instable)
+ - Stable or Unstable: (2_2_chords_stable_unstable)
  - Chord Building: (2_3_chords_chord-building)
  - Missing Note: (2_4_chords_missing-note)
  - Character Matching: (2_5_chords_characters)
@@ -144,7 +144,7 @@ Simple triads are translated into colors, moods, or figures. Children can guess,
   Major chords are represented by bright colors, minor chords by cooler or darker colors. Children listen to a chord and select which color best matches what they hear, developing emotional understanding of harmony.
     - sound geht noch nicht
 
-[ ] **Stable or Instable Chords: (2_2_chords_stable_instable)**
+[ ] **Stable or Unstable Chords: (2_2_chords_stable_unstable)**
   This activity helps children develop their ear for consonance and dissonance by distinguishing between stable (consonant) and unstable (dissonant) chords. 
   
   **Activity Flow:**

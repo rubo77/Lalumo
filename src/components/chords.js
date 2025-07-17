@@ -36,14 +36,14 @@ import {
   checkColorAnswer
 } from './2_chords/2_1_chord_color_matching.js';
 
-// 2_2 Chord Stable Or Instable Module
+// 2_2 Chord Stable or Unstable Module
 import {
-  playStableInstableChord, 
-  checkStableInstableMatch,
-  updateStableInstableBackground,
-  reset_2_2_StableInstable_Progress,
+  playStableUnstableChord, 
+  checkStableUnstableMatch,
+  updateStableUnstableBackground,
+  reset_2_2_StableUnstable_Progress,
   reset2_2ToFreePlayMode
-} from './2_chords/2_2_chords_stable_instable.js';
+} from './2_chords/2_2_chords_stable_unstable.js';
 
 // 2_3 Chord Building Module
 import { testChordBuildingModuleImport } from './2_chords/2_3_chord_building.js';
@@ -195,7 +195,7 @@ export function chords() {
           
           // Ensure all activity progress fields exist
           if (!this.progress['2_1_chords_color-matching']) this.progress['2_1_chords_color-matching'] = 0;
-          if (!this.progress['2_2_chords_stable_instable']) this.progress['2_2_chords_stable_instable'] = 0;
+          if (!this.progress['2_2_chords_stable_unstable']) this.progress['2_2_chords_stable_unstable'] = 0;
           if (!this.progress['2_3_chords_chord-building']) this.progress['2_3_chords_chord-building'] = 0;
           if (!this.progress['2_4_chords_missing-note']) this.progress['2_4_chords_missing-note'] = 0;
           if (!this.progress['2_5_chords_characters']) this.progress['2_5_chords_characters'] = 0;
@@ -210,7 +210,7 @@ export function chords() {
           // Initialize with empty progress object
           this.progress = {
             '2_1_chords_color-matching': 0,
-            '2_2_chords_stable_instable': 0,
+            '2_2_chords_stable_unstable': 0,
             '2_3_chords_chord-building': 0,
             '2_4_chords_missing-note': 0,
             '2_5_chords_characters': 0,
@@ -589,9 +589,9 @@ export function chords() {
         this.startColorMatching();
         debugLog('CHORDS_2_1_DEBUG', `After startColorMatching: currentChordType=${this.currentChordType}`);
         debugLog('CHORDS', 'Initialized color matching activity with a new chord');
-      } else if (mode === '2_2_chords_stable_instable') {
-        // Initialize Stable Or Instable activity
-        debugLog('CHORDS_2_2_DEBUG', 'Initializing Stable Or Instable activity');
+      } else if (mode === '2_2_chords_stable_unstable') {
+        // Initialize Stable or Unstable activity
+        debugLog('CHORDS_2_2_DEBUG', 'Initializing Stable or Unstable activity');
         this.currentStableInstableChord = null;
         this.showStableInstableFeedback = false;
         this.stableInstableFeedback = '';
@@ -604,16 +604,16 @@ export function chords() {
         const savedProgress = localStorage.getItem('lalumo_chords_progress');
         if (savedProgress) {
           const progressData = JSON.parse(savedProgress);
-          if (progressData && typeof progressData['2_2_chords_stable_instable'] !== 'undefined') {
+          if (progressData && typeof progressData['2_2_chords_stable_unstable'] !== 'undefined') {
             // Use the saved progress from localStorage
-            this.progress['2_2_chords_stable_instable'] = progressData['2_2_chords_stable_instable'];
-            debugLog('CHORDS_2_2_DEBUG', `Loaded progress from localStorage: ${this.progress['2_2_chords_stable_instable']}`);
+            this.progress['2_2_chords_stable_unstable'] = progressData['2_2_chords_stable_unstable'];
+            debugLog('CHORDS_2_2_DEBUG', `Loaded progress from localStorage: ${this.progress['2_2_chords_stable_unstable']}`);
           }
         }
         
         // If still undefined, initialize to 0
-        if (typeof this.progress['2_2_chords_stable_instable'] === 'undefined') {
-          this.progress['2_2_chords_stable_instable'] = 0;
+        if (typeof this.progress['2_2_chords_stable_unstable'] === 'undefined') {
+          this.progress['2_2_chords_stable_unstable'] = 0;
           debugLog('CHORDS_2_2_DEBUG', 'Initialized progress to 0');
         }
         
@@ -623,7 +623,7 @@ export function chords() {
         debugLog('CHORDS_2_2_DEBUG', 'Reset to free play mode when entering from navigation');
         
         // Update the background based on current progress
-        updateStableInstableBackground(this);
+        updateStableUnstableBackground(this);
       } else if (mode === '2_3_chords_chord-building') {
         // Initialisierung für Chord Building
         debugLog('CHORDS', 'Initializing chord building activity');
@@ -668,15 +668,15 @@ export function chords() {
       Alpine.store('feedback').feedbackMessage = '';
       Alpine.store('feedback').showFeedback = false;
       
-      // Reset UI state for 2_2_chords_stable_instable activity, but keep the progress
-      if (this.mode === '2_2_chords_stable_instable') {
+      // Reset UI state for 2_2_chords_stable_unstable activity, but keep the progress
+      if (this.mode === '2_2_chords_stable_unstable') {
         // Only reset UI state, not the progress
-        this.showStableInstableFeedback = false;
-        this.stableInstableFeedback = '';
-        this.stableInstableCorrect = false;
+        this.showStableUnstableFeedback = false;
+        this.stableUnstableFeedback = '';
+        this.stableUnstableCorrect = false;
         
         // Update background based on current progress
-        updateStableInstableBackground(this);
+        updateStableUnstableBackground(this);
       }
       // Reset for 2_5_chords_characters activity
       else if (this.mode === '2_5_chords_color_matching') {
@@ -819,48 +819,48 @@ export function chords() {
     },
     
     /** *************************************************
-     * ******** 2_2_chord_chords_stable_instable Activity Methods ********
+     * ******** 2_2_chord_chords_stable_unstable Activity Methods ********
      * *************************************************** */
     
     /**
      * Check if the user's answer matches the current chord type
      * 
      * @param {boolean} isStable - Whether the user thinks the chord is stable
-     * @activity 2_2_chord_chords_stable_instable
+     * @activity 2_2_chord_chords_stable_unstable
      */
-    checkStableInstableAnswer(isStable) {
+    checkStableUnstableAnswer(isStable) {
       // Make sure we have a current chord to check against
-      if (!this.currentStableInstableChord) {
-        this.showStableInstableFeedback = true;
-        this.stableInstableFeedback = 'Please play a chord first';
-        this.stableInstableCorrect = false;
+      if (!this.currentStableUnstableChord) {
+        this.showStableUnstableFeedback = true;
+        this.stableUnstableFeedback = 'Please play a chord first';
+        this.stableUnstableCorrect = false;
         return;
       }
       
       try {
         // Check if the answer is correct
-        const isCorrect = checkStableInstableMatch(isStable, this.currentStableInstableChord);
+        const isCorrect = checkStableUnstableMatch(isStable, this.currentStableUnstableChord);
         
         // Update feedback
-        this.showStableInstableFeedback = true;
-        this.stableInstableCorrect = isCorrect;
+        this.showStableUnstableFeedback = true;
+        this.stableUnstableCorrect = isCorrect;
         
         // Update progress and get feedback message
-        const feedback = updateStableInstableBackground(this, isCorrect);
-        this.stableInstableFeedback = feedback;
+        const feedback = updateStableUnstableBackground(this, isCorrect);
+        this.stableUnstableFeedback = feedback;
         
         // Log the result
-        debugLog('CHORDS_2_2', `User selected ${isStable ? 'stable' : 'instable'}, ` +
-          `correct: ${isCorrect ? 'yes' : 'no'}, progress: ${this.progress['2_2_chords_stable_instable']}`);
+        debugLog('CHORDS_2_2', `User selected ${isStable ? 'stable' : 'unstable'}, ` +
+          `correct: ${isCorrect ? 'yes' : 'no'}, progress: ${this.progress['2_2_chords_stable_unstable']}`);
         
         // Play the chord again for reference
-        playStableInstableChord(this);
+        playStableUnstableChord(this);
         
       } catch (error) {
-        console.error('Error checking stable/instable answer:', error);
-        this.showStableInstableFeedback = true;
-        this.stableInstableFeedback = 'Error checking answer. Please try again.';
-        this.stableInstableCorrect = false;
+        console.error('Error checking stable/unstable answer:', error);
+        this.showStableUnstableFeedback = true;
+        this.stableUnstableFeedback = 'Error checking answer. Please try again.';
+        this.stableUnstableCorrect = false;
       }
     },
     

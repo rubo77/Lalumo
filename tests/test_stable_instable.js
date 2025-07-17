@@ -1,5 +1,5 @@
 /**
- * Test script for 2_2_chords_stable_instable.js
+ * Test script for 2_2_chords_stable_unstable.js
  * Run this in the browser console to test the stable/instable chord functionality
  */
 
@@ -9,7 +9,7 @@ import {
   generateInstableChord, 
   checkStableInstableMatch,
   playStableInstableChord
-} from '../src/components/2_chords/2_2_chords_stable_instable.js';
+} from '../src/components/2_chords/2_2_chords_stable_unstable.js';
 
 // Test data
 const testCases = [
