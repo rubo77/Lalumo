@@ -9,6 +9,7 @@ import * as Tone from 'tone';
 // Import shared utilities
 import { NOTE_NAMES, midiToNoteName } from './shared/music-utils.js';
 import { getChordButtons, update2_5ButtonsVisibility } from './2_chords/2_5_chord_characters.js';
+import { debugLog } from '../utils/debug';
 
 // Export specific functions from each module
 // Common Module
@@ -139,7 +140,7 @@ export function chords() {
         const progressData = localStorage.getItem('lalumo_chords_progress');
         this.progress = progressData ? JSON.parse(progressData) : {};
       } catch (e) {
-        console.error('Error reading progress:', e);
+        debugLog(['CHORDS', 'ERROR'], `Error reading progress: ${e.message || e}`);
         this.progress = {};
       }
       
@@ -284,7 +285,7 @@ export function chords() {
         // Set audioContext reference for legacy compatibility
         this.audioContext = true; // Just a flag since we don't need the actual context anymore
       } catch (error) {
-        console.error('Failed to initialize audio for chords:', error);
+        debugLog(['CHORDS', 'ERROR'], `Failed to initialize audio for chords: ${error.message || error}`);
       }
     },
     
@@ -412,7 +413,7 @@ export function chords() {
         
         debugLog('CHORDS_2_1_DEBUG', `Playing ${chordType} chord with root ${rootNote}`);
       } catch (error) {
-        console.error('Error preparing chord playback:', error);
+        debugLog(['CHORDS', 'ERROR'], `Error preparing chord playback: ${error.message || error}`);
         return;
       }
       
@@ -429,7 +430,7 @@ export function chords() {
         // Get root note frequency and validate
         const rootFreq = this.baseNotes[rootNote];
         if (!rootFreq) {
-          console.error(`Unknown root note: ${rootNote}`);
+          debugLog(['CHORDS', 'ERROR'], `Unknown root note: ${rootNote}`);
           return;
         }
         
@@ -439,7 +440,7 @@ export function chords() {
         // Parse the root note to get the letter and octave
         const rootMatch = rootNote.match(/([A-G][#b]?)([0-9])/);
         if (!rootMatch) {
-          console.error(`Cannot parse root note format: ${rootNote}`);
+          debugLog(['CHORDS', 'ERROR'], `Cannot parse root note format: ${rootNote}`);
           return;
         }
         
@@ -458,7 +459,7 @@ export function chords() {
           // Add other equivalents as needed
           
           if (rootIndex === -1) {
-            console.error(`Cannot find note ${rootLetter} in chromatic scale`);
+            debugLog(['CHORDS', 'ERROR'], `Cannot find note ${rootLetter} in chromatic scale`);
             return;
           }
         }
@@ -489,7 +490,7 @@ export function chords() {
         this.isPlaying = true;
         debugLog('CHORDS_2_1_DEBUG', `Playing ${chord.name} chord on ${rootNote} using central audio engine`);
       } catch (error) {
-        console.error('Error playing chord:', error);
+        debugLog(['CHORDS', 'ERROR'], `Error playing chord: ${error.message || error}`);
       }
     },
     
@@ -525,7 +526,7 @@ export function chords() {
         this.activeChord.push(id);
         return id;
       } catch (error) {
-        console.error('Error playing note:', error);
+        debugLog(['CHORDS', 'ERROR'], `Error playing note: ${error.message || error}`);
         return null;
       }
     },
@@ -544,7 +545,7 @@ export function chords() {
         
         debugLog('CHORDS', 'Stopped all sounds using central audio engine');
       } catch (error) {
-        console.error('Error stopping sounds:', error);
+        debugLog(['CHORDS', 'ERROR'], `Error stopping sounds: ${error.message || error}`);
       }
     },
     
@@ -691,7 +692,7 @@ export function chords() {
           // Update button visibility
           update2_5ButtonsVisibility(this);
           
-          console.log('CHORDS: Reset progress for 2_5_chords_characters activity');
+          debugLog('CHORDS', 'Reset progress for 2_5_chords_characters activity');
         }
       }
     },
@@ -711,7 +712,7 @@ export function chords() {
       const currentLevel = Math.floor(currentProgress / this.LEVEL_STEP);
       const newProgress = currentLevel * this.LEVEL_STEP;
       
-      console.log(`CHORDS: Resetting progress from ${currentProgress} to ${newProgress} (level ${currentLevel})`);
+      debugLog('CHORDS', `Resetting progress from ${currentProgress} to ${newProgress} (level ${currentLevel})`);
       
       // Update progress
       this.progress['2_5_chords_characters'] = newProgress;
@@ -771,7 +772,7 @@ export function chords() {
       // No need to inject styles here anymore as they're loaded from the CSS file
       
       
-      console.log('CHORDS: Set up full-height containers for chord activities');
+      debugLog('CHORDS', 'Set up full-height containers for chord activities');
     },
     
     /**
@@ -855,7 +856,7 @@ export function chords() {
         playStableUnstableChord(this);
         
       } catch (error) {
-        console.error('Error checking stable/unstable answer:', error);
+        debugLog(['CHORDS', 'ERROR'], `Error checking stable/unstable answer: ${error.message || error}`);
         this.showStableUnstableFeedback = true;
         this.stableUnstableFeedback = 'Error checking answer. Please try again.';
         this.stableUnstableCorrect = false;
@@ -1555,7 +1556,7 @@ export function chords() {
         
         // Play error sound feedback
         audioEngine.playNote('try_again');
-        console.log('AUDIO: Playing try_again feedback sound for incorrect chord match');
+        debugLog('AUDIO', 'Playing try_again feedback sound for incorrect chord match');
         
         // Reset progress to the beginning of the current level
         this.resetProgressToCurrentLevel();
