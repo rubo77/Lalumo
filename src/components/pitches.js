@@ -2540,45 +2540,52 @@ export function pitches() {
       this.clearDrawing();
       
       // Add event listeners to handle drawing end when pointer leaves canvas
+      // Only add these in free play mode, not in challenge mode
       const canvas = document.querySelector('.drawing-canvas');
       if (canvas) {
-        // Handle pointer up events on the window to catch cases where pointer is released outside canvas
-        const handlePointerUp = (e) => {
-          if (this.isDrawing) {
-            console.log('Pointer up detected outside canvas, ending drawing');
-            this.endDrawing(e);
-          }
-        };
-        
-        // Handle pointer leave events on the canvas
-        const handlePointerLeave = (e) => {
-          if (this.isDrawing) {
-            console.log('Pointer left canvas while drawing, ending drawing');
-            this.endDrawing(e);
-          }
-        };
-        
-        // Remove any existing event listeners first to prevent duplicates
-        window.removeEventListener('mouseup', handlePointerUp);
-        window.removeEventListener('touchend', handlePointerUp);
-        window.removeEventListener('pointerup', handlePointerUp);
-        
-        // Add the new event listeners
-        window.addEventListener('mouseup', handlePointerUp);
-        window.addEventListener('touchend', handlePointerUp, { passive: true });
-        window.addEventListener('pointerup', handlePointerUp);
-        
-        // Add pointer leave event to the canvas
-        canvas.removeEventListener('mouseleave', handlePointerLeave);
-        canvas.removeEventListener('touchcancel', handlePointerLeave);
-        canvas.removeEventListener('pointerleave', handlePointerLeave);
-        
-        canvas.addEventListener('mouseleave', handlePointerLeave);
-        canvas.addEventListener('touchcancel', handlePointerLeave, { passive: true });
-        canvas.addEventListener('pointerleave', handlePointerLeave);
-        
-        // Store the handlers for cleanup
-        this._drawingEventHandlers = { handlePointerUp, handlePointerLeave };
+        // Only set up these event listeners in free play mode
+        if (!this.melodyChallengeMode) {
+          // Handle pointer up events on the window to catch cases where pointer is released outside canvas
+          const handlePointerUp = (e) => {
+            if (this.isDrawing) {
+              console.log('Pointer up detected outside canvas, ending drawing');
+              this.endDrawing(e);
+            }
+          };
+          
+          // Handle pointer leave events on the canvas
+          const handlePointerLeave = (e) => {
+            if (this.isDrawing) {
+              console.log('Pointer left canvas while drawing, ending drawing');
+              this.endDrawing(e);
+            }
+          };
+          
+          // Remove any existing event listeners first to prevent duplicates
+          window.removeEventListener('mouseup', handlePointerUp);
+          window.removeEventListener('touchend', handlePointerUp);
+          window.removeEventListener('pointerup', handlePointerUp);
+          
+          // Add the new event listeners
+          window.addEventListener('mouseup', handlePointerUp);
+          window.addEventListener('touchend', handlePointerUp, { passive: true });
+          window.addEventListener('pointerup', handlePointerUp);
+          
+          // Add pointer leave event to the canvas
+          canvas.removeEventListener('mouseleave', handlePointerLeave);
+          canvas.removeEventListener('touchcancel', handlePointerLeave);
+          canvas.removeEventListener('pointerleave', handlePointerLeave);
+          
+          canvas.addEventListener('mouseleave', handlePointerLeave);
+          canvas.addEventListener('touchcancel', handlePointerLeave, { passive: true });
+          canvas.addEventListener('pointerleave', handlePointerLeave);
+          
+          // Store the handlers for cleanup
+          this._drawingEventHandlers = { handlePointerUp, handlePointerLeave };
+        } else {
+          // In challenge mode, ensure any existing handlers are cleaned up
+          this.cleanupDrawingEventListeners();
+        }
       }
       
       // Create challenge toggle if not already present
