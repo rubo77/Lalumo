@@ -1291,7 +1291,7 @@ section h2 {
 */
 
 .play-button_2_2, .replay-button_2_2 {
-  opacity: 0.1;
+  opacity: 0;
   width: 100%;
   height: min(48vw, 320px);
   background-color: #fff;
@@ -1307,19 +1307,10 @@ section h2 {
 }
 
 .play-button_2_2:hover, .replay-button_2_2:hover {
-  opacity: 0.5;
+  opacity: 0.05;
 }
 
 /* Container positioning */
-.play-buttons-container-2_2 {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 50vh; /* Match button height */
-  z-index: 100;
-}
-
 .button_2_2_grid {
   display: flex;
   justify-content: space-around;

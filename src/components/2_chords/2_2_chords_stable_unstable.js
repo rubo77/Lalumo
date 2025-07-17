@@ -330,9 +330,9 @@ export function playStableUnstableChord(component, isReplay = false) {
       } while (true);
     }
     
-    // Only apply new transposition if we're not in an active attempt and this is a new chord
-    // or if we don't have a valid chord state
-    if ((!window.currentAttemptInProgress && !shouldReplay) || !canReplay) {
+    // Apply new transposition if we're not in an active attempt or if we don't have a valid chord state
+    // or if this is a new chord after a correct answer
+    if (!window.currentAttemptInProgress || !canReplay) {
       try {
         // Apply random transposition (-6 to +6 semitones)
         // Higher levels get more extreme transpositions
@@ -609,10 +609,18 @@ export function checkStableUnstableMatch(selectedType, component) {
       // Reset the attempt flag since we got it right
       window.currentAttemptInProgress = false;
       
+      // Clear any existing timeout to prevent multiple auto-plays
+      if (autoPlayTimeout) {
+        clearTimeout(autoPlayTimeout);
+      }
+      
       // Schedule next chord after 2 seconds
       autoPlayTimeout = setTimeout(() => {
         // Reset transposition for a new chord
         currentTransposeSemitones = 0;
+        currentBaseChord = []; // Force a new chord to be generated
+        currentChordType = null; // Reset chord type to ensure a new one is generated
+        
         // Trigger a new chord with a small delay to ensure audio context is ready
         setTimeout(() => {
           playStableUnstableChord(component);
