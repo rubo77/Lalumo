@@ -2,6 +2,8 @@
 // 1. Left arrow Home buttons that respect menu lock state
 // 2. Debug helper functions
 
+import { debugLog } from '../utils/debug';
+
 // Check for menu lock and update Home button visibility
 function updateHomeButtonsVisibility() {
   // Try to get the Alpine.js app component first
@@ -56,11 +58,11 @@ function updateHomeButtonsVisibility() {
               const pitchesEl = document.querySelector('[x-data="pitches()"]');
               if (pitchesEl && pitchesEl.__x) {
                 pitchesEl.__x.setMode('main');
-                console.log('Back button clicked - setMode called directly');
+                debugLog('UI', 'Back button clicked - setMode called directly');
               }
             }
           } catch (err) {
-            console.error('Error handling home button click:', err);
+            debugLog(['UI', 'ERROR'], `Error handling home button click: ${err.message || err}`);
           }
         });
         button._hasClickHandler = true;
