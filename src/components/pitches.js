@@ -258,7 +258,7 @@ export function pitches() {
 	        await audioEngine.initialize();
 	        debugLog("PITCHES_INIT", "Audio engine successfully initialized");
 	      } catch (error) {
-	        console.error("PITCHES_INIT: Error initializing audio engine", error);
+	        debugLog(['PITCHES_INIT', 'ERROR'], `Error initializing audio engine: ${error.message || error}`);
 	      }
     },
     
@@ -270,10 +270,10 @@ export function pitches() {
       init() {
         
         // Register this component globally immediately
-        console.log("PITCHES_INIT: Registering pitches component globally");
+        debugLog('PITCHES_INIT', 'Registering pitches component globally');
         window.pitchesComponent = this;
-        console.log("PITCHES_INIT: Registration completed. window.pitchesComponent is now:", !!window.pitchesComponent);
-        console.log("PITCHES_INIT: Component mode after registration:", this.mode);
+        debugLog('PITCHES_INIT', `Registration completed. window.pitchesComponent is now: ${!!window.pitchesComponent}`);
+        debugLog('PITCHES_INIT', `Component mode after registration: ${this.mode}`);
         
         // Initialize audio engine asynchronously
         this.initializeAudioEngine();

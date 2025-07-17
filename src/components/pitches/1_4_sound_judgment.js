@@ -7,7 +7,7 @@ import { debugLog } from '../../utils/debug.js';
 
 // Export a test function for import tests
 export function testSoundJudgmentModuleImport() {
-  console.log('Sound Judgment module successfully imported');
+  debugLog('SOUND_JUDGMENT', 'Sound Judgment module successfully imported');
   return true;
 }
 
@@ -16,7 +16,7 @@ export function testSoundJudgmentModuleImport() {
  * @param {Object} component - The Alpine.js component
  */
 export function reset_1_4_SoundJudgment_Progress(component) {
-  console.log('RESET_SOUND_JUDGMENT: Starting reset process', {
+  debugLog('RESET_SOUND_JUDGMENT', 'Starting reset process', {
     currentLevel: component.soundJudgmentLevel,
     correctStreak: component.soundJudgmentCorrectStreak
   });
@@ -41,7 +41,7 @@ export function reset_1_4_SoundJudgment_Progress(component) {
     component.update_progress_display();
   }
   
-  console.log('RESET_SOUND_JUDGMENT: Reset completed successfully');
+  debugLog('RESET_SOUND_JUDGMENT', 'Reset completed successfully');
 }
 
 // Make globally available for diagnosis
