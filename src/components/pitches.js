@@ -1520,50 +1520,10 @@ export function pitches() {
       
       // Only show feedback for incorrect answers
       if (!isCorrect) {
-        // TODO: migrate to strings.xml
-        // Get the current language from the store or default to English
-        const currentLang = this.preferredLanguage === 'german' ? 'de' : 'en';
-        
-        // Determine the correct pattern direction for the feedback message
-        let message = '';
-        
-        if (currentLang === 'de') {
-          // German messages
-          switch(this.correctAnswer) {
-            case 'up':
-              message = 'Hör mal genauer hin - die Melodie ging nach oben';
-              break;
-            case 'down':
-              message = 'Hör mal genauer hin - die Melodie ging nach unten';
-              break;
-            case 'wave':
-              message = 'Hör mal genauer hin - die Melodie war wellig';
-              break;
-            case 'jumpy':
-              message = 'Hör mal genauer hin - die Melodie war hüpfend';
-              break;
-            default:
-              message = 'Hör mal genauer hin';
-          }
-        } else {
-          // English messages
-          switch(this.correctAnswer) {
-            case 'up':
-              message = 'Listen more closely - the melody was going up';
-              break;
-            case 'down':
-              message = 'Listen more closely - the melody was going down';
-              break;
-            case 'wave':
-              message = 'Listen more closely - the melody was wavy';
-              break;
-            case 'jumpy':
-              message = 'Listen more closely - the melody was jumpy';
-              break;
-            default:
-              message = 'Listen more closely';
-          }
-        }
+        // Get the localized feedback message based on the correct answer
+        const messageKey = `feedback_1_2_${this.correctAnswer}`;
+        const strings = Alpine.store('strings');
+        const message = strings[messageKey] || strings['feedback_1_2_generic'];
         
         // Show the feedback message
         Alpine.store('feedback').showMessage(message);

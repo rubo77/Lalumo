@@ -321,4 +321,11 @@
     <string name="flute">Flute</string>
     <string name="doublebass">Double Bass</string>
     <string name="start_game">Start Game</string>
+    
+    <!-- 1_2 Activity Feedback Messages (English) -->
+    <string name="feedback_1_2_generic">Listen more closely</string>
+    <string name="feedback_1_2_up">Listen more closely - the melody was going up</string>
+    <string name="feedback_1_2_down">Listen more closely - the melody was going down</string>
+    <string name="feedback_1_2_wave">Listen more closely - the melody was wavy</string>
+    <string name="feedback_1_2_jumpy">Listen more closely - the melody was jumpy</string>
 </resources>

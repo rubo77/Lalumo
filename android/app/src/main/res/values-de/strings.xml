@@ -322,4 +322,11 @@
     <string name="flute">Flöte</string>
     <string name="doublebass">Kontrabass</string>
     <string name="start_game">Spiel starten</string>
+    
+    <!-- 1_2 Activity Feedback Messages (German) -->
+    <string name="feedback_1_2_generic">Hör mal genauer hin</string>
+    <string name="feedback_1_2_up">Hör mal genauer hin - die Melodie ging nach oben</string>
+    <string name="feedback_1_2_down">Hör mal genauer hin - die Melodie ging nach unten</string>
+    <string name="feedback_1_2_wave">Hör mal genauer hin - die Melodie war wellig</string>
+    <string name="feedback_1_2_jumpy">Hör mal genauer hin - die Melodie war hüpfend</string>
 </resources>

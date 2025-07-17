@@ -123,14 +123,10 @@
   <main id="app" x-data="app()" x-init="init(); initLazyLoading(); updateEnvironmentClasses();" @click="unlockAudio()" @touchstart="unlockAudio()" class="container">
     
     <!-- Username Prompt Modal -->
-    <div class="modal-overlay" x-show="showUsernamePrompt" x-transition
-    style="display: none;">
+    <div class="modal-overlay" x-show="showUsernamePrompt" x-transition style="display: none;">
       <div class="modal-content" @click.outside="setUsername()">
         <h3 x-text="$store.strings?.welcome_message || 'Welcome to Lalumo!'"></h3>
-        <div class="mascot-welcome">
-          <img src="images/logo_bird_sings.jpg" alt="Lalumo Mascot" class="mascot" width="0" />
-          <p x-text="$store.strings?.create_name_message || 'Let\'s create a special name just for you!'"></p>
-        </div>
+        <p x-text="$store.strings?.create_name_message || 'Let\'s create a special name just for you!'"></p>
         <button class="primary-button" @click="setUsername()" x-text="$store.strings?.button_generate_name || 'Generate Random Name'"></button>
         <div class="modal-footer">
           <p class="note">Your progress will be saved automatically</p>

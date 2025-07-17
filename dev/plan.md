@@ -17,8 +17,12 @@
 - In 1_2 activity, `checkMatch` sets `this.feedback = ''` for both correct and incorrect answers, leading to empty feedback messages on false button presses. This needs to be updated to provide a meaningful message.
 - User clarified: On success in 1_2, show no feedback message; on incorrect, show a context-specific message ("No, the melody was going up/down/wave/jumpy somehow") in both English and German.
 - German translations for feedback messages are required and must be implemented alongside English.
+- Feedback messages for 1_2 activity are already present in both English and German in the code, but are currently hardcoded and need to be migrated to strings.xml for proper localization.
+- 1_2 feedback messages (English & German) have been added to strings.xml and the code now uses the global store for localization.
+- Next: Migrate 1_2 feedback messages in checkMatch to use strings.xml/global store.
 - For 2_2 stable/instable chords, feedback messages should use strings.xml for translation, using "unstable chord" (EN) and "instabiler Akkord" (DE); debug logs should remain unchanged.
 - `showMascotMessage` has been moved to a global utility (src/components/shared/feedback.js) and all calls in chords and pitches components now use the global function. The global import in index.js has been updated.
+- Searching for and cleaning up remnants of the old mascot system is complete.
 
 ## Task List
 - [x] Locate Alpine.js `pitches` component definition
@@ -36,9 +40,12 @@
 - [x] Move showMascotMessage from utils/feedback.js to components/shared/feedback.js and update global import
 - [ ] Optionally rename showMascotMessage in pitches.js for clarity
 - [ ] Document the unified feedback refactor
-- [ ] Implement context-specific feedback messages for incorrect answers in 1_2 (English & German); ensure no message on success
-  - [ ] Implement and test German translations for 1_2 feedback messages
+- [x] Implement context-specific feedback messages for incorrect answers in 1_2 (English & German); ensure no message on success
+  - [x] Migrate 1_2 feedback messages (English & German) to strings.xml and update code to use the global store for localization; ensure no message on success
+    - [x] Add 1_2 feedback messages to strings.xml (EN & DE)
+    - [x] Update checkMatch to use $store.strings for feedback
 - [ ] Refactor 2_2 stable/instable chord feedback messages to use strings.xml for translation (not in debug logs)
+- [x] Search for and remove remnants of the old mascot system
 
 ## Current Goal
-Implement and test German translations for 1_2 feedback
+Refactor 2_2 chord feedback to use strings.xml
