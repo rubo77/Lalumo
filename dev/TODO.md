@@ -213,7 +213,7 @@ reset-button:
 
 # most important
 
-in android             android:theme="@style/AppTheme.NoActionBarLaunch"
+in android :            android:theme="@style/AppTheme.NoActionBarLaunch"
  shows:
     android:android:background = @drawable/splash
 
@@ -221,3 +221,5 @@ in android             android:theme="@style/AppTheme.NoActionBarLaunch"
 480×320 px (480×320 dp @ mdpi)    android:android:windowContentOverlay = @null
 
 which is a wrong ic_launcher icon
+
+on older android versions i see this wrong launcher icon on game start

@@ -129,20 +129,22 @@ if ($method === 'POST') { // aus _REQUEST
         // Code-Format prüfen (ohne Bindestriche für Vergleich)
         $code = str_replace('-', '', $code);
         
-        // Prüfe, ob der Benutzer versucht, seinen eigenen Code einzulösen
-        $stmtOwn = $db->prepare('SELECT referral_code FROM users WHERE username = :username');
-        $stmtOwn->bindValue(':username', $username, SQLITE3_TEXT);
-        $resultOwn = $stmtOwn->execute();
-        $userRow = $resultOwn->fetchArray(SQLITE3_ASSOC);
+        // Allow users to redeem their own referral codes
         
-        if ($userRow && (str_replace('-', '', $userRow['referral_code']) === $code || $userRow['referral_code'] === $code)) {
-            http_response_code(403); // Forbidden
-            echo json_encode([
-                'success' => false,
-                'error' => 'you_cannot_redeem_your_own_referral_code'
-            ]);
-            exit;
-        }
+        // // Prüfe, ob der Benutzer versucht, seinen eigenen Code einzulösen
+        // $stmtOwn = $db->prepare('SELECT referral_code FROM users WHERE username = :username');
+        // $stmtOwn->bindValue(':username', $username, SQLITE3_TEXT);
+        // $resultOwn = $stmtOwn->execute();
+        // $userRow = $resultOwn->fetchArray(SQLITE3_ASSOC);
+        
+        // if ($userRow && (str_replace('-', '', $userRow['referral_code']) === $code || $userRow['referral_code'] === $code)) {
+        //     http_response_code(403); // Forbidden
+        //     echo json_encode([
+        //         'success' => false,
+        //         'error' => 'you_cannot_redeem_your_own_referral_code'
+        //     ]);
+        //     exit;
+        // }
         
         // Finde den Referrer anhand des Codes
         $stmt = $db->prepare('SELECT id FROM users WHERE referral_code = :code OR referral_code = :formatted_code');
