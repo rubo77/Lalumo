@@ -9,24 +9,26 @@
 }
 
 /* Start Game button */
+
 .start-game-button {
-  background-color: #4CAF50;
-  color: white;
-  border: none;
-  border-radius: 20px;
-  padding: 10px 20px;
-  font-size: 16px;
+  color: transparent;
+  border-radius: 50px;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
   transition: all 0.3s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0);
+  margin-top: 8vw;
+  width: 90%;
+  height: 32vw;
+  background-color: transparent;
+  font-size: 16px;
+  opacity: 0;
+  border: none;
 }
 
 .start-game-button:hover {
-  background-color: #45a049;
+  background-color: transparent;
   transform: translateY(-2px);
+  opacity: 0.5;
   box-shadow: 0 4px 8px rgba(0,0,0,0.2);
 }
 

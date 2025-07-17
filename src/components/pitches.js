@@ -2348,6 +2348,68 @@ export function pitches() {
     },
     
     /**
+     * Redraw the current melody without the active note highlight
+     * @activity 1_3_draw_melody
+     */
+    redrawMelody() {
+      if (!this.ctx) return;
+      
+      const canvas = document.querySelector('.drawing-canvas');
+      if (!canvas) return;
+      
+      // Clear the canvas
+      this.ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      // Draw guide lines in challenge mode
+      this.drawNoteGuideLines();
+      
+      // Redraw the melody line if we have a path
+      if (this.drawPath && this.drawPath.length > 0) {
+        this.ctx.beginPath();
+        this.ctx.moveTo(this.drawPath[0].x, this.drawPath[0].y);
+        
+        for (let i = 1; i < this.drawPath.length; i++) {
+          if (this.drawPath[i]) {
+            this.ctx.lineTo(this.drawPath[i].x, this.drawPath[i].y);
+          }
+        }
+        
+        this.ctx.strokeStyle = '#3498db';
+        this.ctx.lineWidth = 4;
+        this.ctx.stroke();
+      }
+      
+      // Only draw note markers if we have them
+      if (this.currentMelodyPoints && this.currentMelodyPoints.length > 0) {
+        const notes = ['C4', 'D4', 'E4', 'F4', 'G4', 'A4', 'B4', 'C5', 'D5', 'E5', 'F5', 'G5'];
+        
+        this.currentMelodyPoints.forEach((point, index) => {
+          if (!point) return;
+          
+          // Check if this is the active note being played
+          const isActive = this.activeNoteHighlight && 
+                          this.activeNoteHighlight.x === point.x && 
+                          this.activeNoteHighlight.y === point.y;
+          
+          // Draw the note markers - use lighter red for active note
+          this.ctx.fillStyle = isActive ? '#ff6b6b' : '#e74c3c';
+          this.ctx.beginPath();
+          this.ctx.arc(point.x, point.y, 6, 0, Math.PI * 2);
+          this.ctx.fill();
+          
+          // Add note labels
+          const relativeHeight = 1 - (point.y / canvas.height);
+          const noteIndex = Math.min(Math.floor(relativeHeight * notes.length), notes.length - 1);
+          const noteName = notes[noteIndex];
+          
+          this.ctx.fillStyle = '#333';
+          this.ctx.font = '10px Arial';
+          this.ctx.fillText(noteName, point.x + 8, point.y - 8);
+        });
+      }
+    },
+    
+    /**
      * Clear the current drawing and reset the canvas
      * @activity 1_3_draw_melody
      */
@@ -3096,8 +3158,15 @@ export function pitches() {
         });
       }
       
-      // Sequenz mit korrektem Timing abspielen
-      this.playDrawnNoteSequence(sequence.map(note => note.toLowerCase()), 0);
+      // Store the sampled points for redrawing
+      this.currentMelodyPoints = sampledPoints;
+      
+      // Sequenz mit korrektem Timing abspielen und die gesampelten Punkte übergeben
+      this.playDrawnNoteSequence(
+        sequence.map(note => note.toLowerCase()), 
+        0, 
+        sampledPoints
+      );
       
       // Compare with reference melody if in challenge mode
       if (this.melodyChallengeMode && this.referenceSequence) {
@@ -3109,31 +3178,45 @@ export function pitches() {
      * Spielt eine Sequenz von Noten nacheinander ab
      * Verwendet die zentrale Audio-Engine für konsistente Audiowiedergabe auf allen Plattformen
      */
-    playDrawnNoteSequence(notes, index = 0) {
-      if (index >= notes.length) return;
+    playDrawnNoteSequence(notes, index = 0, sampledPoints = null) {
+      if (index >= notes.length) {
+        // Clear active highlight when playback is complete
+        if (this.activeNoteHighlight) {
+          this.activeNoteHighlight = null;
+          this.redrawMelody();
+        }
+        return;
+      }
       
       const note = notes[index];
       
       try {
-        // Sound über die zentrale Audio-Engine abspielen
+        // Update active note highlight
+        this.activeNoteHighlight = sampledPoints && sampledPoints[index] 
+          ? { x: sampledPoints[index].x, y: sampledPoints[index].y }
+          : null;
+          
+        // Redraw with the new active note
+        this.redrawMelody();
+        
+        // Play the note through the central audio engine
         audioEngine.playNote(note, 0.3);
         
         console.log(`Playing note ${index + 1}/${notes.length}: ${note}`);
         
-        // Wenn wir im Challenge-Modus sind, hervorheben der entsprechenden Note in der Referenzmelodie
-        // Highlight corresponding note in reference melody box when in challenge mode
+        // If we're in challenge mode, highlight the corresponding note in the reference melody
         if (this.melodyChallengeMode && this.referenceSequence) {
-          // Finde die entsprechende Note in der Referenzmelodie
+          // Find the corresponding note in the reference melody
           const noteUpper = note.toUpperCase();
           const noteIndex = this.referenceSequence.indexOf(noteUpper);
           
-          // Wenn die Note in der Referenzmelodie vorkommt, hervorheben
+          // If the note exists in the reference melody, highlight it
           if (noteIndex !== -1) {
             console.log(`MELODY_HIGHLIGHT: Highlighting note ${noteUpper} at index ${noteIndex}`);
             const noteElements = document.querySelectorAll('.reference-note');
             
             if (noteElements && noteElements[noteIndex]) {
-              // Kurz aufleuchten lassen
+              // Make it briefly light up
               noteElements[noteIndex].classList.add('playing');
               setTimeout(() => {
                 try {
@@ -3145,13 +3228,12 @@ export function pitches() {
             }
           }
         }
-        
-        // Nächste Note mit Verzögerung abspielen
-        setTimeout(() => this.playDrawnNoteSequence(notes, index + 1), 300);
       } catch (error) {
         console.error('Error playing note in drawn melody:', error);
-        // Trotz Fehler weitergehen
-        setTimeout(() => this.playDrawnNoteSequence(notes, index + 1), 300);
+        // Continue with next note even if there was an error
+      } finally {
+        // Play next note with delay
+        setTimeout(() => this.playDrawnNoteSequence(notes, index + 1, sampledPoints), 300);
       }
     },
     

@@ -1645,6 +1645,7 @@ section h2 {
   border-width: 15px 0 15px 30px;
   border-color: transparent transparent transparent rgba(255, 255, 255, 0.9);
   margin-left: 10px;
+  display: inline-block;
 }
 
 .circular-play-button:hover {
