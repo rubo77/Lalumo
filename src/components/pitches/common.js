@@ -17,7 +17,7 @@ import { resetProgress_2_5 } from '../2_chords/2_5_chord_characters.js';
 
 // Exportiere eine Testfunktion für Import-Tests
 export function testCommonModuleImport() {
-  console.log('Common module successfully imported');
+  debugLog('COMMON', 'Common module successfully imported');
   return true;
 }
 
@@ -54,9 +54,9 @@ export function resetCurrentActivity(currentMode) {
     
     if (currentActivityMode && currentActivityMode.component && currentActivityMode.mode) {
       currentMode = currentActivityMode.mode;
-      console.log(`RESET_CURRENT: Using unified activity mode: ${currentActivityMode.component}.${currentMode}`);
+      debugLog('RESET_CURRENT', `Using unified activity mode: ${currentActivityMode.component}.${currentMode}`);
     } else {
-      console.log('RESET_CURRENT: No unified activity mode found, falling back to DOM detection');
+      debugLog('RESET_CURRENT', 'No unified activity mode found, falling back to DOM detection');
       
       // Fallback: Check if any chord activity is currently visible
       const isChordActivityVisible = document.querySelector('.chord-activity[style*="display: block"]') !== null;
@@ -65,13 +65,13 @@ export function resetCurrentActivity(currentMode) {
         // A chord activity is visible, prioritize chordsComponent
         if (window.chordsComponent && window.chordsComponent.mode && window.chordsComponent.mode !== 'main') {
           currentMode = window.chordsComponent.mode;
-          console.log('RESET_CURRENT: Auto-detected active mode from chords component:', currentMode);
+          debugLog('RESET_CURRENT', `Auto-detected active mode from chords component: ${currentMode}`);
         }
       } else {
         // No chord activity visible, check pitches component
         if (window.pitchesComponent && window.pitchesComponent.mode && window.pitchesComponent.mode !== 'main') {
           currentMode = window.pitchesComponent.mode;
-          console.log('RESET_CURRENT: Auto-detected active mode from pitches component:', currentMode);
+          debugLog('RESET_CURRENT', `Auto-detected active mode from pitches component: ${currentMode}`);
         }
       }
       
@@ -79,22 +79,22 @@ export function resetCurrentActivity(currentMode) {
       if (!currentMode) {
         if (window.pitchesComponent?.mode && window.pitchesComponent.mode !== 'main') {
           currentMode = window.pitchesComponent.mode;
-          console.log('RESET_CURRENT: Fallback detected mode from pitches component:', currentMode);
+          debugLog('RESET_CURRENT', `Fallback detected mode from pitches component: ${currentMode}`);
         } else if (window.chordsComponent?.mode && window.chordsComponent.mode !== 'main') {
           currentMode = window.chordsComponent.mode;
-          console.log('RESET_CURRENT: Fallback detected mode from chords component:', currentMode);
+          debugLog('RESET_CURRENT', `Fallback detected mode from chords component: ${currentMode}`);
         }
       }
     }
   }
   
-  console.log('RESET_CURRENT: Current mode detected:', currentMode);
-  console.log('RESET_CURRENT: Mode type:', typeof currentMode);
-  console.log('RESET_CURRENT: window.pitchesComponent available:', !!window.pitchesComponent);
+  debugLog('RESET_CURRENT', `Current mode detected: ${currentMode}`);
+  debugLog('RESET_CURRENT', `Mode type: ${typeof currentMode}`);
+  debugLog('RESET_CURRENT', `window.pitchesComponent available: ${!!window.pitchesComponent}`);
   
   if (window.pitchesComponent) {
-    console.log('RESET_CURRENT: Component mode:', window.pitchesComponent.mode);
-    console.log('RESET_CURRENT: Component progress before reset:', window.pitchesComponent.progress);
+    debugLog('RESET_CURRENT', `Component mode: ${window.pitchesComponent.mode}`);
+    debugLog('RESET_CURRENT', `Component progress before reset: ${JSON.stringify(window.pitchesComponent.progress)}`);
   }
   
   const isGerman = document.documentElement.lang === 'de';
@@ -102,14 +102,14 @@ export function resetCurrentActivity(currentMode) {
   // Use shared function to get activity names
   const activityNames = getActivityNames(isGerman);
   
-  console.log('RESET_CURRENT: Available activity names:', Object.keys(activityNames));
-  console.log('RESET_CURRENT: Mode match found for activity ' + currentMode + ':', activityNames[currentMode] ? 'YES' : 'NO');
+  debugLog('RESET_CURRENT', `Available activity names: ${Object.keys(activityNames).join(', ')}`);
+  debugLog('RESET_CURRENT', `Mode match found for activity ${currentMode}: ${activityNames[currentMode] ? 'YES' : 'NO'}`);
   
   const activityName = activityNames[currentMode];
   
   if (!activityName) {
-    console.log('RESET_CURRENT: No matching activity name found for mode:', currentMode);
-    console.log('RESET_CURRENT: Using fallback generic message');
+    debugLog('RESET_CURRENT', `No matching activity name found for mode: ${currentMode}`);
+    debugLog('RESET_CURRENT', 'Using fallback generic message');
     const fallbackMessage = isGerman ? 
       'Keine passende Aktivität gefunden. Trotzdem zurücksetzen?' : 
       'No matching activity found. Reset anyway?';
@@ -123,7 +123,7 @@ export function resetCurrentActivity(currentMode) {
       `Reset progress for "${activityName}"?`;
       
     if (!confirm(confirmMessage)) {
-      console.log('RESET_CURRENT: User cancelled reset');
+      debugLog('RESET_CURRENT', 'User cancelled reset');
       return;
     }
   }
@@ -141,12 +141,12 @@ export function resetCurrentActivity(currentMode) {
   
   const resetMethod = resetMethods[currentMode];
   if (resetMethod) {
-    console.log('RESET_CURRENT: Found reset method for:', currentMode);
+    debugLog('RESET_CURRENT', `Found reset method for: ${currentMode}`);
     
     // Safety check for window.pitchesComponent
     if (!window.pitchesComponent) {
-      console.error('RESET_CURRENT: window.pitchesComponent not available! Cannot reset component state.');
-      console.log('RESET_CURRENT: Available methods on window:', Object.keys(window).filter(k => k.includes('pitches')));
+      debugLog(['RESET_CURRENT', 'ERROR'], 'window.pitchesComponent not available! Cannot reset component state.');
+      debugLog('RESET_CURRENT', `Available methods on window: ${Object.keys(window).filter(k => k.includes('pitches')).join(', ')}`);
       
       const message = isGerman ? 
         'Fehler: Komponente nicht verfügbar. Bitte laden Sie die Seite neu.' : 
@@ -155,11 +155,11 @@ export function resetCurrentActivity(currentMode) {
       return;
     }
     
-    console.log('RESET_CURRENT: Executing reset for:', currentMode);
+    debugLog('RESET_CURRENT', `Executing reset for: ${currentMode}`);
     resetMethod();
     showResetFeedback(currentMode);
   } else {
-    console.log('RESET_CURRENT: No reset method found for mode:', currentMode);
+    debugLog('RESET_CURRENT', `No reset method found for mode: ${currentMode}`);
   }
 }
 
@@ -213,7 +213,7 @@ export function showResetFeedback(activityMode) {
  * @param {Object} component - The Alpine.js component instance
  */
 export function resetAllProgress(component) {
-  console.log('RESET_ALL: Starting global reset of all activities');
+  debugLog('RESET_ALL', 'Starting global reset of all activities');
   
   // Show confirmation dialog
   const isGerman = document.documentElement.lang === 'de';
@@ -222,30 +222,33 @@ export function resetAllProgress(component) {
     'Reset ALL progress in all activities? This cannot be undone!';
     
   if (!confirm(confirmMessage)) {
-    console.log('RESET_ALL: User cancelled global reset');
+    debugLog('RESET_ALL', 'User cancelled global reset');
     return;
   }
   
   // Reset all activities
-  console.log('RESET_ALL: Resetting High or Low activity');
+  debugLog('RESET_ALL', 'Resetting High or Low activity');
   reset_1_1_HighOrLow_Progress(window.pitchesComponent);
   
-  console.log('RESET_ALL: Resetting Match Sounds activity');
+  debugLog('RESET_ALL', 'Resetting High or Low activity');
+  reset_1_1_HighOrLow_Progress(window.pitchesComponent);
+  
+  debugLog('RESET_ALL', 'Resetting Match Sounds activity');
   reset_1_2_MatchSounds_Progress(window.pitchesComponent);
   
-  console.log('RESET_ALL: Resetting Draw Melody activity');
+  debugLog('RESET_ALL', 'Resetting Draw Melody activity');
   reset_1_3_DrawMelody_Progress(window.pitchesComponent);
   
-  console.log('RESET_ALL: Resetting Sound Judgment activity');
+  debugLog('RESET_ALL', 'Resetting Sound Judgment activity');
   reset_1_4_SoundJudgment_Progress(window.pitchesComponent);
   
-  console.log('RESET_ALL: Resetting Memory Game activity');
+  debugLog('RESET_ALL', 'Resetting Memory Game activity');
   reset_1_5_MemoryGame_Progress(window.pitchesComponent);
   
-  console.log('RESET_ALL: Resetting Stable or Unstable Chords activity');
+  debugLog('RESET_ALL', 'Resetting Stable or Unstable Chords activity');
   resetProgress_2_2(window.pitchesComponent);
   
-  console.log('RESET_ALL: Resetting Chord Types activity');
+  debugLog('RESET_ALL', 'Resetting Chord Types activity');
   resetProgress_2_5(window.pitchesComponent);
   
 
@@ -256,7 +259,7 @@ export function resetAllProgress(component) {
     
   showGlobalResetFeedback(message);
   
-  console.log('RESET_ALL: Global reset completed successfully');
+  debugLog('RESET_ALL', 'Global reset completed successfully');
 }
 
 /**

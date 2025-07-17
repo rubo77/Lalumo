@@ -7,7 +7,7 @@ import { debugLog } from '../../utils/debug.js';
 
 // Export a test function for import tests
 export function testMatchSoundsModuleImport() {
-  console.log('Match Sounds module successfully imported');
+  debugLog('MATCH_SOUNDS', 'Match Sounds module successfully imported');
   return true;
 }
 
@@ -16,7 +16,7 @@ export function testMatchSoundsModuleImport() {
  * @param {Object} component - The Alpine.js component
  */
 export function reset_1_2_MatchSounds_Progress(component) {
-  console.log('RESET_MATCH_SOUNDS: Starting reset process', {
+  debugLog('RESET_MATCH_SOUNDS', 'Starting reset process', {
     correctAnswersCount: component.correctAnswersCount,
     unlockedPatterns: component.unlockedPatterns
   });
@@ -40,7 +40,7 @@ export function reset_1_2_MatchSounds_Progress(component) {
   if (matchSoundsContainer) {
     const initialBackground = './images/backgrounds/pitches_action1_2_fox_owl.jpg';
     matchSoundsContainer.style.backgroundImage = `url('${initialBackground}')`;
-    console.log('RESET_MATCH_SOUNDS: Reset background to initial state');
+    debugLog('RESET_MATCH_SOUNDS', 'Reset background to initial state');
   }
   
   // Force UI update by triggering Alpine.js reactivity
@@ -52,10 +52,10 @@ export function reset_1_2_MatchSounds_Progress(component) {
     });
     document.dispatchEvent(event);
     
-    console.log('RESET_MATCH_SOUNDS: UI refresh triggered');
+    debugLog('RESET_MATCH_SOUNDS', 'UI refresh triggered');
   });
   
-  console.log('RESET_MATCH_SOUNDS: Reset completed successfully');
+  debugLog('RESET_MATCH_SOUNDS', 'Reset completed successfully');
 }
 
 // Make globally available for diagnosis

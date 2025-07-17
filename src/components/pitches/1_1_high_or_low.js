@@ -6,7 +6,7 @@
 import { debugLog } from '../../utils/debug.js';
 
 // Debug-Log beim Laden des Moduls
-console.log('HIGH_OR_LOW_MODULE: Module loaded');
+debugLog('HIGH_OR_LOW_MODULE', 'Module loaded');
 
 /**
  * Bestimmt die aktuelle Schwierigkeitsstufe in der "High or Low"-Aktivität
@@ -37,7 +37,7 @@ export function currentHighOrLowStage(component) {
  * @param {Object} component - The Alpine.js component
  */
 export function reset_1_1_HighOrLow_Progress(component) {
-  console.log('RESET_HIGH_OR_LOW: Starting reset process', {
+  debugLog('RESET_HIGH_OR_LOW', 'Starting reset process', {
     currentProgress: component.highOrLowProgress,
     gameStarted: component.gameStarted
   });
@@ -65,10 +65,10 @@ export function reset_1_1_HighOrLow_Progress(component) {
     });
     document.dispatchEvent(event);
     
-    console.log('RESET_HIGH_OR_LOW: UI refresh triggered');
+    debugLog('RESET_HIGH_OR_LOW', 'UI refresh triggered');
   });
   
-  console.log('RESET_HIGH_OR_LOW: Reset completed successfully with UI refresh');
+  debugLog('RESET_HIGH_OR_LOW', 'Reset completed successfully with UI refresh');
 }
 
 /**
@@ -77,14 +77,14 @@ export function reset_1_1_HighOrLow_Progress(component) {
  */
 export function setupHighOrLowMode_1_1(component) {
   // Initialize the high or low activity
-  console.log('High or Low mode ready with progress:', component.highOrLowProgress);
+  debugLog('HIGH_OR_LOW', `High or Low mode ready with progress: ${component.highOrLowProgress}`);
   
   // Reset the current sequence so a new one will be generated on play
   component.currentHighOrLowSequence = null;
   
   // Reset game state - not started until the user explicitly clicks play
   component.gameStarted = false;
-  console.log('High or Low game reset, gameStarted:', component.gameStarted);
+  debugLog('HIGH_OR_LOW', `High or Low game reset, gameStarted: ${component.gameStarted}`);
   
   // Show intro message immediately when entering the activity
   component.showActivityIntroMessage('1_1_pitches_high_or_low');
