@@ -191,7 +191,7 @@ reset-button:
   - # bereit zur veröffentlichung
 
 2_2_chords_stable_unstable:
-  - es darf nicht 2x hintereinander haargenauderselbe akkord kommen
+  - bei wiederholtem play button soll nicht nur die akkord art wiederholt werden sondern auch die transposition
   - # bereit zur veröffentlichung
  
 2_5_chords_color_matching:

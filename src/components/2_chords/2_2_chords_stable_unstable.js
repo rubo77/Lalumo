@@ -37,6 +37,8 @@ let autoPlayTimeout = null;     // Store the auto-play timeout reference
 let isFreeModeActive = true;    // Track if we're in free play mode
 let isInitialized = false;      // Track if the module has been initialized
 let freePlayChords = [];        // Store the pre-generated chords for free play mode
+let lastPlayTime = 0;           // Track when the chord was last played
+const REPLAY_WINDOW_MS = 3000;  // Time window in ms to consider a play as a replay
 
 // Level progression step
 const stable_unstable_LEVEL_STEP = 10;
@@ -218,13 +220,38 @@ export function playStableUnstableChord(component, isReplay = false) {
     debugLog(['CHORDS_2_2_DEBUG', 'PLAY'], 
       `playStableUnstableChord called: isFreeModeActive=${isFreeModeActive}, isReplay=${isReplay}`);
     
-    // If this is a replay request and we have a current chord, just replay it
-    if (isReplay && currentChordType) {
-      playCurrentChord();
-      debugLog(['CHORDS_2_2_DEBUG', '2_2_REPLAY'], 
-        `Replaying ${currentChordType} chord ` +
-        `(transposed ${currentTransposeSemitones > 0 ? '+' : ''}${currentTransposeSemitones} semitones)`);
-      return currentChordType;
+    const now = Date.now();
+    const isWithinReplayWindow = (now - lastPlayTime) < REPLAY_WINDOW_MS;
+    const shouldReplay = isReplay || (currentChordType && isWithinReplayWindow);
+    
+    // Check if we have all the necessary state for a replay
+    const canReplay = currentChordType && currentBaseChord && currentBaseChord.length > 0;
+    
+    // If this is a replay request and we have a current chord, just replay it with the same transposition
+    if (shouldReplay && canReplay) {
+      try {
+        // Make sure we have valid chord frequencies to play
+        if (currentBaseChord && currentBaseChord.length > 0) {
+          // Always regenerate frequencies from base chord to ensure consistency
+          currentChordFrequencies = currentBaseChord.map(note => 
+            transposeNote(note, currentTransposeSemitones)
+          );
+          
+          if (currentChordFrequencies && currentChordFrequencies.length > 0) {
+            playCurrentChord();
+            debugLog(['CHORDS_2_2_DEBUG', '2_2_REPLAY'], 
+              `Replaying ${currentChordType} chord ` +
+              `(transposed ${currentTransposeSemitones > 0 ? '+' : ''}${currentTransposeSemitones} semitones)`);
+            lastPlayTime = now;
+            return currentChordType;
+          }
+        }
+        // If we get here, we couldn't replay the chord
+        debugLog(['CHORDS_2_2_DEBUG', 'WARNING'], 'Could not replay chord, generating new one');
+      } catch (error) {
+        debugLog(['CHORDS_2_2_DEBUG', 'ERROR'], `Error during replay: ${error.message}`);
+        // Fall through to generate a new chord
+      }
     }
     
     // If free mode is active, keep it active but switch to game mode on play button
@@ -295,19 +322,56 @@ export function playStableUnstableChord(component, isReplay = false) {
       } while (true);
     }
     
-    // Apply random transposition (-6 to +6 semitones)
-    // Higher levels get more extreme transpositions
-    const level = Math.min(5, Math.floor(progressLevel / stable_unstable_LEVEL_STEP));
-    const transpositionRange = 3 + Math.floor(level * 0.8); // Level 1: ±3, Level 6: ±7
-    currentTransposeSemitones = Math.floor(Math.random() * (transpositionRange*2+1)) - transpositionRange;
+    // Only apply new transposition if we're not in an active attempt and this is a new chord
+    // or if we don't have a valid chord state
+    if ((!window.currentAttemptInProgress && !shouldReplay) || !canReplay) {
+      try {
+        // Apply random transposition (-6 to +6 semitones)
+        // Higher levels get more extreme transpositions
+        const level = Math.min(5, Math.floor(progressLevel / stable_unstable_LEVEL_STEP));
+        const transpositionRange = 3 + Math.floor(level * 0.8); // Level 1: ±3, Level 6: ±7
+        currentTransposeSemitones = Math.floor(Math.random() * (transpositionRange*2+1)) - transpositionRange;
+        debugLog(['CHORDS_2_2_DEBUG', 'TRANSPOSE'], 
+          `New transposition: ${currentTransposeSemitones > 0 ? '+' : ''}${currentTransposeSemitones} semitones`);
+      } catch (error) {
+        debugLog(['CHORDS_2_2_DEBUG', 'ERROR'], `Error generating transposition: ${error.message}`);
+        currentTransposeSemitones = 0; // Fallback to no transposition
+      }
+    }
     
-    // Apply transposition to the base chord
-    currentChordFrequencies = currentBaseChord.map(note => 
-      transposeNote(note, currentTransposeSemitones)
-    );
-    
-    // Play the chord using the audio engine
-    playCurrentChord();
+    try {
+      // If we don't have a valid base chord at this point, we need to generate a new one
+      if (!currentBaseChord || currentBaseChord.length === 0) {
+        debugLog(['CHORDS_2_2_DEBUG', 'WARNING'], 'No base chord available, generating new chord');
+        // Generate a new chord based on the current progress level
+        const isStable = Math.random() < 0.5;
+        currentChordType = isStable ? 'stable' : 'unstable';
+        
+        // Generate a new chord based on type and current progress level
+        currentBaseChord = currentChordType === 'stable' 
+          ? generateStableChord(progressLevel) 
+          : generateUnstableChord(progressLevel);
+        
+        debugLog(['CHORDS_2_2_DEBUG', 'GENERATE'], 
+          `Generated new ${currentChordType} chord due to missing base chord`);
+      }
+      
+      // Apply transposition to the base chord
+      currentChordFrequencies = currentBaseChord.map(note => 
+        transposeNote(note, currentTransposeSemitones)
+      );
+      
+      // Play the chord using the audio engine
+      playCurrentChord();
+      lastPlayTime = Date.now();
+    } catch (error) {
+      debugLog(['CHORDS_2_2_DEBUG', 'ERROR'], `Error playing chord: ${error.message}`);
+      // Reset state to force a new chord on next play
+      currentChordType = null;
+      currentBaseChord = [];
+      currentChordFrequencies = [];
+      throw error; // Re-throw to be caught by the outer try-catch
+    }
     
     // Display level info in logs
     if (component && component.progress) {
