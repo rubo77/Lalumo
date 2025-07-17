@@ -1,5 +1,5 @@
 /**
- * 2_2_chords_stable_instable.js - Module for the "Stable or Instable Chords" activity
+ * 2_2_chords_stable_unstable.js - Module for the "Stable or Unstable Chords" activity
  */
 
 // Import debug utilities
@@ -21,9 +21,9 @@ import {
 
 // Initialize global Alpine.js feedback variables
 // These need to be defined globally for Alpine.js to access them during startup
-window.showStableInstableFeedback = false;
-window.stableInstableFeedback = '';
-window.stableInstableCorrect = false;
+window.showStableUnstableFeedback = false;
+window.stableUnstableFeedback = '';
+window.stableUnstableCorrect = false;
 
 // Store feedback timeout reference
 let feedbackTimeout = null;
@@ -39,14 +39,14 @@ let isInitialized = false;      // Track if the module has been initialized
 let freePlayChords = [];        // Store the pre-generated chords for free play mode
 
 // Level progression step
-const STABLE_INSTABLE_LEVEL_STEP = 10;
+const stable_unstable_LEVEL_STEP = 10;
 
 /**
  * Test function to verify module import is working correctly
  * @returns {boolean} True if import successful
  */
-export function testStableInstableModuleImport() {
-  debugLog('CHORDS', 'Stable or Instable module successfully imported');
+export function testStableUnstableModuleImport() {
+  debugLog('CHORDS', 'Stable or Unstable module successfully imported');
   
   // Initialize free play mode immediately when the module is imported
   if (!isInitialized) {
@@ -80,7 +80,7 @@ export function reset2_2ToFreePlayMode() {
  * @param {number} progressLevel - Current progress level (0-5 for levels 1-6)
  * @returns {Array} Array of note names in Tone.js format
  */
-export function generateInstableChord(progressLevel = 0) {
+export function generateUnstableChord(progressLevel = 0) {
   // Base note that will be prominent in all chord types
   const root = 48; // C2 as a prominent low base note
   const baseNote = midiToNoteName(root);
@@ -90,14 +90,14 @@ export function generateInstableChord(progressLevel = 0) {
     const progressData = localStorage.getItem('lalumo_chords_progress');
     if (progressData) {
       const progress = JSON.parse(progressData);
-      progressLevel = progress['2_2_chords_stable_instable'] || 0;
+      progressLevel = progress['2_2_chords_stable_unstable'] || 0;
     } else {
       progressLevel = 0;
     }
   }
   
   // Calculate the level (0-5) based on progress points
-  const level = Math.min(5, Math.floor(progressLevel / STABLE_INSTABLE_LEVEL_STEP));
+  const level = Math.min(5, Math.floor(progressLevel / stable_unstable_LEVEL_STEP));
   
   debugLog(['CHORDS_2_2_DEBUG', 'LEVEL'], `Generating unstable chord for level ${level+1} (progress: ${progressLevel})`);
   
@@ -175,10 +175,10 @@ export function generateInstableChord(progressLevel = 0) {
 /**
  * Plays either a stable or unstable chord
  * @param {Object} component - The Alpine component instance
- * @returns {string} The type of chord played ('stable' or 'instable')
+ * @returns {string} The type of chord played ('stable' or 'unstable')
  */
 /**
- * Initializes free play mode by generating random stable/instable chords for each button
+ * Initializes free play mode by generating random stable/unstable chords for each button
  * This happens automatically when the module is loaded
  */
 function initializeFreePlayMode() {
@@ -187,14 +187,14 @@ function initializeFreePlayMode() {
   
   // Always use level 1 chords for free play mode to make them easily distinguishable
   const stableChord = generateStableChord(0);  // Level 1 (simple stable chord)
-  const instableChord = generateInstableChord(0);  // Level 1 (simple unstable chord)
+  const unstableChord = generateUnstableChord(0);  // Level 1 (simple unstable chord)
   
   // Randomly assign to buttons (50/50 which is which)
   if (Math.random() < 0.5) {
     freePlayChords.push({ type: 'stable', chord: stableChord });
-    freePlayChords.push({ type: 'instable', chord: instableChord });
+    freePlayChords.push({ type: 'unstable', chord: unstableChord });
   } else {
-    freePlayChords.push({ type: 'instable', chord: instableChord });
+    freePlayChords.push({ type: 'unstable', chord: unstableChord });
     freePlayChords.push({ type: 'stable', chord: stableChord });
   }
   
@@ -207,7 +207,7 @@ function initializeFreePlayMode() {
  * @param {boolean} isReplay - If true, replay the current chord; if false, generate a new one
  * @returns {Array|string} - In free play mode, returns the chord types; otherwise the current chord type
  */
-export function playStableInstableChord(component, isReplay = false) {
+export function playStableUnstableChord(component, isReplay = false) {
   try {
     // Make sure we're initialized
     if (!isInitialized) {
@@ -216,7 +216,7 @@ export function playStableInstableChord(component, isReplay = false) {
     }
     
     debugLog(['CHORDS_2_2_DEBUG', 'PLAY'], 
-      `playStableInstableChord called: isFreeModeActive=${isFreeModeActive}, isReplay=${isReplay}`);
+      `playStableUnstableChord called: isFreeModeActive=${isFreeModeActive}, isReplay=${isReplay}`);
     
     // If this is a replay request and we have a current chord, just replay it
     if (isReplay && currentChordType) {
@@ -237,13 +237,13 @@ export function playStableInstableChord(component, isReplay = false) {
     // Get current progress level to generate appropriate difficulty
     let progressLevel = 0;
     if (component && component.progress) {
-      progressLevel = component.progress['2_2_chords_stable_instable'] || 0;
+      progressLevel = component.progress['2_2_chords_stable_unstable'] || 0;
     } else {
       // Try to get from localStorage if component not available
       const progressData = localStorage.getItem('lalumo_chords_progress');
       if (progressData) {
         const progress = JSON.parse(progressData);
-        progressLevel = progress['2_2_chords_stable_instable'] || 0;
+        progressLevel = progress['2_2_chords_stable_unstable'] || 0;
       }
     }
     
@@ -265,13 +265,13 @@ export function playStableInstableChord(component, isReplay = false) {
       do {
         // For game mode, randomly choose a chord type and generate it
         const isStable = Math.random() < 0.5;
-        currentChordType = isStable ? 'stable' : 'instable';
+        currentChordType = isStable ? 'stable' : 'unstable';
         
         // Generate a new chord based on type and current progress level
         if (currentChordType === 'stable') {
           currentBaseChord = generateStableChord(progressLevel);
         } else {
-          currentBaseChord = generateInstableChord(progressLevel);
+          currentBaseChord = generateUnstableChord(progressLevel);
         }
         
         attempts++;
@@ -297,7 +297,7 @@ export function playStableInstableChord(component, isReplay = false) {
     
     // Apply random transposition (-6 to +6 semitones)
     // Higher levels get more extreme transpositions
-    const level = Math.min(5, Math.floor(progressLevel / STABLE_INSTABLE_LEVEL_STEP));
+    const level = Math.min(5, Math.floor(progressLevel / stable_unstable_LEVEL_STEP));
     const transpositionRange = 3 + Math.floor(level * 0.8); // Level 1: ±3, Level 6: ±7
     currentTransposeSemitones = Math.floor(Math.random() * (transpositionRange*2+1)) - transpositionRange;
     
@@ -311,8 +311,8 @@ export function playStableInstableChord(component, isReplay = false) {
     
     // Display level info in logs
     if (component && component.progress) {
-      const progressLevel = component.progress['2_2_chords_stable_instable'] || 0;
-      const level = Math.min(5, Math.floor(progressLevel / STABLE_INSTABLE_LEVEL_STEP));
+      const progressLevel = component.progress['2_2_chords_stable_unstable'] || 0;
+      const level = Math.min(5, Math.floor(progressLevel / stable_unstable_LEVEL_STEP));
       const level6Display = level + 1; // Convert to 1-based for display
       
       debugLog(['CHORDS_2_2_DEBUG', '2_2_PLAY'], 
@@ -326,25 +326,25 @@ export function playStableInstableChord(component, isReplay = false) {
     
     return currentChordType;
   } catch (error) {
-    debugLog(['CHORDS_2_2_DEBUG', 'ERROR'], `Error in playStableInstableChord: ${error.message}`);
+    debugLog(['CHORDS_2_2_DEBUG', 'ERROR'], `Error in playStableUnstableChord: ${error.message}`);
     return null;
   }
 }
 
 
 // Make functions globally available for calls in alpine HTML-tags
-window.playStableInstableChord = playStableInstableChord;
-window.checkStableInstableMatch = checkStableInstableMatch;
+window.playStableUnstableChord = playStableUnstableChord;
+window.checkStableUnstableMatch = checkStableUnstableMatch;
 
 // Ensure feedback variables are globally available for Alpine.js
-if (typeof window.showStableInstableFeedback === 'undefined') {
-  window.showStableInstableFeedback = false;
+if (typeof window.showStableUnstableFeedback === 'undefined') {
+  window.showStableUnstableFeedback = false;
 }
-if (typeof window.stableInstableFeedback === 'undefined') {
-  window.stableInstableFeedback = '';
+if (typeof window.stableUnstableFeedback === 'undefined') {
+  window.stableUnstableFeedback = '';
 }
-if (typeof window.stableInstableCorrect === 'undefined') {
-  window.stableInstableCorrect = false;
+if (typeof window.stableUnstableCorrect === 'undefined') {
+  window.stableUnstableCorrect = false;
 }
 
 /**
@@ -384,16 +384,16 @@ function handleFreePlaySelection(buttonIndex, component) {
   );
   
   // Update the background
-  updateStableInstableBackground(component);
+  updateStableUnstableBackground(component);
 }
 
 /**
  * Checks if the user's selection matches the current chord type
- * @param {string} selectedType - The type selected by the user ('stable' or 'instable')
+ * @param {string} selectedType - The type selected by the user ('stable' or 'unstable')
  * @param {Object} component - The Alpine component instance
  * @returns {boolean} True if the selection is correct, false otherwise
  */
-export function checkStableInstableMatch(selectedType, component) {
+export function checkStableUnstableMatch(selectedType, component) {
   try {
     // Make sure we're initialized
     if (!isInitialized) {
@@ -405,7 +405,7 @@ export function checkStableInstableMatch(selectedType, component) {
     if (isFreeModeActive) {
       debugLog(['CHORDS_2_2_DEBUG', 'FREE_PLAY'], `Button clicked in free play mode: ${selectedType}`);
       
-      // Find which button was clicked (0 for stable, 1 for instable or vice versa)
+      // Find which button was clicked (0 for stable, 1 for unstable or vice versa)
       const buttonIndex = freePlayChords.findIndex(chord => chord.type === selectedType);
       if (buttonIndex !== -1) {
         handleFreePlaySelection(buttonIndex, component);
@@ -427,28 +427,28 @@ export function checkStableInstableMatch(selectedType, component) {
     const progress = progressData ? JSON.parse(progressData) : {};
     
     // Initialize progress for this activity if it doesn't exist
-    if (!progress['2_2_chords_stable_instable']) {
-      progress['2_2_chords_stable_instable'] = 0;
+    if (!progress['2_2_chords_stable_unstable']) {
+      progress['2_2_chords_stable_unstable'] = 0;
     }
     
     debugLog(['CHORDS_2_2_DEBUG', '2_2_PROGRESS'], 
-      `Current progress before check: ${progress['2_2_chords_stable_instable']}, ` +
+      `Current progress before check: ${progress['2_2_chords_stable_unstable']}, ` +
       `Selection: ${selectedType}, Actual: ${currentChordType}`);
     
     
     // Update progress if the answer is correct
     if (isCorrect) {
       // Increment progress
-      progress['2_2_chords_stable_instable'] += 1;
+      progress['2_2_chords_stable_unstable'] += 1;
       
       // Save updated progress
       localStorage.setItem('lalumo_chords_progress', JSON.stringify(progress));
       
       // Update component's progress state
       if (component && component.progress) {
-        component.progress['2_2_chords_stable_instable'] = progress['2_2_chords_stable_instable'];
+        component.progress['2_2_chords_stable_unstable'] = progress['2_2_chords_stable_unstable'];
         debugLog(['CHORDS_2_2_DEBUG', '2_2_PROGRESS'], 
-          `Progress updated after correct answer: ${progress['2_2_chords_stable_instable']}`);
+          `Progress updated after correct answer: ${progress['2_2_chords_stable_unstable']}`);
       } else {
         debugLog(['CHORDS_2_2_DEBUG', '2_2_PROGRESS', 'ERROR'], 
           'Component or component.progress not available, progress UI may not update');
@@ -458,11 +458,11 @@ export function checkStableInstableMatch(selectedType, component) {
       showRainbowSuccess();
       
       // For every 10 correct answers, show a bigger celebration
-      if (progress['2_2_chords_stable_instable'] % 10 === 0) {
+      if (progress['2_2_chords_stable_unstable'] % 10 === 0) {
         showBigRainbowSuccess();
       }
       
-      debugLog(['CHORDS_2_2_DEBUG', '2_2_MATCH'], `Correct! It was a ${currentChordType} chord. Progress: ${progress['2_2_chords_stable_instable']}`);
+      debugLog(['CHORDS_2_2_DEBUG', '2_2_MATCH'], `Correct! It was a ${currentChordType} chord. Progress: ${progress['2_2_chords_stable_unstable']}`);
       
       // Update Alpine.js feedback variables for correct answer
       if (component) {
@@ -471,15 +471,15 @@ export function checkStableInstableMatch(selectedType, component) {
           clearTimeout(feedbackTimeout);
         }
         
-        component.showStableInstableFeedback = true;
+        component.showStableUnstableFeedback = true;
         const chordTypeKey = currentChordType === 'stable' ? 'stable' : 'unstable';
         const chordTypeText = Alpine.store('strings')?.[`${chordTypeKey}_chord`] || `${currentChordType} chord`;
-        component.stableInstableFeedback = Alpine.store('strings')?.feedback_correct_chord?.replace('{0}', chordTypeText) || `Correct! It was a ${chordTypeText}.`;
-        component.stableInstableCorrect = true;
+        component.stableUnstableFeedback = Alpine.store('strings')?.feedback_correct_chord?.replace('{0}', chordTypeText) || `Correct! It was a ${chordTypeText}.`;
+        component.stableUnstableCorrect = true;
         
         // Auto-hide feedback after 3 seconds
         feedbackTimeout = setTimeout(() => {
-          component.showStableInstableFeedback = false;
+          component.showStableUnstableFeedback = false;
           debugLog(['CHORDS_2_2_DEBUG', 'FEEDBACK'], 'Auto-hiding correct feedback');
         }, 3000);
       }
@@ -501,14 +501,14 @@ export function checkStableInstableMatch(selectedType, component) {
         currentTransposeSemitones = 0;
         // Trigger a new chord with a small delay to ensure audio context is ready
         setTimeout(() => {
-          playStableInstableChord(component);
+          playStableUnstableChord(component);
         }, 100);
       }, 2000);
     } else {
       // Reset progress to the beginning of the current level
-      const currentProgress = progress['2_2_chords_stable_instable'];
-      const currentLevel = Math.floor(currentProgress / STABLE_INSTABLE_LEVEL_STEP);
-      const newProgress = currentLevel * STABLE_INSTABLE_LEVEL_STEP;
+      const currentProgress = progress['2_2_chords_stable_unstable'];
+      const currentLevel = Math.floor(currentProgress / stable_unstable_LEVEL_STEP);
+      const newProgress = currentLevel * stable_unstable_LEVEL_STEP;
       
       // We're already at the start of a level or exactly at a level threshold (10, 20, etc.)
       if (currentProgress === newProgress) {
@@ -518,35 +518,35 @@ export function checkStableInstableMatch(selectedType, component) {
       } 
       // We're past the start of a level, so reset to the start of this level
       else if (currentProgress > newProgress) {
-        progress['2_2_chords_stable_instable'] = newProgress;
+        progress['2_2_chords_stable_unstable'] = newProgress;
         debugLog(['CHORDS_2_2_DEBUG', '2_2_RESET'], `Progress reset to ${newProgress} (level ${currentLevel})`);
       } 
       // We're not at a level threshold and not past it (should never happen, but just in case)
       else {
         // Don't go below current level threshold
-        progress['2_2_chords_stable_instable'] = newProgress;
+        progress['2_2_chords_stable_unstable'] = newProgress;
         debugLog(['CHORDS_2_2_DEBUG', '2_2_RESET'], `Progress adjusted to level threshold: ${newProgress}`);
       }
       
-      debugLog(['CHORDS_2_2_DEBUG', '2_2_MATCH'], `Incorrect. It was a ${currentChordType} chord. Progress reset to ${progress['2_2_chords_stable_instable']}`);
+      debugLog(['CHORDS_2_2_DEBUG', '2_2_MATCH'], `Incorrect. It was a ${currentChordType} chord. Progress reset to ${progress['2_2_chords_stable_unstable']}`);
       
       // Show feedback using translation system
       const chordTypeKey = currentChordType === 'stable' ? 'stable' : 'unstable';
       const translationKey = `feedback_${chordTypeKey}_chord`;
       const message = Alpine.store('strings')?.[translationKey] || 
                     `Incorrect. It was a ${chordTypeKey} chord.`;
-      window.showMascotMessage(message, '2_2_chords_stable_instable', 2, component);
+      window.showMascotMessage(message, '2_2_chords_stable_unstable', 2, component);
       
       // Save updated progress to localStorage
       localStorage.setItem('lalumo_chords_progress', JSON.stringify(progress));
       
       // Update component's progress state
       if (component && component.progress) {
-        component.progress['2_2_chords_stable_instable'] = progress['2_2_chords_stable_instable'];
+        component.progress['2_2_chords_stable_unstable'] = progress['2_2_chords_stable_unstable'];
         // Trigger Alpine.js update
         component.$nextTick();
         debugLog(['CHORDS_2_2_DEBUG', '2_2_PROGRESS'], 
-          `Progress updated after incorrect answer: ${progress['2_2_chords_stable_instable']}`);
+          `Progress updated after incorrect answer: ${progress['2_2_chords_stable_unstable']}`);
       } else {
         debugLog(['CHORDS_2_2_DEBUG', '2_2_PROGRESS', 'ERROR'], 
           'Component or component.progress not available, progress UI may not update');
@@ -563,15 +563,15 @@ export function checkStableInstableMatch(selectedType, component) {
           clearTimeout(feedbackTimeout);
         }
         
-        component.showStableInstableFeedback = true;
+        component.showStableUnstableFeedback = true;
         const chordTypeKey = currentChordType === 'stable' ? 'stable' : 'unstable';
         const chordTypeText = Alpine.store('strings')?.[`${chordTypeKey}_chord`] || `${currentChordType} chord`;
-        component.stableInstableFeedback = Alpine.store('strings')?.feedback_incorrect_chord?.replace('{0}', chordTypeText) || `Incorrect. It was a ${chordTypeText}.`;
-        component.stableInstableCorrect = false;
+        component.stableUnstableFeedback = Alpine.store('strings')?.feedback_incorrect_chord?.replace('{0}', chordTypeText) || `Incorrect. It was a ${chordTypeText}.`;
+        component.stableUnstableCorrect = false;
         
         // Auto-hide feedback after 3 seconds
         feedbackTimeout = setTimeout(() => {
-          component.showStableInstableFeedback = false;
+          component.showStableUnstableFeedback = false;
           debugLog(['CHORDS_2_2_DEBUG', 'FEEDBACK'], 'Auto-hiding incorrect feedback');
         }, 3000);
       }
@@ -593,11 +593,11 @@ export function checkStableInstableMatch(selectedType, component) {
     }
     
     // Update the background based on progress
-    updateStableInstableBackground(component);
+    updateStableUnstableBackground(component);
     
     return isCorrect;
   } catch (error) {
-    debugLog(['CHORDS_2_2_DEBUG', 'ERROR'], `Error in checkStableInstableMatch: ${error.message}`);
+    debugLog(['CHORDS_2_2_DEBUG', 'ERROR'], `Error in checkStableUnstableMatch: ${error.message}`);
     return false;
   }
 }
@@ -639,20 +639,20 @@ function playCurrentChord() {
 }
 
 // Make functions globally available for calls in alpine HTML-tags
-window.checkStableInstableMatch = checkStableInstableMatch;
-window.playStableInstableChord = playStableInstableChord;
+window.checkStableUnstableMatch = checkStableUnstableMatch;
+window.playStableUnstableChord = playStableUnstableChord;
 
 /**
- * Updates the background image based on progress in the stable/instable chords activity
+ * Updates the background image based on progress in the stable/unstable chords activity
  * @param {Object} component - The Alpine component instance
  */
-export function updateStableInstableBackground(component) {
+export function updateStableUnstableBackground(component) {
   try {
     // Get progress from localStorage or component state
     const progressData = localStorage.getItem('lalumo_chords_progress');
     const progress = progressData ? 
-      JSON.parse(progressData)['2_2_chords_stable_instable'] || 0 : 
-      component?.progress?.['2_2_chords_stable_instable'] || 0;
+      JSON.parse(progressData)['2_2_chords_stable_unstable'] || 0 : 
+      component?.progress?.['2_2_chords_stable_unstable'] || 0;
     
     // Dynamically select background image based on progress
     // Progress 0-9: image-1, 10-19: image-2, 20-29: image-3, etc.
@@ -663,10 +663,10 @@ export function updateStableInstableBackground(component) {
     const imageIndex = Math.min(6, Math.max(1, Math.floor(progress / 10) + 1));
     
     // Use the JPG images with proper naming
-    const backgroundImage = `./images/backgrounds/2_2_chords_stable_instable-${imageIndex}.jpg`;
+    const backgroundImage = `./images/backgrounds/2_2_chords_stable_unstable-${imageIndex}.jpg`;
     
     // Update the background in the DOM
-    const activityElement = document.querySelector('[x-show="mode === \'2_2_chords_stable_instable\'"]');
+    const activityElement = document.querySelector('[x-show="mode === \'2_2_chords_stable_unstable\'"]');
     if (activityElement) {
       activityElement.style.backgroundImage = `url(${backgroundImage})`;
       debugLog(['CHORDS_2_2_DEBUG', '2_2_BACKGROUND'], `Updated background based on progress (${progress}): ${backgroundImage}`);
@@ -674,21 +674,21 @@ export function updateStableInstableBackground(component) {
       debugLog(['CHORDS_2_2_DEBUG', 'ERROR'], 'Error updating background: div not found');
     }
   } catch (error) {
-    debugLog(['CHORDS_2_2_DEBUG', 'ERROR'], `Error in updateStableInstableBackground: ${error.message}`);
+    debugLog(['CHORDS_2_2_DEBUG', 'ERROR'], `Error in updateStableUnstableBackground: ${error.message}`);
   }
 }
 
 /**
- * Reset progress for Stable or Instable Chords activity (2_2)
+ * Reset progress for Stable or Unstable Chords activity (2_2)
  * Used by the resetCurrentActivity function
  */
-export function reset_2_2_StableInstable_Progress() {
-  debugLog(['CHORDS_2_2_DEBUG', 'RESET'], 'Resetting 2_2_chords_stable_instable progress...');
+export function reset_2_2_StableUnstable_Progress() {
+  debugLog(['CHORDS_2_2_DEBUG', 'RESET'], 'Resetting 2_2_chords_stable_unstable progress...');
   
   // Get the chordsComponent from window global
   const chordsComponent = window.chordsComponent;
   if (!chordsComponent) {
-    console.error('Cannot reset 2_2_chords_stable_instable: chordsComponent not found');
+    console.error('Cannot reset 2_2_chords_stable_unstable: chordsComponent not found');
     return;
   }
   
@@ -699,14 +699,14 @@ export function reset_2_2_StableInstable_Progress() {
   if (progressData) {
     try {
       progress = JSON.parse(progressData);
-      // Reset just the 2_2_chords_stable_instable activity progress
-      progress['2_2_chords_stable_instable'] = 0;
+      // Reset just the 2_2_chords_stable_unstable activity progress
+      progress['2_2_chords_stable_unstable'] = 0;
     } catch (error) {
       debugLog(['CHORDS_2_2_DEBUG', 'ERROR'], `Error parsing progress data: ${error.message}`);
-      progress = { '2_2_chords_stable_instable': 0 };
+      progress = { '2_2_chords_stable_unstable': 0 };
     }
   } else {
-    progress = { '2_2_chords_stable_instable': 0 };
+    progress = { '2_2_chords_stable_unstable': 0 };
   }
   
   // Save updated progress back to localStorage
@@ -714,13 +714,13 @@ export function reset_2_2_StableInstable_Progress() {
   
   // Update component's in-memory state
   if (chordsComponent.progress) {
-    chordsComponent.progress['2_2_chords_stable_instable'] = 0;
+    chordsComponent.progress['2_2_chords_stable_unstable'] = 0;
   }
   
   // Update UI to reflect reset progress
-  updateStableInstableBackground(chordsComponent);
+  updateStableUnstableBackground(chordsComponent);
   
-  debugLog(['CHORDS_2_2_DEBUG', 'RESET'], '2_2_chords_stable_instable progress reset complete');
+  debugLog(['CHORDS_2_2_DEBUG', 'RESET'], '2_2_chords_stable_unstable progress reset complete');
 }
 
 
@@ -740,14 +740,14 @@ export function generateStableChord(progressLevel = 0) {
     const progressData = localStorage.getItem('lalumo_chords_progress');
     if (progressData) {
       const progress = JSON.parse(progressData);
-      progressLevel = progress['2_2_chords_stable_instable'] || 0;
+      progressLevel = progress['2_2_chords_stable_unstable'] || 0;
     } else {
       progressLevel = 0;
     }
   }
   
   // Calculate the level (0-5) based on progress points
-  const level = Math.min(5, Math.floor(progressLevel / STABLE_INSTABLE_LEVEL_STEP));
+  const level = Math.min(5, Math.floor(progressLevel / stable_unstable_LEVEL_STEP));
   
   debugLog(['CHORDS_2_2_DEBUG', 'LEVEL'], `Generating stable chord for level ${level+1} (progress: ${progressLevel})`);
   

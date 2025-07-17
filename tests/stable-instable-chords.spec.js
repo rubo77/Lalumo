@@ -5,17 +5,17 @@ const { test, expect } = require('@playwright/test');
 test.setTimeout(30000); // Increased timeout for audio activities
 
 /**
- * Test for the 2_2 Stable/Instable Chords activity
+ * Test for the 2_2 Stable/Unstable Chords activity
  * 
  * Test flow:
  * 1. Accept the username (if prompted)
  * 2. Navigate to the Chords section
- * 3. Open the Stable/Instable Chords activity
+ * 3. Open the Stable/Unstable Chords activity
  * 4. Test the play button functionality
- * 5. Test the Stable/Instable buttons and feedback
+ * 5. Test the Stable/Unstable buttons and feedback
  * 6. Verify progress tracking
  */
-test.describe('Lalumo Stable/Instable Chords Activity', () => {
+test.describe('Lalumo Stable/Unstable Chords Activity', () => {
   test.beforeEach(async ({ page }) => {
     // Set default timeout
     page.setDefaultTimeout(30000);
@@ -64,7 +64,7 @@ test.describe('Lalumo Stable/Instable Chords Activity', () => {
       console.log(`BROWSER JS ERROR: ${error.message}`);
     });
 
-    console.log('Starting Stable/Instable Chords activity test');
+    console.log('Starting Stable/Unstable Chords activity test');
     
     // Handle username dialog if it appears
     try {
@@ -149,16 +149,16 @@ test.describe('Lalumo Stable/Instable Chords Activity', () => {
     
     // Now find and click the Stable or Unstable button
     console.log('Looking for Stable or Unstable button...');
-    const stableInstableButton = page.locator('button#nav_2_2').first();
-    await expect(stableInstableButton).toBeVisible({ timeout: 15000 });
-    console.log('Found Stable/Instable button with ID nav_2_2');
+    const stableUnstableButton = page.locator('button#nav_2_2').first();
+    await expect(stableUnstableButton).toBeVisible({ timeout: 15000 });
+    console.log('Found Stable/Unstable button with ID nav_2_2');
     
     // Take a screenshot before clicking the button
-    await page.screenshot({ path: 'test-results/before-stable-instable-click.png' });
+    await page.screenshot({ path: 'test-results/before-stable-unstable-click.png' });
     
     // Click the button
     console.log('Clicking Stable or Unstable button...');
-    await stableInstableButton.click({ timeout: 10000 });
+    await stableUnstableButton.click({ timeout: 10000 });
     console.log('Clicked Stable or Unstable button');
     
     // Wait for the activity to load
@@ -244,17 +244,17 @@ test.describe('Lalumo Stable/Instable Chords Activity', () => {
     // Wait for feedback animation
     await page.waitForTimeout(2000);
     
-    // Test the Instable button
-    console.log('Testing Instable button');
-    const instableButton = page.locator('#button_2_2_instable').first();
-    await expect(instableButton).toBeVisible({ timeout: 10000 });
+    // Test the Unstable button
+    console.log('Testing Unstable button');
+    const unstableButton = page.locator('#button_2_2_unstable').first();
+    await expect(unstableButton).toBeVisible({ timeout: 10000 });
     
-    // Take a screenshot before clicking instable button
-    await page.screenshot({ path: 'test-results/before-instable-click.png' });
+    // Take a screenshot before clicking unstable button
+    await page.screenshot({ path: 'test-results/before-unstable-click.png' });
     
-    // Click the Instable button and check for feedback
-    console.log('Clicking Instable button');
-    await instableButton.click({ timeout: 10000 });
+    // Click the Unstable button and check for feedback
+    console.log('Clicking Unstable button');
+    await unstableButton.click({ timeout: 10000 });
     
     // Wait for feedback
     console.log('Waiting for feedback...');
@@ -275,9 +275,9 @@ test.describe('Lalumo Stable/Instable Chords Activity', () => {
     }
     
     // Take a screenshot at the end
-    await page.screenshot({ path: 'test-results/stable-instable-test.png' });
+    await page.screenshot({ path: 'test-results/stable-unstable-test.png' });
     
-    console.log('Stable/Instable Chords activity test completed');
+    console.log('Stable/Unstable Chords activity test completed');
     
     // Set up a mock progress value in the middle of a level (e.g., 12)
     await page.evaluate(() => {
@@ -312,7 +312,7 @@ test.describe('Lalumo Stable/Instable Chords Activity', () => {
     // Since we can't directly access window.currentChordType in the test,
     // we'll just click one of the buttons and check the feedback
     console.log('Making an incorrect selection to trigger level reset');
-    const buttonToClick = '#button_2_2_instable'; // Start by trying the instable button
+    const buttonToClick = '#button_2_2_unstable'; // Start by trying the unstable button
     
     console.log('Clicking button to trigger level reset');
     await page.locator(buttonToClick).click();

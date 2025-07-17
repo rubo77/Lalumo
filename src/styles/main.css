@@ -1315,7 +1315,7 @@ section h2 {
 }
 
 #button_2_2_stable,
-#button_2_2_instable {
+#button_2_2_unstable {
   position: absolute;
   width: 50%;
   height: min(701px, 93vw);
@@ -1337,19 +1337,19 @@ section h2 {
   left:0;
 }
 
-#button_2_2_instable {
+#button_2_2_unstable {
   right:0;
 }
 
 #button_2_2_stable:hover,
-#button_2_2_instable:hover {
+#button_2_2_unstable:hover {
   transform: translateY(-5px);
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
   background-color: rgba(255, 255, 255, 0.1)
 }
 
 #button_2_2_stable:active,
-#button_2_2_instable:active {
+#button_2_2_unstable:active {
   transform: translateY(0);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }

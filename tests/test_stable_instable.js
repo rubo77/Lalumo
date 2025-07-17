@@ -1,25 +1,25 @@
 /**
  * Test script for 2_2_chords_stable_unstable.js
- * Run this in the browser console to test the stable/instable chord functionality
+ * Run this in the browser console to test the stable/unstable chord functionality
  */
 
 // Import the functions we want to test
 import { 
   generateStableChord, 
-  generateInstableChord, 
-  checkStableInstableMatch,
-  playStableInstableChord
+  generateUnstableChord, 
+  checkStableUnstableMatch,
+  playStableUnstableChord
 } from '../src/components/2_chords/2_2_chords_stable_unstable.js';
 
 // Test data
 const testCases = [
   { type: 'stable', func: generateStableChord, desc: 'Stable Chord Generation' },
-  { type: 'instable', func: generateInstableChord, desc: 'Instable Chord Generation' }
+  { type: 'unstable', func: generateUnstableChord, desc: 'Unstable Chord Generation' }
 ];
 
 // Helper function to run tests
 async function runTests() {
-  console.log('=== Starting Stable/Instable Chord Tests ===');
+  console.log('=== Starting Stable/Unstable Chord Tests ===');
   
   // Test 1: Verify chord generation functions return arrays of note names
   console.log('\n--- Test 1: Chord Generation ---');
@@ -48,33 +48,33 @@ async function runTests() {
     }
   });
   
-  // Test 2: Verify checkStableInstableMatch function
+  // Test 2: Verify checkStableUnstableMatch function
   console.log('\n--- Test 2: Answer Checking ---');
   try {
-    // Mock the currentChordType that would be set by playStableInstableChord
+    // Mock the currentChordType that would be set by playStableUnstableChord
     const originalCurrentChordType = window.currentChordType;
     
     // Test correct guess for stable
     window.currentChordType = 'stable';
-    const isCorrectStable = checkStableInstableMatch('stable', { progress: {} });
+    const isCorrectStable = checkStableUnstableMatch('stable', { progress: {} });
     console.log(`✓ Stable chord check (should be true): ${isCorrectStable}`);
     
     // Test incorrect guess for stable
-    const isIncorrectStable = checkStableInstableMatch('instable', { progress: {} });
+    const isIncorrectStable = checkStableUnstableMatch('unstable', { progress: {} });
     console.log(`  Incorrect guess for stable (should be false): ${isIncorrectStable}`);
     
-    // Test correct guess for instable
-    window.currentChordType = 'instable';
-    const isCorrectInstable = checkStableInstableMatch('instable', { progress: {} });
-    console.log(`✓ Instable chord check (should be true): ${isCorrectInstable}`);
+    // Test correct guess for unstable
+    window.currentChordType = 'unstable';
+    const isCorrectUnstable = checkStableUnstableMatch('unstable', { progress: {} });
+    console.log(`✓ Unstable chord check (should be true): ${isCorrectUnstable}`);
     
-    // Test incorrect guess for instable
-    const isIncorrectInstable = checkStableInstableMatch('stable', { progress: {} });
-    console.log(`  Incorrect guess for instable (should be false): ${isIncorrectInstable}`);
+    // Test incorrect guess for unstable
+    const isIncorrectUnstable = checkStableUnstableMatch('stable', { progress: {} });
+    console.log(`  Incorrect guess for unstable (should be false): ${isIncorrectUnstable}`);
     
     // Test with no current chord type
     window.currentChordType = null;
-    const noChordResult = checkStableInstableMatch('stable', { progress: {} });
+    const noChordResult = checkStableUnstableMatch('stable', { progress: {} });
     console.log(`  No current chord (should be false): ${noChordResult}`);
     
     // Restore original value
@@ -99,7 +99,7 @@ async function runTests() {
     };
     
     // Simulate correct answer
-    checkStableInstableMatch('stable', component);
+    checkStableUnstableMatch('stable', component);
     
     // Check if progress was incremented
     const updatedProgress = JSON.parse(localStorage.getItem('lalumo_chords_progress'));
@@ -110,7 +110,7 @@ async function runTests() {
     component.progress[testKey] = 12;
     
     // Simulate incorrect answer (should reset to 10, the start of the current level)
-    checkStableInstableMatch('instable', component);
+    checkStableUnstableMatch('unstable', component);
     
     const resetProgress = JSON.parse(localStorage.getItem('lalumo_chords_progress'));
     console.log(`✓ Level reset on incorrect (should be 10): ${resetProgress[testKey]}`);

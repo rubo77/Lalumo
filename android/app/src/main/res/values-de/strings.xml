@@ -57,7 +57,7 @@
     
     <!-- Chords - Main Menu -->
     <string name="chord_color_matching">Akkord-Farben Zuordnung</string>
-    <string name="chords_stable_unstable">Stabile Instabile Akkorde</string>
+    <string name="chords_stable_unstable">Stabile/Instabile Akkorde</string>
     <string name="chord_building">Akkorde Bauen</string>
     <string name="missing_note">Rate die fehlende Note</string>
     <string name="chord_characters">Akkord-Charaktere</string>
@@ -99,7 +99,7 @@
     <string name="squirrel_returns">Das Eichhörnchen ist zurück! Der Oktopus schläft noch. 🐿️</string>
     <string name="all_friends_return">Alle Freunde sind zurück! 🐶🐱🐿️🐙</string>
     
-    <!-- Stable/Instable Chord Progression Messages -->
+    <!-- Stable/Unstable Chord Progression Messages -->
     <string name="stable_unstable_level1">Kannst du den Unterschied zwischen stabilen und instabilen Akkorden hören?</string>
     <string name="stable_unstable_level2">Gut gemacht! Jetzt hörst du Septakkorde und alterierte Dominanten! 🎵</string>
     <string name="stable_unstable_level3">Stufe 3: Erweiterte Harmonien vs. polytonale Akkorde! 🎼</string>

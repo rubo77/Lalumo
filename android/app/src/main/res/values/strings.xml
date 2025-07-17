@@ -98,7 +98,7 @@
     <string name="transpose_challenge">Listen carefully! Chords are now changing pitch! 🎵</string>
     <string name="squirrel_returns">The squirrel is back to help! Octopus still sleeping. 🐿️</string>
     
-    <!-- Stable/Instable Chord Progression Messages -->
+    <!-- Stable/Unstable Chord Progression Messages -->
     <string name="stable_unstable_level1">Can you hear the difference between stable and unstable chords?</string>
     <string name="stable_unstable_level2">Great job! Now listening for seventh chords and altered dominants! 🎵</string>
     <string name="stable_unstable_level3">Level 3: Extended harmonies vs. polytonal chords! 🎼</string>

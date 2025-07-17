@@ -592,10 +592,10 @@ export function chords() {
       } else if (mode === '2_2_chords_stable_unstable') {
         // Initialize Stable or Unstable activity
         debugLog('CHORDS_2_2_DEBUG', 'Initializing Stable or Unstable activity');
-        this.currentStableInstableChord = null;
-        this.showStableInstableFeedback = false;
-        this.stableInstableFeedback = '';
-        this.stableInstableCorrect = false;
+        this.currentStableUnstableChord = null;
+        this.showStableUnstableFeedback = false;
+        this.stableUnstableFeedback = '';
+        this.stableUnstableCorrect = false;
         
         // Initialize progress if it doesn't exist
         if (!this.progress) this.progress = {};
