@@ -629,9 +629,7 @@
         
         <!-- Memory Mode -->
         <div id="1_5_pitches" x-show="mode === '1_5_pitches_memory-game'" class="activity-container lazyload-bg" data-background-image="./images/backgrounds/pitches_action1_5.jpg">
-          <button class="circular-play-button" @click="playCurrentMelody(); blurElement($event)" aria-label="Play Melody" title="Play Melody">
-            
-          </button>
+          <button class="circular-play-button" @click="playCurrentMelody(); blurElement($event)" aria-label="Play Melody" title="Play Melody"></button>
 
           
           <div class="piano-keyboard">
@@ -708,7 +706,7 @@
             </div>
             
             <div class="play-chord-button-container">
-              <button @click="playChordByType(currentChordType)" class="play-button">
+              <button @click="playChordByType(currentChordType); blurElement($event)" class="play-button">
                 <span>🔈</span>
                 <span x-text="$store.strings?.play_chord || 'Play Chord'">Play Chord</span>
               </button>
@@ -813,8 +811,8 @@
               </div>
               
               <div class="note-selector">
-                <button @click="addNoteToChord(0)" class="note-button">Root</button>
-                <button @click="addNoteToChord(3)" class="note-button">Minor 3rd</button>
+                <button @click="addNoteToChord(0); blurElement($event)" class="note-button">Root</button>
+                <button @click="addNoteToChord(3); blurElement($event)" class="note-button">Minor 3rd</button>
                 <button @click="addNoteToChord(4)" class="note-button">Major 3rd</button>
                 <button @click="addNoteToChord(7)" class="note-button">Perfect 5th</button>
                 <button @click="addNoteToChord(6)" class="note-button">Diminished 5th</button>
