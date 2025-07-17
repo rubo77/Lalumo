@@ -1,6 +1,6 @@
 Categories:
-  - Science & Education
   - Multimedia
+  - Science & Education
 License: GPL-3.0-or-later
 AuthorName: Ruben Barkow-Kuder
 WebSite: https://lalumo.eu
@@ -14,9 +14,10 @@ RepoType: git
 Repo: https://github.com/Eastcoast-Laboratories/Lalumo
 
 Builds:
-  - versionName: '3.0'
-    versionCode: 26
-    commit: 02c52693905cf3c2a8d4fc2c65d6ae8f84cc7a9d
+  - versionName: '4.0'
+    versionCode: 27
+    disable: "['scanner']"
+    commit: f2d83ecaac12694b0d6d19162f7112c9371e7630
     subdir: android/app
     sudo:
       - echo "deb https://deb.debian.org/debian trixie main" > /etc/apt/sources.list.d/trixie.list
@@ -29,6 +30,7 @@ Builds:
     output: app/build/outputs/apk/release/app-release-unsigned.apk
     prebuild:
       - cd ../..
+      - find node_modules -name "*.tar.gz" -delete || true
       - npm install --build-from-source
       - mkdir -p app/images/backgrounds
       - cp -r public/images/backgrounds/* app/images/backgrounds/
@@ -44,5 +46,5 @@ Builds:
 
 AutoUpdateMode: Version
 UpdateCheckMode: Tags
-CurrentVersion: '3.0'
-CurrentVersionCode: 26
+CurrentVersion: '4.0'
+CurrentVersionCode: 27

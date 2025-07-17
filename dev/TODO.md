@@ -175,7 +175,7 @@ reset-button:
 - Wenn man einen Ton trifft, die Note aufleuchten verbessern, vielieicht den strich an der stelle dick machen oder so
 
 1_4 Does It Sound Right:
-- baue die lieder im TODO block im pitches.js
+- Transposed melodies im höheren Level
 - # bereit zur veröffentlichung
 - when the "next melody" button is pressed in the "Does It Sound Right?" activity, the animal images should NOT change
 - fix gebogenen text

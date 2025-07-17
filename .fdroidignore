@@ -1,0 +1,2 @@
+node_modules/**/*.tar.gz
+node_modules/@capacitor/cli/assets/*.tar.gz
