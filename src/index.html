@@ -769,7 +769,7 @@
         <div id="2_2_chords_stable_unstable" x-show="mode === '2_2_chords_stable_unstable'" class="chord-activity activity-container lazyload-bg" data-background-image="./images/backgrounds/2_2_chords_stable_unstable-1.jpg">
           
           <!-- Play button (shown in game mode) -->
-          <button @click="playStableUnstableChord($data, false)" class="play-chord-2_2" :title="$store.strings?.play_chord || 'Play Chord'">▶️</button>
+          <button @click="playStableUnstableChord($data, false); blurElement($event)" class="play-chord-2_2" :title="$store.strings?.play_chord || 'Play Chord'">▶️</button>
 
           <div class="chords-container">            
             <!-- Progress display -->
@@ -784,11 +784,11 @@
             </div>
             
             <div class="button_2_2_grid">
-              <div id="button_2_2_stable" class="character" @click="checkStableUnstableMatch('stable', $data)">
+              <div id="button_2_2_stable" class="character" @click="checkStableUnstableMatch('stable', $data); blurElement($event)">
                 <div title="Stable"></div>
               </div>
               
-              <div id="button_2_2_unstable" class="character" @click="checkStableUnstableMatch('unstable', $data)">
+              <div id="button_2_2_unstable" class="character" @click="checkStableUnstableMatch('unstable', $data); blurElement($event)">
                 <div title="Unstable"></div>
               </div>
             </div>

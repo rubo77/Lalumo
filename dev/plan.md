@@ -35,7 +35,7 @@
 - The UI code in index.html now uses the new localized strings for both the progress saved message and the reset current activity button/title.
 - User requested a global rename of "Stable or Unstable" to "stable or unstable" throughout the codebase.
 - String resources and some references have been updated from "instable" to "unstable"; next step is to update filenames and code references.
-- The main JS module file has been copied and updated from `2_2_chords_stable_unstable.js` to `2_2_chords_stable_unstable.js` with internal references changed.
+- The main JS module file has been copied and updated from `2_2_chords_stable_instable.js` to `2_2_chords_stable_unstable.js` with internal references changed.
 - Main code imports and function references in `chords.js` have been updated to use `stable_unstable`. Next: check and update any remaining references elsewhere in the codebase.
 - HTML template references in `index.html` have been updated to use the new `stable_unstable` naming convention.
 - Test files referencing `stable_unstable` have been identified for update to `stable_unstable`.

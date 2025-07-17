@@ -141,8 +141,6 @@ reset-button:
 
 - ganz viel ist noch strings hartkodiert mit `isGerman`
 
-- Cheat codes die man beim beim Import eingeben kann
-
 - Je höher der Ton, umso leiser machen
 
 
@@ -190,8 +188,6 @@ reset-button:
 - jede der drei Tiere mit einem anderen Instrument
 - Und dann im Game Modus alle drei instrumente zusammen
 - eigene melodien hochladen
-
-- statt "reset current activity" soll dort "
 
 1_5 memory game:
   - # bereit zur veröffentlichung
