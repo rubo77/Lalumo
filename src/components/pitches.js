@@ -388,11 +388,51 @@ export function pitches() {
     },
     
     /**
+     * Clear all active melody timeouts
+     * @activity common
+     * @used-by resetState, setMode
+     */
+    clearMelodyTimeouts() {
+      // Clear all timeouts in the melodyTimeouts array
+      this.melodyTimeouts.forEach(timeoutId => {
+        clearTimeout(timeoutId);
+      });
+      this.melodyTimeouts = [];
+      
+      // Clear the button enable timeout if it exists
+      if (this.buttonEnableTimeout) {
+        clearTimeout(this.buttonEnableTimeout);
+        this.buttonEnableTimeout = null;
+        
+        // Re-enable all instrument buttons immediately
+        document.querySelectorAll('.instrument-button').forEach(btn => {
+          btn.disabled = false;
+          btn.classList.remove('disabled');
+        });
+        debugLog('SOUND JUDGMENT', 'Re-enabled instrument buttons (activity left)');
+      }
+      
+      console.log('Cleared all melody timeouts');
+      
+      // Also clear any active note highlighting
+      if (this.currentHighlightedNote) {
+        this.currentHighlightedNote = null;
+      }
+      
+      // Reset playing state
+      this.isPlaying = false;
+    },
+    
+
+    /**
      * Reset the component state between mode changes
      * @activity common
      * @used-by all activities
      */
     resetState() {
+      // Clear any active melody timeouts
+      this.clearMelodyTimeouts();
+      
       // Reset state for clean mode switching
       this.currentAnimation = null;
       this.showFeedback = false;
@@ -587,6 +627,9 @@ export function pitches() {
         this.mascotHideTimer = null;
         console.log("MASCOT_CLEAR: Cleared hide timer on mode switch");
       }
+      
+      // Clear any active melody timeouts when changing modes
+      this.clearMelodyTimeouts();
       // Hide any currently visible mascot message
       this.showMascot = false;
       console.log("MASCOT_CLEAR: Hidden mascot on mode switch to:", newMode);
@@ -4087,6 +4130,12 @@ export function pitches() {
       // Stop any currently playing sounds
       this.stopCurrentSound();
       
+      // Clear any existing button re-enable timeout
+      if (this.buttonEnableTimeout) {
+        clearTimeout(this.buttonEnableTimeout);
+        this.buttonEnableTimeout = null;
+      }
+      
       // Disable all instrument buttons during playback
       document.querySelectorAll('.instrument-button').forEach(btn => {
         btn.disabled = true;
@@ -4098,11 +4147,13 @@ export function pitches() {
       this.playMelodySequence(this.currentSequence, 'practice', this.currentMelodyId, { instrument });
       
       // Re-enable the buttons after playback completes
-      setTimeout(() => {
+      this.buttonEnableTimeout = setTimeout(() => {
         document.querySelectorAll('.instrument-button').forEach(btn => {
           btn.disabled = false;
           btn.classList.remove('disabled');
+          debugLog('SOUND JUDGMENT', 'Re-enabled instrument buttons');
         });
+        this.buttonEnableTimeout = null;
       }, this.currentSequence.length * 700 + 500); // Approximate melody duration
     },
 
