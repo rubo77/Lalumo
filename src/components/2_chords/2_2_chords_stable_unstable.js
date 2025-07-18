@@ -889,7 +889,7 @@ export function generateStableChord(progressLevel = 0) {
         midiToNoteName(root + 31)   // Perfect 5th (G4)
       ];
       
-    case 2: // Level 3: Extended harmonies (9th, 11th chords)
+    case 2: // Level 3: Extended harmonies (9th, 11th chords) - corrected interval comments
       return [
         baseNote,                   // Base note (C2)
         midiToNoteName(root + 12),  // Root (C3)
