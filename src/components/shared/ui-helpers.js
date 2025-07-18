@@ -54,7 +54,7 @@ export function update_progress_display(options) {
       activityContainer.appendChild(newElement);
       debugLog('UI', `Progress display added to ${settings.containerSelector}`);
     } else {
-      console.error(`UI: Could not find activity container with selector ${settings.containerSelector}`);
+      debugLog(['UI', 'ERROR'], `Could not find activity container with selector ${settings.containerSelector}`);
       return;
     }
   }
@@ -76,6 +76,6 @@ export function update_progress_display(options) {
 
 // Exportiere eine Testfunktion für Import-Tests
 export function testUiHelpersModuleImport() {
-  console.log('UI Helpers module successfully imported');
+  debugLog('UI', 'UI Helpers module successfully imported');
   return true;
 }

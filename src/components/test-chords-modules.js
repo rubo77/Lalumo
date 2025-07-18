@@ -2,6 +2,9 @@
  * Test script to verify chord modules are working correctly
  */
 
+// Import debug utility
+import { debugLog } from '../utils/debug.js';
+
 // Import test functions from individual modules (direct imports)
 import { testCommonModuleImport } from './2_chords/common.js';
 import { testChordColorMatchingModuleImport } from './2_chords/2_1_chord_color_matching.js';
@@ -10,10 +13,10 @@ import { testMissingNoteModuleImport } from './2_chords/2_4_missing_note.js';
 import { testChordCharactersModuleImport } from './2_chords/2_5_chord_characters.js';
 
 // Run all test functions
-console.log('Testing chord module imports:');
+debugLog('TEST', 'Testing chord module imports:');
 testCommonModuleImport();
 testChordColorMatchingModuleImport();
 testChordBuildingModuleImport();
 testMissingNoteModuleImport();
 testChordCharactersModuleImport();
-console.log('All chord module tests completed!');
+debugLog('TEST', 'All chord module tests completed!');

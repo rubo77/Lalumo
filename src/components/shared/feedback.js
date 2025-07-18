@@ -5,6 +5,8 @@
  * Ensures consistent user experience and reduces code duplication
  */
 
+import { debugLog } from '../../utils/debug.js';
+
 /**
  * Show a mascot message and speak it if text-to-speech is available
  * @param {string} message - The message to display and speak
@@ -15,7 +17,7 @@
 export function showMascotMessage(message, activityId = null, delaySeconds = 2, component = null) {
   // Check for empty message
   if (!message || message.trim() === '' || message === 'undefined' || message === 'null') {
-    console.error('HELP_MESSAGE: showMascotMessage called with empty message', new Error().stack);
+    debugLog(['HELP_MESSAGE', 'ERROR'], 'showMascotMessage called with empty message');
     return;
   }
   
@@ -24,7 +26,7 @@ export function showMascotMessage(message, activityId = null, delaySeconds = 2, 
   
   // Check if help messages are enabled in user settings
   if (store && store.mascotSettings && !store.mascotSettings.showHelpMessages) {
-    console.log('HELP_MESSAGE: Skipping help message - user has disabled help messages');
+    debugLog('HELP_MESSAGE', 'Skipping help message - user has disabled help messages');
     return;
   }
   
@@ -44,7 +46,7 @@ export function showMascotMessage(message, activityId = null, delaySeconds = 2, 
   }
   
   // Log the message
-  console.log(`HELP_MESSAGE: ${message}`);
+  debugLog('HELP_MESSAGE', message);
   
   // If a component is provided and it has a speak method, use it
   if (component && typeof component.speak === 'function') {
@@ -133,7 +135,7 @@ export function playSuccessSound() {
   if (window.app && typeof window.app.playSuccessSound === 'function') {
     window.app.playSuccessSound();
   } else {
-    console.warn('FEEDBACK_UTILITIES: App instance not available for success sound');
+    debugLog(['FEEDBACK_UTILITIES', 'WARN'], 'App instance not available for success sound');
   }
 }
 
@@ -146,7 +148,7 @@ export function playErrorSound() {
   if (window.app && typeof window.app.playErrorSound === 'function') {
     window.app.playErrorSound();
   } else {
-    console.warn('FEEDBACK_UTILITIES: App instance not available for error sound');
+    debugLog(['FEEDBACK_UTILITIES', 'WARN'], 'App instance not available for error sound');
   }
 }
 
@@ -252,7 +254,7 @@ export function showActivityProgressBar(options) {
   // Find target container
   const targetContainer = document.querySelector(appendToContainer);
   if (!targetContainer) {
-    console.warn(`PROGRESS_BAR: Container not found: ${appendToContainer}`);
+    debugLog(['PROGRESS_BAR', 'WARN'], `Container not found: ${appendToContainer}`);
     return null;
   }
 
@@ -318,7 +320,7 @@ export function showActivityProgressBar(options) {
     targetContainer.appendChild(progressContainer);
   }
 
-  console.log(`PROGRESS_BAR: Created for ${activityName} - ${currentCount}/${totalCount}`);
+  debugLog('PROGRESS_BAR', `Created for ${activityName} - ${currentCount}/${totalCount}`);
   return progressContainer;
 }
 
@@ -330,6 +332,6 @@ export function hideActivityProgressBar(progressClass = 'activity-progress') {
   const progressContainer = document.querySelector(`.${progressClass}`);
   if (progressContainer) {
     progressContainer.remove();
-    console.log(`PROGRESS_BAR: Removed progress bar with class: ${progressClass}`);
+    debugLog('PROGRESS_BAR', `Removed progress bar with class: ${progressClass}`);
   }
 }
