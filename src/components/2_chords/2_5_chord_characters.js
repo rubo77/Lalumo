@@ -167,7 +167,7 @@ export function resetProgress_2_5() {
   // Get the chordsComponent from window global
   const chordsComponent = window.chordsComponent;
   if (!chordsComponent) {
-    console.error('Cannot reset 2_5_chords_characters: chordsComponent not found');
+    debugLog(['CHORDS', 'ERROR'], 'Cannot reset 2_5_chords_characters: chordsComponent not found');
     return;
   }
   

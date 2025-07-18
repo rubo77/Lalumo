@@ -49,7 +49,7 @@ export function initCapacitor() {
     
     // Handle focus events for web platform
     window.addEventListener('blur', () => {
-      console.log('[LIFECYCLE] Window lost focus, not cleaning up audio resources');
+      debugLog('LIFECYCLE', 'Window lost focus, not cleaning up audio resources');
       // We don't want to clean up audio when user just clicks outside the window
       // cleanupAudioResources();
     });

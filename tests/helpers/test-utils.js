@@ -4,6 +4,16 @@
 
 const { expect } = require('@playwright/test');
 
+// Test environment debug logging utility
+const debugLog = (module, message, ...args) => {
+  // For test files, always log since it's test/development time
+  if (args.length > 0) {
+    console.log(`[${module}] ${message}`, ...args);
+  } else {
+    console.log(`[${module}] ${message}`);
+  }
+};
+
 /**
  * Setup the test environment and navigate to the app
  * Handles common operations like username generation
@@ -14,13 +24,13 @@ async function setupTest(page) {
   
   // Handle dialogs (for username generation)
   page.on('dialog', async dialog => {
-    console.log(`Dialog detected: ${dialog.type()}, message: ${dialog.message()}`);
+    debugLog('TEST_UTILS', `Dialog detected: ${dialog.type()}, message: ${dialog.message()}`);
     await dialog.accept('TestSpieler');
   });
   
   // Capture console logs
   page.on('console', msg => {
-    console.log(`BROWSER LOG: ${msg.type()}: ${msg.text()}`);
+    debugLog('TEST_UTILS', `BROWSER LOG: ${msg.type()}: ${msg.text()}`);
   });
 
   // Navigate to the app
@@ -34,7 +44,7 @@ async function setupTest(page) {
   
   // Ensure we're on the main screen
   await expect(page.locator('.pitch-landing')).toBeVisible({ timeout: 2000 });
-  console.log('Initial setup complete, on main landing page');
+  debugLog('TEST_UTILS', 'Initial setup complete, on main landing page');
 }
 
 /**
@@ -47,16 +57,16 @@ async function handleUsernameModal(page) {
     const isVisible = await usernameModal.isVisible({ timeout: 2000 });
     
     if (isVisible) {
-      console.log('Username modal detected, clicking generate button...');
+      debugLog('TEST_UTILS', 'Username modal detected, clicking generate button...');
       
       // Use class selector instead of text content to avoid strict mode violation
       // We specifically select the primary button which should be the main generate button
       const primaryButton = page.locator('.modal-overlay .primary-button').first();
       if (await primaryButton.isVisible()) {
-        console.log('Found primary button, clicking...');
+        debugLog('TEST_UTILS', 'Found primary button, clicking...');
         await primaryButton.click();
       } else {
-        console.log('Primary button not found, trying alternative selector...');
+        debugLog('TEST_UTILS', 'Primary button not found, trying alternative selector...');
         // Fallback to any button in the modal
         const anyButton = page.locator('.modal-overlay button').first();
         await anyButton.click();
@@ -66,13 +76,13 @@ async function handleUsernameModal(page) {
       // Verify the modal was dismissed
       const modalStillVisible = await usernameModal.isVisible({ timeout: 1000 }).catch(() => false);
       if (modalStillVisible) {
-        console.log('Username modal still visible, trying different approach...');
+        debugLog('TEST_UTILS', 'Username modal still visible, trying different approach...');
         // Try clicking dialog accept button if visible
         try {
           await page.keyboard.press('Enter');
           await page.waitForTimeout(500);
         } catch (e) {
-          console.log('Failed to press Enter:', e);
+          debugLog('TEST_UTILS', 'Failed to press Enter:', e);
         }
         
         // If still visible, try clicking at center of modal
@@ -87,10 +97,10 @@ async function handleUsernameModal(page) {
         }
       }
     } else {
-      console.log('No username modal found, continuing...');
+      debugLog('TEST_UTILS', 'No username modal found, continuing...');
     }
   } catch (e) {
-    console.log('[Error] while handling username modal:', e);
+    debugLog('TEST_UTILS', '[Error] while handling username modal:', e);
   }
 }
 
@@ -99,14 +109,14 @@ async function handleUsernameModal(page) {
  */
 async function navigateToActivity(page, activitySelector, activityContainerId) {
   // Click on the activity area
-  console.log(`Navigating to ${activitySelector}...`);
+  debugLog('TEST_UTILS', `Navigating to ${activitySelector}...`);
   await page.locator(activitySelector).click();
   await page.waitForTimeout(500);
   
   // Verify we're on the right activity
   const activityContainer = page.locator(`#${activityContainerId}`);
   await expect(activityContainer).toBeVisible({ timeout: 2000 });
-  console.log(`Successfully navigated to activity ${activityContainerId}`);
+  debugLog('TEST_UTILS', `Successfully navigated to activity ${activityContainerId}`);
   
   return activityContainer;
 }
@@ -117,13 +127,13 @@ async function navigateToActivity(page, activitySelector, activityContainerId) {
 async function returnToMain(page) {
   // Click home button to return to main
   const homeButton = page.locator('.back-to-main').first();
-  console.log('Clicking home button...');
+  debugLog('TEST_UTILS', 'Clicking home button...');
   await homeButton.click();
   await page.waitForTimeout(1000);
   
   // Verify we're back on the main page
   await expect(page.locator('.pitch-landing')).toBeVisible({ timeout: 2000 });
-  console.log('Successfully returned to main landing page');
+  debugLog('TEST_UTILS', 'Successfully returned to main landing page');
 }
 
 /**
@@ -154,10 +164,10 @@ async function checkElementVisibility(page, selector, description) {
   try {
     const element = page.locator(selector);
     const isVisible = await element.isVisible({ timeout: 1000 });
-    console.log(`${description} is ${isVisible ? 'visible' : 'not visible'}`);
+    debugLog('TEST_UTILS', `${description} is ${isVisible ? 'visible' : 'not visible'}`);
     return isVisible;
   } catch (e) {
-    console.log(`Error checking visibility for ${description}:`, e);
+    debugLog('TEST_UTILS', `Error checking visibility for ${description}:`, e);
     return false;
   }
 }

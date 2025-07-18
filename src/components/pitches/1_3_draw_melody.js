@@ -7,7 +7,7 @@ import { debugLog } from '../../utils/debug.js';
 
 // Export a test function for import tests
 export function testDrawMelodyModuleImport() {
-  console.log('Draw Melody module successfully imported');
+  debugLog('DRAW_MELODY', 'Draw Melody module successfully imported');
   return true;
 }
 
@@ -16,7 +16,7 @@ export function testDrawMelodyModuleImport() {
  * @param {Object} component - The Alpine.js component
  */
 export function reset_1_3_DrawMelody_Progress(component) {
-  console.log('RESET_DRAW_MELODY: Starting reset process', {
+  debugLog('RESET_DRAW_MELODY', 'Starting reset process', {
     currentLevel: component.drawMelodyLevel,
     successCounter: component.levelSuccessCounter,
     challengeMode: component.melodyChallengeMode
@@ -43,7 +43,7 @@ export function reset_1_3_DrawMelody_Progress(component) {
     component.clearDrawing();
   }
   
-  console.log('RESET_DRAW_MELODY: Reset completed successfully');
+  debugLog('RESET_DRAW_MELODY', 'Reset completed successfully');
 }
 
 // Make globally available for diagnosis

@@ -1,6 +1,16 @@
 // @ts-check
 const { test, expect } = require('@playwright/test');
 
+// Test environment debug logging utility
+const debugLog = (module, message, ...args) => {
+  // For test files, always log since it's test/development time
+  if (args.length > 0) {
+    debugLog('HASH_NAV_SPEC', `[${module}] ${message}`, ...args);
+  } else {
+    debugLog('HASH_NAV_SPEC', `[${module}] ${message}`);
+  }
+};
+
 /**
  * Test suite for hash navigation in Lalumo app
  * Tests the correct switching between activities via hash changes
@@ -12,7 +22,7 @@ test.describe('Lalumo Hash Navigation', () => {
     
     // Listen für Dialog-Events registrieren, bevor wir navigieren
     page.on('dialog', async dialog => {
-      console.log(`Dialog detected: ${dialog.type()}, message: ${dialog.message()}`);
+      debugLog('HASH_NAV_SPEC', `Dialog detected: ${dialog.type()}, message: ${dialog.message()}`);
       // Alle Dialoge automatisch bestätigen, z.B. für Spielernamen-Eingabe
       if (dialog.type() === 'prompt') {
         await dialog.accept('TestSpieler');
@@ -23,7 +33,7 @@ test.describe('Lalumo Hash Navigation', () => {
     
     // Konsolen-Logs erfassen
     page.on('console', msg => {
-      console.log(`BROWSER LOG: ${msg.type()}: ${msg.text()}`);
+      debugLog('HASH_NAV_SPEC', `BROWSER LOG: ${msg.type()}: ${msg.text()}`);
     });
 
     try {
@@ -37,15 +47,15 @@ test.describe('Lalumo Hash Navigation', () => {
       try {
         const isVisible = await page.isVisible('.pitch-landing', { timeout: 2000 });
         if (!isVisible) {
-          console.log('Pitch landing not immediately visible, checking for dialogs...');
+          debugLog('HASH_NAV_SPEC', 'Pitch landing not immediately visible, checking for dialogs...');
           // Klicke auf ein Element, um sicherzustellen, dass Dialoge ausgelöst werden
           await page.mouse.click(100, 100);
         }
       } catch (e) {
-        console.log('[Error] while waiting for pitch-landing:', e);
+        debugLog('HASH_NAV_SPEC', '[Error] while waiting for pitch-landing:', e);
       }
     } catch (e) {
-      console.log('Error during page initialization:', e);
+      debugLog('HASH_NAV_SPEC', 'Error during page initialization:', e);
     }
     
     // Konsolen-Logs wurden bereits oben erfasst
@@ -53,15 +63,15 @@ test.describe('Lalumo Hash Navigation', () => {
 
   test('Should navigate to Draw Melody activity via hash', async ({ page }) => {
     try {
-      console.log('TEST: Navigating to Draw Melody via hash...');
+      debugLog('HASH_NAV_SPEC', 'TEST: Navigating to Draw Melody via hash...');
       
       // Navigiere direkt zur Draw Melody-Aktivität via Hash
       await page.goto('http://localhost:9091/#1_pitches-1_2_pitches_draw-melody', { timeout: 5000 });
       
       // Füge speziellen JavaScript-Code ein, um die Hash-Änderung zu überwachen
       await page.evaluate(() => {
-        console.log('Current hash:', window.location.hash);
-        console.log('Alpine mode (if available):', 
+        debugLog('HASH_NAV_SPEC', 'Current hash:', window.location.hash);
+        debugLog('HASH_NAV_SPEC', 'Alpine mode (if available):', 
           window.Alpine?.data?.pitches?.mode || 'Not available');
       });
       
@@ -73,7 +83,7 @@ test.describe('Lalumo Hash Navigation', () => {
         // Das Problem könnte sein, dass Alpine.js den DOM nicht aktualisiert hat
         // Versuche, die setMode-Funktion direkt aufzurufen
         if (window.Alpine?.data?.pitches?.setMode) {
-          console.log('Manually calling setMode with 1_2_pitches_draw-melody');
+          debugLog('HASH_NAV_SPEC', 'Manually calling setMode with 1_2_pitches_draw-melody');
           window.Alpine.data.pitches.setMode('1_2_pitches_draw-melody');
           
           // Forciere Alpine-Update
@@ -111,7 +121,7 @@ test.describe('Lalumo Hash Navigation', () => {
         };
       });
       
-      console.log('DOM Visibility Report:', JSON.stringify(visibilityReport, null, 2));
+      debugLog('HASH_NAV_SPEC', 'DOM Visibility Report:', JSON.stringify(visibilityReport, null, 2));
       
       // Überprüfe den Alpine.js-Zustand
       const alpineState = await page.evaluate(() => {
@@ -123,7 +133,7 @@ test.describe('Lalumo Hash Navigation', () => {
         };
       });
       
-      console.log('Alpine.js State:', JSON.stringify(alpineState, null, 2));
+      debugLog('HASH_NAV_SPEC', 'Alpine.js State:', JSON.stringify(alpineState, null, 2));
 
       // Überprüfe, ob die Draw-Melody-Aktivität sichtbar ist
       // Wir verwenden eine robustere Methode, da isVisible manchmal unzuverlässig ist
@@ -134,16 +144,16 @@ test.describe('Lalumo Hash Navigation', () => {
         return style.display !== 'none' && style.visibility !== 'hidden';
       });
       
-      console.log('Draw Melody Activity visible according to computed style:', drawMelodyVisible);
+      debugLog('HASH_NAV_SPEC', 'Draw Melody Activity visible according to computed style:', drawMelodyVisible);
       
       // Mache ein Screenshot zur visuellen Überprüfung
       await page.screenshot({ path: 'tests/draw-melody-activity.png' });
-      console.log('Screenshot saved to tests/draw-melody-activity.png');
+      debugLog('HASH_NAV_SPEC', 'Screenshot saved to tests/draw-melody-activity.png');
       
       // Überprüfe, ob die korrekte Aktivität angezeigt wird
       expect(drawMelodyVisible).toBeTruthy();
     } catch (e) {
-      console.error('Test error:', e);
+      debugLog(['HASH_NAV_SPEC', 'ERROR'], 'Test error:', e);
       // Mache einen Screenshot bei Fehlern
       await page.screenshot({ path: 'tests/draw-melody-error.png' });
       throw e;
@@ -152,7 +162,7 @@ test.describe('Lalumo Hash Navigation', () => {
 
   test('Should navigate between all pitch activities', async ({ page }) => {
     try {
-      console.log('TEST: Testing navigation between all pitch activities');
+      debugLog('HASH_NAV_SPEC', 'TEST: Testing navigation between all pitch activities');
       
       // Definiere die zu testenden Aktivitäten
       const activities = [
@@ -163,7 +173,7 @@ test.describe('Lalumo Hash Navigation', () => {
       
       // Teste Navigation zu jeder Aktivität
       for (const activity of activities) {
-        console.log(`\nTesting navigation to ${activity.id}...`);
+        debugLog('HASH_NAV_SPEC', `\nTesting navigation to ${activity.id}...`);
         
         // Navigiere via Hash
         await page.goto(`http://localhost:9091/#1_pitches-${activity.id}`, { timeout: 5000 });
@@ -173,11 +183,11 @@ test.describe('Lalumo Hash Navigation', () => {
         
         // Erzwinge eine manuelle Mode-Aktualisierung, falls nötig
         await page.evaluate((activityId) => {
-          console.log('Activity check - current hash:', window.location.hash);
+          debugLog('HASH_NAV_SPEC', 'Activity check - current hash:', window.location.hash);
           
           // Direkte Modusänderung erzwingen
           if (window.Alpine?.data?.pitches?.setMode) {
-            console.log(`Manually setting mode to ${activityId}`);
+            debugLog('HASH_NAV_SPEC', `Manually setting mode to ${activityId}`);
             window.Alpine.data.pitches.setMode(activityId);
             
             // Forciere Alpine-Update
@@ -198,20 +208,20 @@ test.describe('Lalumo Hash Navigation', () => {
         
         // Screenshot für Diagnose
         await page.screenshot({ path: `tests/${activity.id.split('_').pop()}.png` });
-        console.log(`Activity ${activity.id} visible:`, isVisible);
-        console.log(`Screenshot saved to tests/${activity.id.split('_').pop()}.png`);
+        debugLog('HASH_NAV_SPEC', `Activity ${activity.id} visible:`, isVisible);
+        debugLog('HASH_NAV_SPEC', `Screenshot saved to tests/${activity.id.split('_').pop()}.png`);
         
         // Überprüfe Alpine.js-Status
         const alpineMode = await page.evaluate(() => 
           window.Alpine?.data?.pitches?.mode || 'No Alpine mode available'
         );
-        console.log('Current Alpine.js mode:', alpineMode);
+        debugLog('HASH_NAV_SPEC', 'Current Alpine.js mode:', alpineMode);
         
         // Behaupte, dass die Aktivität sichtbar ist
         expect(isVisible).toBeTruthy();
       }
     } catch (e) {
-      console.error('Test error during activity navigation:', e);
+      debugLog(['HASH_NAV_SPEC', 'ERROR'], 'Test error during activity navigation:', e);
       await page.screenshot({ path: 'tests/activity-navigation-error.png' });
       throw e;
     }
@@ -219,10 +229,10 @@ test.describe('Lalumo Hash Navigation', () => {
 
   test('Should correctly handle back button navigation', async ({ page }) => {
     try {
-      console.log('\nTEST: Testing back button navigation');
+      debugLog('HASH_NAV_SPEC', '\nTEST: Testing back button navigation');
       
       // Zuerst zu Draw Melody navigieren
-      console.log('Navigating to Draw Melody...');
+      debugLog('HASH_NAV_SPEC', 'Navigating to Draw Melody...');
       await page.goto('http://localhost:9091/#1_pitches-1_2_pitches_draw-melody', { timeout: 5000 });
       await page.waitForTimeout(1000);
       
@@ -243,10 +253,10 @@ test.describe('Lalumo Hash Navigation', () => {
         const el = document.querySelector('.draw-melody-activity');
         return el && window.getComputedStyle(el).display !== 'none';
       });
-      console.log('Draw Melody visible after first navigation:', drawVisible1);
+      debugLog('HASH_NAV_SPEC', 'Draw Melody visible after first navigation:', drawVisible1);
       
       // Dann zum Memory Game navigieren
-      console.log('Navigating to Memory Game...');
+      debugLog('HASH_NAV_SPEC', 'Navigating to Memory Game...');
       await page.goto('http://localhost:9091/#1_pitches-1_3_pitches_memory-game', { timeout: 5000 });
       await page.waitForTimeout(1000);
       
@@ -266,11 +276,11 @@ test.describe('Lalumo Hash Navigation', () => {
         const el = document.querySelector('.memory-game-activity');
         return el && window.getComputedStyle(el).display !== 'none';
       });
-      console.log('Memory Game visible:', memoryVisible);
+      debugLog('HASH_NAV_SPEC', 'Memory Game visible:', memoryVisible);
       await page.screenshot({ path: 'tests/before-back-button.png' });
       
       // Gehe zurück in der History (sollte zu Draw Melody gehen)
-      console.log('Going back in browser history...');
+      debugLog('HASH_NAV_SPEC', 'Going back in browser history...');
       await page.goBack();
       await page.waitForTimeout(1000);
       
@@ -281,7 +291,7 @@ test.describe('Lalumo Hash Navigation', () => {
           alpineMode: window.Alpine?.data?.pitches?.mode || 'No Alpine mode'
         };
       });
-      console.log('After back button - Hash and Alpine mode:', afterBackInfo);
+      debugLog('HASH_NAV_SPEC', 'After back button - Hash and Alpine mode:', afterBackInfo);
       
       // Manuell den Modus aktualisieren, falls nötig
       if (afterBackInfo.hash.includes('1_2_pitches_draw-melody')) {
@@ -303,12 +313,12 @@ test.describe('Lalumo Hash Navigation', () => {
       });
       
       await page.screenshot({ path: 'tests/after-back-button.png' });
-      console.log('After back button - Draw Melody visible:', drawVisible2);
+      debugLog('HASH_NAV_SPEC', 'After back button - Draw Melody visible:', drawVisible2);
       
       // Behaupte, dass Draw Melody sichtbar ist
       expect(drawVisible2).toBeTruthy();
     } catch (e) {
-      console.error('Test error during back navigation:', e);
+      debugLog(['HASH_NAV_SPEC', 'ERROR'], 'Test error during back navigation:', e);
       await page.screenshot({ path: 'tests/back-navigation-error.png' });
       throw e;
     }

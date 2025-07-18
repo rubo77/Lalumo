@@ -1,5 +1,7 @@
 /* still unused but planned functions from pitches.js */
 
+import { debugLog } from '../utils/debug';
+
 /**
  * Refresh the animation for a pattern
  * @activity common
@@ -35,7 +37,7 @@ refreshAnimation(type) {
  */
 async playToneWithToneJs(note, duration = 800) {
   try {
-    console.log(`TONE: Playing note ${note} for ${duration}ms`);
+    debugLog('TONE', `Playing note ${note} for ${duration}ms`);
     
     // Make sure audio is initialized
     await this.ensureToneStarted();
@@ -52,10 +54,10 @@ async playToneWithToneJs(note, duration = 800) {
     this.synth.triggerAttackRelease(note, durationSeconds, now);
     
     // Log success
-    console.log(`TONE: Successfully triggered note ${note} at time ${now}`);
+    debugLog('TONE', `Successfully triggered note ${note} at time ${now}`);
     return true;
   } catch (error) {
-    console.error('TONE: Error playing note with Tone.js:', error);
+    debugLog(['TONE', 'ERROR'], `Error playing note with Tone.js: ${error.message || error}`);
     return false;
   }
 },
@@ -71,7 +73,7 @@ async playToneWithToneJs(note, duration = 800) {
  */
 async playToneSequenceWithToneJs(notes, durations, interval = 0.5) {
   try {
-    console.log(`TONE: Playing sequence of ${notes.length} notes`);
+    debugLog('TONE', `Playing sequence of ${notes.length} notes`);
     
     // Make sure audio is initialized
     await this.ensureToneStarted();
@@ -87,12 +89,12 @@ async playToneSequenceWithToneJs(notes, durations, interval = 0.5) {
       const startTime = now + (i * interval);
       
       this.synth.triggerAttackRelease(note, duration, startTime);
-      console.log(`TONE: Scheduled note ${note} with duration ${duration} at time ${startTime}`);
+      debugLog('TONE', `Scheduled note ${note} with duration ${duration} at time ${startTime}`);
     });
     
     return true;
   } catch (error) {
-    console.error('TONE: Error playing sequence with Tone.js:', error);
+    debugLog(['TONE', 'ERROR'], `Error playing sequence with Tone.js: ${error.message || error}`);
     return false;
   }
 },

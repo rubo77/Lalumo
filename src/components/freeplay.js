@@ -2,6 +2,9 @@
  * Free Play component
  * Allows free musical exploration for creative play
  */
+
+import { debugLog } from '../utils/debug.js';
+
 export function freeplay() {
   return {
     currentInstrument: 'piano',
@@ -15,7 +18,7 @@ export function freeplay() {
      * Initialize the component
      */
     init() {
-      console.log('Free Play component initialized');
+      debugLog('FREEPLAY', 'Free Play component initialized');
       this.setupNavigation();
     },
     
@@ -51,7 +54,7 @@ export function freeplay() {
     selectInstrument(instrument) {
       if (this.availableInstruments.includes(instrument)) {
         this.currentInstrument = instrument;
-        console.log(`Selected instrument: ${instrument}`);
+        debugLog('FREEPLAY', `Selected instrument: ${instrument}`);
       }
     },
     
@@ -78,7 +81,7 @@ export function freeplay() {
           });
         }
       } catch (error) {
-        console.error(`Error playing note ${note}:`, error);
+        debugLog(['FREEPLAY', 'ERROR'], `Error playing note ${note}: ${error.message || error}`);
       }
     },
     
@@ -89,7 +92,7 @@ export function freeplay() {
       this.recordedNotes = [];
       this.recordStartTime = Date.now();
       this.isRecording = true;
-      console.log('Recording started');
+      debugLog('FREEPLAY', 'Recording started');
     },
     
     /**
@@ -99,7 +102,7 @@ export function freeplay() {
       if (this.isRecording) {
         this.isRecording = false;
         this.hasRecording = this.recordedNotes.length > 0;
-        console.log('Recording stopped, notes:', this.recordedNotes.length);
+        debugLog('FREEPLAY', `Recording stopped, notes: ${this.recordedNotes.length}`);
       }
     },
     
@@ -130,7 +133,7 @@ export function freeplay() {
         }, delay);
       });
       
-      console.log('Playing back recording');
+      debugLog('FREEPLAY', 'Playing back recording');
     }
   };
 }

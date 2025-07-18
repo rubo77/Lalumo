@@ -7,7 +7,7 @@ import { debugLog } from '../../utils/debug.js';
 
 // Export a test function for import tests
 export function testMemoryGameModuleImport() {
-  console.log('Memory Game module successfully imported');
+  debugLog('MEMORY_GAME', 'Memory Game module successfully imported');
   return true;
 }
 
@@ -16,7 +16,7 @@ export function testMemoryGameModuleImport() {
  * @param {Object} component - The Alpine.js component
  */
 export function reset_1_5_MemoryGame_Progress(component) {
-  console.log('RESET_MEMORY_GAME: Starting reset process', {
+  debugLog('RESET_MEMORY_GAME', 'Starting reset process', {
     memorySuccessCount: component.memorySuccessCount
   });
   
@@ -32,7 +32,7 @@ export function reset_1_5_MemoryGame_Progress(component) {
   component.progress['1_5_pitches_memory-game'] = 0;
   component.updateProgressPitches();
   
-  console.log('RESET_MEMORY_GAME: Reset completed successfully');
+  debugLog('RESET_MEMORY_GAME', 'Reset completed successfully');
 }
 
 // Make globally available for diagnosis

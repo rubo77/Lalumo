@@ -11,6 +11,24 @@ import {
   playStableUnstableChord
 } from '../src/components/2_chords/2_2_chords_stable_unstable.js';
 
+// Test environment debug logging utility
+const debugLog = (module, message, ...args) => {
+  // For test files, always log since it's test/development time
+  if (args.length > 0) {
+    console.log(`[${module}] ${message}`, ...args);
+  } else {
+    console.log(`[${module}] ${message}`);
+  }
+};
+
+const debugError = (module, message, ...args) => {
+  if (args.length > 0) {
+    console.error(`[${module}] ${message}`, ...args);
+  } else {
+    console.error(`[${module}] ${message}`);
+  }
+};
+
 // Test data
 const testCases = [
   { type: 'stable', func: generateStableChord, desc: 'Stable Chord Generation' },
@@ -19,15 +37,15 @@ const testCases = [
 
 // Helper function to run tests
 async function runTests() {
-  console.log('=== Starting Stable/Unstable Chord Tests ===');
+  debugLog('STABLE_UNSTABLE_TEST', '=== Starting Stable/Unstable Chord Tests ===');
   
   // Test 1: Verify chord generation functions return arrays of note names
-  console.log('\n--- Test 1: Chord Generation ---');
+  debugLog('STABLE_UNSTABLE_TEST', '\n--- Test 1: Chord Generation ---');
   testCases.forEach(({ type, func, desc }) => {
     try {
       const chord = func();
-      console.log(`✓ ${desc}: Success`);
-      console.log(`   Generated ${type} chord:`, chord);
+      debugLog('STABLE_UNSTABLE_TEST', `✓ ${desc}: Success`);
+      debugLog('STABLE_UNSTABLE_TEST', `   Generated ${type} chord:`, chord);
       
       // Verify it's an array with 6 notes
       if (!Array.isArray(chord) || chord.length !== 6) {
@@ -41,15 +59,15 @@ async function runTests() {
         }
       });
       
-      console.log('   ✓ Note format validation passed');
+      debugLog('STABLE_UNSTABLE_TEST', '   ✓ Note format validation passed');
       
     } catch (error) {
-      console.error(`✗ ${desc} failed:`, error.message);
+      debugError('STABLE_UNSTABLE_TEST', `✗ ${desc} failed:`, error.message);
     }
   });
   
   // Test 2: Verify checkStableUnstableMatch function
-  console.log('\n--- Test 2: Answer Checking ---');
+  debugLog('STABLE_UNSTABLE_TEST', '\n--- Test 2: Answer Checking ---');
   try {
     // Mock the currentChordType that would be set by playStableUnstableChord
     const originalCurrentChordType = window.currentChordType;
@@ -57,35 +75,35 @@ async function runTests() {
     // Test correct guess for stable
     window.currentChordType = 'stable';
     const isCorrectStable = checkStableUnstableMatch('stable', { progress: {} });
-    console.log(`✓ Stable chord check (should be true): ${isCorrectStable}`);
+    debugLog('STABLE_UNSTABLE_TEST', `✓ Stable chord check (should be true): ${isCorrectStable}`);
     
     // Test incorrect guess for stable
     const isIncorrectStable = checkStableUnstableMatch('unstable', { progress: {} });
-    console.log(`  Incorrect guess for stable (should be false): ${isIncorrectStable}`);
+    debugLog('STABLE_UNSTABLE_TEST', `  Incorrect guess for stable (should be false): ${isIncorrectStable}`);
     
     // Test correct guess for unstable
     window.currentChordType = 'unstable';
     const isCorrectUnstable = checkStableUnstableMatch('unstable', { progress: {} });
-    console.log(`✓ Unstable chord check (should be true): ${isCorrectUnstable}`);
+    debugLog('STABLE_UNSTABLE_TEST', `✓ Unstable chord check (should be true): ${isCorrectUnstable}`);
     
     // Test incorrect guess for unstable
     const isIncorrectUnstable = checkStableUnstableMatch('stable', { progress: {} });
-    console.log(`  Incorrect guess for unstable (should be false): ${isIncorrectUnstable}`);
+    debugLog('STABLE_UNSTABLE_TEST', `  Incorrect guess for unstable (should be false): ${isIncorrectUnstable}`);
     
     // Test with no current chord type
     window.currentChordType = null;
     const noChordResult = checkStableUnstableMatch('stable', { progress: {} });
-    console.log(`  No current chord (should be false): ${noChordResult}`);
+    debugLog('STABLE_UNSTABLE_TEST', `  No current chord (should be false): ${noChordResult}`);
     
     // Restore original value
     window.currentChordType = originalCurrentChordType;
     
   } catch (error) {
-    console.error('✗ Answer checking test failed:', error);
+    debugError('STABLE_UNSTABLE_TEST', '✗ Answer checking test failed:', error);
   }
   
   // Test 3: Verify progress tracking
-  console.log('\n--- Test 3: Progress Tracking ---');
+  debugLog('STABLE_UNSTABLE_TEST', '\n--- Test 3: Progress Tracking ---');
   try {
     const testKey = 'test_progress_key';
     const originalProgress = localStorage.getItem('lalumo_chords_progress');
@@ -103,7 +121,7 @@ async function runTests() {
     
     // Check if progress was incremented
     const updatedProgress = JSON.parse(localStorage.getItem('lalumo_chords_progress'));
-    console.log(`✓ Progress increment (should be 6): ${updatedProgress[testKey]}`);
+    debugLog('STABLE_UNSTABLE_TEST', `✓ Progress increment (should be 6): ${updatedProgress[testKey]}`);
     
     // Test level reset on incorrect answer
     localStorage.setItem('lalumo_chords_progress', JSON.stringify({ [testKey]: 12 }));
@@ -113,7 +131,7 @@ async function runTests() {
     checkStableUnstableMatch('unstable', component);
     
     const resetProgress = JSON.parse(localStorage.getItem('lalumo_chords_progress'));
-    console.log(`✓ Level reset on incorrect (should be 10): ${resetProgress[testKey]}`);
+    debugLog('STABLE_UNSTABLE_TEST', `✓ Level reset on incorrect (should be 10): ${resetProgress[testKey]}`);
     
     // Clean up
     if (originalProgress !== null) {
@@ -123,11 +141,11 @@ async function runTests() {
     }
     
   } catch (error) {
-    console.error('✗ Progress tracking test failed:', error);
+    debugError('STABLE_UNSTABLE_TEST', '✗ Progress tracking test failed:', error);
   }
   
-  console.log('\n=== Testing Complete ===');
+  debugLog('STABLE_UNSTABLE_TEST', '\n=== Testing Complete ===');
 }
 
 // Run the tests
-runTests().catch(console.error);
+runTests().catch(error => debugError('STABLE_UNSTABLE_TEST', 'Test execution failed:', error));

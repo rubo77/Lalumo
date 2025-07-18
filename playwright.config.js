@@ -1,6 +1,16 @@
 // @ts-check
 const { defineConfig } = require('@playwright/test');
 
+// Test environment debug logging utility
+const debugLog = (module, message, ...args) => {
+  // For test configuration, always log since it's test/development time
+  if (args.length > 0) {
+    console.log(`[${module}] ${message}`, ...args);
+  } else {
+    console.log(`[${module}] ${message}`);
+  }
+};
+
 /**
  * @see https://playwright.dev/docs/test-configuration
  */
@@ -40,7 +50,7 @@ module.exports = defineConfig({
         /* Collect browser console logs */
         logger: {
           isEnabled: (name, severity) => true,
-          log: (name, severity, message, args) => console.log(`${name} ${severity}: ${message}`)
+          log: (name, severity, message, args) => debugLog('PLAYWRIGHT_LOGGER', `${name} ${severity}: ${message}`)
         },
       },
     },

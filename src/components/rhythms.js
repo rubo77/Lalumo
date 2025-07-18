@@ -2,6 +2,9 @@
  * Rhythms component
  * Implements rhythm-based activities for music education
  */
+
+import { debugLog } from '../utils/debug';
+
 export function rhythms() {
   return {
     mode: 'main', // main, tap, match, create, dance
@@ -16,7 +19,7 @@ export function rhythms() {
      * Initialize the component
      */
     init() {
-      console.log('Rhythms component initialized');
+      debugLog('RHYTHMS', 'Rhythms component initialized');
       this.setupNavigation();
     },
     
@@ -52,7 +55,7 @@ export function rhythms() {
     setMode(newMode) {
       // If menu is locked, don't allow mode change
       if (this.$root && this.$root.menuLocked) {
-        console.log('Menu is locked, cannot change mode');
+        debugLog('RHYTHMS', 'Menu is locked, cannot change mode');
         return;
       }
       
@@ -69,7 +72,7 @@ export function rhythms() {
         this.setupDanceActivity();
       }
       
-      console.log(`Rhythm mode set to: ${newMode}`);
+      debugLog('RHYTHMS', `Rhythm mode set to: ${newMode}`);
     },
     
     /**
@@ -116,7 +119,7 @@ export function rhythms() {
         this.currentPattern.push(Math.random() > 0.3);
       }
       
-      console.log('Generated rhythm pattern:', this.currentPattern);
+      debugLog('RHYTHMS', 'Generated rhythm pattern', this.currentPattern);
     },
     
     /**
@@ -161,7 +164,7 @@ export function rhythms() {
           detail: { sound: `rhythm_${type}` }
         }));
       } catch (error) {
-        console.error('Error playing rhythm beat:', error);
+        debugLog(['RHYTHMS', 'ERROR'], `Error playing rhythm beat: ${error.message || error}`);
       }
     },
     

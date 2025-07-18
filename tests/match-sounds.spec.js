@@ -1,6 +1,16 @@
 // @ts-check
 const { test, expect } = require('@playwright/test');
 
+// Test environment debug logging utility
+const debugLog = (module, message, ...args) => {
+  // For test files, always log since it's test/development time
+  if (args.length > 0) {
+    debugLog('MATCH_SOUNDS_SPEC', `[${module}] ${message}`, ...args);
+  } else {
+    debugLog('MATCH_SOUNDS_SPEC', `[${module}] ${message}`);
+  }
+};
+
 // Setze einen globalen Timeout für alle Tests
 test.setTimeout(10000);
 
@@ -38,13 +48,13 @@ test.describe('Lalumo Match Sounds Activity', () => {
     
     // Handle dialogs (for username generation)
     page.on('dialog', async dialog => {
-      console.log(`Dialog detected: ${dialog.type()}, message: ${dialog.message()}`);
+      debugLog('MATCH_SOUNDS_SPEC', `Dialog detected: ${dialog.type()}, message: ${dialog.message()}`);
       await dialog.accept('TestUser' + Math.floor(Math.random() * 1000));
     });
     
     // Capture console logs
     page.on('console', msg => {
-      console.log(`BROWSER LOG: ${msg.type()}: ${msg.text()}`);
+      debugLog('MATCH_SOUNDS_SPEC', `BROWSER LOG: ${msg.type()}: ${msg.text()}`);
     });
 
     // Navigate to the app
@@ -58,20 +68,20 @@ test.describe('Lalumo Match Sounds Activity', () => {
     // Listen for console errors and log them
     page.on('console', msg => {
       if (msg.type() === 'error') {
-        console.log(`BROWSER ERROR: ${msg.text()}`);
+        debugLog('MATCH_SOUNDS_SPEC', `BROWSER ERROR: ${msg.text()}`);
       }
     });
     
     // Listen for JavaScript errors
     page.on('pageerror', error => {
-      console.log(`BROWSER JS ERROR: ${error.message}`);
+      debugLog('MATCH_SOUNDS_SPEC', `BROWSER JS ERROR: ${error.message}`);
     });
 
     // Log test start
-    console.log('Starting Match Sounds activity test');
+    debugLog('MATCH_SOUNDS_SPEC', 'Starting Match Sounds activity test');
     
     // Explizit auf den Generate Random Name-Button klicken
-    console.log('Clicking on Generate Random Name button');
+    debugLog('MATCH_SOUNDS_SPEC', 'Clicking on Generate Random Name button');
     try {
       // Prüfen, ob der Username-Dialog angezeigt wird
       const isDialogVisible = await page.isVisible('.modal-overlay');
@@ -79,35 +89,35 @@ test.describe('Lalumo Match Sounds Activity', () => {
       if (isDialogVisible) {
         // Auf den Generate Random Name-Button klicken
         await page.click('.primary-button');
-        console.log('Clicked on Generate Random Name button');
+        debugLog('MATCH_SOUNDS_SPEC', 'Clicked on Generate Random Name button');
         
         // Warten, bis der Dialog vollständig verschwunden ist
         await page.waitForSelector('.modal-overlay', { state: 'hidden', timeout: 5000 });
-        console.log('Username dialog is now hidden');
+        debugLog('MATCH_SOUNDS_SPEC', 'Username dialog is now hidden');
       } else {
-        console.log('Username dialog not visible, continuing with test');
+        debugLog('MATCH_SOUNDS_SPEC', 'Username dialog not visible, continuing with test');
       }
     } catch (e) {
-      console.log('[Error] while handling username dialog:', e);
+      debugLog('MATCH_SOUNDS_SPEC', '[Error] while handling username dialog:', e);
     }
     
     // Navigate to Pitches section
-    console.log('Navigating to Pitches section');
+    debugLog('MATCH_SOUNDS_SPEC', 'Navigating to Pitches section');
     await page.click('text=Pitches');
     await page.waitForLoadState('networkidle');
     
     // Navigate to 1_2 Match Sounds activity
-    console.log('Navigating to 1_2 Match Sounds activity');
+    debugLog('MATCH_SOUNDS_SPEC', 'Navigating to 1_2 Match Sounds activity');
     await page.click('text=Match Sounds');
     await page.waitForLoadState('networkidle');
     
     // Verify we're on the correct page by checking for the match-sounds-container
     const matchSoundsContainer = await page.locator('.match-sounds-container').count();
     expect(matchSoundsContainer).toBeGreaterThan(0);
-    console.log('Confirmed on Match Sounds page with container present');
+    debugLog('MATCH_SOUNDS_SPEC', 'Confirmed on Match Sounds page with container present');
     
     // Warte, bis die Match-Sounds-Seite vollständig geladen ist
-    console.log('Waiting for Match Sounds page to fully load');
+    debugLog('MATCH_SOUNDS_SPEC', 'Waiting for Match Sounds page to fully load');
     await page.waitForLoadState('domcontentloaded');
     await page.waitForLoadState('networkidle');
     
@@ -115,20 +125,20 @@ test.describe('Lalumo Match Sounds Activity', () => {
     await page.waitForTimeout(1000);
     
     // Setze gameMode auf false, damit der Play-Button sichtbar ist
-    console.log('Setting gameMode to false via JavaScript');
+    debugLog('MATCH_SOUNDS_SPEC', 'Setting gameMode to false via JavaScript');
     await page.evaluate(() => {
       try {
         // Direkter Zugriff auf die Alpine.js-Komponente über window
         if (window.Alpine && window.Alpine.store('pitches')) {
           window.Alpine.store('pitches').gameMode = false;
-          console.log('Successfully set gameMode to false via Alpine store');
+          debugLog('MATCH_SOUNDS_SPEC', 'Successfully set gameMode to false via Alpine store');
           return true;
         } else {
-          console.error('Could not access Alpine store');
+          debugLog(['MATCH_SOUNDS_SPEC', 'ERROR'], 'Could not access Alpine store');
           return false;
         }
       } catch (error) {
-        console.error('Error setting gameMode:', error);
+        debugLog(['MATCH_SOUNDS_SPEC', 'ERROR'], 'Error setting gameMode:', error);
         return false;
       }
     });
@@ -137,14 +147,14 @@ test.describe('Lalumo Match Sounds Activity', () => {
     await page.waitForTimeout(500);
     
     // Versuche, den Play-Button zu finden und zu klicken
-    console.log('Looking for play button');
+    debugLog('MATCH_SOUNDS_SPEC', 'Looking for play button');
     try {
       // Warte, bis der Button sichtbar ist und klicke ihn dann
       await page.waitForSelector('.circular-play-button:visible', { timeout: 3000 });
       await page.click('.circular-play-button:visible', { force: true });
-      console.log('Clicked on play button');
+      debugLog('MATCH_SOUNDS_SPEC', 'Clicked on play button');
     } catch (error) {
-      console.error('Error clicking play button:', error);
+      debugLog(['MATCH_SOUNDS_SPEC', 'ERROR'], 'Error clicking play button:', error);
       // Mache einen Screenshot, um zu sehen, was auf der Seite ist
       await page.screenshot({ path: 'error-play-button.png' });
     }
@@ -156,16 +166,16 @@ test.describe('Lalumo Match Sounds Activity', () => {
     await page.waitForTimeout(1000);
     
     // Warte auf den "up"-Pattern-Button und klicke ihn
-    console.log('Waiting for up pattern button');
+    debugLog('MATCH_SOUNDS_SPEC', 'Waiting for up pattern button');
     try {
       // Warte, bis der Button sichtbar ist
       await page.waitForSelector('.pitch-card.up-card', { timeout: 3000 });
       
       // Klicke mit force: true, um sicherzustellen, dass der Klick durchgeht
       await page.click('.pitch-card.up-card', { force: true });
-      console.log('Clicked on up pattern button');
+      debugLog('MATCH_SOUNDS_SPEC', 'Clicked on up pattern button');
     } catch (error) {
-      console.error('Error clicking up pattern button:', error);
+      debugLog(['MATCH_SOUNDS_SPEC', 'ERROR'], 'Error clicking up pattern button:', error);
       // Mache einen Screenshot, um zu sehen, was auf der Seite ist
       await page.screenshot({ path: 'error-pattern-button.png' });
     }
@@ -179,19 +189,19 @@ test.describe('Lalumo Match Sounds Activity', () => {
     });
     
     // Log the result
-    console.log('Active class check:', hasActiveClass ? 'PASSED' : 'FAILED');
+    debugLog('MATCH_SOUNDS_SPEC', 'Active class check:', hasActiveClass ? 'PASSED' : 'FAILED');
     
     // Check console for errors
     const consoleErrors = await page.evaluate(() => {
       return window.consoleErrors || [];
     });
     
-    console.log('Console errors:', consoleErrors.length ? consoleErrors : 'None');
+    debugLog('MATCH_SOUNDS_SPEC', 'Console errors:', consoleErrors.length ? consoleErrors : 'None');
     expect(consoleErrors.length).toBe(0);
     
     // Take a screenshot at the end
     await page.screenshot({ path: 'test-results/match-sounds-test.png' });
     
-    console.log('Match Sounds activity test completed');
+    debugLog('MATCH_SOUNDS_SPEC', 'Match Sounds activity test completed');
   });
 });

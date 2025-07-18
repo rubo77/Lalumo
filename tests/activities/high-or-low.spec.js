@@ -1,3 +1,13 @@
+// Test environment debug logging utility
+const debugLog = (module, message, ...args) => {
+  // For test files, always log since it's test/development time
+  if (args.length > 0) {
+    debugLog('HIGH_LOW_SPEC', `[${module}] ${message}`, ...args);
+  } else {
+    debugLog('HIGH_LOW_SPEC', `[${module}] ${message}`);
+  }
+};
+
 const { test, expect } = require('@playwright/test');
 const { setupTest, navigateToActivity, returnToMain, checkElementVisibility } = require('../helpers/test-utils');
 
@@ -25,7 +35,7 @@ test.describe('Lalumo High or Low Activity Tests', () => {
     const playButton = page.locator('#1_1_pitches .play-btn');
     await expect(playButton).toBeVisible({ timeout: 2000 });
     await playButton.click();
-    console.log('Clicked play button, tones should now play');
+    debugLog('HIGH_LOW_SPEC', 'Clicked play button, tones should now play');
     
     // Wait for tones to finish playing
     await page.waitForTimeout(2000);
@@ -34,7 +44,7 @@ test.describe('Lalumo High or Low Activity Tests', () => {
     const higherButton = page.locator('#1_1_pitches .high-btn');
     await expect(higherButton).toBeVisible({ timeout: 2000 });
     await higherButton.click();
-    console.log('Clicked higher button as answer');
+    debugLog('HIGH_LOW_SPEC', 'Clicked higher button as answer');
     
     // Wait for feedback
     await page.waitForTimeout(1000);

@@ -1,3 +1,13 @@
+// Test environment debug logging utility
+const debugLog = (module, message, ...args) => {
+  // For test files, always log since it's test/development time
+  if (args.length > 0) {
+    debugLog('MATCH_SOUNDS_ACT_SPEC', `[${module}] ${message}`, ...args);
+  } else {
+    debugLog('MATCH_SOUNDS_ACT_SPEC', `[${module}] ${message}`);
+  }
+};
+
 const { test, expect } = require('@playwright/test');
 const { setupTest, navigateToActivity, returnToMain, checkElementVisibility } = require('../helpers/test-utils');
 
@@ -24,17 +34,17 @@ test.describe('Lalumo Match Sounds Activity Tests', () => {
     // Verify cards are visible
     const cards = page.locator('.match-sound-card');
     expect(await cards.count()).toBeGreaterThan(0);
-    console.log(`Found ${await cards.count()} sound matching cards`);
+    debugLog('MATCH_SOUNDS_ACT_SPEC', `Found ${await cards.count()} sound matching cards`);
     
     // Click on the first card
     await cards.first().click();
-    console.log('Clicked on first match sounds card');
+    debugLog('MATCH_SOUNDS_ACT_SPEC', 'Clicked on first match sounds card');
     await page.waitForTimeout(1000);
     
     // Click on another card (doesn't matter if it matches or not, just testing interaction)
     if (await cards.count() > 1) {
       await cards.nth(1).click();
-      console.log('Clicked on second match sounds card');
+      debugLog('MATCH_SOUNDS_ACT_SPEC', 'Clicked on second match sounds card');
       await page.waitForTimeout(1000);
     }
     

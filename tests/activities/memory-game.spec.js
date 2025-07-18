@@ -1,3 +1,13 @@
+// Test environment debug logging utility
+const debugLog = (module, message, ...args) => {
+  // For test files, always log since it's test/development time
+  if (args.length > 0) {
+    debugLog('MEMORY_GAME_SPEC', `[${module}] ${message}`, ...args);
+  } else {
+    debugLog('MEMORY_GAME_SPEC', `[${module}] ${message}`);
+  }
+};
+
 const { test, expect } = require('@playwright/test');
 const { setupTest, navigateToActivity, returnToMain, checkElementVisibility } = require('../helpers/test-utils');
 
@@ -21,26 +31,26 @@ test.describe('Lalumo Memory Game Activity Tests', () => {
     // Verify memory cards are visible
     const memoryContainer = page.locator('.memory-container');
     await expect(memoryContainer).toBeVisible({ timeout: 2000 });
-    console.log('Memory container is visible');
+    debugLog('MEMORY_GAME_SPEC', 'Memory container is visible');
     
     // Check if memory cards are rendered
     const memoryCards = page.locator('.memory-card');
     const cardCount = await memoryCards.count();
     expect(cardCount).toBeGreaterThan(0);
-    console.log(`Found ${cardCount} memory cards`);
+    debugLog('MEMORY_GAME_SPEC', `Found ${cardCount} memory cards`);
     
     // Flip the first card
     const firstCard = memoryCards.first();
     await expect(firstCard).toBeVisible({ timeout: 2000 });
     await firstCard.click();
-    console.log('Clicked on first memory card');
+    debugLog('MEMORY_GAME_SPEC', 'Clicked on first memory card');
     await page.waitForTimeout(500);
     
     // Flip another card (doesn't matter if it matches)
     if (cardCount > 1) {
       const secondCard = memoryCards.nth(1);
       await secondCard.click();
-      console.log('Clicked on second memory card');
+      debugLog('MEMORY_GAME_SPEC', 'Clicked on second memory card');
       await page.waitForTimeout(1000);
     }
     

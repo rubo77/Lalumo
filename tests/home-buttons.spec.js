@@ -1,5 +1,15 @@
 const { test, expect } = require('@playwright/test');
 
+// Test environment debug logging utility
+const debugLog = (module, message, ...args) => {
+  // For test files, always log since it's test/development time
+  if (args.length > 0) {
+    debugLog('HOME_BUTTONS_SPEC', `[${module}] ${message}`, ...args);
+  } else {
+    debugLog('HOME_BUTTONS_SPEC', `[${module}] ${message}`);
+  }
+};
+
 /**
  * Test suite for home button functionality in Lalumo app
  * Tests if the home buttons correctly navigate back to the main view
@@ -13,13 +23,13 @@ test.describe('Lalumo Home Button Navigation', () => {
     
     // Handle dialogs (for username generation)
     page.on('dialog', async dialog => {
-      console.log(`Dialog detected: ${dialog.type()}, message: ${dialog.message()}`);
+      debugLog('HOME_BUTTONS_SPEC', `Dialog detected: ${dialog.type()}, message: ${dialog.message()}`);
       await dialog.accept('TestSpieler');
     });
     
     // Capture console logs
     page.on('console', msg => {
-      console.log(`BROWSER LOG: ${msg.type()}: ${msg.text()}`);
+      debugLog('HOME_BUTTONS_SPEC', `BROWSER LOG: ${msg.type()}: ${msg.text()}`);
     });
 
     // Navigate to the app
@@ -31,14 +41,14 @@ test.describe('Lalumo Home Button Navigation', () => {
     // Check for and handle username modal
     const usernameModal = page.locator('.modal-overlay');
     if (await usernameModal.isVisible()) {
-      console.log('Username modal detected, clicking generate button...');
+      debugLog('HOME_BUTTONS_SPEC', 'Username modal detected, clicking generate button...');
       await page.locator('.primary-button').click();
       await page.waitForTimeout(500);
     }
     
     // Ensure we're on the main screen
     await expect(page.locator('.pitch-landing')).toBeVisible({ timeout: 2000 });
-    console.log('Initial setup complete, on main landing page');
+    debugLog('HOME_BUTTONS_SPEC', 'Initial setup complete, on main landing page');
   });
 
   // Diagnose-Funktion für Alpine.js-Komponenten
@@ -65,7 +75,7 @@ test.describe('Lalumo Home Button Navigation', () => {
     try {
       // Finde alle Home-Buttons
       const homeButtons = await page.locator('.back-to-main').all();
-      console.log(`Found ${homeButtons.length} home buttons`);
+      debugLog('HOME_BUTTONS_SPEC', `Found ${homeButtons.length} home buttons`);
       
       // Wenn normal klicken nicht funktioniert, versuche Alternativen
       await page.locator('.back-to-main').first().click({ timeout: 2000 });
@@ -73,11 +83,11 @@ test.describe('Lalumo Home Button Navigation', () => {
       
       // Alpine-Status nach Klick überprüfen
       const alpineState = await diagnoseAlpineComponent(page);
-      console.log('Alpine state after click:', alpineState);
+      debugLog('HOME_BUTTONS_SPEC', 'Alpine state after click:', alpineState);
       
       // Wenn nicht zurück zur Hauptseite, versuche JS-Direktaufruf
       if (!await page.locator('.pitch-landing').isVisible({ timeout: 1000 })) {
-        console.log('Home button click failed, trying direct JS call...');
+        debugLog('HOME_BUTTONS_SPEC', 'Home button click failed, trying direct JS call...');
         await page.evaluate(() => {
           if (window.Alpine) {
             const pitchesComponent = document.querySelector('[x-data="pitches()"]');
@@ -88,7 +98,7 @@ test.describe('Lalumo Home Button Navigation', () => {
         });
       }
     } catch (e) {
-      console.log('[Error] while clicking home button:', e);
+      debugLog('HOME_BUTTONS_SPEC', '[Error] while clicking home button:', e);
       // Letzte Chance: Direkter JS-Aufruf
       await page.evaluate(() => {
         if (window.Alpine) {
@@ -98,7 +108,7 @@ test.describe('Lalumo Home Button Navigation', () => {
               window.Alpine.evaluate(pitchesComponent, 'setMode("main")');
             }
           } catch (e) {
-            console.error('Failed to set mode via JS:', e);
+            debugLog(['HOME_BUTTONS_SPEC', 'ERROR'], 'Failed to set mode via JS:', e);
           }
         }
       });
@@ -113,17 +123,17 @@ test.describe('Lalumo Home Button Navigation', () => {
     // Verify we're on the Match Sounds activity
     const matchActivity = page.locator('.activity-container').filter({ has: page.locator('[x-show="mode === \'1_2_pitches_match-sounds\'"]') });
     await expect(matchActivity).toBeVisible({ timeout: 2000 });
-    console.log('Successfully navigated to Match Sounds activity');
+    debugLog('HOME_BUTTONS_SPEC', 'Successfully navigated to Match Sounds activity');
     
     // Click the home button
     const homeButton = page.locator('.back-to-main').first();
-    console.log('Clicking home button...');
+    debugLog('HOME_BUTTONS_SPEC', 'Clicking home button...');
     await homeButton.click();
     await page.waitForTimeout(1000);
     
     // Verify we're back on the main page
     await expect(page.locator('.pitch-landing')).toBeVisible({ timeout: 2000 });
-    console.log('Successfully returned to main landing page');
+    debugLog('HOME_BUTTONS_SPEC', 'Successfully returned to main landing page');
   });
 
   test('Should navigate to Draw Melody and back using home button', async ({ page }) => {
@@ -134,17 +144,17 @@ test.describe('Lalumo Home Button Navigation', () => {
     // Verify we're on the Draw Melody activity
     const drawActivity = page.locator('.activity-container').filter({ has: page.locator('canvas.drawing-canvas') });
     await expect(drawActivity).toBeVisible({ timeout: 2000 });
-    console.log('Successfully navigated to Draw Melody activity');
+    debugLog('HOME_BUTTONS_SPEC', 'Successfully navigated to Draw Melody activity');
     
     // Click the home button
     const homeButton = page.locator('.back-to-main').first();
-    console.log('Clicking home button...');
+    debugLog('HOME_BUTTONS_SPEC', 'Clicking home button...');
     await homeButton.click();
     await page.waitForTimeout(1000);
     
     // Verify we're back on the main page
     await expect(page.locator('.pitch-landing')).toBeVisible({ timeout: 2000 });
-    console.log('Successfully returned to main landing page');
+    debugLog('HOME_BUTTONS_SPEC', 'Successfully returned to main landing page');
   });
 
   test('Should navigate to Memory Game and back using home button', async ({ page }) => {
@@ -155,17 +165,17 @@ test.describe('Lalumo Home Button Navigation', () => {
     // Verify we're on the Memory Game activity
     const memoryActivity = page.locator('.activity-container').filter({ has: page.locator('[x-show="mode === \'1_5_pitches_memory-game\'"]') });
     await expect(memoryActivity).toBeVisible({ timeout: 2000 });
-    console.log('Successfully navigated to Memory Game activity');
+    debugLog('HOME_BUTTONS_SPEC', 'Successfully navigated to Memory Game activity');
     
     // Click the home button
     const homeButton = page.locator('.back-to-main').first();
-    console.log('Clicking home button...');
+    debugLog('HOME_BUTTONS_SPEC', 'Clicking home button...');
     await homeButton.click();
     await page.waitForTimeout(1000);
     
     // Verify we're back on the main page
     await expect(page.locator('.pitch-landing')).toBeVisible({ timeout: 2000 });
-    console.log('Successfully returned to main landing page');
+    debugLog('HOME_BUTTONS_SPEC', 'Successfully returned to main landing page');
   });
   
   // Helper function to diagnose DOM state if needed
