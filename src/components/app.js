@@ -102,12 +102,12 @@ export function app() {
         ? 'strings-de.xml'
         : 'strings-en.xml';
       
-      console.log(`Loading strings from: ${xmlPath}`);
-      console.log("[STRING_LOAD_DEBUG] Fetching XML from path:", xmlPath);
+      debugLog('STRING_LOADER', `Loading strings from: ${xmlPath}`);
+      debugLog('STRING_LOAD_DEBUG', `Fetching XML from path: ${xmlPath}`);
       
       // Fetch the XML file
       const response = await fetch(xmlPath);
-      console.log("[STRING_LOAD_DEBUG] Fetch response status:", response.status, "- OK:", response.ok);
+      debugLog('STRING_LOAD_DEBUG', `Fetch response status: ${response.status} - OK: ${response.ok}`);
       if (!response.ok) {
         throw new Error(`Failed to load ${xmlPath}: ${response.status}`);
       }
@@ -136,7 +136,7 @@ export function app() {
         }
       });
       
-      console.log(`Loaded ${Object.keys(strings).length} strings from XML`);
+      debugLog('STRING_LOADER', `Loaded ${Object.keys(strings).length} strings from XML`);
       return strings;
     },
     
@@ -190,7 +190,7 @@ export function app() {
           return null;
         }
       } catch (error) {
-        console.error(`[REFERRAL] Error fetching username for code: ${code}`, error);
+        debugLog(['REFERRAL', 'ERROR'], `Error fetching username for code: ${code}. ${error.message || error}`);
         return null;
       }
     },
@@ -206,46 +206,46 @@ export function app() {
      */
     async fetchReferralCount() {
       if (!this.lockedUsername) {
-        console.log('[REFERRAL_DEBUG] Kein Username gesperrt, überspringe Abfrage');
+        debugLog('REFERRAL_DEBUG', 'Kein Username gesperrt, überspringe Abfrage');
         return;
       }
       
-      console.log('[REFERRAL_DEBUG] Rufe Statistik für User ab:', this.lockedUsername);
+      debugLog('REFERRAL_DEBUG', `Rufe Statistik für User ab: ${this.lockedUsername}`);
       
       try {
         const apiUrl = `${config.API_BASE_URL}/referral.php?username=${encodeURIComponent(this.lockedUsername)}`;
-        console.log('[REFERRAL] API URL:', apiUrl);
+        debugLog('REFERRAL', `API URL: ${apiUrl}`);
         
         const response = await fetch(apiUrl);
-        console.log('[REFERRAL] Antwort-Status:', response.status);
+        debugLog('REFERRAL', `Antwort-Status: ${response.status}`);
         
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         
         const responseText = await response.text();
-        console.log('[REFERRAL] Raw response:', responseText);
+        debugLog('REFERRAL', `Raw response: ${responseText}`);
         
         let data;
         try {
           data = JSON.parse(responseText);
         } catch (e) {
-          console.error('[REFERRAL] JSON parse error:', e);
+          debugLog(['REFERRAL', 'ERROR'], `JSON parse error: ${e.message || e}`);
           throw new Error('Invalid JSON in response');
         }
         
-        console.log('[REFERRAL] Verarbeitete Daten:', data);
+        debugLog('REFERRAL', `Verarbeitete Daten: ${JSON.stringify(data)}`);
         
         if (data.success) {
           // Update referral counts with detailed logging
-          console.log('[REFERRAL_DEBUG] Server returned - registrationCount:', data.registrationCount, 'clickCount:', data.clickCount);
+          debugLog('REFERRAL_DEBUG', `Server returned - registrationCount: ${data.registrationCount}, clickCount: ${data.clickCount}`);
           
           const oldReferralCount = this.referralCount;
           this.referralCount = data.registrationCount || 0;
           this.referralClickCount = data.clickCount || 0;
           
-          console.log('[REFERRAL_DEBUG] Werte aktualisiert - Alt:', oldReferralCount, 'Neu:', this.referralCount);
-          console.log('[REFERRAL_DEBUG] Datentypen - registrationCount:', typeof data.registrationCount, 'clickCount:', typeof data.clickCount);
+          debugLog('REFERRAL_DEBUG', `Werte aktualisiert - Alt: ${oldReferralCount}, Neu: ${this.referralCount}`);
+          debugLog('REFERRAL_DEBUG', `Datentypen - registrationCount: ${typeof data.registrationCount}, clickCount: ${typeof data.clickCount}`);
           
           // Speichere aktualisierte Daten im localStorage
           this.saveReferralData();
@@ -258,12 +258,12 @@ export function app() {
         } else if (data.error) {
           // Fehlerbehandlung mit übersetzten Nachrichten
           const errorMessage = this.translateReferralMessage(data.error);
-          console.error('[REFERRAL] Serverfehler:', errorMessage);
+          debugLog(['REFERRAL', 'ERROR'], `Serverfehler: ${errorMessage}`);
           // Wir zeigen hier keine Alert-Nachricht an, um den Benutzer nicht zu stören
           // bei automatischen Hintergrundaktualisierungen
         }
       } catch (error) {
-        console.error('Error fetching referral count:', error);
+        debugLog(['REFERRAL', 'ERROR'], `Error fetching referral count: ${error.message || error}`);
       }
     },
     
@@ -277,7 +277,7 @@ export function app() {
         await navigator.clipboard.writeText(this.referralCode);
         this.showToast(this.$store.strings?.copied || 'Copied!');
       } catch (error) {
-        console.error('Error copying to clipboard:', error);
+        debugLog(['CLIPBOARD', 'ERROR'], `Error copying to clipboard: ${error.message || error}`);
         
         // Fallback for browsers without clipboard API
         const textArea = document.createElement('textarea');
@@ -295,7 +295,7 @@ export function app() {
             this.showToast(this.$store.strings?.copy_failed || 'Failed to copy');
           }
         } catch (err) {
-          console.error('Fallback: Oops, unable to copy', err);
+          debugLog(['CLIPBOARD', 'ERROR'], `Fallback: Oops, unable to copy: ${err.message || err}`);
         }
         
         document.body.removeChild(textArea);
@@ -320,9 +320,9 @@ export function app() {
             text: shareText,
             url: shareUrl
           });
-          console.log('Content shared successfully');
+          debugLog('SHARE', 'Content shared successfully');
         } catch (error) {
-          console.error('Error sharing content:', error);
+          debugLog(['SHARE', 'ERROR'], `Error sharing content: ${error.message || error}`);
           // Fall back to clipboard if sharing was cancelled or failed
           this.copyReferralCode();
         }
@@ -379,7 +379,7 @@ export function app() {
      */
     parseUrlHash() {
       const hash = window.location.hash;
-      console.log('[DEEPLINK] Analysiere URL-Hash:', hash);
+      debugLog('DEEPLINK', `Analysiere URL-Hash: ${hash}`);
       
       if (!hash || hash.length <= 1) {
         return; // Kein Hash vorhanden
@@ -397,11 +397,11 @@ export function app() {
         }
       });
       
-      console.log('[DEEPLINK] Extrahierte Parameter:', params);
+      debugLog('DEEPLINK', `Extrahierte Parameter: ${params}`);
       
       // Process referral code from URL hash (#ref=CODE)
       if (params.ref) {
-        console.log('[DEEPLINK] Referral code found:', params.ref);
+        debugLog('DEEPLINK', `Referral code found: ${params.ref}`);
         // Store who referred this user
         this.referredBy = params.ref;
         
@@ -457,7 +457,7 @@ export function app() {
       
       // Verarbeite Activity-Parameter (#activity=ID)
       if (params.activity) {
-        console.log('[DEEPLINK] Aktivität gefunden:', params.activity);
+        debugLog('DEEPLINK', `Aktivität gefunden: ${params.activity}`);
         // Hier den direkten Start der Aktivität implementieren
         this.$nextTick(() => {
           // Start different activities based on ID format (1_1, 2_5, etc.)
@@ -465,7 +465,7 @@ export function app() {
           
           if (activityId.startsWith('1_')) {
             // Pitch activities - dispatch the set-activity-mode event
-            console.log('[DEEPLINK] Starting pitch activity:', activityId);
+            debugLog('DEEPLINK', `Starting pitch activity: ${activityId}`);
             window.dispatchEvent(new CustomEvent('set-activity-mode', {
               detail: activityId
             }));
@@ -477,7 +477,7 @@ export function app() {
             });
           } else if (activityId.startsWith('2_')) {
             // Chord activities - dispatch the set-activity-mode event
-            console.log('[DEEPLINK] Starting chord activity:', activityId);
+            debugLog('DEEPLINK', `Starting chord activity: ${activityId}`);
             window.dispatchEvent(new CustomEvent('set-activity-mode', {
               detail: activityId
             }));
@@ -543,7 +543,7 @@ export function app() {
       this.isAndroidChrome = isAndroid && isChrome;
       
       if (this.isAndroidChrome) {
-        console.log('AUDIODEBUG: Android Chrome detected, using specialized audio handling');
+        debugLog('APP', 'AUDIODEBUG: Android Chrome detected, using specialized audio handling');
         this.initAndroidAudio();
       }
       
@@ -557,7 +557,7 @@ export function app() {
       
       // Add specialized event for audio fixes
       document.addEventListener('lalumo:force-audio', () => {
-        console.log('AUDIODEBUG: Received force-audio event');
+        debugLog('APP', 'AUDIODEBUG: Received force-audio event');
         this.unlockAudio();
         if (this.isAndroidChrome) {
           this.initAndroidAudio();
@@ -594,22 +594,22 @@ export function app() {
           
           // Prüfen, ob wir dieses Event bereits verarbeitet haben
           if (this.processedEventIds.has(eventId)) {
-            console.log(`AUDIO_APP: Already processed event ID: ${eventId}, note: ${event.detail.note}`);
+            debugLog('AUDIO_APP', `Already processed event ID: ${eventId}, note: ${event.detail.note}`);
             return;
           }
           
           // Debug logs zu Event-IDs und Timing
-          console.log(`AUDIO_APP: Received note event: ${event.detail.note}, ID: ${eventId}`);
-          console.log(`AUDIO_APP: Last ID: ${this.lastNoteEventId}, Time diff: ${currentTime - this.lastNoteEventTime}ms`);
+          debugLog('AUDIO_APP', `Received note event: ${event.detail.note}, ID: ${eventId}`);
+          debugLog('AUDIO_APP', `Last ID: ${this.lastNoteEventId}, Time diff: ${currentTime - this.lastNoteEventTime}ms`);
           
           // Doppelte Events verhindern: Ignoriere Events mit gleicher ID oder zu kurzen Abständen
           if (eventId === this.lastNoteEventId) {
-            console.log(`AUDIO_APP: Skipping due to IDENTICAL ID: ${event.detail.note}`);
+            debugLog('AUDIO_APP', `Skipping due to IDENTICAL ID: ${event.detail.note}`);
             return;
           } 
           
           if (currentTime - this.lastNoteEventTime < 50) {
-            console.log(`AUDIO_APP: Skipping due to TOO SOON (${currentTime - this.lastNoteEventTime}ms): ${event.detail.note}`);
+            debugLog('AUDIO_APP', `Skipping due to TOO SOON (${currentTime - this.lastNoteEventTime}ms): ${event.detail.note}`);
             return;
           }
           
@@ -621,7 +621,7 @@ export function app() {
           this.lastNoteEventTime = currentTime;
           
           // Verbesserte Protokollierung zur Fehlersuche
-          console.log(`Playing sound: ${event.detail.note}${event.detail.sequenceIndex !== undefined ? ` (index: ${event.detail.sequenceIndex})` : ''}`);
+          debugLog('AUDIO_APP', `Playing sound: ${event.detail.note}${event.detail.sequenceIndex !== undefined ? ` (index: ${event.detail.sequenceIndex})` : ''}`);
           
           // Alle vorherigen Töne stoppen, um Überlappungen zu vermeiden
           if (this.currentToneTimeout) {
@@ -645,7 +645,7 @@ export function app() {
       // Set up event listener for stopping all sounds
       window.addEventListener('lalumo:stopallsounds', () => {
         // Aktiv alle Oszillatoren stoppen, wenn das Event ausgelöst wird
-        console.log('Received request to stop sounds - stopping all oscillators');
+        debugLog('APP', 'Received request to stop sounds - stopping all oscillators');
         this.stopAllOscillators();
       });
       
@@ -672,7 +672,7 @@ export function app() {
      */
     async checkUsernameStillExists(username) {
       try {
-        console.log(`[REFERRAL] Checking if username '${username}' exists on server...`);
+        debugLog('REFERRAL', `Checking if username '${username}' exists on server...`);
         const response = await fetch(`./referral.php?check_existing=1&username=${encodeURIComponent(username)}`);
         const data = await response.json();
         
@@ -680,7 +680,7 @@ export function app() {
         // User exists if the API returns success
         return data.success === true;
       } catch (error) {
-        console.error(`[REFERRAL] Error checking if username exists:`, error);
+        debugLog(['REFERRAL', 'ERROR'], `Error checking if username exists: ${error.message || error}`);
         // Assume user exists in case of error (to prevent accidental unlock)
         return true;
       }
@@ -698,7 +698,7 @@ export function app() {
           this.username = savedUsername;
           // Initialize the editable username field
           this.editableUsername = savedUsername;
-          console.log('Progress loaded for user:', this.username);
+          debugLog('PROGRESS', `Progress loaded for user: ${this.username}`);
         } else {
           this.firstVisit = true;
           this.showUsernamePrompt = true;
@@ -708,16 +708,16 @@ export function app() {
         const savedLanguage = localStorage.getItem('lalumo_language');
         if (savedLanguage) {
           this.preferredLanguage = savedLanguage;
-          console.log('Language preference loaded from storage:', this.preferredLanguage);
+          debugLog('LANGUAGE', `Language preference loaded from storage: ${this.preferredLanguage}`);
         } else {
           // Detect browser language on first visit
           const browserLanguage = navigator.language || navigator.userLanguage;
           if (browserLanguage.startsWith('de')) {
             this.preferredLanguage = 'german';
-            console.log('Browser language detected as German, setting as default');
+            debugLog('APP', 'Browser language detected as German, setting as default');
           } else {
             this.preferredLanguage = 'english'; // Default to English for other languages
-            console.log('Browser language not German, defaulting to English');
+            debugLog('APP', 'Browser language not German, defaulting to English');
           }
           // Save the detected language preference
           localStorage.setItem('lalumo_language', this.preferredLanguage);
@@ -739,7 +739,7 @@ export function app() {
             this.areAllActivitiesUnlocked = referralData.areAllActivitiesUnlocked || false;
             this.referredBy = referralData.referredBy || '';
             this.referrerUsername = referralData.referrerUsername || '';
-            console.log('Referral data loaded:', { 
+            debugLog('REFERRAL', `Referral data loaded: ${JSON.stringify({ 
               isUsernameLocked: this.isUsernameLocked,
               lockedUsername: this.lockedUsername,
               referralCode: this.referralCode,
@@ -748,13 +748,13 @@ export function app() {
               areAllActivitiesUnlocked: this.areAllActivitiesUnlocked,
               referredBy: this.referredBy,
               referrerUsername: this.referrerUsername
-            });
+            })}`);
             
             debugLog("REFERRAL", "Loaded referral data");
             
             // Wenn der Benutzer bereits registriert ist, prüfen ob der Username noch existiert
             if (this.isUsernameLocked && this.lockedUsername) {
-              console.log('[REFERRAL] User is registered, checking if username still exists...');
+              debugLog('REFERRAL', 'User is registered, checking if username still exists...');
               
               // Check if username still exists in the server database
               const usernameExists = await this.checkUsernameStillExists(this.lockedUsername);
@@ -762,7 +762,7 @@ export function app() {
               debugLog("REFERRAL", "Username exists: " + usernameExists);
               
               if (!usernameExists) {
-                console.log(`[REFERRAL] Username '${this.lockedUsername}' no longer exists on server, unlocking...`);
+                debugLog('REFERRAL', `Username '${this.lockedUsername}' no longer exists on server, unlocking...`);
                 // Reset username lock and save changes
                 this.isUsernameLocked = false;
                 this.lockedUsername = '';
@@ -773,17 +773,17 @@ export function app() {
                 this.showToast(this.$store.strings?.username_reset || 'Your user account was reset because it no longer exists on the server.');
               } else {
                 // Fetch current referral counts if the user still exists
-                console.log('[REFERRAL] Username verified, fetching current referral counts...');
+                debugLog('REFERRAL', 'Username verified, fetching current referral counts...');
                 setTimeout(() => this.fetchReferralCount(), 1000);
               }
             }
           } catch (e) {
-            console.error('Error parsing referral data:', e);
+            debugLog(['APP', 'ERROR'], `Error parsing referral data: ${e.message || e}`);
           }
         }
         
       } catch (error) {
-        console.error('Error loading user data:', error);
+        debugLog(['APP', 'ERROR'], `Error loading user data: ${error.message || error}`);
       }
     },
     
@@ -795,19 +795,19 @@ export function app() {
       try {
         // Save to localStorage
         localStorage.setItem('lalumo_menu_locked', this.menuLocked);
-        console.log('Menu lock state updated:', this.menuLocked);
+        debugLog('MENU_LOCK', `Menu lock state updated: ${this.menuLocked}`);
         
         // Notify Android about menu lock state change if running in Android
         if (window.AndroidMenuLock) {
           try {
             window.AndroidMenuLock.setMenuLockState(this.menuLocked);
-            console.log('Android notified about menu lock state:', this.menuLocked);
+            debugLog('ANDROID', `Android notified about menu lock state: ${this.menuLocked}`);
           } catch (androidError) {
-            console.log('[Error] while notifying Android about menu lock state', androidError);
+            debugLog(['ANDROID', 'ERROR'], `Error while notifying Android about menu lock state: ${androidError.message || androidError}`);
           }
         }
       } catch (e) {
-        console.log('[Error] while saving menu lock state', e);
+        debugLog(['MENU_LOCK', 'ERROR'], `Error while saving menu lock state: ${e.message || e}`);
       }
     },
     
@@ -840,7 +840,7 @@ export function app() {
           
           // Unlock the menu
           this.toggleMenuLock();
-          console.log('Menu unlocked after long press');
+          debugLog('APP', 'Menu unlocked after long press');
           
           // Reset progress
           this.unlockProgress = 0;
@@ -860,7 +860,7 @@ export function app() {
         document.documentElement.style.setProperty('--unlock-progress', 0);
         // Also update the <html lang> attribute
         document.documentElement.lang = language === "german" ? "de" : "en";
-        console.log('Unlock canceled');
+        debugLog('APP', 'Unlock canceled');
       }
     },
     
@@ -870,7 +870,7 @@ export function app() {
     async setLanguage(language) {
       this.preferredLanguage = language;
       localStorage.setItem('lalumo_language', language);
-      console.log('Language set to:', language);
+      debugLog('LANGUAGE', `Language set to: ${language}`);
       
       // Reload strings with new language
       await this.initStrings();
@@ -929,7 +929,7 @@ export function app() {
           : `Your name is ${this.username}. You can change this in the settings.`;
         this.showToast(message, 5000);
       } catch (e) {
-        console.log('[Error] while saving username', e);
+        debugLog(['USERNAME', 'ERROR'], `Error while saving username: ${e.message || e}`);
       }
       
       this.showUsernamePrompt = false;
@@ -952,7 +952,7 @@ export function app() {
             : `Your name is ${this.username}. You can change this in the settings.`;
           this.showToast(message, 5000);
         } catch (e) {
-          console.log('[Error] while saving custom username', e);
+          debugLog(['USERNAME', 'ERROR'], `Error while saving custom username: ${e.message || e}`);
         }
       } else {
         // If empty, revert to current username
@@ -969,7 +969,7 @@ export function app() {
       this.exportedData = '';
       
       try {
-        console.log('Starte Export aller Daten aus dem localStorage...');
+        debugLog('APP', 'Starte Export aller Daten aus dem localStorage...');
         
         // Sammle alle localStorage Daten
         const localStorageData = {};
@@ -986,17 +986,17 @@ export function app() {
           localStorageData: localStorageData
         };
         
-        console.log('Export Daten:', exportData);
+        debugLog('EXPORT', `Export Daten: ${JSON.stringify(exportData)}`);
         
         // Konvertieren zu JSON und codieren für Export
         const jsonString = JSON.stringify(exportData);
-        console.log('JSON-String Länge:', jsonString.length);
+        debugLog('EXPORT', `JSON-String Länge: ${jsonString.length}`);
         
         const encoded = btoa(jsonString);
-        console.log('Kodierter String Länge:', encoded.length);
+        debugLog('EXPORT', `Kodierter String Länge: ${encoded.length}`);
         
         if(!encoded || encoded.length === 0) {
-          console.error('Kodierter String ist leer');
+          debugLog(['EXPORT', 'ERROR'], 'Kodierter String ist leer');
           alert(this.$store.strings?.export_error_empty || 'Error exporting data: encoded string is empty');
           return null;
         }
@@ -1005,15 +1005,15 @@ export function app() {
         setTimeout(() => {
           // Set the exportedData property for display in the UI
           this.exportedData = encoded;
-          console.log('ExportedData wurde gesetzt auf:', '[Länge: ' + encoded.length + ']');
+          debugLog('EXPORT', `ExportedData wurde gesetzt auf: [Länge: ${encoded.length}]`);
           
           // Log für bessere Diagnose
-          console.log('All localStorage data exported successfully');
+          debugLog('APP', 'All localStorage data exported successfully');
         }, 10);
         
         return encoded;
       } catch (e) {
-        console.error('Fehler beim Exportieren:', e);
+        debugLog(['APP', 'ERROR'], `Fehler beim Exportieren: ${e.message || e}`);
         alert(this.$store.strings?.export_error_dynamic?.replace('%1$s', e.message) || 
               'Error exporting data: ' + e.message);
         return null;
@@ -1036,11 +1036,11 @@ export function app() {
             alert(this.$store.strings?.progress_code_copied || 'Progress code copied to clipboard!');
           })
           .catch(err => {
-            console.error('Clipboard write failed:', err);
+            debugLog(['APP', 'ERROR'], `Clipboard write failed: ${err.message || err}`);
             alert(this.$store.strings?.copy_failed || 'Failed to copy to clipboard. Please manually select and copy the code.');
           });
       } catch (e) {
-        console.error('Error copying progress data:', e);
+        debugLog(['APP', 'ERROR'], `Error copying progress data: ${e.message || e}`);
         alert(this.$store.strings?.copy_failed || 'Failed to copy to clipboard. Please manually select and copy the code.');
       }
     },
@@ -1053,7 +1053,7 @@ export function app() {
      */
     importProgress() {
       try {
-        console.log('Import-Debug: importData =', this.importData, 'importedData =', this.importedData);
+        debugLog('IMPORT_DEBUG', `importData = ${this.importData}, importedData = ${this.importedData}`);
         
         // Check if input is a cheatcode
         if (this.importData && this.importData.includes(':')) {
@@ -1064,7 +1064,7 @@ export function app() {
         // Verwende die richtige Property (importData statt importedData)
         // Die Property muss mit dem x-model in settings.html übereinstimmen
         if (!this.importData) {
-          console.error('Import-Debug: Keine Importdaten gefunden in this.importData');
+          debugLog(['IMPORT_DEBUG', 'ERROR'], 'Keine Importdaten gefunden in this.importData');
           alert(this.$store.strings?.import_error_empty || 'Error: No import data provided');
           return;
         }
@@ -1072,20 +1072,20 @@ export function app() {
         // Entferne Whitespaces und überprüfe erneut
         const cleanedData = this.importData.trim();
         if (cleanedData === '') {
-          console.error('Import-Debug: Importdaten sind leer nach Trim');
+          debugLog(['IMPORT_DEBUG', 'ERROR'], 'Importdaten sind leer nach Trim');
           alert(this.$store.strings?.import_error_empty || 'Error: No import data provided');
           return;
         }
         
-        console.log('Attempting to import data...', cleanedData.substring(0, 20) + '...');
+        debugLog('IMPORT', `Attempting to import data... ${cleanedData.substring(0, 20)}...`);
         
         // Base64-Dekodierung mit verbesserten Fehlerprüfungen
         let decodedData;
         try {
           decodedData = atob(cleanedData);
-          console.log('Decoded data successfully, length:', decodedData.length, 'Preview:', decodedData.substring(0, 50) + '...');
+          debugLog('IMPORT', `Decoded data successfully, length: ${decodedData.length}, Preview: ${decodedData.substring(0, 50)}...`);
         } catch (e) {
-          console.error('Base64 decoding failed:', e, 'Data was:', cleanedData.substring(0, 100));
+          debugLog(['APP', 'ERROR'], `Base64 decoding failed: ${e, 'Data was:', cleanedData.substring(0, 100.message || e, 'Data was:', cleanedData.substring(0, 100}`));
           alert(this.$store.strings?.import_error_format || 'Error: Invalid import data format');
           return;
         }
@@ -1094,21 +1094,21 @@ export function app() {
         let parsedData;
         try {
           parsedData = JSON.parse(decodedData);
-          console.log('Import data parsed successfully:', Object.keys(parsedData));
+          debugLog('IMPORT', `Import data parsed successfully: ${Object.keys(parsedData).join(', ')}`);
         } catch (e) {
-          console.error('JSON parsing failed:', e, 'Decoded data was:', decodedData.substring(0, 100));
+          debugLog(['APP', 'ERROR'], `JSON parsing failed: ${e, 'Decoded data was:', decodedData.substring(0, 100.message || e, 'Decoded data was:', decodedData.substring(0, 100}`));
           alert(this.$store.strings?.import_error_json || 'Error: Could not parse import data');
           return;
         }
         
         // Überprüfe Version und Datenformat
         if (!parsedData.version || parsedData.version !== "2.0" || !parsedData.localStorageData) {
-          console.error('Unsupported import format:', JSON.stringify(parsedData).substring(0, 200));
+          debugLog(['APP', 'ERROR'], `Unsupported import format: ${JSON.stringify(parsedData.message || JSON.stringify(parsedData}`).substring(0, 200));
           alert(this.$store.strings?.import_error_version || 'Error: Unsupported import format. Only version 2.0 is supported.');
           return;
         }
         
-        console.log('Detected version 2.0 format with complete localStorage data');
+        debugLog('APP', 'Detected version 2.0 format with complete localStorage data');
         
         // Wiederherstellung aller localStorage-Einträge
         const localStorageData = parsedData.localStorageData;
@@ -1128,7 +1128,7 @@ export function app() {
           }
         }
         
-        console.log('Restored all localStorage data successfully');
+        debugLog('APP', 'Restored all localStorage data successfully');
         
         // Feedback anzeigen und Seite neu laden
         const restoredMessage = restoredItems.length > 0 
@@ -1141,7 +1141,7 @@ export function app() {
         window.location.reload();
         
       } catch (e) {
-        console.error('Error importing data:', e);
+        debugLog(['APP', 'ERROR'], `Error importing data: ${e.message || e}`);
         alert(this.$store.strings?.import_error_dynamic?.replace('%1$s', e.message) || 
               'Error importing data: ' + e.message);
       }
@@ -1191,7 +1191,7 @@ export function app() {
           await audioEngine.initialize();
           debugLog('AUDIO', 'Central audio engine initialized successfully');
         } catch (engineError) {
-          console.error('Failed to initialize central audio engine:', engineError);
+          debugLog(['APP', 'ERROR'], `Failed to initialize central audio engine: ${engineError.message || engineError}`);
         }
         
         this.isAudioEnabled = true;
@@ -1202,12 +1202,12 @@ export function app() {
         const isChrome = /Chrome/.test(navigator.userAgent);
         
         if (isAndroid && isChrome) {
-          console.log('Android Chrome detected, applying special audio handling');
+          debugLog('APP', 'Android Chrome detected, applying special audio handling');
           // Additional audio setup specifically for Android Chrome
           document.addEventListener('visibilitychange', () => {
             if (!document.hidden && this.audioContext && this.audioContext.state === 'suspended') {
               this.audioContext.resume().then(() => {
-                console.log('AudioContext resumed after visibility change');
+                debugLog('APP', 'AudioContext resumed after visibility change');
               });
             }
           });
@@ -1223,7 +1223,7 @@ export function app() {
           });
         }
       } catch (error) {
-        console.error('Failed to unlock audio:', error);
+        debugLog(['APP', 'ERROR'], `Failed to unlock audio: ${error.message || error}`);
       }
     },
     
@@ -1265,7 +1265,7 @@ export function app() {
         debugLog('AUDIO', 'Android audio optimizations applied successfully');
         this.isAudioEnabled = true;
       } catch (error) {
-        console.error('Failed to apply Android audio optimizations:', error);
+        debugLog(['APP', 'ERROR'], `Failed to apply Android audio optimizations: ${error.message || error}`);
       }
     },
     
@@ -1278,23 +1278,23 @@ export function app() {
       const isChrome = /Chrome/.test(navigator.userAgent);
       
       if (isAndroid && isChrome) {
-        console.log('AUDIODEBUG: Android Chrome detected in playSound:', sound);
+        debugLog('AUDIODEBUG', `Android Chrome detected in playSound: ${sound}`);
       }
       
       if (!this.isAudioEnabled) {
-        console.log('AUDIODEBUG: Audio not enabled, attempting to unlock');
+        debugLog('APP', 'AUDIODEBUG: Audio not enabled, attempting to unlock');
         this.unlockAudio();
         if (!this.isAudioEnabled) {
-          console.log('AUDIOTROUBLE: Still cannot enable audio. User may need to interact with the page first');
+          debugLog('APP', 'AUDIOTROUBLE: Still cannot enable audio. User may need to interact with the page first');
           return;
         }
       }
       
       // Resume audio context if it's suspended (needed for Chrome on Android)
       if (this.audioContext && this.audioContext.state === 'suspended') {
-        console.log('AUDIODEBUG: Audio context suspended in playSound, attempting to resume');
+        debugLog('APP', 'AUDIODEBUG: Audio context suspended in playSound, attempting to resume');
         this.audioContext.resume().then(() => {
-          console.log('AUDIODEBUG: Audio context resumed successfully in playSound');
+          debugLog('APP', 'AUDIODEBUG: Audio context resumed successfully in playSound');
         });
       }
       
@@ -1303,7 +1303,7 @@ export function app() {
         if (sound.startsWith('pitch_') || sound.startsWith('sound_')) {
           // Extract the note name and play it with consistent sound for both pitch_ and sound_ prefixes
           const noteName = sound.split('_')[1].toUpperCase();
-          console.log(`AUDIODEBUG: Playing ${sound} as tone with frequency for ${noteName}`);
+          debugLog('AUDIODEBUG', `Playing ${sound} as tone with frequency for ${noteName}`);
           this.playTone(this.getNoteFrequency(noteName), 0.5);
         } else if (sound === 'success') {
           // Play a simple success sound
@@ -1325,7 +1325,7 @@ export function app() {
           this.playInstrumentNote(instrument, note);
         }
       } catch (error) {
-        console.error('Error playing sound:', error);
+        debugLog(['APP', 'ERROR'], `Error playing sound: ${error.message || error}`);
       }
     },
     
@@ -1370,7 +1370,7 @@ export function app() {
         oscillator.start(now);
         oscillator.stop(now + 0.1);
       } catch (error) {
-        console.error('Error playing rhythm beat:', error);
+        debugLog(['APP', 'ERROR'], `Error playing rhythm beat: ${error.message || error}`);
       }
     },
     
@@ -1435,7 +1435,7 @@ export function app() {
         oscillator.start(now);
         oscillator.stop(now + decayTime + 0.1);
       } catch (error) {
-        console.error(`Error playing ${instrument} note ${note}:`, error);
+        debugLog(['AUDIO', 'ERROR'], `Error playing ${instrument} note ${note}: ${error.message || error}`);
       }
     },
     
@@ -1477,7 +1477,7 @@ export function app() {
       
       try {
         // Verbesserte Protokollierung für Audio-Debugging
-        console.log(`Playing tone ${frequency}Hz for ${duration}s`);
+        debugLog('AUDIO', `Playing tone ${frequency}Hz for ${duration}s`);
         
         // Zuerst alle aktiven Oszillatoren stoppen - WICHTIG für saubere Wiedergabe
         this.stopAllOscillators();
@@ -1531,7 +1531,7 @@ export function app() {
           }
         };
       } catch (error) {
-        console.error('Error playing tone:', error);
+        debugLog(['APP', 'ERROR'], `Error playing tone: ${error.message || error}`);
       }
     },
     
@@ -1640,7 +1640,7 @@ export function app() {
           gainNode.disconnect();
         };
       } catch (error) {
-        console.error('Error playing tone color:', error);
+        debugLog(['APP', 'ERROR'], `Error playing tone color: ${error.message || error}`);
       }
     },
     
@@ -1680,7 +1680,7 @@ export function app() {
       }
       
       // Log fehlende Note für Debugging
-      console.log(`Note ${noteName} not found in frequency table, using mathematical calculation`);
+      debugLog('AUDIO', `Note ${noteName} not found in frequency table, using mathematical calculation`);
       
       // Als Fallback: Berechne die Frequenz mathematisch
       try {
@@ -1700,7 +1700,7 @@ export function app() {
         // Berechne Frequenz: f = f0 * 2^(n/12)
         return baseFreq * Math.pow(2, semitones / 12);
       } catch (e) {
-        console.error(`Failed to calculate frequency for ${noteName}:`, e);
+        debugLog(['AUDIO', 'ERROR'], `Failed to calculate frequency for ${noteName}: ${e.message || e}`);
         return 440; // A4 als Fallback
       }
     },
@@ -1743,9 +1743,9 @@ export function app() {
           referrerUsername: this.referrerUsername || ''
         };
         localStorage.setItem('lalumo_referral', JSON.stringify(referralData));
-        console.log('Saved referral data:', referralData);
+        debugLog('REFERRAL', `Saved referral data: ${JSON.stringify(referralData)}`);
       } catch (error) {
-        console.error('Error saving referral data:', error);
+        debugLog(['APP', 'ERROR'], `Error saving referral data: ${error.message || error}`);
       }
     },
     
@@ -1754,7 +1754,7 @@ export function app() {
      */
     generateReferralLink() {
       if (!this.referralCode) {
-        console.error('[REFERRAL] Kein Referral-Code vorhanden!');
+        debugLog(['REFERRAL', 'ERROR'], 'Kein Referral-Code vorhanden!');
         return '';
       }
       
@@ -1766,15 +1766,15 @@ export function app() {
       const isProduction = window.location.hostname === 'lalumo.eu' || 
                         window.location.hostname === 'lalumo.z11.de';
       
-      console.log('[REFERRAL] Environment:', isProduction ? 'production' : 'development');
-      console.log('[REFERRAL] Original API_BASE_URL:', apiBaseUrl);
+      debugLog('REFERRAL', `Environment: ${isProduction ? 'production' : 'development'}`);
+      debugLog('REFERRAL', `Original API_BASE_URL: ${apiBaseUrl}`);
       
       // Stelle sicher, dass der Pfad zum Referral-Endpoint korrekt ist
       let referralEndpoint = '/referral.php';
       // For local development, we want to use /referral.php directly, not /api/referral.php
       
       this.referralLink = `${apiBaseUrl}${referralEndpoint}?code=${this.referralCode}`;
-      console.log('[REFERRAL] Generierter Link:', this.referralLink);
+      debugLog('REFERRAL', `Generierter Link: ${this.referralLink}`);
       
       return this.referralLink;
     },
@@ -1797,22 +1797,22 @@ export function app() {
      * @param {string} buttonSelector - CSS-Selektor für den Button, der die Animation zeigen soll
      */
     copyToClipboard(text, buttonSelector) {
-      console.log('[CLIPBOARD] Versuche zu kopieren:', text);
+      debugLog('CLIPBOARD', `Versuche zu kopieren: ${text}`);
       
       try {
         // Moderne Clipboard API verwenden
         navigator.clipboard.writeText(text)
           .then(() => {
-            console.log('[CLIPBOARD] Text erfolgreich kopiert');
+            debugLog('CLIPBOARD', 'Text erfolgreich kopiert');
             this.showCopyFeedback(buttonSelector, true);
           })
           .catch(err => {
-            console.error('[CLIPBOARD] Clipboard-API-Fehler:', err);
+            debugLog(['CLIPBOARD', 'ERROR'], `Clipboard-API-Fehler: ${err.message || err}`);
             // Fallback zur alten Methode
             this.copyToClipboardFallback(text, buttonSelector);
           });
       } catch (e) {
-        console.error('[CLIPBOARD] Fehler beim Kopieren:', e);
+        debugLog(['CLIPBOARD', 'ERROR'], `Fehler beim Kopieren: ${e.message || e}`);
         this.copyToClipboardFallback(text, buttonSelector);
       }
     },
@@ -1840,11 +1840,11 @@ export function app() {
         this.showCopyFeedback(buttonSelector, successful);
         
         if (!successful) {
-          console.error('[CLIPBOARD] execCommand copy fehlgeschlagen');
+          debugLog(['CLIPBOARD', 'ERROR'], 'execCommand copy fehlgeschlagen');
           alert(this.$store.strings?.copy_failed || 'Kopieren fehlgeschlagen. Bitte manuell kopieren.');
         }
       } catch (e) {
-        console.error('[CLIPBOARD] Fallback-Fehler:', e);
+        debugLog(['CLIPBOARD', 'ERROR'], `Fallback-Fehler: ${e.message || e}`);
         alert(this.$store.strings?.copy_failed || 'Kopieren fehlgeschlagen. Bitte manuell kopieren.');
       }
     },
@@ -1882,7 +1882,7 @@ export function app() {
      */
     async lockUsername() {
       if (!this.username) {
-        console.error('Kein Benutzername gesetzt!');
+        debugLog(['API', 'ERROR'], 'Kein Benutzername gesetzt!');
         return;
       }
       
@@ -1896,7 +1896,7 @@ export function app() {
       this.isRegistering = true;
       
       try {
-        console.log('Username wird gelockt und Referral-Code wird generiert...');
+        debugLog('APP', 'Username wird gelockt und Referral-Code wird generiert...');
         
         // API endpoint URL (relative to the app root)
         const apiUrl = `${config.API_BASE_URL}/referral.php`;
@@ -1910,13 +1910,13 @@ export function app() {
         // referredBy nur hinzufügen, wenn tatsächlich ein Code vorhanden ist
         if (this.referredBy) {
           params.append('referredBy', this.referredBy);
-          console.log('[REFERRAL] Sending referredBy code:', this.referredBy);
+          debugLog('REFERRAL', `Sending referredBy code: ${this.referredBy}`);
         } else {
-          console.log('[REFERRAL] No referral code to send');
+          debugLog('REFERRAL', 'No referral code to send');
         }
         
         const fullUrl = `${apiUrl}?${params.toString()}`;
-        console.log('Vollständige GET-Request URL:', fullUrl);
+        debugLog('API', `Vollständige GET-Request URL: ${fullUrl}`);
         
         const response = await fetch(fullUrl, {
           method: 'GET'
@@ -1929,13 +1929,13 @@ export function app() {
         try {
             // Zuerst den Rohtext der Antwort holen
             rawResponse = await response.text();
-            console.log('Rohtext der Server-Antwort:', rawResponse);
+            debugLog('API', `Rohtext der Server-Antwort: ${rawResponse}`);
             
             // Dann als JSON parsen
             data = JSON.parse(rawResponse);
         } catch (error) {
-            console.error('Fehler beim Parsen der JSON-Antwort:', error);
-            console.error('Ungültiger Rohtext der Server-Antwort:', rawResponse);
+            debugLog(['APP', 'ERROR'], `Fehler beim Parsen der JSON-Antwort: ${error.message || error}`);
+            debugLog(['APP', 'ERROR'], `Ungültiger Rohtext der Server-Antwort: ${rawResponse.message || rawResponse}`);
             throw new Error('Fehler beim Registrieren: ' + error.message);
         }
         
@@ -1974,7 +1974,7 @@ export function app() {
           }
         }
       } catch (error) {
-        console.error('Fehler beim Registrieren:', error);
+        debugLog(['APP', 'ERROR'], `Fehler beim Registrieren: ${error.message || error}`);
         this.registrationError = true;
         this.registrationMessage = this.$store.strings?.registration_error || 'An error occurred. Please try again later.';
       } finally {
@@ -1989,7 +1989,7 @@ export function app() {
      */
     shareReferralCode() {
       if (!this.referralCode) {
-        console.error('Kein Referral-Code vorhanden!');
+        debugLog(['REFERRAL', 'ERROR'], 'Kein Referral-Code vorhanden!');
         return;
       }
       
@@ -2002,9 +2002,9 @@ export function app() {
           text: shareText,
           url: window.location.href
         }).then(() => {
-          console.log('Erfolgreich geteilt');
+          debugLog('APP', 'Erfolgreich geteilt');
         }).catch((error) => {
-          console.error('Fehler beim Teilen:', error);
+          debugLog(['APP', 'ERROR'], `Fehler beim Teilen: ${error.message || error}`);
         });
       } else {
         // Fallback für Browser ohne Share API
@@ -2044,9 +2044,9 @@ export function app() {
      * Löst einen Freundes-Referral-Code ein
      */
     async redeemFriendCode() {
-      console.warn('[REDEEM] redeemFriendCode-Methode verwendet.');
+      debugLog(['APP', 'WARN'], '[REDEEM] redeemFriendCode-Methode verwendet.');
       if (!this.friendCode) {
-        console.error('Kein Freundes-Code eingegeben!');
+        debugLog(['REDEEM', 'ERROR'], 'Kein Freundes-Code eingegeben!');
         return;
       }
       
@@ -2056,14 +2056,14 @@ export function app() {
       // Flexiblere Code-Format-Validierung (mindestens 8 alphanumerische Zeichen)
       const codePattern = /^[A-Z0-9]{8,}$/;
       if (!codePattern.test(normalizedCode)) {
-        console.error('[REDEEM] Invalid referral code format!, original: ' + this.friendCode + ", normalized: " + normalizedCode);
+        debugLog(['REDEEM', 'ERROR'], `Invalid referral code format!, original: ${this.friendCode}, normalized: ${normalizedCode}`);
         alert(this.$store.strings?.invalid_code || 'Invalid referral code format. Please check and try again.');
         return;
       }
       
-      console.log('[REDEEM] Normalized code: ' + normalizedCode);
+      debugLog('REDEEM', `Normalized code: ${normalizedCode}`);
       
-      console.log('[REDEEM] Code format valid - normalized: ' + normalizedCode);
+      debugLog('REDEEM', `Code format valid - normalized: ${normalizedCode}`);
       
       // Prüfen, ob der Benutzer seinen eigenen Code einlösen versucht
       if (this.friendCode === this.referralCode) {
@@ -2146,7 +2146,7 @@ export function app() {
           alert(errorMessage);
         }
       } catch (error) {
-        console.error('Fehler beim Einlösen des Codes:', error);
+        debugLog(['APP', 'ERROR'], `Fehler beim Einlösen des Codes: ${error.message || error}`);
         alert(this.$store.strings?.redeem_error || 'Error redeeming code. Please try again.');
       }
     },
