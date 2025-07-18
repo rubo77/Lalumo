@@ -138,15 +138,15 @@ export class AudioEngine {
           release: 1.5,
           volume: 10,
           onload: () => { 
-            console.log("[PIANO] 🎹 Piano samples loaded successfully!");
+            debugLog('PIANO', '🎹 Piano samples loaded successfully!');
             // Update both local and global state to ensure free play mode works
             samplesLoaded = true;
             window._pianoSamplesLoaded = true;
-            console.log("[PIANO] Global piano sample state set to LOADED");
+            debugLog('PIANO', 'Global piano sample state set to LOADED');
           },
           onerror: (err) => {
-            console.error("[PIANO] ERROR: Could not load piano samples:", err);
-            console.log("[PIANO] Attempting to load with alternate paths as fallback");
+            debugLog(['PIANO', 'ERROR'], `Could not load piano samples: ${err.message || err}`);
+            debugLog('PIANO', 'Attempting to load with alternate paths as fallback');
             
             // Try alternative approaches to loading samples
             // First, try direct Audio preloading to force browser cache
@@ -195,7 +195,7 @@ export class AudioEngine {
                   window._pianoSamplesActuallyReady = true;
                 }
               } catch (e) {
-                console.log("[PIANO] Buffer check failed", e);
+                debugLog('PIANO', `Buffer check failed: ${e.message || e}`);
               }
               
               // Special handling for 1_5 memory game activity - NEVER use fallback synth
@@ -355,7 +355,7 @@ export class AudioEngine {
       },
       doublebass: () => {
         // This is now handled by toneJsSampler.js
-        console.log("[AUDIO ENGINE] Using global doublebass from toneJsSampler.js");
+        debugLog('AUDIO_ENGINE', 'Using global doublebass from toneJsSampler.js');
         return null; // We should never reach this point as playNote() will call toneJsSampler directly
       },
       bell: () => {
@@ -405,10 +405,10 @@ export class AudioEngine {
       Tone.Transport.bpm.value = 120;
       
       this._isInitialized = true;
-      console.log('Audio-Engine erfolgreich initialisiert');
+      debugLog('AUDIO_ENGINE', 'Audio-Engine erfolgreich initialisiert');
       return Promise.resolve();
     } catch (error) {
-      console.error('Fehler beim Initialisieren der Audio-Engine:', error);
+      debugLog(['AUDIO_ENGINE', 'ERROR'], `Fehler beim Initialisieren der Audio-Engine: ${error.message || error}`);
       return Promise.reject(error);
     }
   }
@@ -422,7 +422,7 @@ export class AudioEngine {
     // Always create a fresh synth instance regardless of current state
     // This ensures each note gets a clean instrument setup
     if (!this._instrumentTypes[instrumentType]) {
-      console.warn(`Unbekannter Instrument-Typ: ${instrumentType}, verwende Standard-Synth`);
+      debugLog(['AUDIO_ENGINE', 'WARN'], `Unbekannter Instrument-Typ: ${instrumentType}, verwende Standard-Synth`);
       instrumentType = 'default';
     }
     
@@ -436,7 +436,7 @@ export class AudioEngine {
           this._synth.dispose();
         }
       } catch (err) {
-        console.warn('[AUDIO-ENGINE] Error disposing old synth:', err);
+        debugLog(['AUDIO_ENGINE', 'WARN'], `Error disposing old synth: ${err.message || err}`);
       }
     }
     
@@ -444,7 +444,7 @@ export class AudioEngine {
     this._synth.toDestination();
     this._currentInstrument = instrumentType;
     
-    console.log(`[INSTRUMENT] Instrumentenwechsel zu: ${instrumentType}`);
+    debugLog('INSTRUMENT', `Instrumentenwechsel zu: ${instrumentType}`);
   }
   
   /**
@@ -458,13 +458,13 @@ export class AudioEngine {
    */
   playNote(noteName, duration = 0.5, time, velocity = 0.75, instrument = 'default', options = {}) {
     if (!this._isInitialized) {
-      console.warn('Audio-Engine wurde noch nicht initialisiert!');
+      debugLog(['AUDIO_ENGINE', 'WARN'], 'Audio-Engine wurde noch nicht initialisiert!');
       return;
     }
     
     // Prüfen, ob es sich um einen speziellen Sound handelt
     if (this._specialSounds[noteName]) {
-      console.log(`AUDIO: Spiele speziellen Sound-Effekt: ${noteName}`);
+      debugLog('AUDIO', `Spiele speziellen Sound-Effekt: ${noteName}`);
       this._playSpecialSound(noteName, velocity);
       return;
     }
@@ -473,7 +473,7 @@ export class AudioEngine {
     const parsedNote = this._parseNoteString(noteName);
     
     if (!parsedNote) {
-      console.error(`Ungültige Note: ${noteName}`);
+      debugLog(['AUDIO', 'ERROR'], `Ungültige Note: ${noteName}`);
       return;
     }
     
@@ -484,7 +484,7 @@ export class AudioEngine {
     }
     
     // Log the instrument being used
-    console.log(`[INSTRUMENT] playNote() ${noteName} with instrument: ${instrument}, parsedNote: ${parsedNote}, duration: ${durationInSeconds.toFixed(3)}s`);
+    debugLog('INSTRUMENT', `playNote() ${noteName} with instrument: ${instrument}, parsedNote: ${parsedNote}, duration: ${durationInSeconds.toFixed(3)}s`);
     
     // INTEGRATION POINT: Use our toneJsSampler instruments based on the instrument type
     let played = false;
@@ -492,10 +492,10 @@ export class AudioEngine {
     // First check if the requested instrument is ready
     const instrumentReady = isInstrumentReady(instrument.toLowerCase());
     if (!instrumentReady) {
-      console.log(`[INSTRUMENT] Instrument ${instrument} is not ready yet. Initializing...`);
+      debugLog('INSTRUMENT', `Instrument ${instrument} is not ready yet. Initializing...`);
       // Give some time for instrument to initialize if not ready
       setTimeout(() => {
-        console.log(`[INSTRUMENT] Delayed check for ${instrument} readiness: ${isInstrumentReady(instrument.toLowerCase())}`);
+        debugLog('INSTRUMENT', `Delayed check for ${instrument} readiness: ${isInstrumentReady(instrument.toLowerCase())}`);
       }, 500);
     }
     
@@ -539,7 +539,7 @@ export class AudioEngine {
           
           played = true;
         } catch (err) {
-          console.error(`[INSTRUMENT] Error playing with legacy synth: ${err}`);
+          debugLog(['INSTRUMENT', 'ERROR'], `Error playing with legacy synth: ${err.message || err}`);
           played = false;
         }
     }
@@ -553,13 +553,13 @@ export class AudioEngine {
    */
   stopNote(note) {
     if (!this._isInitialized) {
-      console.warn('Audio-Engine nicht initialisiert. Initialisiere zuerst mit initialize()');
+      debugLog(['AUDIO_ENGINE', 'WARN'], 'Audio-Engine nicht initialisiert. Initialisiere zuerst mit initialize()');
       return;
     }
     
     // Spezielle Sounds können nicht gestoppt werden
     if (this._specialSounds[note]) {
-      console.log(`AUDIO: Kann speziellen Sound nicht stoppen: ${note}`);
+      debugLog('AUDIO', `Kann speziellen Sound nicht stoppen: ${note}`);
       return;
     }
     
@@ -567,7 +567,7 @@ export class AudioEngine {
     const parsedNote = this._parseNoteString(note);
     
     if (!parsedNote) {
-      console.error(`Ungültige Note zum Stoppen: ${note}`);
+      debugLog(['AUDIO', 'ERROR'], `Ungültige Note zum Stoppen: ${note}`);
       return;
     }
     
@@ -577,7 +577,7 @@ export class AudioEngine {
     // Note aus der Liste aktiver Noten entfernen
     this._notesPlaying.delete(parsedNote);
     
-    console.log(`Note gestoppt: ${parsedNote}`);
+    debugLog('AUDIO', `Note gestoppt: ${parsedNote}`);
   }
   
   /**
@@ -593,12 +593,12 @@ export class AudioEngine {
    */
   playNoteSequence(notes, options = {}) {
     if (!this._isInitialized) {
-      console.warn('Audio-Engine nicht initialisiert. Initialisiere zuerst mit initialize()');
+      debugLog(['AUDIO_ENGINE', 'WARN'], 'Audio-Engine nicht initialisiert. Initialisiere zuerst mit initialize()');
       return { stop: () => {} };
     }
     
     if (!notes || notes.length === 0) {
-      console.warn('Leere Notensequenz, nichts abzuspielen');
+      debugLog(['AUDIO_ENGINE', 'WARN'], 'Leere Notensequenz, nichts abzuspielen');
       if (options.onSequenceEnd) options.onSequenceEnd();
       return { stop: () => {} };
     }
@@ -624,7 +624,7 @@ export class AudioEngine {
     // Tone.js-Sequence erstellen
     const sequence = new Tone.Sequence((time, event) => {
       if (event.isRest) {
-        console.log(`Pause an Position ${event.index + 1}/${processedNotes.length}, Dauer: ${event.duration}s`);
+        debugLog('AUDIO_SEQUENCE', `Pause an Position ${event.index + 1}/${processedNotes.length}, Dauer: ${event.duration}s`);
         // Bei Pausen keinen Ton abspielen, aber Callback aufrufen
         if (mergedOptions.onNoteStart) {
           mergedOptions.onNoteStart(null, event.index);
@@ -638,7 +638,7 @@ export class AudioEngine {
           event.velocity
         );
         
-        console.log(`Note gespielt: ${event.note} (${event.originalNote}) an Position ${event.index + 1}/${processedNotes.length}`);
+        debugLog('AUDIO_SEQUENCE', `Note gespielt: ${event.note} (${event.originalNote}) an Position ${event.index + 1}/${processedNotes.length}`);
         
         // Callback für Notenstart
         if (mergedOptions.onNoteStart) {
@@ -664,7 +664,7 @@ export class AudioEngine {
           // Sequenz aus aktiver Liste entfernen
           this._activeSequences.delete(sequenceId);
           
-          console.log(`Sequenz ${sequenceId} abgeschlossen`);
+          debugLog('AUDIO_SEQUENCE', `Sequenz ${sequenceId} abgeschlossen`);
         }, `+${event.duration}`);
       }
     }, processedNotes, '4n');
@@ -684,7 +684,7 @@ export class AudioEngine {
       startTime: Tone.now()
     });
     
-    console.log(`Sequenz ${sequenceId} mit ${notes.length} Noten gestartet, Tempo: ${mergedOptions.tempo} BPM`);
+    debugLog('AUDIO_SEQUENCE', `Sequenz ${sequenceId} mit ${notes.length} Noten gestartet, Tempo: ${mergedOptions.tempo} BPM`);
     
     // Kontrollobjekt zurückgeben
     return {
@@ -692,7 +692,7 @@ export class AudioEngine {
         sequence.stop();
         sequence.dispose();
         this._activeSequences.delete(sequenceId);
-        console.log(`Sequenz ${sequenceId} manuell gestoppt`);
+        debugLog('AUDIO_SEQUENCE', `Sequenz ${sequenceId} manuell gestoppt`);
       },
       id: sequenceId
     };
@@ -707,12 +707,12 @@ export class AudioEngine {
    */
   playChord(notes, options = {}) {
     if (!this._isInitialized) {
-      console.warn('Audio-Engine nicht initialisiert. Initialisiere zuerst mit initialize()');
+      debugLog(['AUDIO_ENGINE', 'WARN'], 'Audio-Engine nicht initialisiert. Initialisiere zuerst mit initialize()');
       return false;
     }
     
     if (!notes || notes.length === 0) {
-      console.warn('Leeres Noten-Array, nichts abzuspielen');
+      debugLog(['AUDIO_ENGINE', 'WARN'], 'Leeres Noten-Array, nichts abzuspielen');
       return false;
     }
     
@@ -731,16 +731,16 @@ export class AudioEngine {
       if (parsedNote) {
         validNotes.push(parsedNote);
       } else {
-        console.warn(`Invalid Note ignored: ${note} (not in the format e.g. 'C4', 'D#4')`);
+        debugLog(['AUDIO_CHORD', 'WARN'], `Invalid Note ignored: ${note} (not in the format e.g. 'C4', 'D#4')`);
       }
     });
     
     if (validNotes.length === 0) {
-      console.warn('No valid notes in chord');
+      debugLog(['AUDIO_CHORD', 'WARN'], 'No valid notes in chord');
       return false;
     }
     
-    console.log(`AUDIO: Spiele Akkord mit Noten: ${validNotes.join(', ')}, Dauer: ${duration}s`);
+    debugLog('AUDIO', `Spiele Akkord mit Noten: ${validNotes.join(', ')}, Dauer: ${duration}s`);
     
     try {
       // Alle Noten gleichzeitig abspielen
@@ -760,7 +760,7 @@ export class AudioEngine {
       
       return true;
     } catch (error) {
-      console.error('Fehler beim Abspielen des Akkords:', error);
+      debugLog(['AUDIO_CHORD', 'ERROR'], `Fehler beim Abspielen des Akkords: ${error.message || error}`);
       return false;
     }
   }
@@ -775,9 +775,9 @@ export class AudioEngine {
         sequenceData.sequence.stop();
         sequenceData.sequence.dispose();
       } catch (err) {
-        console.warn(`[AUDIO-ENGINE] Error stopping sequence ${id}:`, err);
+        debugLog(['AUDIO_ENGINE', 'WARN'], `Error stopping sequence ${id}: ${err.message || err}`);
       }
-      console.log(`Sequenz ${id} gestoppt`);
+      debugLog('AUDIO_SEQUENCE', `Sequenz ${id} gestoppt`);
     });
     
     this._activeSequences.clear();
@@ -787,12 +787,12 @@ export class AudioEngine {
       try {
         this._synth.releaseAll();
       } catch (err) {
-        console.warn('[AUDIO-ENGINE] Error releasing all notes:', err);
+        debugLog(['AUDIO_ENGINE', 'WARN'], `Error releasing all notes: ${err.message || err}`);
       }
       this._notesPlaying.clear();
     }
     
-    console.log('Alle Audiowiedergaben gestoppt');
+    debugLog('AUDIO_ENGINE', 'Alle Audiowiedergaben gestoppt');
   }
   
   /**
@@ -800,7 +800,7 @@ export class AudioEngine {
    * Should be called when the app is backgrounded or before major activity changes
    */
   cleanup() {
-    console.log('[AUDIO-ENGINE] Starting cleanup of audio resources...');
+    debugLog('AUDIO_ENGINE', 'Starting cleanup of audio resources...');
     
     // Stop all active audio first
     this.stopAll();
@@ -813,12 +813,12 @@ export class AudioEngine {
           this._synth.dispose();
         }
       } catch (err) {
-        console.warn('[AUDIO-ENGINE] Error disposing main synth:', err);
+        debugLog(['AUDIO_ENGINE', 'WARN'], `Error disposing main synth: ${err.message || err}`);
       }
       this._synth = null;
     }
     
-    console.log('[AUDIO-ENGINE] Audio cleanup completed');
+    debugLog('AUDIO_ENGINE', 'Audio cleanup completed');
   }
   
   /**
@@ -839,7 +839,7 @@ export class AudioEngine {
       // Note abspielen
       this.playNote(noteName, 0.4);
       
-      console.log(`Legacy-Event verarbeitet: ${event.detail.note} -> ${noteName}`);
+      debugLog('LEGACY_EVENT', `Legacy-Event verarbeitet: ${event.detail.note} -> ${noteName}`);
     });
   }
   
@@ -925,7 +925,7 @@ export class AudioEngine {
       currentTime += duration;
     });
     
-    console.log(`AUDIO: Speziellen Sound '${soundName}' abgespielt mit Lautstärke ${velocity}`);
+    debugLog('AUDIO', `Speziellen Sound '${soundName}' abgespielt mit Lautstärke ${velocity}`);
   }
   
   /**
@@ -953,7 +953,7 @@ export class AudioEngine {
     const noteRegex = /^[A-G][b#]?[0-8]$/;
     
     if (!noteRegex.test(cleanNote)) {
-      console.warn(`Ungültiger Notenname: ${note} -> ${cleanNote}`);
+      debugLog(['AUDIO', 'WARN'], `Ungültiger Notenname: ${note} -> ${cleanNote}`);
       return null;
     }
     
