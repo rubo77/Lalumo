@@ -108,7 +108,7 @@
     document.body.classList.add(
       window.isNativeApp ? 'native-app' : 'web-app',
       window.isAndroid ? 'android' : (window.isiOS ? 'ios' : 'desktop'),
-      window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'dev-mode' : 'production'
+      !window.isNativeApp && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? 'dev-mode' : 'production'
     );
 
     // Hide loading overlay when page is fully loaded

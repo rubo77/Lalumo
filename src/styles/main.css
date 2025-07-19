@@ -4,17 +4,18 @@
   color-scheme: light only;
 }
 
+
+/* Locked activity styling */
+.locked-activity {
+  opacity: 0.9;
+}
+
 /* Debug-Element Sichtbarkeitskontrolle */
 .debug-element {
   opacity: 0.2 !important;
   display: none !important; /* Standardmäßig ausgeblendet */
   visibility: hidden !important;
   pointer-events: none !important; /* Verhindert jegliche Klick-Interaktion */
-}
-
-/* Locked activity styling */
-.locked-activity {
-  opacity: 0.2;
 }
 
 /* Wenn die Entwicklungsumgebung aktiv ist (über body-Klasse steuerbar) */
