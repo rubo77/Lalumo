@@ -2358,6 +2358,28 @@ export function app() {
     },
 
     /**
+     * Map old activity mode names to new simplified progress keys
+     * @param {string} mode - The old mode name
+     * @returns {string} The new progress key
+     */
+    mapModeToProgressKey(mode) {
+      const modeMapping = {
+        '1_1_pitches_high_or_low': '1_1',
+        '1_2_pitches_match-sounds': '1_2', 
+        '1_3_pitches_draw-melody': '1_3',
+        '1_4_pitches_does-it-sound-right': '1_4',
+        '1_5_pitches_memory-game': '1_5',
+        '2_1_chords_color-matching': '2_1',
+        '2_2_chords_stable_unstable': '2_2',
+        '2_3_chords_chord-building': '2_3',
+        '2_4_chords_missing-note': '2_4',
+        '2_5_chords_characters': '2_5',
+        '2_6_chords_harmony-gardens': '2_6'
+      };
+      return modeMapping[mode] || mode;
+    },
+
+    /**
      * Get the progress of the currently active activity
      * @returns {number} Progress value of current activity (0 if none)
      */
@@ -2377,29 +2399,33 @@ export function app() {
             componentInstance = window.chordsComponent;
           }
           
-          // Get progress from component instance
-          if (componentInstance && componentInstance.progress && componentInstance.progress[mode]) {
-            return componentInstance.progress[mode] || 0;
+          // Get progress from component instance using mapped key
+          const progressKey = this.mapModeToProgressKey(mode);
+          if (componentInstance && componentInstance.progress && componentInstance.progress[progressKey]) {
+            return componentInstance.progress[progressKey] || 0;
           }
           
           // Fallback: try to get from global progress object if available
-          if (window.progress && window.progress[mode]) {
-            return window.progress[mode] || 0;
+          const fallbackProgressKey = this.mapModeToProgressKey(mode);
+          if (window.progress && window.progress[fallbackProgressKey]) {
+            return window.progress[fallbackProgressKey] || 0;
           }
         }
         
         // Fallback: check if any component has an active mode with progress
         if (window.pitchesComponent && window.pitchesComponent.mode && window.pitchesComponent.mode !== 'main') {
           const mode = window.pitchesComponent.mode;
-          if (window.pitchesComponent.progress && window.pitchesComponent.progress[mode]) {
-            return window.pitchesComponent.progress[mode] || 0;
+          const pitchesProgressKey = this.mapModeToProgressKey(mode);
+          if (window.pitchesComponent.progress && window.pitchesComponent.progress[pitchesProgressKey]) {
+            return window.pitchesComponent.progress[pitchesProgressKey] || 0;
           }
         }
         
         if (window.chordsComponent && window.chordsComponent.mode && window.chordsComponent.mode !== 'main') {
           const mode = window.chordsComponent.mode;
-          if (window.chordsComponent.progress && window.chordsComponent.progress[mode]) {
-            return window.chordsComponent.progress[mode] || 0;
+          const chordsProgressKey = this.mapModeToProgressKey(mode);
+          if (window.chordsComponent.progress && window.chordsComponent.progress[chordsProgressKey]) {
+            return window.chordsComponent.progress[chordsProgressKey] || 0;
           }
         }
         

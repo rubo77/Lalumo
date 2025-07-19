@@ -11,6 +11,9 @@ import { playToneNote, isToneJsReady } from '../utils/toneJsSampler';
 // Importiere Debug-Utilities
 import { debugLog } from '../utils/debug.js';
 
+// Import activity-specific helper functions
+import { get_1_4_level } from './pitches/1_4_sound_judgment.js';
+
 // Import shared feedback utilities
 import { 
   showRainbowSuccess, 
@@ -109,7 +112,7 @@ export function pitches() {
     
     // ************ for 1.4 *****************
     // Does It Sound Right activity progression
-    soundJudgmentLevel: 1, // User level in Does It Sound Right activity (determines difficulty)
+    // Level is now calculated from this.progress['1_4'] using get_1_4_level()
     
     // ************ for 1.5 *****************
     // Arrays für die zufälligen Tierbilder
@@ -309,12 +312,12 @@ export function pitches() {
           if (savedProgress) {
             this.progress = JSON.parse(savedProgress);
             
-            // Ensure all activity progress fields exist with the new ID format
-            if (!this.progress['1_1_pitches_high_or_low']) this.progress['1_1_pitches_high_or_low'] = 0;
-            if (!this.progress['1_2_pitches_match-sounds']) this.progress['1_2_pitches_match-sounds'] = 0;
-            if (!this.progress['1_3_pitches_draw-melody']) this.progress['1_3_pitches_draw-melody'] = 0;
-            if (!this.progress['1_4_pitches_does-it-sound-right']) this.progress['1_4_pitches_does-it-sound-right'] = 0;
-            if (!this.progress['1_5_pitches_memory-game']) this.progress['1_5_pitches_memory-game'] = 0;
+            // Ensure all activity progress fields exist with simplified ID format
+            if (!this.progress['1_1']) this.progress['1_1'] = 0;
+            if (!this.progress['1_2']) this.progress['1_2'] = 0;
+            if (!this.progress['1_3']) this.progress['1_3'] = 0;
+            if (!this.progress['1_4']) this.progress['1_4'] = 0;
+            if (!this.progress['1_5']) this.progress['1_5'] = 0;
             
             console.log('Loaded progress data with new IDs:', this.progress);
             
@@ -3987,20 +3990,14 @@ export function pitches() {
         ? 'Drücke auf Play, um eine Melodie zu hören. Klingt sie richtig? Oder ist da ein falscher Ton?'
         : 'Press play to hear a melody. Does it sound right? Or is there a wrong note?';
       
-      // Track activity usage and initialize level from preferences if available
-      if (!this.progress['1_4_pitches_does-it-sound-right']) {
-        this.progress['1_4_pitches_does-it-sound-right'] = 0;
+      // Track activity usage and initialize progress if needed
+      if (!this.progress['1_4']) {
+        this.progress['1_4'] = 0;
       }
       
-      // Lade den Level aus dem localStorage, falls vorhanden
-      const savedLevel = parseInt(localStorage.getItem('lalumo_soundJudgmentLevel'));
-      if (!isNaN(savedLevel) && savedLevel >= 1 && savedLevel <= 7) {
-        this.soundJudgmentLevel = savedLevel;
-        console.log(`SOUND JUDGMENT: Loaded level ${this.soundJudgmentLevel} from preferences`);
-      } else if (!this.soundJudgmentLevel || this.soundJudgmentLevel < 1) {
-        // Fallback: Setze Level auf 1, wenn nichts gespeichert ist
-        this.soundJudgmentLevel = 1;
-      }
+      // Level is now calculated from this.progress['1_4'] using get_1_4_level()
+      // No need to load from separate localStorage anymore
+      console.log(`SOUND JUDGMENT: Current level ${get_1_4_level(this)} (progress: ${this.progress['1_4'] || 0})`);
       
       // Show mascot message first (moved from playback completion)
       window.showMascotMessage(introMessage, null, 2, this);
@@ -4168,7 +4165,8 @@ export function pitches() {
         7: this.$store.strings?.sound_judgment_level_7 || 'Level 7: 1 wrong note, max. 1 semitone distance'
       };
       
-      const levelText = levelDescriptions[this.soundJudgmentLevel] || `Level ${this.soundJudgmentLevel}`;
+      const currentLevel = get_1_4_level(this);
+      const levelText = levelDescriptions[currentLevel] || `Level ${currentLevel}`;
       const streakInfo = this.soundJudgmentCorrectStreak > 0 ? ` (${this.soundJudgmentCorrectStreak}/3)` : '';
       
       // Rufe die gemeinsame Hilfsfunktion auf
@@ -4186,7 +4184,7 @@ export function pitches() {
             progressClass: "sound-judgment-progress",
             currentCount: this.soundJudgmentCorrectStreak || 0,
             totalCount: 3,
-            currentLevel: this.soundJudgmentLevel || 1,
+            currentLevel: get_1_4_level(this),
             notesCount: null,
             barOnly: true,
             activityName: progressbarDescription,
@@ -4221,21 +4219,17 @@ export function pitches() {
         return false;
       }
       
-      // Stellsicherheit für Level-System
-      if (!this.soundJudgmentLevel || this.soundJudgmentLevel < 1) {
-        this.soundJudgmentLevel = 1;
-      } else if (this.soundJudgmentLevel > 7) {
-        this.soundJudgmentLevel = 7;
-      }
+      // Get current level from progress (automatically constrained to 1-7)
+      const currentLevel = get_1_4_level(this);
       
       // Setze die Schwierigkeitsparameter abhängig vom Level
       const difficulty = {
-        numberOfWrongNotes: this.soundJudgmentLevel <= 2 ? 2 : 1,
-        allowPauseModification: this.soundJudgmentLevel % 2 === 0, // Gerade Levels erlauben Pausen als Fehler
-        maxSemitoneDistance: this.soundJudgmentLevel >= 5 ? 9 - this.soundJudgmentLevel : 100 // Level 5: 3, Level 6: 2, Level 7: 1
+        numberOfWrongNotes: currentLevel <= 2 ? 2 : 1,
+        allowPauseModification: currentLevel % 2 === 0, // Gerade Levels erlauben Pausen als Fehler
+        maxSemitoneDistance: currentLevel >= 5 ? 9 - currentLevel : 100 // Level 5: 3, Level 6: 2, Level 7: 1
       };
       
-      console.log(`SOUND JUDGMENT: Currently at level ${this.soundJudgmentLevel}`, difficulty);
+      console.log(`SOUND JUDGMENT: Currently at level ${currentLevel}`, difficulty);
         
       // Randomly decide if the melody should have a wrong note (50% chance)
       this.melodyHasWrongNote = Math.random() < 0.5;
@@ -4385,7 +4379,7 @@ export function pitches() {
       
       console.log('Generated sound judgment melody:', {
         name: this.currentMelodyName,
-        level: this.soundJudgmentLevel,
+        level: get_1_4_level(this),
         hasWrongNote: this.melodyHasWrongNote,
         sequence: this.currentSequence
       });
@@ -4910,37 +4904,45 @@ export function pitches() {
         // Create and show rainbow success animation
         showRainbowSuccess();
         
-        // Increment progress counter
-        if (!this.progress['1_4_pitches_does-it-sound-right']) {
-          this.progress['1_4_pitches_does-it-sound-right'] = 0;
+        // Initialize progress for this activity if it doesn't exist
+        if (!this.progress['1_4']) {
+          this.progress['1_4'] = 0;
         }
-        this.progress['1_4_pitches_does-it-sound-right']++;
+        this.progress['1_4']++;
         
         // Save progress to localStorage
         localStorage.setItem('lalumo_progress', JSON.stringify(this.progress));
         
-        console.log('Updated sound judgment progress:', this.progress['1_4_pitches_does-it-sound-right']);
+        console.log('Updated sound judgment progress:', this.progress['1_4']);
         
         // Increment the streak counter for level progression
         this.soundJudgmentCorrectStreak++;
         console.log(`SOUND JUDGMENT: Streak increased to ${this.soundJudgmentCorrectStreak}`);
         
-        // Check if we should advance to the next level (10 correct in a row)
-        if (this.soundJudgmentCorrectStreak >= 3 && this.soundJudgmentLevel < 7) {
-          this.soundJudgmentLevel++;
+        // Check if we should advance to the next level (3 correct in a row)
+        const currentLevel = get_1_4_level(this);
+        if (this.soundJudgmentCorrectStreak >= 3 && currentLevel < 7) {
+          // Level up happens automatically when progress increases
+          // We just need to add enough progress to reach the next level
+          const progressNeededForNextLevel = currentLevel * 7;
+          const currentProgress = this.progress['1_4'] || 0;
+          
+          if (currentProgress < progressNeededForNextLevel) {
+            this.progress['1_4'] = progressNeededForNextLevel;
+            localStorage.setItem('lalumo_progress', JSON.stringify(this.progress));
+          }
+          
           this.soundJudgmentCorrectStreak = 0; // Reset streak for next level
+          const newLevel = get_1_4_level(this);
           
-          // Save the updated level to preferences
-          localStorage.setItem('lalumo_soundJudgmentLevel', this.soundJudgmentLevel);
-          
-          console.log(`SOUND JUDGMENT: Advanced to level ${this.soundJudgmentLevel}!`);
+          console.log(`SOUND JUDGMENT: Advanced to level ${newLevel}! (progress: ${this.progress['1_4']})`);
           
           // Show level-up message
           let levelUpMessage;
           if (language === 'de') {
-            levelUpMessage = `Super! Du hast Level ${this.soundJudgmentLevel} erreicht!`;
+            levelUpMessage = `Super! Du hast Level ${newLevel} erreicht!`;
           } else {
-            levelUpMessage = `Great! You've reached level ${this.soundJudgmentLevel}!`;
+            levelUpMessage = `Great! You've reached level ${newLevel}!`;
           }
           
           // Show mascot message for level up

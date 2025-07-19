@@ -222,9 +222,6 @@ resetAllProgress() {
     this.progress[key] = 0;
   });
   
-  // Save to localStorage
-  this.saveProgress();
-  
   // No need to clear separate localStorage items anymore
   console.log('All progress reset to 0');
 }
@@ -277,15 +274,15 @@ Ensure all activities work correctly with unified system.
 ## Function Renaming Map
 
 ### Reset Functions
-| Old Function Name | New Function Name | Location |
-|---|---|---|
-| `reset_1_1_HighOrLow_Progress()` | `reset_1_1_Progress()` | `/src/components/pitches/1_1_high_or_low.js` |
-| `reset_1_2_MatchSounds_Progress()` | `reset_1_2_Progress()` | `/src/components/pitches/1_2_match_sounds.js` |
-| `reset_1_3_DrawMelody_Progress()` | `reset_1_3_Progress()` | `/src/components/pitches/1_3_draw_melody.js` |
-| `reset_1_4_SoundJudgment_Progress()` | `reset_1_4_Progress()` | `/src/components/pitches/1_4_sound_judgment.js` |
-| `reset_1_5_MemoryGame_Progress()` | `reset_1_5_Progress()` | `/src/components/pitches/1_5_memory_game.js` |
-| `resetProgress_2_2()` | `reset_2_2_Progress()` | `/src/components/2_chords/2_2_chords_stable_unstable.js` |
-| `resetProgress_2_5()` | `reset_2_5_Progress()` | `/src/components/2_chords/2_5_chord_characters.js` |
+| Status | Old Function Name | New Function Name | Location |
+|---|---|---|---|
+| ⏳ | `reset_1_1_HighOrLow_Progress()` | `reset_1_1_Progress()` | `/src/components/pitches/1_1_high_or_low.js` |
+| ⏳ | `reset_1_2_MatchSounds_Progress()` | `reset_1_2_Progress()` | `/src/components/pitches/1_2_match_sounds.js` |
+| ⏳ | `reset_1_3_DrawMelody_Progress()` | `reset_1_3_Progress()` | `/src/components/pitches/1_3_draw_melody.js` |
+| ✅ | `reset_1_4_SoundJudgment_Progress()` | `reset_1_4_Progress()` | `/src/components/pitches/1_4_sound_judgment.js` |
+| ⏳ | `reset_1_5_MemoryGame_Progress()` | `reset_1_5_Progress()` | `/src/components/pitches/1_5_memory_game.js` |
+| ⏳ | `resetProgress_2_2()` | `reset_2_2_Progress()` | `/src/components/2_chords/2_2_chords_stable_unstable.js` |
+| ⏳ | `resetProgress_2_5()` | `reset_2_5_Progress()` | `/src/components/2_chords/2_5_chord_characters.js` |
 
 ### Setup/Initialization Functions
 | Old Function Name | New Function Name | Location |
@@ -303,33 +300,26 @@ Ensure all activities work correctly with unified system.
 |---|---|---|
 | `startSoundJudgmentGame()` | `start_1_4_game()` | `/src/components/pitches.js` |
 | `startMemoryGame()` | `start_1_5_game()` | `/src/components/pitches.js` |
-| `playStableUnstableChord()` | `start_2_2_game()` | `/src/components/chords.js` |
-
-### Answer Handling Functions
-| Old Function Name | New Function Name | Location |
-|---|---|---|
-| `handle_1_3_correct_answer()` | `handle_1_3_answer()` | `/src/components/pitches.js` |
-| `handle_1_4_correct_answer()` | `handle_1_4_answer()` | `/src/components/pitches.js` |
-| `handle_1_5_correct_answer()` | `handle_1_5_answer()` | `/src/components/pitches.js` |
-| `checkStableUnstableAnswer()` | `handle_2_2_answer()` | `/src/components/chords.js` |
-| (chord character answer handling) | `handle_2_5_answer()` | `/src/components/chords.js` |
+| `startGameMode()` | `start_2_2_game()` | `/src/components/chords.js` |
+1_2_match_sounds, 1_4_pitches_does-it-sound-right, 1_5_pitches_memory-game use the `playCurrentMelody()` function in `pitches.js` called in index.html`
 
 ### Level/Info Functions
-| Old Function Name | New Function Name | Location |
-|---|---|---|
-| `getSoundJudgmentLevel()` (new) | `get_1_4_level()` | `/src/components/pitches.js` |
-| `getDrawMelodyLevel()` (new) | `get_1_3_level()` | `/src/components/pitches.js` |
-| `getMemoryGameLevel()` (new) | `get_1_5_level()` | `/src/components/pitches.js` |
-| `get_1_3_level_info()` | `get_1_3_info()` | `/src/components/pitches.js` |
-| `get_1_4_difficulty()` | `get_1_4_info()` | `/src/components/pitches.js` |
-| (new function needed) | `get_2_2_level()` | `/src/components/chords.js` |
-| (new function needed) | `get_2_5_level()` | `/src/components/chords.js` |
+| Status | Old Function Name | New Function Name | Location |
+|---|---|---|---|
+| ⏳ | (new function) | `get_1_1_level()` | `/src/components/pitches/1_1_high_or_low.js` |
+| ⏳ | (new function) | `get_1_2_level()` | `/src/components/pitches/1_2_match_sounds.js` |
+| ⏳ | `getDrawMelodyLevel()` (new) |`get_1_3_level()` | `/src/components/pitches/1_3_draw_melody.js` |
+| ✅ | (new function) | `get_1_4_level()` | `/src/components/pitches/1_4_sound_judgment.js` |
+| ⏳ | `getMemoryGameLevel()` (new) | `get_1_5_level()` | `/src/components/pitches/1_5_memory_game.js` |
+| ⏳ | `get_1_3_level_info()` | `get_1_3_info()` | `/src/components/pitches.js` |
+| ⏳ | (new function needed) | `get_2_2_level()` | `/src/components/2_chords/2_2_chords_stable_unstable.js` |
+| ⏳ | (new function needed) | `get_2_5_level()` | `/src/components/2_chords/2_5_chord_characters.js` |
 
 ### Progress Save Functions
 | Old Function Name | New Function Name | Location |
 |---|---|---|
 | `saveProgress_1_1()` | `save_1_1_progress()` | `/src/components/pitches.js` |
-| (similar functions for other activities) | `save_1_2_progress()`, etc. | `/src/components/pitches.js` |
+{{ ... }}
 
 ### Progress Access Functions
 | Old Function Name | New Function Name | Location |
@@ -339,27 +329,27 @@ Ensure all activities work correctly with unified system.
 | (new function needed) | `get_2_2_progress()` | `/src/components/2_chords/2_2_chords_stable_unstable.js` |
 
 ### Progress Key Changes
-| Old Progress Key | New Progress Key | Used In |
-|---|---|---|
-| `'1_1_pitches_high_or_low'` | `'1_1'` | All components |
-| `'1_2_pitches_match-sounds'` | `'1_2'` | All components |
-| `'1_3_pitches_draw-melody'` | `'1_3'` | All components |
-| `'1_4_pitches_does-it-sound-right'` | `'1_4'` | All components |
-| `'1_5_pitches_memory-game'` | `'1_5'` | All components |
-| `'2_1_chords_color-matching'` | `'2_1'` | All components |
-| `'2_2_chords_stable_unstable'` | `'2_2'` | All components |
-| `'2_3_chords_chord-building'` | `'2_3'` | All components |
-| `'2_4_chords_missing-note'` | `'2_4'` | All components |
-| `'2_5_chords_characters'` | `'2_5'` | All components |
-| `'2_6_chords_harmony-gardens'` | `'2_6'` | All components |
+| Status | Old Progress Key | New Progress Key | Used In |
+|---|---|---|---|
+| ⏳ | `'1_1_pitches_high_or_low'` | `'1_1'` | All components |
+| ⏳ | `'1_2_pitches_match-sounds'` | `'1_2'` | All components |
+| ⏳ | `'1_3_pitches_draw-melody'` | `'1_3'` | All components |
+| ✅ | `'1_4_pitches_does-it-sound-right'` | `'1_4'` | All components |
+| ⏳ | `'1_5_pitches_memory-game'` | `'1_5'` | All components |
+| ⏳ | `'2_1_chords_color-matching'` | `'2_1'` | All components |
+| ⏳ | `'2_2_chords_stable_unstable'` | `'2_2'` | All components |
+| ⏳ | `'2_3_chords_chord-building'` | `'2_3'` | All components |
+| ⏳ | `'2_4_chords_missing-note'` | `'2_4'` | All components |
+| ⏳ | `'2_5_chords_characters'` | `'2_5'` | All components |
+| ⏳ | `'2_6_chords_harmony-gardens'` | `'2_6'` | All components |
 
 ### Variable References to Replace
-| Old Variable | New Function Call | Location |
-|---|---|---|
-| `this.soundJudgmentLevel` | `this.get_1_4_level()` | `/src/components/pitches.js` |
-| `this.drawMelodyLevel` | `this.get_1_3_level()` | `/src/components/pitches.js` |
-| `this.memorySuccessCount` | `this.progress['1_5']` | `/src/components/pitches.js` |
-| `this.levelSuccessCounter` (1_3) | Calculate from `this.progress['1_3']` | `/src/components/pitches.js` |
+| Status | Old Variable | New Function Call | Location |
+|---|---|---|---|
+| ✅ | `this.soundJudgmentLevel` | `get_1_4_level(this)` | `/src/components/pitches.js` |
+| ⏳ | `this.drawMelodyLevel` | `get_1_3_level(this)` | `/src/components/pitches.js` |
+| ⏳ | `this.memorySuccessCount` | `this.progress['1_5']` | `/src/components/pitches.js` |
+| ⏳ | `this.levelSuccessCounter` (1_3) | Calculate from `this.progress['1_3']` | `/src/components/pitches.js` |
 
 ### localStorage Keys to Remove
 | localStorage Key | Replacement |
