@@ -151,105 +151,98 @@ export function pitches() {
     // ************ for 1.3 *****************
     // Well-known melodies for the "Does It Sound Right?" activity
     knownMelodies: {
-      // 'twinkle': {
-      //   en: 'Twinkle, Twinkle, Little Star',
-      //   de: 'Funkel, funkel, kleiner Stern',
-      //   quarterNoteDuration: 500, // Standardlänge für eine Viertelnote in ms
-      //   notes: [
-      //     'C', 'C4', 'G4', 'G4', 'A4', 'A4', 'G4:h', // h = halbe Note (doppelte Länge)
-      //     'F4', 'F4', 'E4', 'E4', 'D4', 'D4', 'C4:h'  // Standard-Viertelnoten, außer markierte
-      //   ]
-      // },
-      // 'jingle': {
-      //   en: 'Jingle Bells',
-      //   de: 'Jingle Bells',
-      //   quarterNoteDuration: 450, // Etwas schneller für Jingle Bells
-      //   notes: ['E', 'E4', 'E4:h', 'E4', 'E4', 'E4:h', 'E4', 'G4', 'C4', 'D4', 'E4:h']
-      // },
-      // 'happy-birthday': { // tiefer
-      //   en: 'Happy Birthday To You',
-      //   de: 'Zum Geburtstag viel Glück',
-      //   quarterNoteDuration: 600,
-      //   notes: [
-      //     'G3:e', 'G3:e', 'A3:q', 'G3:q', 'C4:q', 'B3:h', 'G3:e', 'G3:e', 'A3:q', 'G3:q', 'D4:q', 'C4:h'
-      //   ]
-      // },
-      // 'frere-jacques': {
-      //   en: 'Brother John (Frère Jacques)',
-      //   de: 'Bruder Jakob',
-      //   quarterNoteDuration: 500,
-      //   notes: [
-      //     'C', 'D4', 'E4', 'C4', // Frère Jacques, Frère Jacques
-      //     'C4', 'D4', 'E4', 'C4', // Dormez-vous? Dormez-vous?
-      //     'E4', 'F4', 'G4:h', // Sonnez les matines
-      //     'E4', 'F4', 'G4:h'  // Sonnez les matines
-      //   ]
-      // },
-      // 'are-you-sleeping': {
-      //   en: 'Are You Sleeping?',
-      //   de: 'Schlaf, Kindlein, schlaf',
-      //   quarterNoteDuration: 550,
-      //   notes: [
-      //     'E:h', 'D4', 'D4', 'C4:H',
-      //     'G3', 'E', 'E', 'D4', 'D4', 'C4:h',
-      //   ]
-      // },
-      // 'little-hans': { // Hänschen klein
-      //   en: 'Little Hans',
-      //   de: 'Hänschen klein',
-      //   quarterNoteDuration: 550,
-      //   notes: [
-      //     'G', 'E4', 'E4:h', 'F4', 'D4', 'D4:h',
-      //     // cdefggg
-      //     'C4', 'D4', 'E4', 'F4', 'G4', 'G4', 'G4:h'          
-      //   ]
-      // },
-      // // de=Alle meine Entchen /  en=All My Little Ducklings
-      // 'all-my-little-ducklings': {
-      //   en: 'All My Little Ducklings',
-      //   de: 'Alle meine Entchen',
-      //   quarterNoteDuration: 550,
-      //   notes: [
-      //     // cdefg:hg:haaaag:h
-      //     'C', 'D4', 'E4', 'F4', 'G4:h', 'G4:h', 'A', 'A', 'A', 'A', 'G:h'
-      //   ]
-      // },
-
-      'haenschen-huepf': {
+      'twinkle': {
+        en: 'Twinkle, Twinkle, Little Star',
+        de: 'Funkel, funkel, kleiner Stern',
+        quarterNoteDuration: 500, // Standardlänge für eine Viertelnote in ms
+        notes: [
+          'C', 'C4', 'G4', 'G4', 'A4', 'A4', 'G4:h', // h = halbe Note (doppelte Länge)
+          'F4', 'F4', 'E4', 'E4', 'D4', 'D4', 'C4:h'  // Standard-Viertelnoten, außer markierte
+        ]
+      },
+      'jingle': {
+        en: 'Jingle Bells',
+        de: 'Jingle Bells',
+        quarterNoteDuration: 450, // Etwas schneller für Jingle Bells
+        notes: ['E', 'E4', 'E4:h', 'E4', 'E4', 'E4:h', 'E4', 'G4', 'C4', 'D4', 'E4:h']
+      },
+      'happy-birthday': {
+        en: 'Happy Birthday To You',
+        de: 'Zum Geburtstag viel Glück',
+        quarterNoteDuration: 600,
+        notes: [
+          'G3:e', 'G3:e', 'A3:q', 'G3:q', 'C4:q', 'B3:h', 'G3:e', 'G3:e', 'A3:q', 'G3:q', 'D4:q', 'C4:h'
+        ]
+      },
+      'frere-jacques': {
+        en: 'Brother John (Frère Jacques)',
+        de: 'Bruder Jakob',
+        quarterNoteDuration: 500,
+        notes: [
+          'C', 'D4', 'E4', 'C4', // Frère Jacques, Frère Jacques
+          'C4', 'D4', 'E4', 'C4', // Dormez-vous? Dormez-vous?
+          'E4', 'F4', 'G4:h', // Sonnez les matines
+          'E4', 'F4', 'G4:h'  // Sonnez les matines
+        ]
+      },
+      'are-you-sleeping': {
+        en: 'Are You Sleeping?',
+        de: 'Schlaf, Kindlein, schlaf',
+        quarterNoteDuration: 550,
+        notes: [
+          'E:h', 'D4', 'D4', 'C4:H',
+          'G3', 'E', 'E', 'D4', 'D4', 'C4:h',
+        ]
+      },
+      'little-hans': { // Hänschen klein
+        en: 'Little Hans',
+        de: 'Hänschen klein',
+        quarterNoteDuration: 550,
+        notes: [
+          'G', 'E4', 'E4:h', 'F4', 'D4', 'D4:h',
+          'C4', 'D4', 'E4', 'F4', 'G4', 'G4', 'G4:h'          
+        ]
+      },
+      'all-my-little-ducklings': {
+        en: 'All My Little Ducklings',
+        de: 'Alle meine Entchen',
+        quarterNoteDuration: 550,
+        notes: [
+          'C', 'D4', 'E4', 'F4', 'G4:h', 'G4:h', 'A', 'A', 'A', 'A', 'G:h'
+        ]
+      },
+      'haeschen-huepf': {
         en: 'Bunny Hop',
         de: 'Häschen Hüpf',
         quarterNoteDuration: 550,
         notes: [
           'C', 'D', 'E', 'F', 'G4:h','G4:h', // Häschen in der Grube
           'A', 'F', 'C5', 'A', 'G:w', 'A', 'F', 'C5', 'A', 'G:w', // sass und schlief
-          'G4', 'F4', 'F4', 'F4', 'F4', 'E4', 'E4:h', // Armes Häschen bist du krank
-          'E4', 'D4', 'E4', 'D4', 'C4', 'E4', 'G4:h',   // dass du nicht mehr hüpfen kannst
-          'C4', 'E', 'G4:h', 'C4', 'E', 'G4:h',        // Häschen hüpf, Häschen hüpf
-          'G4:h', 'G4:h', 'C4:w'                        // Häschen hüpf, Häschen hüpf
+          // 'G4', 'F4', 'F4', 'F4', 'F4', 'E4', 'E4:h', // Armes Häschen bist du krank
+          // 'E4', 'D4', 'E4', 'D4', 'C4', 'E4', 'G4:h',   // dass du nicht mehr hüpfen kannst
+          // 'C4', 'E', 'G4:h', 'C4', 'E', 'G4:h',        // Häschen hüpf, Häschen hüpf
+          // 'G4:h', 'G4:h', 'C4:w'                        // Häschen hüpf, Häschen hüpf
         ]
       },
-      'hey-ho-spann-den-wagen': {
+      'hey-ho': {
         en: 'Hey Ho, Pull the Wagon',
         de: 'Hey Ho, Spann den Wagen an',
         quarterNoteDuration: 333,
         notes: [
           'A4:w', 'G4:w', 'A4', 'A4', 'A4', 'A4', 'E4:w', // Hey ho, spann den Wagen an,
           'A4:h', 'A4:h', 'B4:h', 'B4:h', 'C5', 'C5', 'C5', 'C5', 'B4:w', // denn der Wind treibt Regen übers Land
-          'E5', 'E5', 'E5', 'E5', 'E5:h', 'E5:h', 'E5', 'E5', 'E5', 'E5', 'E5', 'D5', 'C5', 'B4:h' // Holt die gold'nen Gaben, Holt die gold'nen Gaben.
+          // 'E5', 'E5', 'E5', 'E5', 'E5:h', 'E5:h', 'E5', 'E5', 'E5', 'E5', 'E5', 'D5', 'C5', 'B4:h' // Holt die gold'nen Gaben, Holt die gold'nen Gaben.
         ]
 
+      },
+      'old-mcdonald': {
+        en: 'Old McDonald Had a Farm',
+        de: 'Old MacDonald hat ne Farm',
+        quarterNoteDuration: 500,
+        notes: [
+          'F', 'F4', 'C4', 'C4', 'D4', 'D4', 'C4:h', 'A4', 'A4', 'G4', 'G4', 'F4:h'
+        ]
       }
-      //,
-      // Old McDonald Had a Farm
-      // 'old-mcdonald': {
-      //   en: 'Old McDonald Had a Farm',
-      //   de: 'Old MacDonald hat ne Farm',
-      //   quarterNoteDuration: 500,
-      //   notes: [
-      //     // 'FFCCDDC:hAAGGF:h', // Old McDonald had a farm
-      //     'F', 'F4', 'C4', 'C4', 'D4', 'D4', 'C4:h', 'A4', 'A4', 'G4', 'G4', 'F4:h'
-      //   ]
-      // }
     },
     // **************************************
 

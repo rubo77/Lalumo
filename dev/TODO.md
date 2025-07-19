@@ -211,5 +211,15 @@ reset-button:
 
 - class .debug-elements always hidden in production
 
+- Redeem refresh button einbauen
+- Reset current soll nur sichtbar, wenn Progress größer 0
+
 # most important
-****
+- Der Fortschritt message bei 14 ist immer deutsch
+- Die Navi Buttons sind ja doppelt: einer nur sichtbar, wenn man lokal ist, als debutg. die haben die klasse `debug-element`, diese ist jetztz fälschlicherweise auch sichtbar in der android app, warum? 
+
+Share Seite der Copy Button außerhalb
+23:00
+
+Player settings der Name weiß auf weiß
+
