@@ -43,7 +43,7 @@ import { testDrawMelodyModuleImport, reset_1_3_DrawMelody_Progress, get_1_3_leve
   from "./pitches/1_3_draw_melody.js";
 import { testSoundJudgmentModuleImport, reset_1_4_SoundJudgment_Progress } 
   from "./pitches/1_4_sound_judgment.js";
-import { testMemoryGameModuleImport, reset_1_5_MemoryGame_Progress } 
+import { testMemoryGameModuleImport, reset_1_5_MemoryGame_Progress, get_1_5_level } 
   from "./pitches/1_5_memory_game.js";
 
 // Importiere High or Low Funktionen direkt aus dem Modul
@@ -3453,11 +3453,9 @@ export function pitches() {
       // Use the specific C, D, E, G, A notes for the memory game (skipping F and H/B)
       const fixedNotes = ['C4', 'D4', 'E4', 'G4', 'A4'];
       
-      // Initialize memory success count from localStorage or default to 0
-      if (this.memorySuccessCount === undefined) {
-        const savedLevel = localStorage.getItem('lalumo_memory_level');
-        this.memorySuccessCount = savedLevel ? parseInt(savedLevel, 10) : 0;
-      }
+      // Initialize memory progress from unified tracking
+      const currentProgress = this.progress['1_5'] || 0;
+      console.log('MEMORY_SETUP: Using unified progress tracking, current progress:', currentProgress);
       
       if (generateNew) {
         // Bei jeder neuen Sequenz auch neue Tierbilder anzeigen
@@ -3465,21 +3463,21 @@ export function pitches() {
         this.selectRandomAnimalImages();
         
         this.currentSequence = [];
-        // Determine sequence length based on success count
+        // Determine sequence length based on progress count
         let length;
-        if (this.memorySuccessCount < 3) {
+        if (currentProgress < 3) {
           length = 2; // First 3 successes: 2 notes
-        } else if (this.memorySuccessCount < 6) {
+        } else if (currentProgress < 6) {
           length = 3; // Next 3 successes: 3 notes
-        } else if (this.memorySuccessCount < 11) {
+        } else if (currentProgress < 11) {
           length = 4; // Next 5 successes: 4 notes
-        } else if (this.memorySuccessCount < 16) {
+        } else if (currentProgress < 16) {
           length = 5; // Next 5 successes: 5 notes
         } else {
           length = 6; // After 15 successes: 6 notes
         }
         
-        console.log(`Memory game: Level ${this.memorySuccessCount + 1}, using ${length} notes`);
+        console.log(`Memory game: Progress ${currentProgress}, using ${length} notes`);
         
         // First note is fully random
         let lastNote = fixedNotes[Math.floor(Math.random() * fixedNotes.length)];
@@ -3729,24 +3727,17 @@ export function pitches() {
         // Create and show rainbow success animation
         showRainbowSuccess();
         
-        // Increment and save memory game progress
-        this.memorySuccessCount = (this.memorySuccessCount || 0) + 1;
-        
-        // Update progress with new activity ID only
-        if (!this.progress['1_5_pitches_memory-game']) {
-          this.progress['1_5_pitches_memory-game'] = 0;
-        }
+        // Increment progress using unified tracking
+        if (!this.progress['1_5']) this.progress['1_5'] = 0;
+        this.progress['1_5'] += 1;
         
         // Reset to sound-only mode for the next sequence
         this.showMemoryHighlighting = false;
         debugLog("PIANO_DIRECT", "Success! Disabling highlighting for next sequence");
         
-        // Store the maximum success count as the progress value
-        this.progress['1_5_pitches_memory-game'] = Math.max(this.memorySuccessCount, this.progress['1_5_pitches_memory-game'] || 0);
+        console.log('Updated memory progress:', this.progress['1_5']);
         
-        console.log('Updated memory progress:', this.progress['1_5_pitches_memory-game']);
-        
-        localStorage.setItem('lalumo_memory_level', this.memorySuccessCount.toString());
+        // Save progress to localStorage
         localStorage.setItem('lalumo_progress', JSON.stringify(this.progress));
       } else {
         // Show shake animation on the last pressed key if available
