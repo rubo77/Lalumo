@@ -12,7 +12,7 @@ import { reset_1_3_DrawMelody_Progress } from './1_3_draw_melody.js';
 import { reset_1_4_SoundJudgment_Progress } from './1_4_sound_judgment.js';
 import { reset_1_5_MemoryGame_Progress } from './1_5_memory_game.js';
 import { reset_2_2_Progress } from '../2_chords/2_2_chords_stable_unstable.js';
-import { resetProgress_2_5 } from '../2_chords/2_5_chord_characters.js';
+import { reset_2_5_Progress } from '../2_chords/2_5_chord_characters.js';
 
 
 // Exportiere eine Testfunktion für Import-Tests
@@ -245,8 +245,8 @@ export function resetAllProgress(component) {
   console.log('RESET_ALL: Resetting Stable or Unstable Chords activity');
   reset_2_2_Progress(window.chordsComponent);
   
-  console.log('RESET_ALL: Resetting Chord Types activity');
-  resetProgress_2_5(window.pitchesComponent);
+  console.log('RESET_ALL: Resetting Chord Characters activity');
+  reset_2_5_Progress(window.chordsComponent);
   
 
   // Show global reset feedback

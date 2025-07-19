@@ -271,6 +271,50 @@ Remove all unused localStorage operations and separate variables.
 ### Step 5: Test
 Ensure all activities work correctly with unified system.
 
+## localStorage Standardization
+
+### Current Problems
+- Different activities use different localStorage keys:
+  - `lalumo_chords_progress` (chord activities)
+  - `lalumo_soundJudgmentLevel` (1_4 sound judgment)
+  - `lalumo_drawMelodyLevel` (1_3 draw melody)
+  - `lalumo_memorySuccessCount` (1_5 memory game)
+- Inconsistent save/load logic across activities
+- Reset functions must handle multiple localStorage keys
+- Data scattered across multiple storage locations
+
+### Solution: Unified localStorage
+**Goal**: All activities use only the central `this.progress` object for persistence.
+
+#### Legacy localStorage Keys to Remove
+| Status | localStorage Key | Used by | Replacement |
+|---|---|---|---|
+| ✅ | `lalumo_soundJudgmentLevel` | 1_4 Sound Judgment | Calculated from `this.progress['1_4']` |
+| ⏳ | `lalumo_drawMelodyLevel` | 1_3 Draw Melody | Calculated from `this.progress['1_3']` |
+| ⏳ | `lalumo_memorySuccessCount` | 1_5 Memory Game | Use `this.progress['1_5']` directly |
+| ⚠️ | `lalumo_chords_progress` | 2_2, 2_5 Chord activities | Use central `this.progress` object |
+| ⏳ | Any other activity-specific keys | Various | Use central `this.progress` object |
+
+#### Implementation Steps
+1. **Update save functions**: All activities save to central progress object only
+2. **Update load functions**: All activities load from central progress object only
+3. **Update reset functions**: Reset only central progress object and persist to localStorage
+4. **Remove legacy keys**: Clean up old localStorage entries
+5. **Test persistence**: Ensure progress survives app reload for all activities
+
+#### one common shared Reset Function
+```javascript
+export function resetActivityProgress(component, id) {
+  // Reset in-memory progress
+  component.progress[id] = 0;
+  
+  // Persist to central localStorage (NOT separate keys)
+  localStorage.setItem('lalumo_progress', JSON.stringify(component.progress));
+  
+  debugLog(id + ' progress reset and persisted to central storage');
+}
+```
+
 ## Function Renaming Map
 
 ### Reset Functions

@@ -892,14 +892,14 @@
           <div class="chords-container">            
             <!-- Progress display -->
             <div class="progress-display progress_2_5">
-              <p x-text="($store.strings?.correct_answers_count || 'Correct answers: {0}').replace('{0}', progress['2_5_chords_characters'] || 0)"></p>
-              <p x-show="(progress['2_5_chords_characters'] || 0) < 10" x-text="$store.strings?.unlock_squirrel_message || 'Get 10 correct to unlock the squirrel! 🐿️'"></p>
-              <p x-show="(progress['2_5_chords_characters'] || 0) >= 10 && (progress['2_5_chords_characters'] || 0) < 20" x-text="$store.strings?.unlock_octopus_message || 'Get 20 correct to unlock the octopus! 🐙'"></p>
-              <p x-show="(progress['2_5_chords_characters'] || 0) >= 20 && (progress['2_5_chords_characters'] || 0) < 30" x-text="$store.strings?.all_animals_unlocked || 'All animals unlocked! 🎉'"></p>
-              <p x-show="(progress['2_5_chords_characters'] || 0) >= 30 && (progress['2_5_chords_characters'] || 0) < 40" x-text="$store.strings?.transpose_challenge || 'Listen carefully! Chords are now changing pitch! 🎵'"></p>
-              <p x-show="(progress['2_5_chords_characters'] || 0) >= 40 && (progress['2_5_chords_characters'] || 0) < 50" x-text="$store.strings?.squirrel_returns || 'The squirrel is back to help! Octopus still sleeping. 🐿️'"></p>
-              <p x-show="(progress['2_5_chords_characters'] || 0) >= 50 && (progress['2_5_chords_characters'] || 0) < 60" x-text="$store.strings?.all_friends_return || 'All friends are back to help you! 🐿️🐙🐶🐱'"></p>
-              <p x-show="(progress['2_5_chords_characters'] || 0) >= 60" x-text="$store.strings?.chords_2_5_master || 'You are Chords Master! 🎉'"></p>
+              <p x-text="($store.strings?.correct_answers_count || 'Correct answers: {0}').replace('{0}', progress['2_5'] || 0)"></p>
+              <p x-show="(progress['2_5'] || 0) < 10" x-text="$store.strings?.unlock_squirrel_message || 'Get 10 correct to unlock the squirrel! 🐿️'"></p>
+              <p x-show="(progress['2_5'] || 0) >= 10 && (progress['2_5'] || 0) < 20" x-text="$store.strings?.unlock_octopus_message || 'Get 20 correct to unlock the octopus! 🐙'"></p>
+              <p x-show="(progress['2_5'] || 0) >= 20 && (progress['2_5'] || 0) < 30" x-text="$store.strings?.all_animals_unlocked || 'All animals unlocked! 🎉'"></p>
+              <p x-show="(progress['2_5'] || 0) >= 30 && (progress['2_5'] || 0) < 40" x-text="$store.strings?.transpose_challenge || 'Listen carefully! Chords are now changing pitch! 🎵'"></p>
+              <p x-show="(progress['2_5'] || 0) >= 40 && (progress['2_5'] || 0) < 50" x-text="$store.strings?.squirrel_returns || 'The squirrel is back to help! Octopus still sleeping. 🐿️'"></p>
+              <p x-show="(progress['2_5'] || 0) >= 50 && (progress['2_5'] || 0) < 60" x-text="$store.strings?.all_friends_return || 'All friends are back to help you! 🐿️🐙🐶🐱'"></p>
+              <p x-show="(progress['2_5'] || 0) >= 60" x-text="$store.strings?.chords_2_5_master || 'You are Chords Master! 🎉'"></p>
             </div>
             
             
@@ -912,7 +912,7 @@
                 <div title="Sad">Sad</div>
               </div>
               
-              <div id="button_2_5_1_augmented" @click="checkCharacterMatch('augmented')" :class="(progress['2_5_chords_characters'] || 0) >= 10 && (progress['2_5_chords_characters'] || 0) < 20 ? 'character progress2' : 'character'" @touchstart.prevent @touchend.prevent="$el.click();">
+              <div id="button_2_5_1_augmented" @click="checkCharacterMatch('augmented')" :class="(progress['2_5'] || 0) >= 10 && (progress['2_5'] || 0) < 20 ? 'character progress2' : 'character'" @touchstart.prevent @touchend.prevent="$el.click();">
                 <div title="Surprised">Surprised</div>
               </div>
               

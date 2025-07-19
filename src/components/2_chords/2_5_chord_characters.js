@@ -8,6 +8,22 @@ import { preloadBackgroundImage } from '../shared/image-utils.js';
 import { getActivityProgress } from '../shared/progress-utils.js';
 
 /**
+ * Calculate level for Activity 2_5 (Chord Characters) based on progress
+ * @param {Object} component - The Alpine component instance
+ * @returns {number} Current level (1-6)
+ */
+export function get_2_5_level(component) {
+  const progress = component?.progress?.['2_5'] || 0;
+  
+  if (progress < 10) return 1;
+  if (progress < 20) return 2;
+  if (progress < 30) return 3;
+  if (progress < 40) return 4;
+  if (progress < 50) return 5;
+  return 6;
+}
+
+/**
  * Gets the chord buttons (diminished and augmented) from the DOM
  * @returns {Object} Object with diminishedBtn and augmentedBtn properties, or null if not found
  */
@@ -28,11 +44,8 @@ export function getChordButtons() {
  * @param {Object} component - The Alpine component instance (optional)
  */
 export function update2_5ButtonsVisibility(component) {
-  // Get the current progress for chord characters activity
-  const progressData = localStorage.getItem('lalumo_chords_progress');
-  const progress = progressData ? 
-    JSON.parse(progressData)['2_5_chords_characters'] || 0 : 
-    component?.progress?.['2_5_chords_characters'] || 0;
+  // Get the current progress for chord characters activity (unified key)
+  const progress = component?.progress?.['2_5'] || 0;
   
   // Get chord buttons
   const chordButtons = getChordButtons();
@@ -94,8 +107,8 @@ export function testChordCharactersModuleImport() {
  */
 export function update_2_5Background(component) {
   try {
-    // Get progress from localStorage or component state
-    const progress = getActivityProgress('2_5_chords_characters', component);
+    // Get progress from unified progress system
+    const progress = component?.progress?.['2_5'] || 0;
     
 
     
@@ -158,50 +171,45 @@ export function update_2_5Background(component) {
 
 
 /**
- * Reset progress for Chord Types activity (2_5)
+ * Reset progress for Chord Characters activity (2_5)
  * Used by the resetCurrentActivity function
  */
-export function resetProgress_2_5() {
-  debugLog(['CHORDS', 'RESET'], 'Resetting 2_5_chords_characters progress...');
+export function reset_2_5_Progress(component) {
+  console.log('[CHORDS_2_5] Resetting 2_5 progress...', {
+    currentProgress: component.progress['2_5'] || 0
+  });
   
-  // Get the chordsComponent from window global
-  const chordsComponent = window.chordsComponent;
-  if (!chordsComponent) {
-    console.error('Cannot reset 2_5_chords_characters: chordsComponent not found');
-    return;
-  }
+  // Reset progress to 0 (level will be calculated automatically)
+  if (!component.progress) component.progress = {};
+  component.progress['2_5'] = 0;
   
-  // Get existing progress from localStorage
-  let progressData = localStorage.getItem('lalumo_chords_progress');
+  // Also reset in localStorage to persist the reset
+  const progressData = localStorage.getItem('lalumo_chords_progress');
   let progress = {};
-  
   if (progressData) {
     try {
       progress = JSON.parse(progressData);
-      // Reset just the 2_5_chords_characters activity progress
-      progress['2_5_chords_characters'] = 0;
     } catch (error) {
-      debugLog(['CHORDS', 'ERROR'], `Error parsing progress data: ${error.message}`);
-      progress = { '2_5_chords_characters': 0 };
+      console.error('Error parsing progress data:', error);
     }
-  } else {
-    progress = { '2_5_chords_characters': 0 };
   }
-  
-  // Save updated progress back to localStorage
+  progress['2_5'] = 0;
   localStorage.setItem('lalumo_chords_progress', JSON.stringify(progress));
   
-  // Update component's in-memory state
-  if (chordsComponent.progress) {
-    chordsComponent.progress['2_5_chords_characters'] = 0;
-  }
-  
   // Update UI to reflect reset progress
-  update_2_5Background(chordsComponent);
-  if (typeof chordsComponent.update2_5ButtonsVisibility === 'function') {
-    chordsComponent.update2_5ButtonsVisibility();
-  }
+  update_2_5Background(component);
+  update2_5ButtonsVisibility(component);
   
-  debugLog(['CHORDS', 'RESET'], '2_5_chords_characters progress reset complete');
+  console.log('[CHORDS_2_5] 2_5 progress reset complete and persisted');
+}
+
+// Compatibility alias for old function name
+export function resetProgress_2_5() {
+  const chordsComponent = window.chordsComponent;
+  if (chordsComponent) {
+    reset_2_5_Progress(chordsComponent);
+  } else {
+    console.error('Cannot reset 2_5: chordsComponent not found');
+  }
 }
 
