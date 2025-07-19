@@ -4159,13 +4159,13 @@ export function pitches() {
     update_progress_display() {
       // Verwende die gemeinsame Hilfsfunktion aus ui-helpers.js
       const levelDescriptions = {
-        1: 'Level 1: 2 falsche Noten, keine Pause',
-        2: 'Level 2: 2 falsche Noten, mit Pausen',
-        3: 'Level 3: 1 falsche Note, keine Pause',
-        4: 'Level 4: 1 falsche Note, mit Pausen',
-        5: 'Level 5: 1 falsche Note, max. 3 Halbtöne Abstand',
-        6: 'Level 6: 1 falsche Note, max. 2 Halbtöne Abstand',
-        7: 'Level 7: 1 falsche Note, max. 1 Halbton Abstand'
+        1: this.$store.strings?.sound_judgment_level_1 || 'Level 1: 2 wrong notes, no pause',
+        2: this.$store.strings?.sound_judgment_level_2 || 'Level 2: 2 wrong notes, with pauses',
+        3: this.$store.strings?.sound_judgment_level_3 || 'Level 3: 1 wrong note, no pause',
+        4: this.$store.strings?.sound_judgment_level_4 || 'Level 4: 1 wrong note, with pauses',
+        5: this.$store.strings?.sound_judgment_level_5 || 'Level 5: 1 wrong note, max. 3 semitones distance',
+        6: this.$store.strings?.sound_judgment_level_6 || 'Level 6: 1 wrong note, max. 2 semitones distance',
+        7: this.$store.strings?.sound_judgment_level_7 || 'Level 7: 1 wrong note, max. 1 semitone distance'
       };
       
       const levelText = levelDescriptions[this.soundJudgmentLevel] || `Level ${this.soundJudgmentLevel}`;

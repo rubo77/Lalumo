@@ -338,4 +338,13 @@
     <string name="feedback_1_2_down">Hör mal genauer hin - die Melodie ging nach unten</string>
     <string name="feedback_1_2_wave">Hör mal genauer hin - die Melodie war wellig</string>
     <string name="feedback_1_2_jumpy">Hör mal genauer hin - die Melodie war hüpfend</string>
+    
+    <!-- Sound Judgment Level Descriptions (German) -->
+    <string name="sound_judgment_level_1">Level 1: 2 falsche Noten, keine Pause</string>
+    <string name="sound_judgment_level_2">Level 2: 2 falsche Noten, mit Pausen</string>
+    <string name="sound_judgment_level_3">Level 3: 1 falsche Note, keine Pause</string>
+    <string name="sound_judgment_level_4">Level 4: 1 falsche Note, mit Pausen</string>
+    <string name="sound_judgment_level_5">Level 5: 1 falsche Note, max. 3 Halbtöne Abstand</string>
+    <string name="sound_judgment_level_6">Level 6: 1 falsche Note, max. 2 Halbtöne Abstand</string>
+    <string name="sound_judgment_level_7">Level 7: 1 falsche Note, max. 1 Halbton Abstand</string>
 </resources>

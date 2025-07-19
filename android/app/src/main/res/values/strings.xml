@@ -337,4 +337,13 @@
     <string name="feedback_1_2_down">Listen more closely - the melody was going down</string>
     <string name="feedback_1_2_wave">Listen more closely - the melody was wavy</string>
     <string name="feedback_1_2_jumpy">Listen more closely - the melody was jumpy</string>
+    
+    <!-- Sound Judgment Level Descriptions (English) -->
+    <string name="sound_judgment_level_1">Level 1: 2 wrong notes, no pause</string>
+    <string name="sound_judgment_level_2">Level 2: 2 wrong notes, with pauses</string>
+    <string name="sound_judgment_level_3">Level 3: 1 wrong note, no pause</string>
+    <string name="sound_judgment_level_4">Level 4: 1 wrong note, with pauses</string>
+    <string name="sound_judgment_level_5">Level 5: 1 wrong note, max. 3 semitones distance</string>
+    <string name="sound_judgment_level_6">Level 6: 1 wrong note, max. 2 semitones distance</string>
+    <string name="sound_judgment_level_7">Level 7: 1 wrong note, max. 1 semitone distance</string>
 </resources>
