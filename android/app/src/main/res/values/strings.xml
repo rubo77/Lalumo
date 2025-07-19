@@ -250,7 +250,8 @@
     <string name="version_label">Version</string>
     <string name="app_development_label">App-Development</string>
     <string name="graphics_label">Graphics &amp; Illustrations</string>
-    <string name="graphics_content">Images created with ChatGpt - mindfull, lovingly crafted prompts</string>
+    <string name="graphics_content_line1">Images created with ChatGpt</string>
+    <string name="graphics_content_line2">- mindfull, lovingly crafted prompts</string>
     <string name="technologies_label">Technologies</string>
     
     <!-- Impressum Content -->

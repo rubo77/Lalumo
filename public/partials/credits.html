@@ -9,7 +9,10 @@
     <p><a href="https://eclabs.de" target="_blank">Eastcoast Laboratories</a></p>
     
     <h3 x-text="$store.strings?.graphics_label || 'Grafiken &amp; Illustrationen'"></h3>
-    <p x-text="$store.strings?.graphics_content || 'Images created with ChatGpt - mindfull, lovingly crafted prompts'"></p>
+    <p>
+      <div x-text="$store.strings?.graphics_content_line1 || 'Images created with ChatGpt'"></div>
+      <div x-text="$store.strings?.graphics_content_line2 || 'mindfull, lovingly crafted prompts'"></div>
+    </p>
     
     <h3 x-text="$store.strings?.technologies_label || 'Technologien'"></h3>
     <ul>

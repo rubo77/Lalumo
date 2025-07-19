@@ -251,7 +251,8 @@
     <string name="version_label">Version</string>
     <string name="app_development_label">App-Entwicklung</string>
     <string name="graphics_label">Grafiken &amp; Illustrationen</string>
-    <string name="graphics_content">Bilder erstellt mit ChatGPT - achtsam, liebevoll gestaltete Prompts</string>
+    <string name="graphics_content_line1">Bilder erstellt mit ChatGPT</string>
+    <string name="graphics_content_line2">- Achtsam, liebevoll gestaltete Prompts</string>
     <string name="technologies_label">Technologien</string>
     
     <!-- Impressum Content -->
