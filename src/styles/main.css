@@ -209,7 +209,7 @@ html body.dev-mode .debug-element {
   padding: 20px;
   background-image: url('/app/images/backgrounds/settings.jpg');
   background-size: cover;
-  background-position: center;
+  background-position: top;
   color: #ffffff;
   position: relative;
 }
@@ -232,6 +232,7 @@ html body.dev-mode .debug-element {
 
 .username-edit {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   margin: 8px 0;
   gap: 10px;
@@ -242,9 +243,9 @@ html body.dev-mode .debug-element {
   border: 2px solid var(--color-accent-light);
   border-radius: 8px;
   font-size: 1rem;
-  flex: 1;
+  flex-wrap: wrap;
   background: var(--color-background-lighter);
-  color: var(--color-text);
+  color: var(--text-color-input);
 }
 
 /* Reset Progress Section */
@@ -257,7 +258,7 @@ html body.dev-mode .debug-element {
 
 .help-text {
   font-size: 0.9rem;
-  color: var(--color-text-muted);
+  color: var(--text-color-muted);
   margin-top: 8px;
 }
 
@@ -503,7 +504,7 @@ html body.dev-mode .debug-element {
   border-radius: 8px;
   background-color: var(--color-background-lighter);
   font-family: monospace;
-  color: var(--color-text);
+  color: var(--text-color);
   resize: vertical;
 }
 
@@ -512,7 +513,7 @@ input, textarea {
 }
 
 input {
-  max-width: 340px;
+  max-width: 360px;
 }
 
 
@@ -672,7 +673,8 @@ input {
   --secondary-color: #6c5ce7; /* username circle background */
   --background-color: #ffffff; /* background of impressum, ...*/
   --text-color: #2d3436;
-  --accent-color: #fdcb6e; /* navigation highlight */
+  --text-color-input: #2d3436;
+  --accent-color: #060505; /* navigation highlight */
   --success-color: #00b894;
   --warning-color: #ff7675;
   --color-accent-light: #fdcb6e;
@@ -1124,11 +1126,15 @@ section {
 }
 
 section h2 {
-  color: var(--secondary-color);
+  color: white;
   text-align: center;
   margin-top: 0;
   margin-bottom: 1.5rem;
   font-size: 1.8rem;
+}
+
+#privacy_partial > h2, #credits_partial > h2, #imprint_partial > h2{
+  margin-top: min(168px, 26vw);
 }
 
 /* Tone Colors Component */

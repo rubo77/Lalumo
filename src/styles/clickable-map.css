@@ -64,7 +64,7 @@
   gap: 5px;
   padding: 8px 12px;
   background-color: var(--color-accent-light);
-  color: var(--color-text);
+  color: var(--text-color);
   border: none;
   border-radius: 0;
   font-size: 0.9rem;
@@ -86,7 +86,7 @@
 
 .back-to-main.disabled:hover {
   background-color: var(--color-accent-light);
-  color: var(--color-text);
+  color: var(--text-color);
 }
 
 .back-to-main svg {

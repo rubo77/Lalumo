@@ -22,7 +22,7 @@
   bottom: 0;
   background-image: url('/app/images/backgrounds/settings.jpg');
   background-size: cover;
-  background-position: center;
+  background-position: top;
   opacity: 0.9;
   z-index: -2;
 }
@@ -73,7 +73,7 @@
   bottom: 0;
   background-image: url('/app/images/backgrounds/credits.jpg');
   background-size: cover;
-  background-position: center;
+  background-position: top;
   opacity: 0.9;
   z-index: -2;
 }
@@ -102,7 +102,6 @@
   color: white;
   margin-bottom: 55px;
   text-align: left;
-  margin-top: 20px;
 }
 
 @media (max-width: 900px) {
@@ -120,7 +119,7 @@
   bottom: 0;
   background-image: url('/app/images/backgrounds/impressum.jpg');
   background-size: cover;
-  background-position: center;
+  background-position: top;
   opacity: 0.9;
   z-index: -2;
 }
@@ -160,7 +159,7 @@
   bottom: 0;
   background-image: url('/app/images/backgrounds/impressum.jpg');
   background-size: cover;
-  background-position: center;
+  background-position: top;
   opacity: 0.9;
   z-index: -2;
 }
@@ -223,8 +222,10 @@
 
 .referral-code-container, .friend-code-container {
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
   margin: 12px 0;
+  max-width: 100%;
 }
 
 .referral-code-input, .friend-code-input {
@@ -236,7 +237,8 @@
   border: 2px solid var(--color-accent-light);
   border-radius: 8px;
   background: rgb(67, 67, 67, 0.5);
-  color: var(--color-text-dark);
+  color: var(--text-color-dark);
+  max-width: 88%;
 }
 
 .referral-link-input{
