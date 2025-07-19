@@ -14,10 +14,10 @@ RepoType: git
 Repo: https://github.com/Eastcoast-Laboratories/Lalumo
 
 Builds:
-  - versionName: '4.0'
-    versionCode: 27
+  - versionName: '4.1'
+    versionCode: 28
     disable: "['scanner']"
-    commit: f2d83ecaac12694b0d6d19162f7112c9371e7630
+    commit: ee73b372b5c0fa0014f744260c232e761377815e
     subdir: android/app
     sudo:
       - echo "deb https://deb.debian.org/debian trixie main" > /etc/apt/sources.list.d/trixie.list
@@ -46,5 +46,5 @@ Builds:
 
 AutoUpdateMode: Version
 UpdateCheckMode: Tags
-CurrentVersion: '4.0'
-CurrentVersionCode: 27
+CurrentVersion: '4.1'
+CurrentVersionCode: 28
