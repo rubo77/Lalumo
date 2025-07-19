@@ -281,7 +281,7 @@ Ensure all activities work correctly with unified system.
 | ⏳ | `reset_1_3_DrawMelody_Progress()` | `reset_1_3_Progress()` | `/src/components/pitches/1_3_draw_melody.js` |
 | ✅ | `reset_1_4_SoundJudgment_Progress()` | `reset_1_4_Progress()` | `/src/components/pitches/1_4_sound_judgment.js` |
 | ⏳ | `reset_1_5_MemoryGame_Progress()` | `reset_1_5_Progress()` | `/src/components/pitches/1_5_memory_game.js` |
-| ⏳ | `resetProgress_2_2()` | `reset_2_2_Progress()` | `/src/components/2_chords/2_2_chords_stable_unstable.js` |
+| ✅ | `resetProgress_2_2()` | `reset_2_2_Progress()` | `/src/components/2_chords/2_2_chords_stable_unstable.js` |
 | ⏳ | `resetProgress_2_5()` | `reset_2_5_Progress()` | `/src/components/2_chords/2_5_chord_characters.js` |
 
 ### Setup/Initialization Functions
@@ -315,7 +315,7 @@ Ensure all activities work correctly with unified system.
 | ✅ | (new function) | `get_1_4_level()` | `/src/components/pitches/1_4_sound_judgment.js` |
 | ⏳ | `getMemoryGameLevel()` (new) | `get_1_5_level()` | `/src/components/pitches/1_5_memory_game.js` |
 | ⏳ | `get_1_3_level_info()` | `get_1_3_info()` | `/src/components/pitches.js` |
-| ⏳ | (new function needed) | `get_2_2_level()` | `/src/components/2_chords/2_2_chords_stable_unstable.js` |
+| ✅ | (new function) | `get_2_2_level()` | `/src/components/2_chords/2_2_chords_stable_unstable.js` |
 | ⏳ | (new function needed) | `get_2_5_level()` | `/src/components/2_chords/2_5_chord_characters.js` |
 
 ### Progress Save Functions
@@ -338,6 +338,7 @@ Ensure all activities work correctly with unified system.
 | ⏳ | `'1_2_pitches_match-sounds'` | `'1_2'` | All components |
 | ⏳ | `'1_3_pitches_draw-melody'` | `'1_3'` | All components |
 | ✅ | `'1_4_pitches_does-it-sound-right'` | `'1_4'` | All components |
+| ✅ | `'2_2_chords_stable_unstable'` | `'2_2'` | All components |
 | ⏳ | `'1_5_pitches_memory-game'` | `'1_5'` | All components |
 | ⏳ | `'2_1_chords_color-matching'` | `'2_1'` | All components |
 | ⏳ | `'2_2_chords_stable_unstable'` | `'2_2'` | All components |

@@ -829,10 +829,23 @@ export function reset_2_2_Progress(component) {
   if (!component.progress) component.progress = {};
   component.progress['2_2'] = 0;
   
+  // Also reset in localStorage to persist the reset
+  const progressData = localStorage.getItem('lalumo_chords_progress');
+  let progress = {};
+  if (progressData) {
+    try {
+      progress = JSON.parse(progressData);
+    } catch (error) {
+      debugLog(['CHORDS_2_2_DEBUG', 'ERROR'], `Error parsing progress data: ${error.message}`);
+    }
+  }
+  progress['2_2'] = 0;
+  localStorage.setItem('lalumo_chords_progress', JSON.stringify(progress));
+  
   // Update UI to reflect reset progress
   updateStableUnstableBackground(component);
   
-  debugLog(['CHORDS_2_2_DEBUG', 'RESET'], '2_2 progress reset complete');
+  debugLog(['CHORDS_2_2_DEBUG', 'RESET'], '2_2 progress reset complete and persisted');
 }
 
 

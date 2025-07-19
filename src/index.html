@@ -796,13 +796,13 @@
           <div class="chords-container">            
             <!-- Progress display -->
             <div class="progress-display progress_2_2">
-              <p x-text="($store.strings?.correct_answers_count || 'Correct answers: {0}').replace('{0}', progress['2_2_chords_stable_unstable'] || 0)"></p>
-              <p x-show="(progress['2_2_chords_stable_unstable'] || 0) < 10" x-text="$store.strings?.stable_unstable_level1 || 'Can you hear the difference between stable and unstable chords?'"></p>
-              <p x-show="(progress['2_2_chords_stable_unstable'] || 0) >= 10 && (progress['2_2_chords_stable_unstable'] || 0) < 20" x-text="$store.strings?.stable_unstable_level2 || 'Great job! Now listening for seventh chords and altered dominants! 🎵'"></p>
-              <p x-show="(progress['2_2_chords_stable_unstable'] || 0) >= 20 && (progress['2_2_chords_stable_unstable'] || 0) < 30" x-text="$store.strings?.stable_unstable_level3 || 'Level 3: Extended harmonies vs. polytonal chords! 🎼'"></p>
-              <p x-show="(progress['2_2_chords_stable_unstable'] || 0) >= 30 && (progress['2_2_chords_stable_unstable'] || 0) < 40" x-text="$store.strings?.stable_unstable_level4 || 'Level 4: Jazz voicings vs. atonal clusters! 🎹'"></p>
-              <p x-show="(progress['2_2_chords_stable_unstable'] || 0) >= 40 && (progress['2_2_chords_stable_unstable'] || 0) < 50" x-text="$store.strings?.stable_unstable_level5 || 'Level 5: Impressionistic harmonies vs. microtonal variations! 🎶'"></p>
-              <p x-show="(progress['2_2_chords_stable_unstable'] || 0) >= 50" x-text="$store.strings?.stable_unstable_level6 || 'Master Level: Complex extended harmonies and sophisticated dissonances! 🏆'"></p>
+              <p x-text="($store.strings?.correct_answers_count || 'Correct answers: {0}').replace('{0}', progress['2_2'] || 0)"></p>
+              <p x-show="(progress['2_2'] || 0) < 10" x-text="$store.strings?.stable_unstable_level1 || 'Can you hear the difference between stable and unstable chords?'"></p>
+              <p x-show="(progress['2_2'] || 0) >= 10 && (progress['2_2'] || 0) < 20" x-text="$store.strings?.stable_unstable_level2 || 'Great job! Now listening for seventh chords and altered dominants! 🎵'"></p>
+              <p x-show="(progress['2_2'] || 0) >= 20 && (progress['2_2'] || 0) < 30" x-text="$store.strings?.stable_unstable_level3 || 'Level 3: Extended harmonies vs. polytonal chords! 🎼'"></p>
+              <p x-show="(progress['2_2'] || 0) >= 30 && (progress['2_2'] || 0) < 40" x-text="$store.strings?.stable_unstable_level4 || 'Level 4: Jazz voicings vs. atonal clusters! 🎹'"></p>
+              <p x-show="(progress['2_2'] || 0) >= 40 && (progress['2_2'] || 0) < 50" x-text="$store.strings?.stable_unstable_level5 || 'Level 5: Impressionistic harmonies vs. microtonal variations! 🎶'"></p>
+              <p x-show="(progress['2_2'] || 0) >= 50" x-text="$store.strings?.stable_unstable_level6 || 'Master Level: Complex extended harmonies and sophisticated dissonances! 🏆'"></p>
             </div>
             
             <div class="button_2_2_grid">
