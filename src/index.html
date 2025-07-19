@@ -377,7 +377,7 @@
         <div class="menu-settings">
           
           <!-- Reset Current Activity Button -->
-          <button @click="resetCurrentActivity()" class="menu-reset-btn" :title="$store.strings?.reset_current_activity || 'Reset Current Activity'">
+          <button @click="resetCurrentActivity()" class="menu-reset-btn" :title="$store.strings?.reset_current_activity || 'Reset Current Activity'" x-show="getCurrentActivityProgress() > 0">
             🔄 <span x-text="$store.strings?.reset_current_activity || 'Reset Current Activity'"></span>
           </button>
           

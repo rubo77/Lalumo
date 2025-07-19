@@ -2356,5 +2356,58 @@ export function app() {
         return false;
       }
     },
+
+    /**
+     * Get the progress of the currently active activity
+     * @returns {number} Progress value of current activity (0 if none)
+     */
+    getCurrentActivityProgress() {
+      try {
+        // Get current activity mode from Alpine store
+        const currentActivityMode = this.$store.currentActivityMode;
+        
+        if (currentActivityMode && currentActivityMode.component && currentActivityMode.mode) {
+          const { component, mode } = currentActivityMode;
+          
+          // Get the appropriate component instance
+          let componentInstance = null;
+          if (component === 'pitches' && window.pitchesComponent) {
+            componentInstance = window.pitchesComponent;
+          } else if (component === 'chords' && window.chordsComponent) {
+            componentInstance = window.chordsComponent;
+          }
+          
+          // Get progress from component instance
+          if (componentInstance && componentInstance.progress && componentInstance.progress[mode]) {
+            return componentInstance.progress[mode] || 0;
+          }
+          
+          // Fallback: try to get from global progress object if available
+          if (window.progress && window.progress[mode]) {
+            return window.progress[mode] || 0;
+          }
+        }
+        
+        // Fallback: check if any component has an active mode with progress
+        if (window.pitchesComponent && window.pitchesComponent.mode && window.pitchesComponent.mode !== 'main') {
+          const mode = window.pitchesComponent.mode;
+          if (window.pitchesComponent.progress && window.pitchesComponent.progress[mode]) {
+            return window.pitchesComponent.progress[mode] || 0;
+          }
+        }
+        
+        if (window.chordsComponent && window.chordsComponent.mode && window.chordsComponent.mode !== 'main') {
+          const mode = window.chordsComponent.mode;
+          if (window.chordsComponent.progress && window.chordsComponent.progress[mode]) {
+            return window.chordsComponent.progress[mode] || 0;
+          }
+        }
+        
+        return 0;
+      } catch (error) {
+        debugLog('RESET_BUTTON', 'Error getting current activity progress:', error);
+        return 0;
+      }
+    },
   };
 }
