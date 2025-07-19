@@ -1509,9 +1509,9 @@ export function chords() {
         Alpine.store('feedback').feedbackMessage = this.$store.strings.success_message || 'Great job! That\'s correct!';
         this.correctAnswers++;
         
-        // Erhöhe den 2_5_chord_characters Fortschritt bei korrekter Antwort
-        if (!this.progress['2_5_chords_characters']) this.progress['2_5_chords_characters'] = 0;
-        this.progress['2_5_chords_characters']++;
+        // Erhöhe den 2_5_chord_characters Fortschritt bei korrekter Antwort (unified key)
+        if (!this.progress['2_5']) this.progress['2_5'] = 0;
+        this.progress['2_5']++;
         
         // Speichere den Fortschritt in localStorage
         localStorage.setItem('lalumo_chords_progress', JSON.stringify(this.progress));
