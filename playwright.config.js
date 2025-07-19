@@ -2,6 +2,7 @@
 const { defineConfig } = require('@playwright/test');
 
 // Test environment debug logging utility
+// Uses console.log directly since this is test-time logging where console output is expected
 const debugLog = (module, message, ...args) => {
   // For test configuration, always log since it's test/development time
   if (args.length > 0) {

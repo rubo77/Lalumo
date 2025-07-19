@@ -1,7 +1,7 @@
 const { parse } = require('node-html-parser');
 
 // Build-time debug logging utility (webpack loader)
-// Simplified version for build environment
+// Uses console.log directly since this is build-time logging where console output is expected
 const debugLog = (module, message, ...args) => {
   // For build tools, always log since it's development/build time
   if (args.length > 0) {
