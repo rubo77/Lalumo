@@ -2,6 +2,10 @@
 =========
 
 
+## Version 4.1 (2025-07-19)
+- Neue Lieder in "Klingt es richtig?": "Häschen Hüpf" und "Hey Ho, Spann den Wagen an"
+
+
 ## Version 4.0 (2025-07-17)
 - Neues Chord-Spiel: "Stabil/Instable Akkorde" mit motivierendem Feedback.
 - Kindgerechte Bedienung:

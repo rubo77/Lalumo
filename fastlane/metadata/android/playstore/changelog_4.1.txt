@@ -1,0 +1,8 @@
+# Play Store Changelogs für Version 4.1
+
+<en-GB>
+- new songs in "Does It Sound Right?": "Bunny Hop" and "Hey Ho Pull the Wagon"
+</en-GB>
+<de-DE>
+- Neue Lieder in "Klingt es richtig?": "Häschen Hüpf" und "Hey Ho, Spann den Wagen an"
+</de-DE>

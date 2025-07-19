@@ -2,6 +2,10 @@
 =========
 
 
+## Version 4.1 (2025-07-19)
+- new songs in "Does It Sound Right?": "Bunny Hop" and "Hey Ho Pull the Wagon"
+
+
 ## Version 4.0 (2025-07-17)
 - new chord game: "Stable/Unstable Chords" with motivating feedback.
 - child-friendly interface:
