@@ -296,12 +296,15 @@ Ensure all activities work correctly with unified system.
 | (new function needed) | `setup_2_5()` | `/src/components/chords.js` |
 
 ### Game Start Functions
-| Old Function Name | New Function Name | Location |
-|---|---|---|
-| `startSoundJudgmentGame()` | `start_1_4_game()` | `/src/components/pitches.js` |
-| `startMemoryGame()` | `start_1_5_game()` | `/src/components/pitches.js` |
-| `startGameMode()` | `start_2_2_game()` | `/src/components/chords.js` |
-1_2_match_sounds, 1_4_pitches_does-it-sound-right, 1_5_pitches_memory-game use the `playCurrentMelody()` function in `pitches.js` called in index.html`
+| Status | Old Function Name | New Function Name | Location | Notes |
+|---|---|---|---|---|
+| ✅ | `playCurrentMelody()` | `playCurrentMelody()` | `/src/components/pitches.js` | Used by 1_2, 1_4, 1_5 via index.html - no change needed |
+| ⏳ | (new function needed) | `start_1_1_game()` | `/src/components/pitches.js` | Create if game mode exists |
+| ⏳ | (new function needed) | `start_1_3_game()` | `/src/components/pitches.js` | Create if game mode exists |
+| warning! maybe duplicate function? | `startSoundJudgmentGame()` | `start_1_4_game()` | `/src/components/pitches.js` | Rename existing function |
+| warning! maybe duplicate function? | `startMemoryGame()` | `start_1_5_game()` | `/src/components/pitches.js` | Rename existing function |
+| ⏳ | `startGameMode()` | `start_2_2_game()` | `/src/components/chords.js` | Rename existing function |
+| ⏳ | (new function needed) | `start_2_5_game()` | `/src/components/chords.js` | Create if game mode exists |
 
 ### Level/Info Functions
 | Status | Old Function Name | New Function Name | Location |

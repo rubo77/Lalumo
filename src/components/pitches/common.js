@@ -11,7 +11,7 @@ import { reset_1_2_MatchSounds_Progress } from './1_2_match_sounds.js';
 import { reset_1_3_DrawMelody_Progress } from './1_3_draw_melody.js';
 import { reset_1_4_SoundJudgment_Progress } from './1_4_sound_judgment.js';
 import { reset_1_5_MemoryGame_Progress } from './1_5_memory_game.js';
-import { resetProgress_2_2 } from '../2_chords/2_2_chords_stable_unstable.js';
+import { reset_2_2_Progress } from '../2_chords/2_2_chords_stable_unstable.js';
 import { resetProgress_2_5 } from '../2_chords/2_5_chord_characters.js';
 
 
@@ -135,7 +135,7 @@ export function resetCurrentActivity(currentMode) {
     '1_3_pitches_draw-melody': () => reset_1_3_DrawMelody_Progress(window.pitchesComponent),
     '1_4_pitches_does-it-sound-right': () => reset_1_4_SoundJudgment_Progress(window.pitchesComponent),
     '1_5_pitches_memory-game': () => reset_1_5_MemoryGame_Progress(window.pitchesComponent),
-    '2_2_chords_stable_unstable': () => resetProgress_2_2(window.pitchesComponent),
+    '2_2_chords_stable_unstable': () => reset_2_2_Progress(window.chordsComponent),
     '2_5_chords_characters': () => resetProgress_2_5(window.pitchesComponent)
   };
   
@@ -243,7 +243,7 @@ export function resetAllProgress(component) {
   reset_1_5_MemoryGame_Progress(window.pitchesComponent);
   
   console.log('RESET_ALL: Resetting Stable or Unstable Chords activity');
-  resetProgress_2_2(window.pitchesComponent);
+  reset_2_2_Progress(window.chordsComponent);
   
   console.log('RESET_ALL: Resetting Chord Types activity');
   resetProgress_2_5(window.pitchesComponent);
