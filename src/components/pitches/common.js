@@ -136,7 +136,7 @@ export function resetCurrentActivity(currentMode) {
     '1_4_pitches_does-it-sound-right': () => reset_1_4_SoundJudgment_Progress(window.pitchesComponent),
     '1_5_pitches_memory-game': () => reset_1_5_MemoryGame_Progress(window.pitchesComponent),
     '2_2_chords_stable_unstable': () => reset_2_2_Progress(window.chordsComponent),
-    '2_5_chords_characters': () => resetProgress_2_5(window.pitchesComponent)
+    '2_5_chords_characters': () => reset_2_5_Progress(window.chordsComponent)
   };
   
   const resetMethod = resetMethods[currentMode];

@@ -477,12 +477,12 @@
           
           <!-- Progress display -->
           <div class="progress-display high-low-progress">
-            <p x-text="($store.strings?.correct_answers_count || 'Correct answers: {0}').replace('{0}', highOrLowProgress || 0)"></p>
-            <p x-show="(highOrLowProgress || 0) < 10" x-text="$store.strings?.high_low_stage1 || 'Get 10 correct to make the tones closer!'"></p>
-            <p x-show="(highOrLowProgress || 0) >= 10 && (highOrLowProgress || 0) < 20" x-text="$store.strings?.high_low_stage2 || 'Get 20 correct to hear two tones!'"></p>
-            <p x-show="(highOrLowProgress || 0) >= 20 && (highOrLowProgress || 0) < 30" x-text="$store.strings?.high_low_stage3 || 'Get 30 correct to make it harder!'"></p>
-            <p x-show="(highOrLowProgress || 0) >= 30 && (highOrLowProgress || 0) < 40" x-text="$store.strings?.high_low_stage4 || 'Get 40 correct for the ultimate challenge!'"></p>
-            <p x-show="(highOrLowProgress || 0) >= 40" x-text="$store.strings?.high_low_master || 'Master level achieved! :celebration:'"></p>
+            <p x-text="($store.strings?.correct_answers_count || 'Correct answers: {0}').replace('{0}', progress['1_1'] || 0)"></p>
+            <p x-show="(progress['1_1'] || 0) < 10" x-text="$store.strings?.high_low_stage1 || 'Get 10 correct to make the tones closer!'"></p>
+            <p x-show="(progress['1_1'] || 0) >= 10 && (progress['1_1'] || 0) < 20" x-text="$store.strings?.high_low_stage2 || 'Get 20 correct to hear two tones!'"></p>
+            <p x-show="(progress['1_1'] || 0) >= 20 && (progress['1_1'] || 0) < 30" x-text="$store.strings?.high_low_stage3 || 'Get 30 correct to make it harder!'"></p>
+            <p x-show="(progress['1_1'] || 0) >= 30 && (progress['1_1'] || 0) < 40" x-text="$store.strings?.high_low_stage4 || 'Get 40 correct for the ultimate challenge!'"></p>
+            <p x-show="(progress['1_1'] || 0) >= 40" x-text="$store.strings?.high_low_master || 'Master level achieved! :celebration:'"></p>
           </div>
           
           <!-- Feedback message -->
