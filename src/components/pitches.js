@@ -35,7 +35,7 @@ import { testCommonModuleImport, resetCurrentActivity, resetAllProgress, showRes
   from './pitches/common.js';
 import { extractAnimalName } from './shared/ui-helpers.js';
 
-import { setupHighOrLowMode_1_1, reset_1_1_HighOrLow_Progress, currentHighOrLowStage } 
+import { setupHighOrLowMode_1_1, reset_1_1_HighOrLow_Progress, currentHighOrLowStage, get_1_1_level } 
   from "./pitches/1_1_high_or_low.js";
 import { testMatchSoundsModuleImport, reset_1_2_MatchSounds_Progress } 
   from "./pitches/1_2_match_sounds.js";
@@ -86,7 +86,7 @@ export function pitches() {
     
     // Progress tracking
     progress: {
-      '1_1_pitches_high_or_low': 0,
+      '1_1': 0,
       match: 0,
       draw: 0,
       'does-it-sound-right': 0,
@@ -95,7 +95,8 @@ export function pitches() {
     
     // ************ for 1.1 *****************
     // High or Low activity state variables
-    highOrLowProgress: 0, // Number of correct answers in High or Low activity - initialized properly in afterInit
+    // Note: highOrLowProgress is DEPRECATED - use this.progress['1_1'] instead
+    // Kept for backward compatibility during transition
     currentHighOrLowTone: null, // Current tone type (high/low)
     highOrLowSecondTone: null, // For comparison stages
     highOrLowPlayed: false, // Whether the tone has been played
@@ -319,19 +320,15 @@ export function pitches() {
             if (!this.progress['1_4']) this.progress['1_4'] = 0;
             if (!this.progress['1_5']) this.progress['1_5'] = 0;
             
-            console.log('Loaded progress data with new IDs:', this.progress);
-            
-            // Initialize highOrLowProgress from saved data
-            this.highOrLowProgress = this.progress['1_1_pitches_high_or_low'] || 0;
-            console.log('Initialized highOrLowProgress from localStorage:', this.highOrLowProgress);
+            console.log('Loaded progress data with unified IDs:', this.progress);
           } else {
-            // Initialize with empty progress object using new IDs
+            // Initialize with empty progress object using unified IDs
             this.progress = {
-              '1_1_pitches_high_or_low': 0,
-              '1_2_pitches_match-sounds': 0,
-              '1_3_pitches_draw-melody': 0,
-              '1_4_pitches_does-it-sound-right': 0,
-              '1_5_pitches_memory-game': 0
+              '1_1': 0,
+              '1_2': 0,
+              '1_3': 0,
+              '1_4': 0,
+              '1_5': 0
             };
           }
           
@@ -644,9 +641,8 @@ export function pitches() {
       } 
       // New ID format handlers
       else if (newMode === '1_1_pitches_high_or_low') {
-        // For high or low mode, initialize the highOrLowProgress from saved progress
-        this.highOrLowProgress = this.progress['1_1_pitches_high_or_low'] || 0;
-        console.log('High or Low mode activated with progress:', this.highOrLowProgress);
+        // For high or low mode, use unified progress tracking
+        console.log('High or Low mode activated with progress:', this.progress['1_1'] || 0);
         // Load current stage based on progress
         setupHighOrLowMode_1_1(this);
       } else if (newMode === '1_2_pitches_match-sounds') {
@@ -676,13 +672,13 @@ export function pitches() {
      * @used-by all activities
      */
     updateProgressPitches() {
-      // Get progress values from the new activity IDs
+      // Get progress values from the unified activity IDs
       const progressValues = [
-        this.progress['1_1_pitches_high_or_low'] || 0,
-        this.progress['1_2_pitches_match-sounds'] || 0,
-        this.progress['1_3_pitches_draw-melody'] || 0,
-        this.progress['1_4_pitches_does-it-sound-right'] || 0,
-        this.progress['1_5_pitches_memory-game'] || 0
+        this.progress['1_1'] || 0,
+        this.progress['1_2'] || 0,
+        this.progress['1_3'] || 0,
+        this.progress['1_4'] || 0,
+        this.progress['1_5'] || 0
       ];
       
       // Calculate total progress (0-100%)
@@ -772,8 +768,8 @@ export function pitches() {
      */
     saveProgress_1_1() {
       try {
-        // Make sure highOrLowProgress is synced to the progress object before saving
-        this.progress['1_1_pitches_high_or_low'] = this.highOrLowProgress;
+        // Use unified progress tracking - progress is already stored correctly
+        // No need to sync from deprecated highOrLowProgress variable
         
         // Save the progress object to localStorage
         localStorage.setItem('lalumo_progress', JSON.stringify(this.progress));
@@ -1152,13 +1148,13 @@ export function pitches() {
       
       // Handle feedback
       if (isCorrect) {
-        // Correct answer: increment progress
-        this.highOrLowProgress = (this.highOrLowProgress || 0) + 1;
+        // Correct answer: increment progress using unified tracking
+        if (!this.progress['1_1']) this.progress['1_1'] = 0;
+        this.progress['1_1'] += 1;
         
-        // Update stored progress
-        this.progress['1_1_pitches_high_or_low'] = this.highOrLowProgress;
+        // Save progress
         this.saveProgress_1_1();
-        console.log('Updated progress in localStorage:', this.highOrLowProgress);
+        console.log('Updated progress in localStorage:', this.progress['1_1']);
         
         // Play success sound
         audioEngine.playNote('success', 1, undefined, 0.4);
