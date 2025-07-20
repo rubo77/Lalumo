@@ -3111,9 +3111,10 @@ export function pitches() {
       } 
       // Im Spiel-Modus: Anzahl der Noten basierend auf dem Level
       else {
-        const currentMelodyLength = minNotes + this.drawMelodyLevel;
+        const currentLevel = get_1_3_level(this);
+        const currentMelodyLength = minNotes + currentLevel;
         sampleSize = Math.min(Math.min(maxNotes, currentMelodyLength), this.drawPath.length);
-        console.log(`MELODY_NOTES: Using ${sampleSize} notes based on level ${this.drawMelodyLevel} in challenge mode`);
+        console.log(`MELODY_NOTES: Using ${sampleSize} notes based on level ${currentLevel} in challenge mode`);
       }
       
       var sampledPoints = [];

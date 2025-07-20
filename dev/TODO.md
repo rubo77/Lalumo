@@ -173,6 +173,7 @@ reset-button:
 - play sound and rainbow exact after the painted melody is played (in case it is a longer melody)
 - wenn der zeichenpfad spitze ecken hat, dann sollen noten, die nahe der spitze sind ganz in die spitze rutschen
 - Wenn man einen Ton trifft, die Note aufleuchten verbessern, vielieicht den strich an der stelle dick machen oder so
+- prevent level progression while current melody is still playing: wenn man noch zeichnet, whaehrend der noch spielt, dann kann schon auf den nächsten level wechseln (von 3 auf 4) und es werden 4 noten auf die linie gezeichnet, obwohl nur 3 waren, und drei davon richtig waren. das muss nicht passieren.
 
 1_4 Does It Sound Right:
 - Transposed melodies im höheren Level
