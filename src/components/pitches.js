@@ -2533,10 +2533,6 @@ export function pitches() {
       this.drawPath = [];
       this.isDrawing = false;
       
-    setupDrawingMode_1_3() {
-      this.drawPath = [];
-      this.isDrawing = false;
-      
       // Use unified progress tracking - no need to load from separate localStorage
       // Level and progress are calculated from this.progress['1_3']
       console.log('MELODY_SETUP: Using unified progress tracking, current progress:', this.progress['1_3'] || 0);
