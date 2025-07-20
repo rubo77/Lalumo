@@ -1584,12 +1584,11 @@ export function pitches() {
         showRainbowSuccess();
         
         // Update progress with new ID format only
-        if (!this.progress['1_2_pitches_match-sounds']) {
-          this.progress['1_2_pitches_match-sounds'] = 0;
+        if (!this.progress['1_2']) {
+          this.progress['1_2'] = 0;
         }
-        // Increment progress counter
-        this.progress['1_2_pitches_match-sounds'] += 1;
-        const currentProgress = this.progress['1_2_pitches_match-sounds'];
+        this.progress['1_2'] += 1;
+        const currentProgress = this.progress['1_2'];
         // Synchronize currentProgress property with the actual progress value
         this.currentProgress = currentProgress;
         
@@ -3262,6 +3261,7 @@ export function pitches() {
      * @activity 1_3_draw_melody
      */
     compareWithReferenceSequence_1_3(drawnSequence) {
+      console.log(`[DRAW_MELODY_DEBUG] compareWithReferenceSequence_1_3 called with:`, drawnSequence);
       // Cannot compare if there's no reference
       if (!this.referenceSequence || this.referenceSequence.length === 0) return;
       
@@ -3290,8 +3290,10 @@ export function pitches() {
       // Create feedback message
       if (matchPercentage >= 80) {
         // Great match - increment progress using unified tracking
+        console.log(`[DRAW_MELODY_DEBUG] About to increment progress from ${this.progress['1_3'] || 0}`);
         if (!this.progress['1_3']) this.progress['1_3'] = 0;
         this.progress['1_3'] += 1;
+        console.log(`[DRAW_MELODY_DEBUG] Progress incremented to ${this.progress['1_3']}`);
         
         const currentProgress = this.progress['1_3'];
         const currentLevel = get_1_3_level(this);
@@ -4937,7 +4939,7 @@ export function pitches() {
     },
     
     updateMatchingBackground() {
-      const progress = this.progress['1_2_pitches_match-sounds'] || 0;
+      const progress = this.progress['1_2'] || 0;
       let backgroundImage;
       
       // Progress thresholds change at exactly 10 and 20 successes

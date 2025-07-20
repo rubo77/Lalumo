@@ -163,11 +163,13 @@ reset-button:
 - Die volle  bildschirmbreite Ausnutzen auf dem Handy
 
 1_2 "Match the Sounds":
+- reset current wird nicht sichtbar
 - # bereit zur veröffentlichung
 - die Welle muss Sägezahn sein ohne Brandung 
 - der reset button in der navi muss auch den hintergrund und die anzeige unten triggern, dass die refresht wird, im moment wird der dann noch einfach weiss
 
 1_3 Draw a Melody:
+- [DRAW_MELODY_DEBUG] es wird zwei progress hochgezaehlt, wenn man eine melodie richtig trifft
 - # bereit zur veröffentlichung
 - Zeichnen geht nicht mehr auf den Handy, man schiebt den bildschirm hin und her, anstatt zu malen. könnte helfen: overflow hiddern
 - play sound and rainbow exact after the painted melody is played (in case it is a longer melody)

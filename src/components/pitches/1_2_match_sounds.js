@@ -31,8 +31,19 @@ export function reset_1_2_MatchSounds_Progress(component) {
   localStorage.removeItem('lalumo_progress_match');
   localStorage.removeItem('lalumo_difficulty');
   
-  // Update progress object
-  component.progress['1_2_pitches_match-sounds'] = 0;
+  // Update progress object using unified progress key
+  component.progress['1_2'] = 0;
+  
+  // Persist to localStorage using unified progress system
+  try {
+    const progressData = localStorage.getItem('lalumo_progress');
+    let progress = progressData ? JSON.parse(progressData) : {};
+    progress['1_2'] = 0;
+    localStorage.setItem('lalumo_progress', JSON.stringify(progress));
+  } catch (e) {
+    console.warn('Could not update progress in localStorage', e);
+  }
+  
   component.updateProgressPitches();
   
   // Reset background if needed

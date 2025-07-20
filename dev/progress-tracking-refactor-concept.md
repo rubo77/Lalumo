@@ -576,7 +576,7 @@ The unified activity progress tracking refactor has been **successfully complete
 | Activity | Progress Key | Status | Reset Function | Level Function |
 |---|---|---|---|---|
 | **1_1 High or Low** | `'1_1'` | ✅ Complete | `reset_1_1_HighOrLow_Progress()` | `get_1_1_level()` |
-| **1_3 Draw Melody** | `'1_3'` | ✅ Complete | `reset_1_3_DrawMelody_Progress()` | `get_1_3_level()` |
+| **1_3 Draw Melody** | `'1_3'` | ✅ Complete ⚠️ Bug | `reset_1_3_DrawMelody_Progress()` | `get_1_3_level()` |
 | **1_4 Sound Judgment** | `'1_4'` | ✅ Complete | `reset_1_4_SoundJudgment_Progress()` | `get_1_4_level()` |
 | **1_5 Memory Game** | `'1_5'` | ✅ Complete | `reset_1_5_MemoryGame_Progress()` | `get_1_5_level()` |
 | **2_2 Stable/Unstable** | `'2_2'` | ✅ Complete | `reset_2_2_Progress()` | `get_2_2_level()` |
@@ -692,6 +692,36 @@ export function reset_X_Y_Progress(component) {
 All activities in the Lalumo app now use a consistent, maintainable, and reliable progress tracking system. The "Reset current" button works correctly for all activities, progress persists across app reloads, and the codebase is significantly more maintainable.
 
 **Special thanks to Copilot for completing the remaining activities (1_1, 1_3, 1_5) with high quality and consistency!**
+
+---
+
+## ⚠️ **Known Issues**
+
+### **Activity 1_3 (Draw Melody) - Double Progress Increment**
+
+**Issue:** When a user successfully completes a melody in Activity 1_3, the progress is incremented twice instead of once.
+
+**Status:** 🔴 **Bug Identified** - Debug logs added, fix pending
+
+**Debug Information:**
+- Added debug logs in `compareWithReferenceSequence_1_3()` function
+- Progress increment occurs in line ~3294 of `/src/components/pitches.js`
+- Need to investigate if function is called multiple times or if there's duplicate increment logic
+
+**Impact:** 
+- Users advance through levels faster than intended
+- Progress tracking becomes inaccurate
+- Level-based difficulty progression is affected
+
+**Next Steps:**
+1. Analyze debug console output to identify root cause
+2. Check for duplicate function calls or event handlers
+3. Remove duplicate progress increment logic
+4. Test fix thoroughly
+
+**Files Involved:**
+- `/src/components/pitches.js` (main logic)
+- `/src/components/pitches/1_3_draw_melody.js` (helper functions)
 get_2_2_level() {
   const progress = this.progress['2_2'] || 0;
   return Math.floor(progress / 10) + 1;
