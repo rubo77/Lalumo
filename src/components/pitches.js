@@ -1016,6 +1016,8 @@ export function pitches() {
      * Plays a tone or sequence of tones for the High or Low activity
      * Called when the play button is clicked
      * @activity 1_1_high_or_low
+     * @note this function has a .then() in checkHighOrLowAnswer() 
+     *       so after the tone has finished playing, check the answer
      */
     async playHighOrLowTone() {
       if (this.isPlaying) return; // Prevent multiple plays
@@ -2553,18 +2555,25 @@ export function pitches() {
         // Only set up these event listeners in free play mode
         if (!this.melodyChallengeMode) {
           // Handle pointer up events on the window to catch cases where pointer is released outside canvas
+          let endDrawingCalled = false;
           const handlePointerUp = (e) => {
-            if (this.isDrawing) {
+            if (this.isDrawing && !endDrawingCalled) {
               console.log('Pointer up detected outside canvas, ending drawing');
+              endDrawingCalled = true;
               this.endDrawing(e);
+              // Reset flag after a short delay to allow for next drawing
+              setTimeout(() => { endDrawingCalled = false; }, 100);
             }
           };
           
           // Handle pointer leave events on the canvas
           const handlePointerLeave = (e) => {
-            if (this.isDrawing) {
+            if (this.isDrawing && !endDrawingCalled) {
               console.log('Pointer left canvas while drawing, ending drawing');
+              endDrawingCalled = true;
               this.endDrawing(e);
+              // Reset flag after a short delay to allow for next drawing
+              setTimeout(() => { endDrawingCalled = false; }, 100);
             }
           };
           
@@ -3061,6 +3070,15 @@ export function pitches() {
      * End drawing and play the resulting melody
      */
     endDrawing(e) {
+      console.log(`[DRAW_MELODY_DEBUG] endDrawing() called - drawPath length: ${this.drawPath.length}`);
+      
+      // Prevent double calls from multiple event handlers (mouseup + touchend)
+      if (this._endDrawingInProgress) {
+        console.log(`[DRAW_MELODY_DEBUG] endDrawing() already in progress, ignoring duplicate call`);
+        return;
+      }
+      this._endDrawingInProgress = true;
+      
       if (e) {
         e.preventDefault(); // Verhindert unbeabsichtigtes Verhalten auf Mobilgeräten
       }
@@ -3080,12 +3098,18 @@ export function pitches() {
       
       // Melodie aus der Zeichnung generieren und abspielen
       this.playDrawnMelody();
+      
+      // Reset debouncing flag after processing is complete
+      setTimeout(() => {
+        this._endDrawingInProgress = false;
+      }, 50);
     },
     
     /**
      * Play a melody based on the drawn path
      */
     playDrawnMelody() {
+      console.log(`[DRAW_MELODY_DEBUG] playDrawnMelody() called - drawPath length: ${this.drawPath.length}`);
       if (this.drawPath.length === 0) return;
       
       const canvas = document.querySelector('.drawing-canvas');
@@ -3187,6 +3211,7 @@ export function pitches() {
       
       // Compare with reference melody if in challenge mode
       if (this.melodyChallengeMode && this.referenceSequence) {
+        console.log(`[DRAW_MELODY_DEBUG] About to call compareWithReferenceSequence_1_3`);
         this.compareWithReferenceSequence_1_3(sequence);
       }
     },
@@ -3280,7 +3305,9 @@ export function pitches() {
       
       // Calculate the match percentage
       const matchPercentage = (matchCount / compareLength) * 100;
-      console.log(`Melody match: ${matchCount}/${compareLength} notes (${matchPercentage.toFixed(1)}%)`);
+      console.log(`[DRAW_MELODY_DEBUG] Melody match: ${matchCount}/${compareLength} notes (${matchPercentage.toFixed(1)}%)`);
+      console.log(`[DRAW_MELODY_DEBUG] Match percentage >= 80? ${matchPercentage >= 80}`);
+      console.log(`[DRAW_MELODY_DEBUG] Perfect match (100%)? ${matchPercentage === 100}`);
       
       // Provide feedback based on match percentage
       let feedback = '';
