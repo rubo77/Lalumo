@@ -163,23 +163,21 @@ reset-button:
 - Die volle  bildschirmbreite Ausnutzen auf dem Handy
 
 1_2 "Match the Sounds":
-- reset current wird nicht sichtbar
 - # bereit zur veröffentlichung
 - die Welle muss Sägezahn sein ohne Brandung 
 - der reset button in der navi muss auch den hintergrund und die anzeige unten triggern, dass die refresht wird, im moment wird der dann noch einfach weiss
 
 1_3 Draw a Melody:
-- [DRAW_MELODY_DEBUG] es wird zwei progress hochgezaehlt, wenn man eine melodie richtig trifft
 - # bereit zur veröffentlichung
 - Zeichnen geht nicht mehr auf den Handy, man schiebt den bildschirm hin und her, anstatt zu malen. könnte helfen: overflow hiddern
 - play sound and rainbow exact after the painted melody is played (in case it is a longer melody)
 - wenn der zeichenpfad spitze ecken hat, dann sollen noten, die nahe der spitze sind ganz in die spitze rutschen
-- Wenn man einen Ton trifft, die Note aufleuchten verbessern, vielieicht den strich an der stelle dick machen oder so
 - prevent level progression while current melody is still playing: wenn man noch zeichnet, whaehrend der noch spielt, dann kann schon auf den nächsten level wechseln (von 3 auf 4) und es werden 4 noten auf die linie gezeichnet, obwohl nur 3 waren, und drei davon richtig waren. das muss nicht passieren.
 
 1_4 Does It Sound Right:
-- Transposed melodies im höheren Level
+- alle Melodien in einer Reihe mischen. Und nacheinander abspielen, dann erst wenn alle durch sind die erste wieder
 - # bereit zur veröffentlichung
+- Transposed melodies im höheren Level
 - when the "next melody" button is pressed in the "Does It Sound Right?" activity, the animal images should NOT change
 - fix gebogenen text
 - es kommt mehrmals in log "Generated sound judgment melody:..."
@@ -187,10 +185,11 @@ reset-button:
 - eigene melodien hochladen
 
 1_5 memory game:
-  -  Klavier weiter runter auf kleinen bildschirmen
   - # bereit zur veröffentlichung
+  - wenn man in 1_4 eine melodie startet und dann während die noch spielt in 1_5 wechselt, dann werden unter dem piano 10 kreise angezeigt
 
 2_2_chords_stable_unstable:
+  - Du info Text Box weiter runter, wenn genug Platz ist. 
   - # bereit zur veröffentlichung
  
 2_5_chords_color_matching:

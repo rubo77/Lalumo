@@ -44,9 +44,8 @@ module.exports = (env, argv) => {
       // Immer Content-Hash für Cache-Busting verwenden
       filename: '[name].[contenthash].js',
       clean: true,
-      // Einheitliche publicPath für Produktion und Entwicklung
-      // Verwende './' für relative Pfade ohne führenden Slash
-      publicPath: './',
+      // Fix HMR: Use absolute path for dev server, relative for production
+      publicPath: isProduction ? './' : '/',
     },
     // Copy static assets from public directory
     devServer: {
@@ -73,6 +72,12 @@ module.exports = (env, argv) => {
       port: 9091,
       hot: true,
       open: true,
+      historyApiFallback: {
+        rewrites: [
+          { from: /^\/app/, to: '/app/index.html' },
+          { from: /./, to: '/index.html' }
+        ]
+      },
       watchFiles: {
         paths: ['src/**/*.html', 'homepage/*-template.html'],
         options: {
@@ -162,9 +167,8 @@ module.exports = (env, argv) => {
         chunks: ['main'],
         inject: true,
         hash: true,
-        // Für Subdirectory-Deployment mit app-Verzeichnis
-        // bei bereits im app/-Verzeichnis generierten Assets relative Pfade ohne app/ verwenden
-        publicPath: '../',
+        // Fix HMR: Use same publicPath as global config
+        publicPath: isProduction ? '../' : '/',
         minify: {
           collapseWhitespace: true,
           removeComments: true,
