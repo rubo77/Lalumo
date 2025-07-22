@@ -99,6 +99,7 @@
 <body class="loading">
   <!-- Portrait Mode Notice -->
   <div class="portrait-notice">
+    <button class="portrait-notice-close" onclick="closePortraitNotice()" ontouchstart="closePortraitNotice()" ontouchend="event.preventDefault()" aria-label="Close notice">×</button>
     <h2 data-string="portrait_notice_title">📱 Please rotate your device</h2>
     <p data-string="portrait_notice_message">Lalumo works only in portrait mode.</p>
   </div>
@@ -146,9 +147,38 @@
     window.addEventListener('orientationchange', function() {
       setTimeout(checkOrientation, 100); // delay for orientation change
     });
+    
+    // Function to manually close portrait notice
+    window.closePortraitNotice = function() {
+      console.log('Close button clicked!');
+      const portraitNotice = document.querySelector('.portrait-notice');
+      if (portraitNotice) {
+        portraitNotice.classList.add('hidden');
+        portraitNotice.style.display = 'none';
+        document.body.style.overflow = '';
+        // Store preference to not show again
+        localStorage.setItem('portraitNoticeDisabled', 'true');
+        console.log('Portrait notice closed successfully');
+      } else {
+        console.error('Portrait notice element not found');
+      }
+    };
+    
+    // Check portrait notice status after Alpine is initialized
+    window.checkPortraitNoticeOnInit = function() {
+      setTimeout(function() {
+        const isDisabled = localStorage.getItem('portraitNoticeDisabled') === 'true';
+        if (isDisabled) {
+          console.log('Portrait notice was previously disabled, hiding it');
+          window.closePortraitNotice();
+        }
+      }, 100); // small delay to ensure DOM is ready
+    };
+    
+    
   </script>
   <!-- app.js -->
-  <main id="app" x-data="app()" x-init="init(); initLazyLoading(); updateEnvironmentClasses();" @click="unlockAudio()" @touchstart="unlockAudio()" class="container">
+  <main id="app" x-data="app()" x-init="init(); initLazyLoading(); updateEnvironmentClasses(); checkPortraitNoticeOnInit();" @click="unlockAudio()" @touchstart="unlockAudio()" class="container">
     
     <!-- Username Prompt Modal -->
     <div class="modal-overlay" x-show="showUsernamePrompt" x-transition style="display: none;">
