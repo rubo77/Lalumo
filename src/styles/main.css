@@ -1632,6 +1632,11 @@ section h2 {
   margin: 0 auto;
 }
 
+/* Specific positioning for 2_2 stable/unstable progress box */
+.progress_2_2 {
+  bottom: -2rem;
+}
+
 .melody-name {
   position: absolute;
   top: min(371px, 58vw);
