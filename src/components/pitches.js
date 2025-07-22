@@ -1110,8 +1110,9 @@ export function pitches() {
      * @activity 1_1_high_or_low
      */
     checkHighOrLowAnswer(answer) {
-      if (this.isPlaying) {
-        // If a tone is currently playing, ignore the answer
+      if (this.isPlaying && this.progress['1_1'] >= 20) {
+        // If a tone is currently playing and the user has reached stage 2, ignore the answer
+        debugLog(['HIGH_OR_LOW', 'ANSWER_TIMING'], 'Answer ignored: Tone is playing and user has reached stage 2');
         return;
       }
       
@@ -1133,14 +1134,20 @@ export function pitches() {
         return; // Important: exit without checking the answer
       }
       
-      // If the game is started but the tone hasn't been played yet, play the sequence first
+      // If the game is started but the tone hasn't been played yet
       if (!this.highOrLowPlayed) {
-        // Play a tone first, then check the answer
-        this.playHighOrLowTone().then(() => {
-          // After the tone has finished playing, check the answer
-          this.checkHighOrLowAnswer(answer);
-        });
-        return;
+        // Check if we have a sequence ready - if so, we can process the answer immediately
+        if (this.currentHighOrLowSequence) {
+          debugLog(['HIGH_OR_LOW', 'EARLY_PRESS'], 'Processing answer immediately with existing sequence');
+          // Continue to answer checking logic below
+        } else {
+          // No sequence yet, play a tone first, then check the answer
+          this.playHighOrLowTone().then(() => {
+            // After the tone has finished playing, check the answer
+            this.checkHighOrLowAnswer(answer);
+          });
+          return;
+        }
       }
       
       const stage = currentHighOrLowStage(this);
@@ -1203,10 +1210,13 @@ export function pitches() {
         this.currentHighOrLowInstrument = null;
         debugLog(['HIGH_OR_LOW', 'INSTRUMENT'], 'Reset instrument selection after correct answer');
         
-        // Clear the current sequence so a new one will be generated next time
+        // Pre-generate next sequence to support early button presses
         // Use setTimeout to avoid issues with rapid clicking
         setTimeout(() => {
-          this.currentHighOrLowSequence = null;
+          const nextStage = currentHighOrLowStage(this);
+          this.generate1_1HighOrLowSequence(nextStage);
+          this.highOrLowPlayed = false; // Mark new sequence as not played yet
+          debugLog(['HIGH_OR_LOW', 'NEXT_SEQUENCE'], `Pre-generated next sequence for stage ${nextStage}`);
         }, 100);
         
         // Check if we've reached a new stage

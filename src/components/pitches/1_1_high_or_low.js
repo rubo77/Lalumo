@@ -106,8 +106,10 @@ export function setupHighOrLowMode_1_1(component) {
   // Initialize the high or low activity
   console.log('High or Low mode ready with progress:', component.highOrLowProgress);
   
-  // Reset the current sequence so a new one will be generated on play
-  component.currentHighOrLowSequence = null;
+  // Pre-generate sequence to support early button presses
+  const stage = get_1_1_level(component);
+  component.generate1_1HighOrLowSequence(stage);
+  debugLog(['HIGH_OR_LOW', 'SETUP'], `Pre-generated sequence for stage ${stage} to support early button presses`);
   
   // Reset game state - not started until the user explicitly clicks play
   component.gameStarted = false;
