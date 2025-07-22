@@ -252,6 +252,10 @@ export function playViolinNote(note, duration = 0.8, velocity = 0.8) {
       return false;
     }
     
+    if(velocity > 0.6){
+      debugLog("TONE_JS", `violin velocity ${velocity} is too high, setting to 0.6`);
+      velocity = 0.6;
+    }
     // Play the note directly through Tone.js
     debugLog("TONE_JS", `Playing violin note ${note} (dur: ${duration}s, vel: ${velocity})`);
     violinSynth.triggerAttackRelease(note, duration, Tone.now(), velocity);
@@ -291,7 +295,7 @@ export function playFluteNote(note, duration = 0.8, velocity = 0.8) {
 /**
  * Play a brass note using the global synth
  */
-export function playBrassNote(note, duration = 0.8, velocity = 0.2) {
+export function playBrassNote(note, duration = 0.8, velocity = 0.4) {
   try {
     // Make sure note is properly formatted
     note = note.toString().toUpperCase();
@@ -303,6 +307,10 @@ export function playBrassNote(note, duration = 0.8, velocity = 0.2) {
     }
     
     // Play the note directly through Tone.js
+    if(velocity > 0.4){
+      debugLog("TONE_JS", `brass velocity ${velocity} is too high, setting to 0.4`);
+      velocity = 0.4;
+    }
     debugLog("TONE_JS", `Playing brass note ${note} (dur: ${duration}s, vel: ${velocity})`);
     brassSynth.triggerAttackRelease(note, duration, Tone.now(), velocity);
     return true;
