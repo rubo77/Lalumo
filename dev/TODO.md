@@ -116,7 +116,7 @@ unter chrome auf dem handy android 15:
     - in preferences ein kleines mascot bild neben die einstellung zum hiden
     - hilfstexte selbst einsprechen oder einmal generieren lassen als mp3
 
-- there is already the hash redirect, wherrn coming from a referral, erweitere so dass die seite reachable wird via a hash-anchor-link: make this link go directly to the 1_1_pitches_high_or_low activity: https://lalumo.z11.de/#1_1
+- there is already the hash redirect, when coming from a referral, erweitere so dass die seite reachable wird via a hash-anchor-link: make this link go directly to the 1_1_pitches_high_or_low activity: https://lalumo.z11.de/#1_1
 
 - all chapters and activities are included in the sitemap. also, if you select another activity in the nav, the hash tag should change, so you can bookmark them
 
@@ -156,6 +156,7 @@ reset-button:
 ## nach kapitel
 
 1_1 "High or Low?" (1_1_pitches_high_or_low) 
+- jedes mal ein zufälliges Verschiedenes Instrument zum abspielen wählen
 - # bereit zur veröffentlichung
 - im master level dürfen die töne maximal 3 halbtöne auseinander sein und der erste ton muss nicht mehr C5 sein, sondern kann jeder beliebige sein, es wird nur getestet, ob der 2. ton dann höher oder tiefer ist
 - die erfolgsmeldung muss sich ab level 3 aendern in "der ton war höher" anstatt "hoch" und "der ton war tiefer" anstatt "tief"
@@ -168,7 +169,6 @@ reset-button:
 - der reset button in der navi muss auch den hintergrund und die anzeige unten triggern, dass die refresht wird, im moment wird der dann noch einfach weiss
 
 1_3 Draw a Melody:
-- die notenpunkte liegen jetzt zunter der gezeichneten linie, die müssen auch erneut gezeichnet werden, wenn die linie neu gezeichnet wird
 - # bereit zur veröffentlichung
 - Zeichnen geht nicht mehr auf den Handy, man schiebt den bildschirm hin und her, anstatt zu malen. könnte helfen: overflow hiddern
 - play sound and rainbow exact after the painted melody is played (in case it is a longer melody)
@@ -195,7 +195,7 @@ reset-button:
   - wenn man in 1_4 eine melodie startet und dann während die noch spielt in 1_5 wechselt, dann werden unter dem piano 10 kreise angezeigt
 
 2_2_chords_stable_unstable:
-  - Du info Text Box weiter runter, wenn genug Platz ist. 
+  - Du info Text Box unten weiter runter, wenn genug Platz ist. 
   - # bereit zur veröffentlichung
  
 2_5_chords_color_matching:
@@ -221,5 +221,4 @@ reset-button:
 - "Reset current" Button soll nur sichtbar sein, wenn der Progress der aktuellen activity größer 0
 
 # most important
-- Alle Buttons für zwei Sekunden disable nach Klick
 - Force portrait mode

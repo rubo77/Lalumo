@@ -10,6 +10,9 @@ import './styles/menu-backgrounds.css';
 // Import Debug Utility
 import { checkStoredDebugSettings, debugLog } from './utils/debug';
 
+// Import Button Blocker Utility
+import './utils/buttonBlocker';
+
 // Import and initialize the global Tone.js instance
 import { initToneJs } from './utils/toneJsSampler';
 

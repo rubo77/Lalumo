@@ -4,6 +4,26 @@
   color-scheme: light only;
 }
 
+/* Global Button Blocker - 2 second disable after click */
+.activity-button-blocker {
+  transition: opacity 0.2s ease, transform 0.1s ease;
+}
+
+.activity-button-blocker:disabled {
+  opacity: 0.5 !important;
+  cursor: progress !important;
+  transform: scale(0.98);
+  user-select: none;
+}
+
+.activity-button-blocker.blocking {
+  opacity: 0.6 !important;
+  cursor: progress !important;
+  transform: scale(0.98);
+  user-select: none;
+  /* Keep pointer-events but prevent actual clicks via JavaScript */
+}
+
 
 /* Locked activity styling */
 .locked-activity {
