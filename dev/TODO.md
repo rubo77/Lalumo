@@ -216,3 +216,5 @@ reset-button:
 - "Reset current" Button soll nur sichtbar sein, wenn der Progress der aktuellen activity größer 0
 
 # most important
+- Alle Buttons für zwei Sekunden disable nach Klick
+- 

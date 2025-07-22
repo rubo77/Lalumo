@@ -52,7 +52,7 @@ export function app() {
         name: 'Pitches & Melodies',
         activities: {
           '1_1_pitches_high_or_low': 'High or Low?',
-          '1_2_pitches_match-sounds': 'Match Sounds',
+          '1_2_pitches_match-sounds': 'Up or Down',
           '1_3_pitches_draw-melody': 'Draw a Melody',
           '1_4_pitches_does-it-sound-right': 'Does It Sound Right?',
           '1_5_pitches_memory-game': 'Memory Game'
@@ -2160,7 +2160,7 @@ export function app() {
      * 
      * 1. General activity progress:
      *    - 1_1:XX - Sets high-or-low progress to XX (lalumo_progress_high_or_low)
-     *    - 1_2:XX - Sets match sounds progress to XX (stored in lalumo_progress_match)
+     *    - 1_2:XX - Sets Up or Down progress to XX (stored in lalumo_progress_match)
      *    - 1_3:XX - Sets draw melody progress to XX (stored in lalumo_draw_melody_level)
      *    - 1_4:XX - Sets sound judgment progress to XX (stored in lalumo_soundJudgmentLevel)
      *    - 1_5:XX - Sets memory game progress to XX (stored in lalumo_memory_level)
@@ -2173,7 +2173,7 @@ export function app() {
      * 
      * 2. Combined values (with secondary values):
      *    - 1_3:5s3 - Sets draw melody level to 5 and success counter to 3
-     *    - 1_2:8d3 - Sets match sounds progress to 8 and difficulty to 3
+     *    - 1_2:8d3 - Sets Up or Down progress to 8 and difficulty to 3
      *    - 1_4:6s10 - Sets sound judgment level to 6 and streak to 10
      * 
      * 3. Multiple cheats at once (comma separated):
@@ -2292,7 +2292,7 @@ export function app() {
           if (activityId === '1_1') { // High or low
             localStorage.setItem('lalumo_progress_high_or_low', progressValue);
             debugLog(['CHEATCODE'], `: Set localStorage: lalumo_progress_high_or_low = ${progressValue}`);
-          } else if (activityId === '1_2') { // Match sounds activity
+          } else if (activityId === '1_2') { // Up or Down activity
             localStorage.setItem('lalumo_progress_match', progressValue);
             debugLog(['CHEATCODE'], `: Set localStorage: lalumo_progress_match = ${progressValue}`);
             

@@ -179,6 +179,7 @@
         <!-- Activities Section (shows only when Pitches chapter is active) -->
         <template x-if="active === 'pitches'">
           <div class="menu-activities">
+            <!-- High or Low -->
             <button id="nav_1_1"
               @click="$dispatch('set-activity-mode', {component: 'pitches', mode: '1_1_pitches_high_or_low'}); window.innerWidth < 1024 ? menuOpen = false : null"
               x-data="{ isActive: false }"
@@ -188,15 +189,18 @@
             >
               🔊 <span x-text="$store.strings?.high_or_low || 'High or Low?'"></span>
             </button>
+
+            <!-- Up or Down -->
             <button id="nav_1_2"
               @click="$dispatch('set-activity-mode', {component: 'pitches', mode: '1_2_pitches_match-sounds'}); window.innerWidth < 1024 ? menuOpen = false : null"
               x-data="{ isActive: false }"
               x-init="$watch('$store.currentActivityMode', value => isActive = value && value.component === 'pitches' && value.mode === '1_2_pitches_match-sounds')"
               :class="{ 'active': isActive }"
             >
-            🎵 <span x-text="$store.strings?.match_sounds || 'Match Sounds'"></span>
+            🎵 <span x-text="$store.strings?.match_sounds || 'Up or Down'"></span>
             </button>
             
+            <!-- Does it sound right -->
             <button id="nav_1_4"
               @click="$dispatch('set-activity-mode', {component: 'pitches', mode: '1_4_pitches_does-it-sound-right'}); window.innerWidth < 1024 ? menuOpen = false : null"
               x-data="{ isActive: false }"
@@ -205,6 +209,15 @@
               👉 <span x-text="$store.strings?.does_it_sound_right || 'Does It Sound Right?'"></span>
             </button>
             
+            <!-- Memory Game -->
+            <button id="nav_1_5"
+              @click="$dispatch('set-activity-mode', {component: 'pitches', mode: '1_5_pitches_memory-game'}); window.innerWidth < 1024 ? menuOpen = false : null"
+            >
+              🎹 <span x-text="$store.strings?.memory_game || 'Memory Game'"></span>
+            </button>
+
+            <!-- following activities require unlock -->
+
             <!-- Locked Draw a Melody button (visible when not unlocked) -->
             <button id="nav_1_3_locked" x-show="!areAllActivitiesUnlocked"
               @click="active = 'referral-code'; window.innerWidth < 1024 ? menuOpen = false : null"
@@ -230,30 +243,6 @@
               🔓 ✏️ <span x-text="$store.strings?.draw_melody || 'Draw a Melody'"></span>
             </button>
             
-            <!-- Locked Memory Game button (visible when not unlocked) -->
-            <button id="nav_1_5_locked" x-show="!areAllActivitiesUnlocked"
-              @click="active = 'referral-code'; window.innerWidth < 1024 ? menuOpen = false : null"
-              class="locked-activity"
-            >
-              <span>🔒 🎹 <span x-text="$store.strings?.memory_game || 'Memory Game'"></span></span>
-            </button>
-            
-            <!-- Unlocked Memory Game button (visible when unlocked through referrals) -->
-            <button id="nav_1_5" x-show="areAllActivitiesUnlocked"
-              @click="$dispatch('set-activity-mode', {component: 'pitches', mode: '1_5_pitches_memory-game'}); window.innerWidth < 1024 ? menuOpen = false : null"
-              x-data="{ isActive: false }"
-              x-init="$watch('$store.currentActivityMode', value => isActive = value && value.component === 'pitches' && value.mode === '1_5_pitches_memory-game')"
-              :class="{ 'active': isActive }"
-            >
-              🎹 <span x-text="$store.strings?.memory_game || 'Memory Game'"></span>
-            </button>
-            
-            <!-- Debug button for Memory Game (always visible) -->
-            <button id="nav_1_5_debug" class="debug-element"
-              @click="$dispatch('set-activity-mode', {component: 'pitches', mode: '1_5_pitches_memory-game'}); window.innerWidth < 1024 ? menuOpen = false : null"
-            >
-              🔓 🎹 <span x-text="$store.strings?.memory_game || 'Memory Game'"></span>
-            </button>
           </div>
         </template>
 
@@ -419,7 +408,7 @@
         <div x-show="!mode || mode === 'main'" class="pitch-landing">
           <div class="image-map-container">
             <div class="clickable-area match-area" @click="setMode('1_2_pitches_match-sounds')" aria-label="Match Mode">
-              <span class="area-label" x-text="$store.strings?.match_sounds || 'Match Sounds'"></span>
+              <span class="area-label" x-text="$store.strings?.match_sounds || 'Up or Down'"></span>
             </div>
             <div class="clickable-area draw-area" @click="setMode('1_3_pitches_draw-melody')" aria-label="Draw Mode">
               <span class="area-label" x-text="$store.strings?.draw_melody || 'Draw a Melody'"></span>

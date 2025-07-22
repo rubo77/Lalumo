@@ -29,7 +29,7 @@ export function testCommonModuleImport() {
 function getActivityNames(isGerman) {
   return {
     '1_1_pitches_high_or_low': isGerman ? 'Hoch oder Tief' : 'High or Low',
-    '1_2_pitches_match-sounds': isGerman ? 'Klänge zuordnen' : 'Match Sounds',
+    '1_2_pitches_match-sounds': isGerman ? 'Hoch oder Runter' : 'Up or Down',
     '1_3_pitches_draw-melody': isGerman ? 'Melodie zeichnen' : 'Draw Melody',
     '1_4_pitches_does-it-sound-right': isGerman ? 'Klingt das richtig?' : 'Does It Sound Right?',
     '1_5_pitches_memory-game': isGerman ? 'Memory-Spiel' : 'Memory Game',
@@ -230,7 +230,7 @@ export function resetAllProgress(component) {
   console.log('RESET_ALL: Resetting High or Low activity');
   reset_1_1_HighOrLow_Progress(window.pitchesComponent);
   
-  console.log('RESET_ALL: Resetting Match Sounds activity');
+  console.log('RESET_ALL: Resetting Up or Down activity');
   reset_1_2_MatchSounds_Progress(window.pitchesComponent);
   
   console.log('RESET_ALL: Resetting Draw Melody activity');

@@ -1,5 +1,5 @@
 /**
- * 1_2_match_sounds.js - Module for the "Match Sounds" activity
+ * 1_2_match_sounds.js - Module for the "Up or Down" activity
  */
 
 // Import debug utilities
@@ -7,12 +7,12 @@ import { debugLog } from '../../utils/debug.js';
 
 // Export a test function for import tests
 export function testMatchSoundsModuleImport() {
-  console.log('Match Sounds module successfully imported');
+  console.log('Up or Down module successfully imported');
   return true;
 }
 
 /**
- * Reset Match Sounds activity progress
+ * Reset Up or Down activity progress
  * @param {Object} component - The Alpine.js component
  */
 export function reset_1_2_MatchSounds_Progress(component) {

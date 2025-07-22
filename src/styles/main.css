@@ -1478,7 +1478,7 @@ section h2 {
   height: 210px; /* Etwas höher als 2 Zeilen für bessere Sichtbarkeit */
 }
 
-/* Match Sounds Activity (1_2) specific styles */
+/* Up or Down Activity (1_2) specific styles */
 .match-sounds-container {
   display: grid;
   grid-template-columns: 1fr 1fr;

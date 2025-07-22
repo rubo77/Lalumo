@@ -114,9 +114,9 @@
     <string name="mascot_all_unlocked">Großartig! Alle Melodie-Muster sind jetzt verfügbar! 🎉</string>
     
     <!-- Referrals Page Strings -->
-    <string name="unlock_chords">Spezielle Aktivitäten freischalten</string>
-    <string name="referral_instruction">Teile Lalumo mit deinen Freunden, um spezielle Aktivitäten freizuschalten: Melodie zeichnen, Memory-Spiel und Akkord-Charaktere!</string>
-    <string name="referrals_premium">erfolgreiche Empfehlungen: Spezielle Aktivitäten freischalten</string>
+    <string name="unlock_chords">Mehr Aktivitäten freischalten</string>
+    <string name="referral_instruction">Teile Lalumo mit deinen Freunden, um mehr Aktivitäten freizuschalten: Melodie zeichnen, Memory-Spiel und Akkord-Charaktere!</string>
+    <string name="referrals_premium">erfolgreiche Empfehlungen: Mehr Aktivitäten freischalten</string>
     <string name="referrals_future">erfolgreiche Empfehlungen: Erhalte zukünftige Updates kostenlos</string>
     <string name="register_username">Registriere deinen Benutzernamen</string>
     <string name="username_lock_warning">Nach der Registrierung kannst du deinen Benutzernamen nicht mehr ändern.</string>
@@ -175,8 +175,6 @@
     <string name="import_error">Fehler beim Importieren des Fortschritts. Die angegebene Zeichenkette könnte ungültig sein.</string>
     <string name="invalid_save_code">Ungültiger Speichercode. Bitte überprüfe deine Fortschrittszeichenkette.</string>
     <string name="enter_progress_code">Bitte gib zuerst einen Fortschrittscode ein!</string>
-    <string name="unlocked_features">Freigeschaltete Funktionen:</string>
-    <string name="no_features_unlocked">Noch keine speziellen Funktionen freigeschaltet.</string>
     <string name="progress_imported">Fortschritt erfolgreich importiert für %1$s!</string>
     
     <!-- Share Functionality -->
@@ -209,14 +207,6 @@
     <string name="puzzle_completed">Gut gemacht! Puzzle abgeschlossen.</string>
     <string name="level_finished">Level geschafft!</string>
     <string name="keep_practicing">Weiter üben!</string>
-    
-    <!-- Activity Names -->
-    <string name="activity_high_or_low">Hoch oder Tief</string>
-    <string name="activity_match_sounds">Klänge zuordnen</string>
-    <string name="activity_draw_melody">Melodie zeichnen</string>
-    <string name="activity_does_it_sound_right">Klingt das richtig?</string>
-    <string name="activity_memory_game">Memory-Spiel</string>
-    <string name="activity_chord_color">Akkord-Farb Zuordnung</string>
     
     <!-- Reset Confirmations -->
     <string name="reset_activity_confirm">Fortschritt für "%1$s" zurücksetzen?</string>

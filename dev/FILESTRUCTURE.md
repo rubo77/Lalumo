@@ -55,7 +55,7 @@ Die aktuelle pitches.js-Datei ist sehr umfangreich und enthält die Logik für a
     │   │   ├── index.js                  # Exportiert alle Hauptfunktionen
     │   │   ├── common.js                 # Gemeinsame Funktionen für alle Aktivitäten
     │   │   ├── 1_1_high_or_low.js            # Spezifische Logik für "High or Low" (1_1)
-    │   │   ├── 1_2_match_sounds.js           # Spezifische Logik für "Match Sounds" (1_2)
+    │   │   ├── 1_2_match_sounds.js           # Spezifische Logik für "Up or Down" (1_2)
     │   │   ├── 1_3_draw_melody.js            # Spezifische Logik für "Draw Melody" (1_3)
     │   │   ├── 1_4_sound_judgment.js         # Spezifische Logik für "Sound Judgment" (1_4)
     │   │   └── 1_5_memory_game.js            # Spezifische Logik für "Memory Game" (1_5)

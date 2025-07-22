@@ -105,15 +105,15 @@ test.describe('Lalumo Home Button Navigation', () => {
     }
   }
 
-  test('Should navigate to Match Sounds and back using home button', async ({ page }) => {
-    // Navigate to Match Sounds activity
+  test('Should navigate to Up or Down and back using home button', async ({ page }) => {
+    // Navigate to Up or Down activity
     await page.locator('.match-area').click();
     await page.waitForTimeout(500);
     
-    // Verify we're on the Match Sounds activity
+    // Verify we're on the Up or Down activity
     const matchActivity = page.locator('.activity-container').filter({ has: page.locator('[x-show="mode === \'1_2_pitches_match-sounds\'"]') });
     await expect(matchActivity).toBeVisible({ timeout: 2000 });
-    console.log('Successfully navigated to Match Sounds activity');
+    console.log('Successfully navigated to Up or Down activity');
     
     // Click the home button
     const homeButton = page.locator('.back-to-main').first();

@@ -5,17 +5,17 @@ const { test, expect } = require('@playwright/test');
 test.setTimeout(10000);
 
 /**
- * Test für die 1_2 Match Sounds Aktivität
+ * Test für die 1_2 Up or Down Aktivität
  * 
  * Ablauf des Tests:
  * 1. Zuerst muss der Benutzername akzeptiert werden (index.html:60-61)
  *    - Klickt auf "Generate Random Name" Button
  * 
- * 2. Dann auf "Match Sounds" klicken (index.html:122-124)
- *    - Navigiert zur Match Sounds Aktivität
+ * 2. Dann auf "Up or Down" klicken (index.html:122-124)
+ *    - Navigiert zur Up or Down Aktivität
  * 
  * 3. Überprüft, ob wir auf der richtigen Seite sind (index.html:375)
- *    - Prüft, ob der Match Sounds Container vorhanden ist
+ *    - Prüft, ob der Up or Down Container vorhanden ist
  * 
  * 4. Klickt auf den Play-Button (index.html:385-386)
  *    - Startet die Melodie
@@ -28,7 +28,7 @@ test.setTimeout(10000);
  * cd /var/www/Musici && \
  * npx playwright test tests/match-sounds.spec.js --timeout=10000 --headed
  */
-test.describe('Lalumo Match Sounds Activity', () => {
+test.describe('Lalumo Up or Down Activity', () => {
   // Globales Timeout von 10 Sekunden setzen, damit Tests nicht hängen bleiben
   test.setTimeout(10000);
 
@@ -68,7 +68,7 @@ test.describe('Lalumo Match Sounds Activity', () => {
     });
 
     // Log test start
-    console.log('Starting Match Sounds activity test');
+    console.log('Starting Up or Down activity test');
     
     // Explizit auf den Generate Random Name-Button klicken
     console.log('Clicking on Generate Random Name button');
@@ -96,18 +96,18 @@ test.describe('Lalumo Match Sounds Activity', () => {
     await page.click('text=Pitches');
     await page.waitForLoadState('networkidle');
     
-    // Navigate to 1_2 Match Sounds activity
-    console.log('Navigating to 1_2 Match Sounds activity');
-    await page.click('text=Match Sounds');
+    // Navigate to 1_2 Up or Down activity
+    console.log('Navigating to 1_2 Up or Down activity');
+    await page.click('text=Up or Down');
     await page.waitForLoadState('networkidle');
     
     // Verify we're on the correct page by checking for the match-sounds-container
     const matchSoundsContainer = await page.locator('.match-sounds-container').count();
     expect(matchSoundsContainer).toBeGreaterThan(0);
-    console.log('Confirmed on Match Sounds page with container present');
+    console.log('Confirmed on Up or Down page with container present');
     
     // Warte, bis die Match-Sounds-Seite vollständig geladen ist
-    console.log('Waiting for Match Sounds page to fully load');
+    console.log('Waiting for Up or Down page to fully load');
     await page.waitForLoadState('domcontentloaded');
     await page.waitForLoadState('networkidle');
     
@@ -192,6 +192,6 @@ test.describe('Lalumo Match Sounds Activity', () => {
     // Take a screenshot at the end
     await page.screenshot({ path: 'test-results/match-sounds-test.png' });
     
-    console.log('Match Sounds activity test completed');
+    console.log('Up or Down activity test completed');
   });
 });

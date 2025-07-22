@@ -136,9 +136,9 @@
     <string name="help_messages_on">Show Help Messages</string>
     
     <!-- Referrals Page Strings -->
-    <string name="unlock_chords">Unlock Special Activities</string>
-    <string name="referral_instruction">Share Lalumo with your friends to unlock special activities: Draw a Melody, Memory Game, and Chord Story Characters!</string>
-    <string name="referrals_premium">successful referrals: Unlock Special Activities</string>
+    <string name="unlock_chords">Unlock more activities</string>
+    <string name="referral_instruction">Share Lalumo with your friends to unlock more activities: Draw a Melody, Memory Game, and Chord Story Characters!</string>
+    <string name="referrals_premium">successful referrals: Unlock more activities</string>
     <string name="referrals_future">successful referrals: Get future updates for free</string>
     <string name="register_username">Register Your Username</string>
     <string name="username_lock_warning">After registering, you will no longer be able to change your username.</string>
@@ -195,8 +195,6 @@
     <string name="import_error">Error importing progress. The provided string may be invalid.</string>
     <string name="invalid_save_code">Invalid save code. Please check your progress string.</string>
     <string name="enter_progress_code">Please enter a progress code first!</string>
-    <string name="unlocked_features">Unlocked features:</string>
-    <string name="no_features_unlocked">No special features unlocked yet.</string>
     <string name="progress_imported">Progress imported successfully for %1$s!</string>
     
     <!-- Share Functionality -->
@@ -210,14 +208,6 @@
     <string name="puzzle_completed">Great work! Puzzle completed.</string>
     <string name="level_finished">Level finished!</string>
     <string name="keep_practicing">Keep practicing!</string>
-    
-    <!-- Activity Names -->
-    <string name="activity_high_or_low">High or Low</string>
-    <string name="activity_match_sounds">Match Sounds</string>
-    <string name="activity_draw_melody">Draw Melody</string>
-    <string name="activity_does_it_sound_right">Does It Sound Right?</string>
-    <string name="activity_memory_game">Memory Game</string>
-    <string name="activity_chord_color">Chord Color Matching</string>
     
     <!-- Reset Confirmations -->
     <string name="reset_activity_confirm">Reset progress for "%1$s"?</string>

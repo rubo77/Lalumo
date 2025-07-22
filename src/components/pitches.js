@@ -1444,7 +1444,7 @@ export function pitches() {
 
 
     /** *****************************************************
-     * 1_2 Match Sounds Activity
+     * 1_2 Up or Down Activity
      ******************************************************** */
     
     /**
@@ -1679,7 +1679,7 @@ export function pitches() {
       // Wenn ein neues Pattern freigeschaltet wurde und wir im Match-Sounds-Modus sind,
       // aktualisieren wir das Layout der Pitch-Cards
       if (unlocked && this.mode === '1_2_pitches_match-sounds') {
-        console.log('Pattern unlocked, updating Match Sounds layout');
+        console.log('Pattern unlocked, updating Up or Down layout');
         this.updateMatchSoundsPitchCardLayout();
       }
       
@@ -2406,18 +2406,51 @@ export function pitches() {
       
       // Redraw the melody line if we have a path
       if (this.drawPath && this.drawPath.length > 0) {
-        this.ctx.beginPath();
-        this.ctx.moveTo(this.drawPath[0].x, this.drawPath[0].y);
-        
-        for (let i = 1; i < this.drawPath.length; i++) {
-          if (this.drawPath[i]) {
-            this.ctx.lineTo(this.drawPath[i].x, this.drawPath[i].y);
-          }
+        // Determine how much of the path has been played
+        let playedPathLength = 0;
+        if (this.currentPlaybackIndex >= 0 && this.currentMelodyPoints && this.currentMelodyPoints.length > 0) {
+          // Calculate approximate path position based on current note
+          const totalNotes = this.currentMelodyPoints.length;
+          const playedRatio = (this.currentPlaybackIndex + 1) / totalNotes;
+          playedPathLength = Math.floor(this.drawPath.length * playedRatio);
         }
         
-        this.ctx.strokeStyle = '#3498db';
-        this.ctx.lineWidth = 4;
-        this.ctx.stroke();
+        // Draw the played part of the path (darker/played color)
+        if (playedPathLength > 0) {
+          this.ctx.beginPath();
+          this.ctx.moveTo(this.drawPath[0].x, this.drawPath[0].y);
+          
+          for (let i = 1; i < Math.min(playedPathLength, this.drawPath.length); i++) {
+            if (this.drawPath[i]) {
+              this.ctx.lineTo(this.drawPath[i].x, this.drawPath[i].y);
+            }
+          }
+          
+          this.ctx.strokeStyle = '#2c3e50'; // Darker blue for played part
+          this.ctx.lineWidth = 4;
+          this.ctx.stroke();
+        }
+        
+        // Draw the unplayed part of the path (lighter/unplayed color)
+        if (playedPathLength < this.drawPath.length) {
+          this.ctx.beginPath();
+          
+          // Start from the played position or beginning
+          const startIndex = Math.max(0, playedPathLength - 1);
+          if (startIndex < this.drawPath.length && this.drawPath[startIndex]) {
+            this.ctx.moveTo(this.drawPath[startIndex].x, this.drawPath[startIndex].y);
+          }
+          
+          for (let i = startIndex + 1; i < this.drawPath.length; i++) {
+            if (this.drawPath[i]) {
+              this.ctx.lineTo(this.drawPath[i].x, this.drawPath[i].y);
+            }
+          }
+          
+          this.ctx.strokeStyle = '#3498db'; // Original blue for unplayed part
+          this.ctx.lineWidth = 4;
+          this.ctx.stroke();
+        }
       }
       
       // Only draw note markers if we have them
@@ -3142,33 +3175,28 @@ export function pitches() {
       
       var sampledPoints = [];
       
-      // Immer den ersten Punkt nehmen
-      sampledPoints.push(this.drawPath[0]);
-      
-      // Für Melodien mit mehr als 2 Noten, die mittleren Punkte verteilen
-      if (sampleSize > 2) {
-        // Wir verteilen die mittleren Punkte zwischen dem ersten und letzten Punkt
-        // Wir nehmen sampleSize - 2 innere Punkte (da der erste und letzte Punkt fixiert sind)
-        const innerPoints = sampleSize - 2;
-        
-        // Berechne das Intervall für die inneren Punkte
-        // Wir nutzen nicht die volle Länge, sondern lassen etwas Platz am Ende
-        const availableLength = this.drawPath.length * 0.85;
-        const step = Math.floor(availableLength / (innerPoints + 1));
-        
-        for (let i = 1; i <= innerPoints; i++) {
-          const index = Math.min(i * step, this.drawPath.length - 2);
-          sampledPoints.push(this.drawPath[index]);
-          console.log('DRAW_PATH_DEBUG: index=', index, 'drawPath.length=', this.drawPath.length, 'point=', this.drawPath[index]);
+      // Gleichmäßige Verteilung über den gesamten Pfad
+      if (sampleSize === 1) {
+        // Nur ein Punkt: nimm den mittleren Punkt
+        const middleIndex = Math.floor(this.drawPath.length / 2);
+        sampledPoints.push(this.drawPath[middleIndex]);
+      } else {
+        // Mehrere Punkte: gleichmäßig über den gesamten Pfad verteilen
+        for (let i = 0; i < sampleSize; i++) {
+          // Berechne den Index gleichmäßig über den gesamten Pfad
+          const ratio = i / (sampleSize - 1); // 0 bis 1
+          const index = Math.floor(ratio * (this.drawPath.length - 1));
+          
+          if (this.drawPath[index]) {
+            sampledPoints.push(this.drawPath[index]);
+            console.log('DRAW_PATH_DEBUG: index=', index, 'ratio=', ratio.toFixed(3), 'drawPath.length=', this.drawPath.length, 'point=', this.drawPath[index]);
+          }
         }
       }
-      
-      // Immer den letzten Punkt nehmen
       
       // Filter out undefined points to prevent runtime errors
       sampledPoints = sampledPoints.filter(point => point && point.x !== undefined && point.y !== undefined);
       console.log('DRAW_PATH_DEBUG: sampledPoints after filter:', sampledPoints.length, 'points');
-      sampledPoints.push(this.drawPath[this.drawPath.length - 1]);
       
       // Y-Positionen auf Noten abbilden (höhere Position = höherer Ton)
       // Entferne die unterste Oktave aus dem Bereich
@@ -3202,6 +3230,9 @@ export function pitches() {
       // Store the sampled points for redrawing
       this.currentMelodyPoints = sampledPoints;
       
+      // Initialize playback index
+      this.currentPlaybackIndex = -1;
+      
       // Sequenz mit korrektem Timing abspielen und die gesampelten Punkte übergeben
       this.playDrawnNoteSequence(
         sequence.map(note => note.toLowerCase()), 
@@ -3222,9 +3253,10 @@ export function pitches() {
      */
     playDrawnNoteSequence(notes, index = 0, sampledPoints = null) {
       if (index >= notes.length) {
-        // Clear active highlight when playback is complete
+        // Clear active highlight and reset playback index when playback is complete
         if (this.activeNoteHighlight) {
           this.activeNoteHighlight = null;
+          this.currentPlaybackIndex = -1;
           this.redrawMelody();
         }
         return;
@@ -3233,12 +3265,13 @@ export function pitches() {
       const note = notes[index];
       
       try {
-        // Update active note highlight
+        // Update active note highlight and current playback index
         this.activeNoteHighlight = sampledPoints && sampledPoints[index] 
           ? { x: sampledPoints[index].x, y: sampledPoints[index].y }
           : null;
+        this.currentPlaybackIndex = index;
           
-        // Redraw with the new active note
+        // Redraw with the new active note and path coloring
         this.redrawMelody();
         
         // Play the note through the central audio engine
@@ -5002,7 +5035,7 @@ export function pitches() {
      * based on the unlocked patterns status.
      */
     updateMatchSoundsPitchCardLayout() {
-      console.log('Updating Match Sounds pitch card layout based on unlocked patterns');
+      console.log('Updating Up or Down pitch card layout based on unlocked patterns');
       
       // Identify the Match-Sounds activity container
       const matchingActivity = document.querySelector('[x-show="mode === \'1_2_pitches_match-sounds\'"]');
@@ -5011,7 +5044,7 @@ export function pitches() {
       // Find the container that holds the pitch cards in a grid
       const gridContainer = matchingActivity.querySelector('.match-sounds-container');
       if (!gridContainer) {
-        console.log('No match-sounds-container found in match sounds activity');
+        console.log('No match-sounds-container found in Up or Down activity');
         return;
       }
       

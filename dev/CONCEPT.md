@@ -17,7 +17,7 @@ The app playfully teaches preschool children a basic understanding of music – 
 - Pitches Kapitel (1_pitches):
 
  - High or Low: (1_1_pitches_high_or_low)
- - Match Sounds: (1_2_pitches_match-sounds)
+ - Up or Down: (1_2_pitches_match-sounds)
  - Draw a Melody: (1_3_pitches_draw-melody)
  - "Does It Sound Right?": (1_4_pitches_does-it-sound-right)
  - Memory Game: (1_5_pitches_memory-game)
@@ -89,7 +89,7 @@ Tones going up, down, waves, jumps: Children recognize tone movements and assign
     Monkey (swinging) | Buffalo
     Deer (alert, upright) | Ox
     Owl (flying) | Whale
-[x] **1.2. "Match Sounds" to Images and listening to Pitch Movements:**
+[x] **1.2. "Up or Down" to Images and listening to Pitch Movements:**
   Children listen to short melodic sequences where tones move upwards, downwards, in waves, or make jumps. Each movement is represented visually (a rocket for up, a slide for down, waves for undulating patterns, a frog or spring for jumps). when play is pressed, the child must select the one that matches the direction or character of the melody they just heard. The progress is saved. when the child has selected the correct image 10 times, the next image is unlocked (first waves, then frog).
 [x] **1.3. "Draw a Melody":**
   Children can “draw” a melody by dragging their finger or mouse, creating a visual curve. The app plays back a melody that follows the drawn curve, reinforcing the connection between visual movement and pitch. the progress is saved.
