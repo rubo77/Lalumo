@@ -2566,6 +2566,33 @@ export function pitches() {
       this.ctx.strokeStyle = this.drawMelodyColors.staticPath;
       this.ctx.lineWidth = 4;
       this.ctx.stroke();
+      
+      // Also redraw the note points on top of the line
+      if (this.currentMelodyPoints && this.currentMelodyPoints.length > 0) {
+        const canvas = document.querySelector('.drawing-canvas');
+        if (canvas) {
+          const notes = ['C4', 'D4', 'E4', 'F4', 'G4', 'A4', 'B4', 'C5', 'D5', 'E5', 'F5', 'G5'];
+          
+          this.currentMelodyPoints.forEach((point, index) => {
+            if (!point) return;
+            
+            // Draw the note markers (no active highlighting for completed path)
+            this.ctx.fillStyle = this.drawMelodyColors.noteMarker;
+            this.ctx.beginPath();
+            this.ctx.arc(point.x, point.y, 6, 0, Math.PI * 2);
+            this.ctx.fill();
+            
+            // Add note labels
+            const relativeHeight = 1 - (point.y / canvas.height);
+            const noteIndex = Math.min(Math.floor(relativeHeight * notes.length), notes.length - 1);
+            const noteName = notes[noteIndex];
+            
+            this.ctx.fillStyle = this.drawMelodyColors.noteLabel;
+            this.ctx.font = '10px Arial';
+            this.ctx.fillText(noteName, point.x + 8, point.y - 8);
+          });
+        }
+      }
     },
     
     /**

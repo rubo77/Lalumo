@@ -116,7 +116,7 @@ unter chrome auf dem handy android 15:
     - in preferences ein kleines mascot bild neben die einstellung zum hiden
     - hilfstexte selbst einsprechen oder einmal generieren lassen als mp3
 
-- reachable via a hash-anchor-link: make this link go directly to the 1_1_pitches_high_or_low activity: https://lalumo.z11.de/#1_pitches-1_1_pitches_high_or_low
+- there is already the hash redirect, wherrn coming from a referral, erweitere so dass die seite reachable wird via a hash-anchor-link: make this link go directly to the 1_1_pitches_high_or_low activity: https://lalumo.z11.de/#1_1
 
 - all chapters and activities are included in the sitemap. also, if you select another activity in the nav, the hash tag should change, so you can bookmark them
 
@@ -168,11 +168,17 @@ reset-button:
 - der reset button in der navi muss auch den hintergrund und die anzeige unten triggern, dass die refresht wird, im moment wird der dann noch einfach weiss
 
 1_3 Draw a Melody:
+- die notenpunkte liegen jetzt zunter der gezeichneten linie, die müssen auch erneut gezeichnet werden, wenn die linie neu gezeichnet wird
 - # bereit zur veröffentlichung
 - Zeichnen geht nicht mehr auf den Handy, man schiebt den bildschirm hin und her, anstatt zu malen. könnte helfen: overflow hiddern
 - play sound and rainbow exact after the painted melody is played (in case it is a longer melody)
 - wenn der zeichenpfad spitze ecken hat, dann sollen noten, die nahe der spitze sind ganz in die spitze rutschen
 - prevent level progression while current melody is still playing: wenn man noch zeichnet, whaehrend der noch spielt, dann kann schon auf den nächsten level wechseln (von 3 auf 4) und es werden 4 noten auf die linie gezeichnet, obwohl nur 3 waren, und drei davon richtig waren. das muss nicht passieren.
+- dies kommt zu früh:
+  // TODO: move translation to strings.xml
+          feedback = isGerman ? 
+            'Fantastisch! Du hast alle Melodien gemeistert!' : 
+            'Amazing! You\'ve mastered all the melodies!';
 
 1_4 Does It Sound Right:
 - alle Melodien in einer Reihe mischen. Und nacheinander abspielen, dann erst wenn alle durch sind die erste wieder
@@ -216,4 +222,4 @@ reset-button:
 
 # most important
 - Alle Buttons für zwei Sekunden disable nach Klick
-- 
+- Force portrait mode

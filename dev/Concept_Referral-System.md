@@ -167,7 +167,18 @@ Die PHP-Dateien (`referral.php`, `admin.php`) und die Datenbankdatei müssen auf
 
 
 ----
+LALUMO ERROR: [REFERRAL] Error checking if username exists: SyntaxError: JSON.parse: unexpected character at line 1 column 1 of the JSON data debug.js:48:27
+LALUMO ERROR: [REFERRAL] Error checking if username exists: SyntaxError: JSON.parse: unexpected character at line 1 column 1 of the JSON data debug.js:48:27
+XHRGET
+https://lalumo.eu/app/referral.php?check_existing=1&username=GentleElephant99
+[HTTP/2 404  804ms]
 
-ergänze im konzept die häkchen bei den punkten die schon erledigt sind uund ergänue [ ] häkchen, was noch nciht erledigt ist. passe das konzept ggf an, so dass es einer dokumentation wird, wie das referral system funktioniert.
+XHRGET
+https://lalumo.eu/app/referral.php?check_existing=1&username=GentleElephant99
+[HTTP/2 404  706ms]
 
-dann mach weiter im plan
+LALUMO ERROR: [REFERRAL] Error checking if username exists: SyntaxError: JSON.parse: unexpected character at line 1 column 1 of the JSON data debug.js:48:27
+LALUMO ERROR: [REFERRAL] Error checking if username exists: SyntaxError: JSON.parse: unexpected character at line 1 column 1 of the JSON data debug.js:48:27
+XHRGET
+https://lalumo.eu/api/referral.php?username=GentleElephant99
+[HTTP/2 200  537ms]
