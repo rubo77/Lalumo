@@ -1128,8 +1128,13 @@ export function pitches() {
         
         console.log(`Playing random ${answer} tone (button ${answer === 'low' ? 'left' : 'right'}):`, randomTone);
         
-        // Play the random tone without checking the answer
-        audioEngine.playNote(randomTone.toLowerCase(), 0.3);
+        // Select random instrument for free mode too
+        const availableInstruments = ['default', 'piano', 'violin', 'flute', 'brass'];
+        const randomInstrument = availableInstruments[Math.floor(Math.random() * availableInstruments.length)];
+        debugLog(['HIGH_OR_LOW', 'FREE_MODE', 'INSTRUMENT'], `Selected random instrument for free mode: ${randomInstrument}`);
+        
+        // Play the random tone with random instrument without checking the answer
+        audioEngine.playNote(randomTone.toLowerCase(), 0.3, undefined, 0.8, randomInstrument);
         
         return; // Important: exit without checking the answer
       }
@@ -1347,11 +1352,18 @@ export function pitches() {
       
       // Based on the current activity mode, handle appropriately
       if (this.mode === '1_4_pitches_does-it-sound-right') {
-        // For Sound Judgment activity
+        // For Sound Judgment activity in free mode, play melodies from free shuffle
         if (!this.gameMode) {
-          console.log('SOUND JUDGMENT: In practice mode, need to start game');
-          this.startSoundJudgmentGame();
-          return; // startSoundJudgmentGame will handle playing the melody
+          console.log('SOUND JUDGMENT: In free mode, playing from free shuffle');
+          // Generate melody using free mode shuffle
+          if (generateNew) {
+            this.generateSoundHighOrLowMelodyFreeMode();
+          }
+          // Play the melody without switching to game mode
+          if (this.currentSequence && this.currentSequence.length > 0) {
+            this.playMelodySequence(this.currentSequence, 'sound-judgment', this.currentMelodyId);
+          }
+          return;
         }
       }
       
@@ -4097,6 +4109,11 @@ export function pitches() {
       this.correctAnswer = null;
       this.soundJudgmentCorrectStreak = 0; // Neue Variable für die aktuelle Erfolgsserie
       
+      // Initialize separate melody shuffles for free and game mode
+      this.shuffleAllMelodies('free');
+      this.shuffleAllMelodies('game');
+      debugLog(['SOUND_JUDGMENT', 'SETUP'], 'Initialized separate shuffles for free and game mode');
+      
       // Select random animal images for this round
       this.selectRandomAnimalImages();
       
@@ -4207,12 +4224,10 @@ export function pitches() {
       // Generate a melody without wrong notes for practice mode
       // Similar to generateSoundHighOrLowMelody but without wrong notes
       
-      // Get a random melody from our known melodies
-      const availableMelodyIds = Object.keys(this.knownMelodies);
-      const randomIndex = Math.floor(Math.random() * availableMelodyIds.length);
-      const selectedMelodyId = availableMelodyIds[randomIndex];
+      // Use free mode shuffle for practice melodies too
+      const selectedMelodyId = this.getNextShuffledMelody('free');
       
-      console.log(`SOUND JUDGMENT PRACTICE: Selected melody ${selectedMelodyId}`);
+      debugLog(['SOUND_JUDGMENT', 'PRACTICE'], `Selected practice melody from free shuffle: ${selectedMelodyId}`);
       
       // Get the notes for this melody
       const melodyNotes = this.knownMelodies[selectedMelodyId].notes;
@@ -4318,39 +4333,109 @@ export function pitches() {
     },
     
     /**
-     * Shuffles all melodies for sequential playback in 1_4 activity
-     * Creates a randomized order that cycles through all melodies before repeating
+     * Generates a melody for free mode in "Does It Sound Right?" activity
+     * Always generates correct melodies (no wrong notes) and uses free mode shuffle
      */
-    shuffleAllMelodies() {
+    generateSoundHighOrLowMelodyFreeMode() {
+      // Get all melody keys
       const melodyKeys = Object.keys(this.knownMelodies);
-      debugLog(['SOUND_JUDGMENT', 'SHUFFLE'], `Shuffling ${melodyKeys.length} melodies`);
-      
-      // Fisher-Yates shuffle algorithm
-      this.shuffledMelodyKeys = [...melodyKeys];
-      for (let i = this.shuffledMelodyKeys.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [this.shuffledMelodyKeys[i], this.shuffledMelodyKeys[j]] = [this.shuffledMelodyKeys[j], this.shuffledMelodyKeys[i]];
+      if (melodyKeys.length === 0) {
+        console.error('No melodies available for sound HighOrLow free mode');
+        return false;
       }
       
-      this.currentShuffledIndex = 0;
-      debugLog(['SOUND_JUDGMENT', 'SHUFFLE'], `Shuffled order: ${this.shuffledMelodyKeys.join(', ')}`);
+      // Always correct melodies in free mode
+      this.melodyHasWrongNote = false;
+      
+      // Use free mode shuffle
+      const randomMelodyKey = this.getNextShuffledMelody('free');
+      debugLog(['SOUND_JUDGMENT', 'FREE_MODE'], `Selected melody from free shuffle: ${randomMelodyKey}`);
+      
+      const selectedMelody = this.knownMelodies[randomMelodyKey];
+      
+      // Store the melody ID for later reference
+      this.currentMelodyId = randomMelodyKey;
+      
+      // Get the current language
+      const language = localStorage.getItem('lalumo_language') === 'german' ? 'de' : 'en';
+      
+      // Set the melody name in the appropriate language
+      this.currentMelodyName = selectedMelody[language] || selectedMelody.en;
+      console.log(`FREE_MODE_MELODY: Set currentMelodyName to "${this.currentMelodyName}" for melody ID "${randomMelodyKey}"`);
+      
+      // Update UI immediately after setting melody name
+      document.querySelectorAll('.sound-status').forEach(el => {
+        el.textContent = this.currentMelodyName;
+      });
+      
+      // Use the original melody notes (no modifications for free mode)
+      this.currentSequence = [...selectedMelody.notes];
+      
+      console.log(`FREE_MODE: Generated correct melody "${this.currentMelodyName}" with ${this.currentSequence.length} notes`);
+      return true;
+    },
+    
+    /**
+     * Shuffles all melodies for sequential playback in 1_4 activity
+     * Creates separate randomized orders for free mode and game mode
+     * @param {string} mode - 'free' or 'game' to specify which shuffle to create
+     */
+    shuffleAllMelodies(mode = 'game') {
+      const melodyKeys = Object.keys(this.knownMelodies);
+      debugLog(['SOUND_JUDGMENT', 'SHUFFLE'], `Shuffling ${melodyKeys.length} melodies for ${mode} mode`);
+      
+      // Fisher-Yates shuffle algorithm
+      const shuffledKeys = [...melodyKeys];
+      for (let i = shuffledKeys.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffledKeys[i], shuffledKeys[j]] = [shuffledKeys[j], shuffledKeys[i]];
+      }
+      
+      // Store separate shuffles for free and game mode
+      if (mode === 'free') {
+        this.shuffledMelodyKeysFree = shuffledKeys;
+        this.currentShuffledIndexFree = 0;
+        debugLog(['SOUND_JUDGMENT', 'SHUFFLE'], `Free mode shuffled order: ${shuffledKeys.join(', ')}`);
+      } else {
+        this.shuffledMelodyKeysGame = shuffledKeys;
+        this.currentShuffledIndexGame = 0;
+        debugLog(['SOUND_JUDGMENT', 'SHUFFLE'], `Game mode shuffled order: ${shuffledKeys.join(', ')}`);
+      }
     },
     
     /**
      * Gets the next melody from the shuffled list
      * Automatically reshuffles when reaching the end of the list
+     * @param {string} mode - 'free' or 'game' to specify which shuffle to use
      * @returns {string} The melody key to use
      */
-    getNextShuffledMelody() {
+    getNextShuffledMelody(mode = 'game') {
+      // Determine which shuffle arrays to use based on mode
+      const isGameMode = mode === 'game';
+      
+      // Get current state
+      let shuffledKeys = isGameMode ? this.shuffledMelodyKeysGame : this.shuffledMelodyKeysFree;
+      let currentIndex = isGameMode ? this.currentShuffledIndexGame : this.currentShuffledIndexFree;
+      
       // Initialize shuffle if not done yet or if we've reached the end
-      if (this.shuffledMelodyKeys.length === 0 || this.currentShuffledIndex >= this.shuffledMelodyKeys.length) {
-        this.shuffleAllMelodies();
+      if (!shuffledKeys || shuffledKeys.length === 0 || currentIndex >= shuffledKeys.length) {
+        this.shuffleAllMelodies(mode);
+        // Get the updated arrays after shuffling
+        shuffledKeys = isGameMode ? this.shuffledMelodyKeysGame : this.shuffledMelodyKeysFree;
+        currentIndex = isGameMode ? this.currentShuffledIndexGame : this.currentShuffledIndexFree;
       }
       
-      const melodyKey = this.shuffledMelodyKeys[this.currentShuffledIndex];
-      this.currentShuffledIndex++;
+      // Get the melody at current index
+      const melodyKey = shuffledKeys[currentIndex];
       
-      debugLog(['SOUND_JUDGMENT', 'SHUFFLE'], `Selected melody ${this.currentShuffledIndex}/${this.shuffledMelodyKeys.length}: ${melodyKey}`);
+      // Increment the appropriate index
+      if (isGameMode) {
+        this.currentShuffledIndexGame++;
+      } else {
+        this.currentShuffledIndexFree++;
+      }
+      
+      debugLog(['SOUND_JUDGMENT', 'SHUFFLE'], `Selected melody ${currentIndex + 1}/${shuffledKeys.length} (${mode} mode): ${melodyKey}`);
       
       return melodyKey;
     },
@@ -4391,8 +4476,14 @@ export function pitches() {
       this.melodyHasWrongNote = Math.random() < 0.5;
       
       // Use shuffled sequential melody selection instead of random
-      const randomMelodyKey = this.getNextShuffledMelody();
-      debugLog(['SOUND_JUDGMENT', 'MELODY_SELECTION'], `Selected shuffled melody: ${randomMelodyKey}`);
+      // Determine mode: if gameMode is false, we're in free mode
+      const mode = this.gameMode ? 'game' : 'free';
+      debugLog(['SOUND_JUDGMENT', 'MODE_DEBUG'], `gameMode: ${this.gameMode}, detected mode: ${mode}`);
+      debugLog(['SOUND_JUDGMENT', 'SHUFFLE_STATE'], `Free shuffle: ${this.shuffledMelodyKeysFree?.length || 0} melodies, index: ${this.currentShuffledIndexFree || 0}`);
+      debugLog(['SOUND_JUDGMENT', 'SHUFFLE_STATE'], `Game shuffle: ${this.shuffledMelodyKeysGame?.length || 0} melodies, index: ${this.currentShuffledIndexGame || 0}`);
+      
+      const randomMelodyKey = this.getNextShuffledMelody(mode);
+      debugLog(['SOUND_JUDGMENT', 'MELODY_SELECTION'], `Selected shuffled melody for ${mode} mode: ${randomMelodyKey}`);
       
       // Note: No need to check for duplicates since shuffling ensures variety
       
