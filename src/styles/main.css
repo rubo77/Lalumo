@@ -1634,7 +1634,9 @@ section h2 {
 
 /* Specific positioning for 2_2 stable/unstable progress box */
 .progress_2_2 {
-  bottom: -2rem;
+  position: fixed;
+  bottom: -12px;
+  padding-bottom: 19px;
 }
 
 .melody-name {

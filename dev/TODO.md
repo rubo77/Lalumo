@@ -221,4 +221,18 @@ reset-button:
 - "Reset current" Button soll nur sichtbar sein, wenn der Progress der aktuellen activity größer 0
 
 # most important
+4 aufgaben:
+
+
 - Force portrait mode
+
+
+1_1 "High or Low?" (1_1_pitches_high_or_low) 
+- jedes mal ein zufälliges Verschiedenes Instrument zum abspielen wählen
+
+
+1_4 Does It Sound Right:
+- alle Melodien in einer Reihe mischen. Und nacheinander abspielen, dann erst wenn alle durch sind die erste wieder
+
+2_2_chords_stable_unstable:
+  - Du info Text Box unten weiter runter, wenn genug Platz ist. 
