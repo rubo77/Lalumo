@@ -43,6 +43,11 @@ export function reset_1_4_SoundJudgment_Progress(component) {
   component.currentMelodyName = '';
   component.currentMelodyId = null;
   
+  // Reset shuffled melody system
+  component.shuffledMelodyKeys = [];
+  component.currentShuffledIndex = 0;
+  debugLog(['RESET_SOUND_JUDGMENT', 'SHUFFLE'], 'Reset shuffled melody system');
+  
   // Clear localStorage
   localStorage.removeItem('lalumo_soundJudgmentLevel');
   localStorage.removeItem('lalumo_soundJudgmentStreak');

@@ -65,6 +65,10 @@ export function pitches() {
     correctAnswer: null,
     melodyHasWrongNote: false, // For 'does-it-sound-right' activity - whether current melody has wrong note
     currentMelodyName: '', // Display name of currently playing melody
+    
+    // 1_4 Does It Sound Right - Shuffled melody system
+    shuffledMelodyKeys: [], // Array of shuffled melody keys for sequential playback
+    currentShuffledIndex: 0, // Current position in shuffled array
     choices: [],
     feedback: '',
     showFeedback: false, // Controls visibility of the unified feedback message
@@ -4292,6 +4296,44 @@ export function pitches() {
     },
     
     /**
+     * Shuffles all melodies for sequential playback in 1_4 activity
+     * Creates a randomized order that cycles through all melodies before repeating
+     */
+    shuffleAllMelodies() {
+      const melodyKeys = Object.keys(this.knownMelodies);
+      debugLog(['SOUND_JUDGMENT', 'SHUFFLE'], `Shuffling ${melodyKeys.length} melodies`);
+      
+      // Fisher-Yates shuffle algorithm
+      this.shuffledMelodyKeys = [...melodyKeys];
+      for (let i = this.shuffledMelodyKeys.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [this.shuffledMelodyKeys[i], this.shuffledMelodyKeys[j]] = [this.shuffledMelodyKeys[j], this.shuffledMelodyKeys[i]];
+      }
+      
+      this.currentShuffledIndex = 0;
+      debugLog(['SOUND_JUDGMENT', 'SHUFFLE'], `Shuffled order: ${this.shuffledMelodyKeys.join(', ')}`);
+    },
+    
+    /**
+     * Gets the next melody from the shuffled list
+     * Automatically reshuffles when reaching the end of the list
+     * @returns {string} The melody key to use
+     */
+    getNextShuffledMelody() {
+      // Initialize shuffle if not done yet or if we've reached the end
+      if (this.shuffledMelodyKeys.length === 0 || this.currentShuffledIndex >= this.shuffledMelodyKeys.length) {
+        this.shuffleAllMelodies();
+      }
+      
+      const melodyKey = this.shuffledMelodyKeys[this.currentShuffledIndex];
+      this.currentShuffledIndex++;
+      
+      debugLog(['SOUND_JUDGMENT', 'SHUFFLE'], `Selected melody ${this.currentShuffledIndex}/${this.shuffledMelodyKeys.length}: ${melodyKey}`);
+      
+      return melodyKey;
+    },
+    
+    /**
      * Generates a melody for the "Does It Sound Right?" activity without playing it
      * This separates the melody generation logic from playback
      * Implements progressive difficulty levels:
@@ -4326,22 +4368,11 @@ export function pitches() {
       // Randomly decide if the melody should have a wrong note (50% chance)
       this.melodyHasWrongNote = Math.random() < 0.5;
       
-      // Wähle eine Melodie aus, die nicht dieselbe wie die vorherige ist
-      let randomMelodyKey;
-      let attempts = 0;
-      const maxAttempts = 10; // Sicherheitsgrenze, um unendliche Schleifen zu vermeiden
+      // Use shuffled sequential melody selection instead of random
+      const randomMelodyKey = this.getNextShuffledMelody();
+      debugLog(['SOUND_JUDGMENT', 'MELODY_SELECTION'], `Selected shuffled melody: ${randomMelodyKey}`);
       
-      do {
-        randomMelodyKey = melodyKeys[Math.floor(Math.random() * melodyKeys.length)];
-        attempts++;
-      } while (randomMelodyKey === this.currentMelodyId && melodyKeys.length > 1 && attempts < maxAttempts);
-      
-      if (randomMelodyKey === this.currentMelodyId && melodyKeys.length > 1) {
-        console.warn('Couldn\'t find a different melody after max attempts, using a different one anyway');
-        // Explizit eine andere Melodie wählen
-        const currentIndex = melodyKeys.indexOf(this.currentMelodyId);
-        randomMelodyKey = melodyKeys[(currentIndex + 1) % melodyKeys.length];
-      }
+      // Note: No need to check for duplicates since shuffling ensures variety
       
       const selectedMelody = this.knownMelodies[randomMelodyKey];
       
