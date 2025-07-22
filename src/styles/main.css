@@ -2217,13 +2217,13 @@ section h2 {
   max-width: 90%;
   height: 120px;
   margin: 1.5rem auto;
+  margin-top: 119px;
   position: relative;
   background-color: antiquewhite;
   padding: 21px;
   border:#333;
   border-radius:22px;
   box-shadow:0 5px 6px rgba(0, 0, 0, 0.2);
-  
 }
 
 .piano-key {
