@@ -78,6 +78,27 @@ export function pitches() {
       seenActivityMessages: {},   // Track which activities have shown the message
     },
     currentHighlightedNote: null, // For highlighting piano keys during playback
+    
+    // Central color configuration for Draw Melody (1_3) visual elements
+    drawMelodyColors: {
+      // Path/line colors
+      staticPath: '#3498db',           // Blue for static completed path
+      unplayedPath: '#2c3e50',         // Darker Blue for unplayed part during playback
+      playedPath: '#3498db',           // blue for played part during playback
+      currentDrawing: '#3498db',       // Blue stroke for current drawing
+      previousPath: 'rgba(52, 152, 219, 0.3)', // Semi-transparent blue for previous path
+      
+      // Note marker colors
+      noteMarker: '#e74c3c',          // Red dots for note positions
+      activeNoteMarker: '#ff6b6b',    // Lighter red for currently playing note
+      sampledNoteMarker: '#e74c3c',   // Red dots for sampled note positions
+      
+      // Text and labels
+      noteLabel: '#333',              // Dark gray for note labels (C4, D4, etc.)
+      
+      // Guide lines
+      guideLines: 'rgba(200, 180, 140, 0.3)', // Semi-transparent brown for guide lines
+    },
     longPressTimer: null,
     longPressThreshold: 800, // milliseconds for long press
     lastSelectedPatternType: null, // Speichert den letzten ausgewählten Pattern-Typ
@@ -2389,6 +2410,45 @@ export function pitches() {
     },
     
     /**
+     * Sample points evenly across a path
+     * @param {Array} path - The path to sample from
+     * @param {number} sampleSize - Number of points to sample
+     * @returns {Array} Array of sampled points with their original indices
+     */
+    samplePointsFromPath(path, sampleSize) {
+      if (!path || path.length === 0 || sampleSize <= 0) {
+        return [];
+      }
+      
+      const sampledPoints = [];
+      
+      if (sampleSize === 1) {
+        // Nur ein Punkt: nimm den mittleren Punkt
+        const middleIndex = Math.floor(path.length / 2);
+        sampledPoints.push({
+          point: path[middleIndex],
+          originalIndex: middleIndex
+        });
+      } else {
+        // Mehrere Punkte: gleichmäßig über den gesamten Pfad verteilen
+        for (let i = 0; i < sampleSize; i++) {
+          // Berechne den Index gleichmäßig über den gesamten Pfad
+          const ratio = i / (sampleSize - 1); // 0 bis 1
+          const index = Math.floor(ratio * (path.length - 1));
+          
+          if (path[index]) {
+            sampledPoints.push({
+              point: path[index],
+              originalIndex: index
+            });
+          }
+        }
+      }
+      
+      return sampledPoints.filter(item => item.point && item.point.x !== undefined && item.point.y !== undefined);
+    },
+    
+    /**
      * Redraw the current melody without the active note highlight
      * @activity 1_3_draw_melody
      */
@@ -2406,13 +2466,16 @@ export function pitches() {
       
       // Redraw the melody line if we have a path
       if (this.drawPath && this.drawPath.length > 0) {
-        // Determine how much of the path has been played
+        // Determine how much of the path has been played using the same sampling logic
         let playedPathLength = 0;
         if (this.currentPlaybackIndex >= 0 && this.currentMelodyPoints && this.currentMelodyPoints.length > 0) {
-          // Calculate approximate path position based on current note
-          const totalNotes = this.currentMelodyPoints.length;
-          const playedRatio = (this.currentPlaybackIndex + 1) / totalNotes;
-          playedPathLength = Math.floor(this.drawPath.length * playedRatio);
+          // Use the same sampling function to get the exact indices
+          const sampledIndices = this.samplePointsFromPath(this.drawPath, this.currentMelodyPoints.length);
+          
+          if (this.currentPlaybackIndex < sampledIndices.length) {
+            // Get the exact index of the currently playing note
+            playedPathLength = sampledIndices[this.currentPlaybackIndex].originalIndex + 1;
+          }
         }
         
         // Draw the played part of the path (darker/played color)
@@ -2426,7 +2489,7 @@ export function pitches() {
             }
           }
           
-          this.ctx.strokeStyle = '#2c3e50'; // Darker blue for played part
+          this.ctx.strokeStyle = this.drawMelodyColors.playedPath;
           this.ctx.lineWidth = 4;
           this.ctx.stroke();
         }
@@ -2447,7 +2510,7 @@ export function pitches() {
             }
           }
           
-          this.ctx.strokeStyle = '#3498db'; // Original blue for unplayed part
+          this.ctx.strokeStyle = this.drawMelodyColors.unplayedPath;
           this.ctx.lineWidth = 4;
           this.ctx.stroke();
         }
@@ -2466,7 +2529,7 @@ export function pitches() {
                           this.activeNoteHighlight.y === point.y;
           
           // Draw the note markers - use lighter red for active note
-          this.ctx.fillStyle = isActive ? '#ff6b6b' : '#e74c3c';
+          this.ctx.fillStyle = isActive ? this.drawMelodyColors.activeNoteMarker : this.drawMelodyColors.noteMarker;
           this.ctx.beginPath();
           this.ctx.arc(point.x, point.y, 6, 0, Math.PI * 2);
           this.ctx.fill();
@@ -2476,11 +2539,33 @@ export function pitches() {
           const noteIndex = Math.min(Math.floor(relativeHeight * notes.length), notes.length - 1);
           const noteName = notes[noteIndex];
           
-          this.ctx.fillStyle = '#333';
+          this.ctx.fillStyle = this.drawMelodyColors.noteLabel;
           this.ctx.font = '10px Arial';
           this.ctx.fillText(noteName, point.x + 8, point.y - 8);
         });
       }
+    },
+    
+    /**
+     * Redraw the completed path with static color (used after drawing is finished)
+     * @activity 1_3_draw_melody
+     */
+    redrawCompletedPath() {
+      if (!this.ctx || !this.drawPath || this.drawPath.length === 0) return;
+      
+      // Clear and redraw the path with the static unplayed color
+      this.ctx.beginPath();
+      this.ctx.moveTo(this.drawPath[0].x, this.drawPath[0].y);
+      
+      for (let i = 1; i < this.drawPath.length; i++) {
+        if (this.drawPath[i]) {
+          this.ctx.lineTo(this.drawPath[i].x, this.drawPath[i].y);
+        }
+      }
+      
+      this.ctx.strokeStyle = this.drawMelodyColors.staticPath;
+      this.ctx.lineWidth = 4;
+      this.ctx.stroke();
     },
     
     /**
@@ -2530,7 +2615,7 @@ export function pitches() {
       const noteCount = 12;
       
       // Draw subtle horizontal lines for each note position
-      ctx.strokeStyle = 'rgba(200, 180, 140, 0.3)';
+      ctx.strokeStyle = this.drawMelodyColors.guideLines;
       ctx.lineWidth = 0.5;
       
       for (let i = 0; i < noteCount; i++) {
@@ -3000,7 +3085,7 @@ export function pitches() {
         this.ctx.save(); // Save the current context state
         
         // Set semi-transparent style for previous path
-        this.ctx.strokeStyle = 'rgba(52, 152, 219, 0.3)'; // Semi-transparent blue
+        this.ctx.strokeStyle = this.drawMelodyColors.previousPath;
         this.ctx.lineWidth = 4;
         this.ctx.lineCap = 'round';
         this.ctx.lineJoin = 'round';
@@ -3023,7 +3108,7 @@ export function pitches() {
       this.drawPath = [];
       
       // Set style for new drawing
-      this.ctx.strokeStyle = '#3498db'; // Blauer Strich
+      this.ctx.strokeStyle = this.drawMelodyColors.currentDrawing;
       this.ctx.lineWidth = 4;
       this.ctx.lineCap = 'round';
       this.ctx.lineJoin = 'round';
@@ -3129,6 +3214,9 @@ export function pitches() {
         this.ctx.closePath();
       }
       
+      // Redraw the completed path with the correct static color
+      this.redrawCompletedPath();
+      
       // Melodie aus der Zeichnung generieren und abspielen
       this.playDrawnMelody();
       
@@ -3173,30 +3261,14 @@ export function pitches() {
         console.log(`MELODY_NOTES: Using ${sampleSize} notes based on level ${currentLevel} in challenge mode`);
       }
       
-      var sampledPoints = [];
+      // Use the shared sampling function for consistent point distribution
+      const sampledData = this.samplePointsFromPath(this.drawPath, sampleSize);
+      const sampledPoints = sampledData.map(item => {
+        console.log('DRAW_PATH_DEBUG: index=', item.originalIndex, 'drawPath.length=', this.drawPath.length, 'point=', item.point);
+        return item.point;
+      });
       
-      // Gleichmäßige Verteilung über den gesamten Pfad
-      if (sampleSize === 1) {
-        // Nur ein Punkt: nimm den mittleren Punkt
-        const middleIndex = Math.floor(this.drawPath.length / 2);
-        sampledPoints.push(this.drawPath[middleIndex]);
-      } else {
-        // Mehrere Punkte: gleichmäßig über den gesamten Pfad verteilen
-        for (let i = 0; i < sampleSize; i++) {
-          // Berechne den Index gleichmäßig über den gesamten Pfad
-          const ratio = i / (sampleSize - 1); // 0 bis 1
-          const index = Math.floor(ratio * (this.drawPath.length - 1));
-          
-          if (this.drawPath[index]) {
-            sampledPoints.push(this.drawPath[index]);
-            console.log('DRAW_PATH_DEBUG: index=', index, 'ratio=', ratio.toFixed(3), 'drawPath.length=', this.drawPath.length, 'point=', this.drawPath[index]);
-          }
-        }
-      }
-      
-      // Filter out undefined points to prevent runtime errors
-      sampledPoints = sampledPoints.filter(point => point && point.x !== undefined && point.y !== undefined);
-      console.log('DRAW_PATH_DEBUG: sampledPoints after filter:', sampledPoints.length, 'points');
+      console.log('DRAW_PATH_DEBUG: sampledPoints after sampling:', sampledPoints.length, 'points');
       
       // Y-Positionen auf Noten abbilden (höhere Position = höherer Ton)
       // Entferne die unterste Oktave aus dem Bereich
@@ -3215,13 +3287,13 @@ export function pitches() {
       if (this.ctx) {
         sampledPoints.forEach((point, index) => {
           // Kreise an den gesampelten Punkten zeichnen
-          this.ctx.fillStyle = '#e74c3c'; // Rote Punkte für die gesampelten Stellen
+          this.ctx.fillStyle = this.drawMelodyColors.sampledNoteMarker;
           this.ctx.beginPath();
           this.ctx.arc(point.x, point.y, 6, 0, Math.PI * 2);
           this.ctx.fill();
           
           // Optional: Notennamen dazuschreiben
-          this.ctx.fillStyle = '#333';
+          this.ctx.fillStyle = this.drawMelodyColors.noteLabel;
           this.ctx.font = '10px Arial';
           this.ctx.fillText(sequence[index], point.x + 8, point.y - 8);
         });
@@ -3257,7 +3329,8 @@ export function pitches() {
         if (this.activeNoteHighlight) {
           this.activeNoteHighlight = null;
           this.currentPlaybackIndex = -1;
-          this.redrawMelody();
+          // Redraw with static color after playback ends
+          this.redrawCompletedPath();
         }
         return;
       }

@@ -212,7 +212,9 @@
             <!-- Memory Game -->
             <button id="nav_1_5"
               @click="$dispatch('set-activity-mode', {component: 'pitches', mode: '1_5_pitches_memory-game'}); window.innerWidth < 1024 ? menuOpen = false : null"
-            >
+              x-data="{ isActive: false }"
+              x-init="$watch('$store.currentActivityMode', value => isActive = value && value.component === 'pitches' && value.mode === '1_5_pitches_memory-game')"
+              :class="{ 'active': isActive }">
               🎹 <span x-text="$store.strings?.memory_game || 'Memory Game'"></span>
             </button>
 
