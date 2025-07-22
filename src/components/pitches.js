@@ -109,6 +109,9 @@ export function pitches() {
     consecutivePatternCount: 0,    // Zählt, wie oft das gleiche Pattern hintereinander ausgewählt wurde
     showMemoryHighlighting: false, // Whether to show highlighting in memory game
     
+    // High or Low (1_1) - Persistent instrument selection
+    currentHighOrLowInstrument: null, // Keep same instrument until correct answer
+    
     // Progress tracking
     progress: {
       '1_1': 0,
@@ -1196,11 +1199,15 @@ export function pitches() {
         }, 2000);
         showRainbowSuccess();
         
+        // Reset instrument selection for next round after correct answer
+        this.currentHighOrLowInstrument = null;
+        debugLog(['HIGH_OR_LOW', 'INSTRUMENT'], 'Reset instrument selection after correct answer');
+        
         // Clear the current sequence so a new one will be generated next time
-      // Use setTimeout to avoid issues with rapid clicking
-      setTimeout(() => {
-        this.currentHighOrLowSequence = null;
-      }, 100);
+        // Use setTimeout to avoid issues with rapid clicking
+        setTimeout(() => {
+          this.currentHighOrLowSequence = null;
+        }, 100);
         
         // Check if we've reached a new stage
         const newStage = currentHighOrLowStage(this);
@@ -1291,12 +1298,17 @@ export function pitches() {
         // Convert duration from milliseconds to seconds for Tone.js
         const durationSeconds = duration / 1000;
         
-        // For High or Low activity (1_1), randomly select different instruments
+        // For High or Low activity (1_1), use persistent instrument selection
         let instrument = 'default';
         if (this.mode === '1_1_pitches_high_or_low') {
-          const instruments = ['default', 'piano', 'violin', 'flute', 'brass', 'doublebass'];
-          instrument = instruments[Math.floor(Math.random() * instruments.length)];
-          debugLog(['HIGH_OR_LOW', 'INSTRUMENT'], `Randomly selected instrument: ${instrument} for note ${note}`);
+          // Only select new instrument if none is currently set
+          if (!this.currentHighOrLowInstrument) {
+            const instruments = ['default', 'piano', 'violin', 'flute', 'brass'];
+            this.currentHighOrLowInstrument = instruments[Math.floor(Math.random() * instruments.length)];
+            debugLog(['HIGH_OR_LOW', 'INSTRUMENT'], `Randomly selected new instrument: ${this.currentHighOrLowInstrument}`);
+          }
+          instrument = this.currentHighOrLowInstrument;
+          debugLog(['HIGH_OR_LOW', 'INSTRUMENT'], `Using persistent instrument: ${instrument} for note ${note}`);
         }
         
         // Play the note with the central audio engine using selected instrument

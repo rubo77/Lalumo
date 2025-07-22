@@ -63,6 +63,10 @@ export function reset_1_1_HighOrLow_Progress(component) {
   component.highOrLowPlayed = false;
   component.gameStarted = false;
   
+  // Reset persistent instrument selection
+  component.currentHighOrLowInstrument = null;
+  debugLog(['RESET_HIGH_OR_LOW', 'INSTRUMENT'], 'Reset persistent instrument selection');
+  
   // Clear old localStorage keys
   localStorage.removeItem('lalumo_progress_high_or_low');
   

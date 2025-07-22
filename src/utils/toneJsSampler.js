@@ -291,7 +291,7 @@ export function playFluteNote(note, duration = 0.8, velocity = 0.8) {
 /**
  * Play a brass note using the global synth
  */
-export function playBrassNote(note, duration = 0.8, velocity = 0.8) {
+export function playBrassNote(note, duration = 0.8, velocity = 0.2) {
   try {
     // Make sure note is properly formatted
     note = note.toString().toUpperCase();
