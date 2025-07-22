@@ -156,7 +156,6 @@ reset-button:
 ## nach kapitel
 
 1_1 "High or Low?" (1_1_pitches_high_or_low) 
-- jedes mal ein zufälliges Verschiedenes Instrument zum abspielen wählen
 - # bereit zur veröffentlichung
 - im master level dürfen die töne maximal 3 halbtöne auseinander sein und der erste ton muss nicht mehr C5 sein, sondern kann jeder beliebige sein, es wird nur getestet, ob der 2. ton dann höher oder tiefer ist
 - die erfolgsmeldung muss sich ab level 3 aendern in "der ton war höher" anstatt "hoch" und "der ton war tiefer" anstatt "tief"
@@ -181,7 +180,6 @@ reset-button:
             'Amazing! You\'ve mastered all the melodies!';
 
 1_4 Does It Sound Right:
-- alle Melodien in einer Reihe mischen. Und nacheinander abspielen, dann erst wenn alle durch sind die erste wieder
 - # bereit zur veröffentlichung
 - Transposed melodies im höheren Level
 - when the "next melody" button is pressed in the "Does It Sound Right?" activity, the animal images should NOT change
@@ -195,7 +193,6 @@ reset-button:
   - wenn man in 1_4 eine melodie startet und dann während die noch spielt in 1_5 wechselt, dann werden unter dem piano 10 kreise angezeigt
 
 2_2_chords_stable_unstable:
-  - Du info Text Box unten weiter runter, wenn genug Platz ist. 
   - # bereit zur veröffentlichung
  
 2_5_chords_color_matching:
@@ -221,18 +218,3 @@ reset-button:
 - "Reset current" Button soll nur sichtbar sein, wenn der Progress der aktuellen activity größer 0
 
 # most important
-4 aufgaben:
-
-
-- Force portrait mode
-
-
-1_1 "High or Low?" (1_1_pitches_high_or_low) 
-- jedes mal ein zufälliges Verschiedenes Instrument zum abspielen wählen
-
-
-1_4 Does It Sound Right:
-- alle Melodien in einer Reihe mischen. Und nacheinander abspielen, dann erst wenn alle durch sind die erste wieder
-
-2_2_chords_stable_unstable:
-  - Du info Text Box unten weiter runter, wenn genug Platz ist. 

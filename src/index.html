@@ -99,9 +99,8 @@
 <body class="loading">
   <!-- Portrait Mode Notice -->
   <div class="portrait-notice">
-    <h2>📱 Bitte drehe dein Gerät</h2>
-    <p>Lalumo funktioniert am besten im Hochformat.</p>
-    <p>Please rotate your device to portrait mode.</p>
+    <h2 data-string="portrait_notice_title">📱 Please rotate your device</h2>
+    <p data-string="portrait_notice_message">Lalumo works only in portrait mode.</p>
   </div>
   
   <!-- Loading spinner overlay -->
@@ -124,6 +123,28 @@
         document.getElementById('loading-overlay').classList.add('hidden');
         document.body.classList.remove('loading');
       }, 50); // small delay for smoother transition
+    });
+    
+    // Portrait mode overlay control
+    function checkOrientation() {
+      const portraitNotice = document.querySelector('.portrait-notice');
+      const isLandscape = window.innerHeight < window.innerWidth;
+      const isMobile = window.innerWidth <= 1024 || window.innerHeight <= 768;
+      
+      if (isLandscape && isMobile) {
+        portraitNotice.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+      } else {
+        portraitNotice.style.display = 'none';
+        document.body.style.overflow = '';
+      }
+    }
+    
+    // Check orientation on load and resize
+    window.addEventListener('load', checkOrientation);
+    window.addEventListener('resize', checkOrientation);
+    window.addEventListener('orientationchange', function() {
+      setTimeout(checkOrientation, 100); // delay for orientation change
     });
   </script>
   <!-- app.js -->

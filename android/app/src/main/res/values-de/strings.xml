@@ -23,6 +23,10 @@
     <string name="nav_down">Runter</string>
     <string name="back_to_main_a11y">Zurück zum Hauptmenü</string>
     
+    <!-- Portrait Mode Notice -->
+    <string name="portrait_notice_title">📱 Bitte drehe dein Gerät</string>
+    <string name="portrait_notice_message">Lalumo funktioniert nur im Hochformat.</string>
+    
     <!-- Buttons -->
     <string name="button_generate_name">Zufälligen Namen generieren</string>
     <string name="button_save_name">Namen speichern</string>

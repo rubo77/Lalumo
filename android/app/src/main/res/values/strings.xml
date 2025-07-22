@@ -23,6 +23,10 @@
     <string name="nav_down">Down</string>
     <string name="back_to_main_a11y">Back to main menu</string>
     
+    <!-- Portrait Mode Notice -->
+    <string name="portrait_notice_title">📱 Please rotate your device</string>
+    <string name="portrait_notice_message">Lalumo works only in portrait mode.</string>
+    
     <!-- Buttons -->
     <string name="button_generate_name">Generate Random Name</string>
     <string name="button_save_name">Save Name</string>
