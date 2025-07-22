@@ -1287,8 +1287,16 @@ export function pitches() {
         // Convert duration from milliseconds to seconds for Tone.js
         const durationSeconds = duration / 1000;
         
-        // Play the note with the central audio engine
-        audioEngine.playNote(note, durationSeconds);
+        // For High or Low activity (1_1), randomly select different instruments
+        let instrument = 'default';
+        if (this.mode === '1_1_pitches_high_or_low') {
+          const instruments = ['default', 'piano', 'violin', 'flute', 'brass', 'doublebass'];
+          instrument = instruments[Math.floor(Math.random() * instruments.length)];
+          debugLog(['HIGH_OR_LOW', 'INSTRUMENT'], `Randomly selected instrument: ${instrument} for note ${note}`);
+        }
+        
+        // Play the note with the central audio engine using selected instrument
+        audioEngine.playNote(note, durationSeconds, undefined, 0.8, instrument);
         
         return true;
       } catch (error) {
