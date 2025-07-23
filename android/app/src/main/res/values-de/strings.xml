@@ -119,10 +119,11 @@
     
     <!-- Referrals Page Strings -->
     <string name="unlock_chords">Mehr Aktivitäten freischalten</string>
-    <string name="referral_instruction">Teile Lalumo mit deinen Freunden, um mehr Aktivitäten freizuschalten: Melodie zeichnen, Memory-Spiel und Akkord-Charaktere!</string>
+    <string name="referral_instruction">Teile Lalumo mit deinen Freunden, um mehr Aktivitäten freizuschalten: Melodie zeichnen und Akkord-Charaktere!</string>
     <string name="referrals_premium">erfolgreiche Empfehlungen: Mehr Aktivitäten freischalten</string>
     <string name="referrals_future">erfolgreiche Empfehlungen: Erhalte zukünftige Updates kostenlos</string>
     <string name="register_username">Registriere deinen Benutzernamen</string>
+    <string name="activities_unlocked">Alle Aktivitäten freigeschaltet!</string>
     <string name="username_lock_warning">Nach der Registrierung kannst du deinen Benutzernamen nicht mehr ändern.</string>
     <string name="referred_by_username">Du wurdest empfohlen von:</string>
     <string name="referrer_reward_message">Wenn du dich registrierst, erhält diese Person eine Belohnung!</string>

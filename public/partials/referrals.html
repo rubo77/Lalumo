@@ -3,10 +3,10 @@
        x-data="{
          referrerUsername: localStorage.getItem('lalumo_referral') ? JSON.parse(localStorage.getItem('lalumo_referral'))?.referrerUsername || '' : ''
        }">
-  <h2 x-text="$store.strings?.unlock_special_activities || 'Unlock Special Activities'"></h2>
+  <h2 x-text="$store.strings?.unlock_special_activities || 'Unlock more Activities'"></h2>
   <div class="settings-section">
     <div class="referral-section">
-      <p x-text="$store.strings?.referral_instruction || 'Share Lalumo with your friends to unlock special activities!'"></p>
+      <p x-text="$store.strings?.referral_instruction || 'Share Lalumo with your friends to unlock more activities!'"></p>
       <div class="referral-info">
         <p><span class="referral-highlight">3</span> <span x-text="$store.strings?.referrals_premium || 'successful referrals: Unlock Draw a Melody, Memory Game, and Chord Story Characters'"></span></p>
         <p><span class="referral-highlight">5</span> <span x-text="$store.strings?.referrals_future || 'successful referrals: Get future updates for free'"></span></p>
@@ -62,7 +62,7 @@
                 <strong><span x-text="$store.strings?.registrations || 'Registrations'"></span>:</strong>
                 <span x-text="referralCount || '0'"></span>/3
                 <template x-if="referralCount >= 3">
-                  <span class="referral-unlocked" style="color: green;">✓ <span x-text="$store.strings?.activities_unlocked || 'Special activities unlocked!'"></span></span>
+                  <span class="referral-unlocked" style="color: green;">✓ <span x-text="$store.strings?.activities_unlocked || 'All activities unlocked!'"></span></span>
                 </template>
               </p>
               <p class="referral-status">

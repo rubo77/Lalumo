@@ -141,10 +141,11 @@
     
     <!-- Referrals Page Strings -->
     <string name="unlock_chords">Unlock more activities</string>
-    <string name="referral_instruction">Share Lalumo with your friends to unlock more activities: Draw a Melody, Memory Game, and Chord Story Characters!</string>
+    <string name="referral_instruction">Share Lalumo with your friends to unlock more activities: Draw a Melody and Chord Story Characters!</string>
     <string name="referrals_premium">successful referrals: Unlock more activities</string>
     <string name="referrals_future">successful referrals: Get future updates for free</string>
     <string name="register_username">Register Your Username</string>
+    <string name="activities_unlocked">All activities unlocked!</string>
     <string name="username_lock_warning">After registering, you will no longer be able to change your username.</string>
     <string name="referred_by_username">You were referred by:</string>
     <string name="referrer_reward_message">When you register, they will receive a reward!</string>
