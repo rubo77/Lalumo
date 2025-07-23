@@ -2,6 +2,11 @@
 =========
 
 
+## Version 4.2 (2025-07-22)
+- "High or Low" now with different instruments
+- Fast click protection in games improved the player experience
+
+
 ## Version 4.1 (2025-07-19)
 - new songs in "Does It Sound Right?": "Bunny Hop" and "Hey Ho Pull the Wagon"
 

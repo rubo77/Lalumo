@@ -2,6 +2,11 @@
 =========
 
 
+## Version 4.2 (2025-07-22)
+- "Hoch oder Tief": Jetzt mit unterschiedlichen Instrumenten
+- Schnellklick-Schutz in Spielen verbessert das Spielerlebnis
+
+
 ## Version 4.1 (2025-07-19)
 - Neue Lieder in "Klingt es richtig?": "Häschen Hüpf" und "Hey Ho, Spann den Wagen an"
 

@@ -1,0 +1,2 @@
+- "High or Low" now with different instruments
+- Fast click protection in games improved the player experience

@@ -167,11 +167,9 @@ else
     echo "Android app directory not found, skipping cleanup."
 fi
 
-# Build the web app
-echo "###### 4. Building web application fast..."
-npm run build:fast
-echo "###### 4a. Building web application..."
-npm run build
+# Build the web app for mobile (excludes homepage)
+echo "###### 4. Building web application for mobile..."
+webpack --mode production --env mobile=true
 
 # Copy public directory contents to dist, excluding android directory and screenshots
 # Note: The android/ directory in public/ contains XML files for the webpack dev server

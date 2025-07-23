@@ -1,0 +1,10 @@
+# Play Store Changelogs für Version 4.2
+
+<en-GB>
+- "High or Low" now with different instruments
+- Fast click protection in games improved the player experience
+</en-GB>
+<de-DE>
+- "Hoch oder Tief": Jetzt mit unterschiedlichen Instrumenten
+- Schnellklick-Schutz in Spielen verbessert das Spielerlebnis
+</de-DE>

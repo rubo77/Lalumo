@@ -10,7 +10,7 @@ CHANGELOG_DE_MD="CHANGELOG_de.md"
 PLAYSTORE_DIR="fastlane/metadata/android/playstore"
 
 # Get version from build.gradle
-VERSION_NAME=4.1
+VERSION_NAME=4.2
 # Get current date
 CURRENT_DATE=$(date +"%Y-%m-%d")
 
@@ -41,13 +41,15 @@ check_length() {
 
 # German Changelog
 DE_CHANGES=$(cat << EOF
-- Neue Lieder in "Klingt es richtig?": "Häschen Hüpf" und "Hey Ho, Spann den Wagen an"
+- "Hoch oder Tief": Jetzt mit unterschiedlichen Instrumenten
+- Schnellklick-Schutz in Spielen verbessert das Spielerlebnis
 EOF
 )
 
 # English Changelog
 EN_CHANGES=$(cat << EOF
-- new songs in "Does It Sound Right?": "Bunny Hop" and "Hey Ho Pull the Wagon"
+- "High or Low" now with different instruments
+- Fast click protection in games improved the player experience
 EOF
 )
 
