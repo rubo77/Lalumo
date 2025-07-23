@@ -13,7 +13,12 @@
     // In der nativen App wird capacitorJs geladen
     // Dies ist ein zuverlässiger Indikator, dass wir in einer nativen App laufen
     window.isNativeApp = (typeof window.Capacitor !== 'undefined');
-    console.log('Native app environment detected:', window.isNativeApp);
+    // Use debugLog when available, fallback to console.log for early initialization
+    if (window.debugLog) {
+      window.debugLog('NATIVE_ENV', 'Native app environment detected:', window.isNativeApp);
+    } else {
+      console.log('[NATIVE_ENV] Native app environment detected:', window.isNativeApp);
+    }
   </script>
   <style>
     /* Critical CSS for initial rendering */
@@ -1035,32 +1040,32 @@
   window.blurElement = function(event) {
     // Get the target element
     const target = event.currentTarget || event.target;
-    console.log('[BLUR] Will blur element after 1 second delay:', target && target.tagName, target && target.className);
+    window.debugLog('BLUR', 'Will blur element after 1 second delay:', target && target.tagName, target && target.className);
     
     // Let the focus stay for 1 second, then remove it
     setTimeout(() => {
-      console.log('[BLUR] Now removing focus after delay, active element:', document.activeElement && document.activeElement.tagName);
+      window.debugLog('BLUR', 'Now removing focus after delay, active element:', document.activeElement && document.activeElement.tagName);
       
       // Blur the element
       if (target && typeof target.blur === 'function') {
-        console.log('[BLUR] Calling blur() on target');
+        window.debugLog('BLUR', 'Calling blur() on target');
         target.blur();
       } else {
-        console.log('[BLUR] Could not call blur() on target:', target);
+        window.debugLog('BLUR', 'Could not call blur() on target:', target);
       }
       
       // Remove focus from active element as well
       if (document.activeElement && typeof document.activeElement.blur === 'function') {
-        console.log('[BLUR] Calling blur() on document.activeElement:', document.activeElement.tagName);
+        window.debugLog('BLUR', 'Calling blur() on document.activeElement:', document.activeElement.tagName);
         document.activeElement.blur();
       } else {
-        console.log('[BLUR] Could not call blur() on document.activeElement:', document.activeElement);
+        window.debugLog('BLUR', 'Could not call blur() on document.activeElement:', document.activeElement);
       }
       
       // On Android, we need to ensure focus is removed from the element
       // This helps with removing the box shadow/focus ring that persists on touch devices
       if (target && target.classList) {
-        console.log('[BLUR] Permanently removing focus styles to prevent them from reappearing');
+        window.debugLog('BLUR', 'Permanently removing focus styles to prevent them from reappearing');
         
         // Check if this is the play button which has special styling
         const isPlayButton = target.classList.contains('circular-play-button');
@@ -1073,7 +1078,7 @@
         
         // Special handling for play button - reset background color
         if (isPlayButton) {
-          console.log('[BLUR] Resetting play button background color');
+          window.debugLog('BLUR', 'Resetting play button background color');
           // Reset to transparent background (original state)
           target.style.backgroundColor = 'transparent';
           // Reset transform as well
@@ -1086,7 +1091,7 @@
         // Force a repaint/reflow to ensure changes take effect
         target.offsetHeight; // Trigger reflow
         
-        console.log('[BLUR] Completed blur sequence with permanent style changes');
+        window.debugLog('BLUR', 'Completed blur sequence with permanent style changes');
         
         // Add an event listener to prevent refocusing
         const preventRefocus = function(e) {
@@ -1098,7 +1103,7 @@
             target.style.backgroundColor = 'transparent';
           }
           
-          console.log('[BLUR] Prevented refocus attempt');
+          window.debugLog('BLUR', 'Prevented refocus attempt');
           // Remove after handling once
           target.removeEventListener('focus', preventRefocus);
         };
@@ -1128,7 +1133,7 @@
   
   // Funktion zum automatischen Schließen des Menüs, wenn genau ein normales Menüitem verfügbar ist
   function checkAndAutoCloseMenu() {
-    console.log('[DEBUG] Checking if menu should auto-close');
+    window.debugLog('MENU_AUTO_CLOSE', 'Checking if menu should auto-close');
     // Gib dem DOM Zeit, sich zu aktualisieren
     setTimeout(() => {
       // Zähle normale (nicht debug-element) Buttons in den menu-activities
@@ -1138,16 +1143,16 @@
       // Zähle alle aktivierbaren Buttons
       const allItems = document.querySelectorAll('.menu-activities button:not([disabled])');
       
-      console.log(`[DEBUG] Found ${normalItems.length} normal and ${debugItems.length} debug menu items (total: ${allItems.length})`);
+      window.debugLog('MENU_AUTO_CLOSE', `Found ${normalItems.length} normal and ${debugItems.length} debug menu items (total: ${allItems.length})`);
       
       // Wenn genau ein normales Item vorhanden ist, klicke es automatisch (unabhängig von Debug-Items)
       if (normalItems.length === 1) {
-        console.log('[DEBUG] Auto-clicking the only normal menu item');
+        window.debugLog('MENU_AUTO_CLOSE', 'Auto-clicking the only normal menu item');
         normalItems[0].click();
       }
       // Wenn keine normalen Items, aber genau ein Debug-Item vorhanden ist, klicke es automatisch
       else if (normalItems.length === 0 && debugItems.length === 1) {
-        console.log('[DEBUG] No normal items found. Auto-clicking the only debug menu item');
+        window.debugLog('MENU_AUTO_CLOSE', 'No normal items found. Auto-clicking the only debug menu item');
         debugItems[0].click();
       }
     }, 50);
@@ -1217,7 +1222,7 @@
       // Aktualisiere die lokale Nachrichtenvariable aus dem Store
       if (Alpine.store('strings')?.back_button_confirm_exit) {
         currentConfirmMessage = Alpine.store('strings').back_button_confirm_exit;
-        console.log('Updated back button confirm message: ' + currentConfirmMessage);
+        window.debugLog('BACK_BUTTON', 'Updated back button confirm message:', currentConfirmMessage);
       }
     }
     
@@ -1243,7 +1248,7 @@
         const packageJson = await response.json();
         const version = packageJson.version;
         const versionCode = packageJson.versionCode;
-        console.log('Version loaded:', version, versionCode);
+        window.debugLog('VERSION', 'Version loaded:', version, versionCode);
         
         // Display version in credits section
         const versionElement = document.getElementById('app-version');
@@ -1251,7 +1256,7 @@
           versionElement.textContent = `Version ${version} (${versionCode})`;
         }
       } catch (error) {
-        console.error('Error loading version:', error);
+        window.debugLog(['VERSION', 'ERROR'], `Error loading version: ${error.message || error}`);
       }
     }
 

@@ -37,7 +37,7 @@ function updateHomeButtonsVisibility() {
       button.style.visibility = 'hidden';
       button.disabled = true;
     } else {
-      button.style.visibility = 'hidden'; // disabled for now (set visible if you want to reaénable it)
+      button.style.visibility = 'hidden'; // disabled for now (set visible if you want to reenable it)
       button.disabled = false;
       
       // Ensure click handlers are properly attached
